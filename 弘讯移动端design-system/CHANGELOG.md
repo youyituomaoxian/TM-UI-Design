@@ -4,6 +4,25 @@
 
 ---
 
+## [1.14.2] — 2026-08-06 · 落位体系定稿 + 折线卡标准 + mlist 对齐（沉淀展示页基准）
+### Changed
+- **`.screen` 落位体系定稿**：page-template 补 `.screen` 容器（343 居中 + gap:12 + padding-top:16）——业务页不再全宽贴边；落位 = 容器提供，组件**不加水平 margin**。
+- **视觉唯一基准**：RULES 顶部声明「移动端规范展示_20260806_0755.html = 视觉唯一基准」；**冻结解除**（🔓，用户拍板进入规范修改阶段）。
+- **bottomnav 规则**：菜单项 **3–5 个**按业务增减（非定死）；`m-home-indicator--show` 挂最后一项后（iOS 黑条）。
+- **折线卡标准**（CHART-SPEC §6.1 沉淀）：mcard 结构 + chart-x-labels/chart-legend **在 chart-box 外**（防星期文字溢出）+ 网格线 4 条 + 目标线（warn dashed）+ 折线 `style` 内联 stroke（属性会与类动画冲突）+ 数据点 data-val + 点按浮层（附录 A）。
+- **mlist 对齐**：`.mlist-thumb` 加 flex 居中（图标在灰块中心）；`.mlist-double-foot` padding 8/12（内容不贴左缘）；components.json `list` 契约 referenceCss 同步真源（卡片形态）。
+### Fixed
+- 折线图无数据线（stroke 属性被类动画覆盖）→ style 内联；超出容器（preserveAspectRatio none + 贴边）→ meet + 留边 16。
+### 验证
+两端 page-template / 展示页 / 示例页门禁 0 HIGH；ci-local 86 pass；截图确认缩略图图标居中、灰条内容有左距、折线图完整。
+
+## [1.14.1] — 2026-08-06 · 内容区组件 343 落位（修复业务页贴边）
+### Fixed
+- **真源落位缺口**：`.page-view.on` 无水平 padding，内容区组件（`.mlist-double`/`.mlist`/`.msearch`/`.chart-box`）无 `margin:0 16px` → 业务页内容贴手机壳边缘（§1.1b「内容区落位宽 343」此前只在文档未实现）。
+- 已给上述 4 组件加 `margin:0 16px`（343 落位，与规范展示页「区块自带落位」同构）；`.mbtn` 为行内组件不加（表单并排场景）。
+### 验证
+移动 page-template / 展示页 / 示例页门禁 0 HIGH；ci-local 86 pass；示例页截图确认搜索/KPI 条/卡片左右均 16px 落位。
+
 ## [1.14.0] — 2026-08-06 · 页面类型规格并入 RULES §1.1b + Hero 纯色裁决 + 示例页删除
 ### Changed
 - **pages/ 删除并入 RULES §1.1b**：7 个页面覆写文档删除，页面类型规格（列表-详情/表单/仪表盘/个人中心/设备分组/告警列表/登录页）并入 `RULES.md §1.1b`（含登录页独立页规则）；Agent 不再找近似模板。

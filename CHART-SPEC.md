@@ -36,7 +36,7 @@
 
 3. **文字层铁律**：**SVG 内禁放文字**（`preserveAspectRatio="none"` 拉伸会变形，`non-scaling-stroke` 只保线条保不住文字）——轴标签/数值/图例**一律 HTML 叠层**：
    - x 轴标签：`.chart-x-labels`（flex 等分，`span` 居中）
-   - 柱顶/点旁数值：`.chart-v`（`left/top` 百分比绝对定位，`transform:translateX(-50%)` 居中）
+   - 柱顶/点旁数值：`.chart-v`（`left/top` 百分比绝对定位，`transform:translateX(-50%)` 居中）——**必须放在 `.chart-box` 内**（svg 之后、chart-box `</div>` 之前）；放 chart-box 外会失去定位参照（absolute 相对页面 → 数值漂浮固定，2026-08-06 实测事故，门禁 `chart.v.position` 拦截）
    - 横向柱状左右文字：`.chart-hl`（左标签）/ `.chart-hr`（右数值）
    - 环中心：`.chart-ring-center`（absolute 50%/50%）
    - 字号走 `.t-caption / .t-overline`（Web）/ `.m-text-*`（移动），**禁裸字号**
@@ -56,7 +56,12 @@
 | 范式 | 图型 | viewBox | preserveAspectRatio | 关键约束 |
 |---|---|---|---|---|
 | 一 | 折线图 | `0 0 400 160` | `none` + `.chart-svg--fill` | 数据点 ≥8 个（演示 12 月）、网格横线 ≥4 条、数据点 `.chart-dot` 坐标=折线顶点 |
+
+> **§2 折线图五要素（2026-08-06 事故复盘，必读）**：折线图**缺一不可**——① `<g class="chart-grid">` 横向网格线（≥4 条，浅色）② `<polyline>` 折线（`stroke` 用真源 `--chart-*` token，**禁未定义变量**——`--chart-smart-blue` 事故：stroke 失效 → 折线不可见只剩数据点）③ `.chart-dot` 数据点（坐标 = 折线顶点）④ `.chart-x-labels` 横轴标签 ⑤ `.chart-legend` 图例。示例页 2026-08-06 曾缺 ①④⑤ + ②token 错 → 视觉只剩点。门禁 `token.svg-var`（SVG 属性未定义变量）+ `chart.container.missing` 已拦截。
 | 二 | 柱状图 | `0 0 400 160` | 同上 | 柱底对齐最下网格线（基线）、柱顶数值必标（`.chart-v`）、柱宽与 gap 使数据区左右对称 |
+
+> **§2 柱状图必备要素（2026-08-06 事故复盘，必读）**：柱状图**缺一不可**——① `<g class="chart-grid">` 横向网格线（≥4 条，浅色）② `.chart-bar` 柱子（`fill` 用真源 `--chart-*` token）③ **`.chart-v` 柱顶数值标签**（每根柱上方，`left`=柱中心 x 比例、`top`=柱顶 y 比例，数值=柱高）④ `.chart-x-labels` 横轴标签 ⑤ `.chart-legend` 图例。示例页 2026-08-06 曾缺 ①③ → 视觉只有柱子没有分割线和数据。写柱状图先对照展示页「柱状图 · Bar（范式二）」示范。
+> **§2 柱状图三对齐（2026-08-06 用户复检，必读）**：① **柱底 = 最下网格线基线**（`rect.y + rect.height` 必须等于 grid 最下横向线的 y——示例页曾柱底 152 ≠ 基线 145；门禁 `chart.baseline.align` HIGH 已拦截）② **柱区左右对称居中**（首柱 x 与末柱右缘相对数据区中心对称——示例页曾 30~310 左偏；数据区 `20~380` 中心 200，柱区应对称于 200）③ **`.chart-v` 数值与柱左右居中（left = 柱中心 x%）且在柱顶上方（top 略小于柱顶 y%）**——示例页曾 top=柱顶 y 数值压柱顶。写柱状图三对齐都要满足。
 | 三 | 横向柱状图 | `0 0 400 160` | 同上 | 条起点 x=40（宽 10%）、标签贴条（与条起点间距 ≤8px）、条高 ≥12px、数值贴条端（**两端差异见 §2 下注**）|
 | 四 | 环状图 | `0 0 260 260` 定尺寸 | **不设**（禁 none）| 环居中（`.chart-box--ring` flex）、中心常显主段数值、悬停分段显示对应段数值（Web）|
 | 五 | 分组柱状图 | `0 0 400 160` | `none` + `.chart-svg--fill` | 每组 N 根柱双色系列、组内 gap ≥6px / 组间 gap ≥14px、柱顶数值必标、图例注明系列 |
@@ -87,6 +92,7 @@
 - **同页 ≤5 个系列色**；使用顺序：主系列 → 对比系列 → 预警 → 扩展色。
 - **同系列数据色统一**：同一数据系列柱/条/线一律同色（禁最高值强调色）；分组柱状图两系列用两色区分。
 - SVG 内 `stroke=`/`fill=`/`stop-color=` 一律 `style="stroke:var(--chart-*)"`（SVG 属性支持 var()，比裸属性稳）；**禁裸 hex**（门禁 `svg.paint.non-palette` HIGH）。
+- **SVG 属性 var() 必须是真源已定义的 token（2026-08-06 新增，必读）**：`stroke="var(--chart-smart-blue)"` 这类**用了真源不存在的变量名**（Web 真源是 `--chart-tech-blue / --chart-smart-cyan / --chart-data-cyan / --chart-fresh-green / --chart-vivid-orange / --chart-alert-red / --chart-wisdom-purple / --chart-modern-pink`——**无 --chart-smart-blue**）→ 该声明在浏览器整条失效 → **折线/柱/环 stroke/fill 不可见（只剩数据点）**。写 SVG 属性 var 前先对照本表；门禁 `token.svg-var` HIGH 已拦截（2026-08-06 事故复盘：示例页折线图 stroke 用 --chart-smart-blue → 折线消失只剩点）。
 - 图例用 `.chart-legend` / `.legend-item` + `.legend-dot`（圆点）/ `.legend-line`（线段，可 `--dash`）。
 - **暗色（2026-08-06 联动 DARK-MODE.md）**：两端 dark 段不重定义 `--chart-*`（沿用亮色，语义跨模式稳定）；暗底上**禁深色系作主系列线/描边**（Web `--chart-tech-blue` / 移动 `--chart-blue-aux` `--chart-green-growth`，对比 <3:1）——主系列优先亮系（Web data-cyan/fresh-green/vivid-orange/alert-red；移动 cyan/orange/red/rose/purple-a）；图表文字走 n 级文字 token，不引 chart 色作文字。明细见 DARK-MODE.md「图表色 chart」节。
 
@@ -120,6 +126,16 @@
 - **交互**：无 hover → 环状分段/数据标注用**点按**（`touchstart` 切换，点按段显示该段数值，点空白恢复主段）；图形元素点按反馈（`active` 提亮）。
 - **动画**：与 Web 同款动画类（时长走 token）；进入动画可省略（弱网/性能，但点按反馈保留）。
 - **原子类**：`.chart-box`（180px）/ `.chart-svg` / `.chart-grid` / `.chart-x-labels` / `.chart-v` / `.chart-hl` / `.chart-hr` / `.chart-ring-center` / `.chart-ring-svg` / `.chart-legend` / `.legend-item` / `.legend-line`（可 `--dash`）/ `.chart-dot` / 动画类——已入移动 template.css（2026-08-06 落地）。
+
+### 6.1 折线卡标准结构（对齐展示页 2026-08-06，Agent 生成折线卡照抄此结构）
+- **卡片**：`.mcard`（mcard-head：标题 + `.mtag-sm .mtag-neutral`「tap 数据点」提示；mcard-body 承载图表）。
+- **层级**：`mcard-body > chart-box.chart-box--sm(120px) > svg.chart-svg`，**`chart-x-labels` 与 `chart-legend` 都在 chart-box 外**（mcard-body 直接子，防定高容器溢出——实测放 box 内星期文字溢出）。
+- **SVG**：`viewBox="0 0 340 120"` + `preserveAspectRatio="xMidYMid meet"`（禁 none，1:1 不拉伸）；`class="chart-svg"`（非 --fill）。
+- **网格/目标线**：4 条水平网格线（y=20/50/80/110，`stroke="var(--n4)"` width 1，x 16→324）+ **目标线**（y=62，`stroke="var(--warn)"` width 1 `stroke-dasharray="4 4"`）。
+- **折线**：`<polyline class="chart-line" fill="none" style="stroke:var(--chart-blue)" stroke-width="2" points="16,25 …324,65">`——**stroke 必须用 `style` 内联**（`stroke=` 属性会与 `.chart-line` 类动画冲突，实测折线不显示）；points 左右留 16 边距（16→324）。
+- **数据点**：`<circle class="chart-dot" data-val="产量 28" cx cy r="3.5" style="fill:var(--chart-blue)">`——data-val 供附录 A 点按浮层用。
+- **图例**：`chart-legend`（`.legend-line` 蓝实线「日产量」+ `.legend-line.legend-line--dash` warn「目标线」）。
+- **动画/交互**：折线生长 + 圆点进入（真源类）；点按浮层用附录 A 脚本。
 
 ---
 

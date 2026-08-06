@@ -467,6 +467,12 @@ function collectUsedClasses(html) {
 function checkClassWhitelist(html, canonicalCss, selfCss, opts) {
   const violations = [];
   const canonical = buildDefinedClasses(canonicalCss);
+  const canonRules = parseRules('<style>' + canonicalCss + '</style>');
+  const canonMap = new Map();
+  for (const cr of canonRules) {
+    const ct = lastTargetClass(cr.selectors);
+    if (ct && !canonMap.has(ct)) canonMap.set(ct, JSON.stringify(cr.declarations || []));
+  }
   const self = buildDefinedClasses(selfCss || '');
   const used = collectUsedClasses(html);
   const ignore = (opts && opts.ignore) || new Set();
@@ -510,6 +516,12 @@ function lastTargetClass(selectors) {
 // H2 硬执行：页面 <style> 覆写真源组件类 → HIGH
 function checkOverride(selfCss, canonicalCss) {
   const canonical = buildDefinedClasses(canonicalCss);
+  const canonRules = parseRules('<style>' + canonicalCss + '</style>');
+  const canonMap = new Map();
+  for (const cr of canonRules) {
+    const ct = lastTargetClass(cr.selectors);
+    if (ct && !canonMap.has(ct)) canonMap.set(ct, JSON.stringify(cr.declarations || []));
+  }
   const selfRules = parseRules('<style>' + selfCss + '</style>');
   const seen = new Set();
   const violations = [];
@@ -1119,7 +1131,51 @@ function run(specPath, targetPath) {
   const chartLayoutV = checkChartLayout(html);
   // 克隆源内联 :root 与 template.css 一致性门禁（2026-08-06：仅 page-template）
   const templateSyncV = checkTemplateRootSync(html, canonicalCss);
-  return violations.concat(rootV, tokenV, motionV, whitelistV, svgV, wcagV, gridV, overrideV, customV, chartV, chartStretchV, chartEdgeV, chartLayoutV, templateSyncV);
+  // HTML 结构配对门禁（2026-08-06）：div 开闭配对 + bottomnav 父链必须是 .phone
+  const structV = checkHtmlStructure(html);
+  return violations.concat(rootV, tokenV, motionV, whitelistV, svgV, wcagV, gridV, overrideV, customV, chartV, chartStretchV, chartEdgeV, chartLayoutV, templateSyncV, structV);
+}
+
+// ===== HTML 结构配对门禁（2026-08-06：展示页测试多 1 个 </div> 把 .phone 提前闭合 → bottomnav 被挤出手机壳，门禁此前未拦截）=====
+// 两个约束：
+//   1) html.structure.pairing（HIGH）：div 开闭必须配对（多/少闭合都报）
+//   2) html.structure.bottomnav（HIGH）：页面含 .bottomnav 时，其父元素必须是 .phone（bottomnav 在手机壳 flex 底部）
+// 输入用 stripHtmlComments 后的文本（注释等宽空格替换，不误判注释里的示例标签）。
+function checkHtmlStructure(html) {
+  const violations = [];
+  // body/html 完整性（2026-08-06：展示页测试曾缺 </body>，浏览器容忍但规范页应完整）
+  if (!/<body[\s>]/i.test(html)) violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'html.structure.body', sel: 'HTML', msg: '缺少 <body> 开标签' });
+  if (!/<\/body>/i.test(html)) violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'html.structure.body', sel: 'HTML', msg: '缺少 </body> 闭合标签——页面结构不完整' });
+  if (!/<\/html>/i.test(html)) violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'html.structure.body', sel: 'HTML', msg: '缺少 </html> 闭合标签' });
+  const noScript = stripScriptTags(html);
+  const lines = noScript.split('\n');
+  const stack = [];
+  for (let i = 0; i < lines.length; i++) {
+    const re = /<div\b[^>]*>|<\/div>/g;
+    let m;
+    while ((m = re.exec(lines[i]))) {
+      const tok = m[0];
+      if (tok.startsWith('</div>')) {
+        const open = stack.pop();
+        if (!open) {
+          violations.push({ line: i + 1, src: 'html', severity: 'HIGH', contract: 'html.structure.pairing', sel: 'HTML', msg: `多余的 </div>（第 ${i + 1} 行）——div 配对失败，会导致后续元素被挤出容器（如 bottomnav 移出 .phone）` });
+        }
+      } else {
+        const clsM = tok.match(/class="([^"]*)"/);
+        const cls = clsM ? clsM[1] : '';
+        if (cls === 'bottomnav' || cls === 'bottomnav bottomnav-ios') {
+          const parent = stack[stack.length - 1];
+          if (!parent || parent.cls !== 'phone') {
+            violations.push({ line: i + 1, src: 'html', severity: 'HIGH', contract: 'html.structure.bottomnav', sel: 'HTML', msg: `.bottomnav 的父元素必须是 .phone（当前父: ${parent ? parent.cls || '?' : '无'}）——bottomnav 不在手机壳 flex 底部会被内容挤出可视区` });
+          }
+        }
+        stack.push({ cls, line: i + 1 });
+      }
+    }
+  }
+  stack.forEach(s => violations.push({ line: s.line, src: 'html', severity: 'HIGH', contract: 'html.structure.pairing', sel: 'HTML', msg: `div 未闭合：<div class="${s.cls}">（第 ${s.line} 行开）——div 配对失败` }));
+  if (process.env.DEBUG_STRUCT) console.error('[STRUCT] violations=' + violations.length + ' stack=' + stack.length);
+  return violations;
 }
 
 function main() {
@@ -1158,4 +1214,6 @@ function main() {
   process.exit(0);
 }
 
-main();
+if (require.main === module) main();
+
+module.exports = { checkHtmlStructure };

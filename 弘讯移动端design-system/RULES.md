@@ -3,10 +3,12 @@
 > 弘讯移动端设计系统 · 组件选择与使用约束
 > 供 AI Agent / 开发者做 UI 决策时查阅
 
-> **🔒 锁定声明（2026-08-06 用户拍板：移动端已定性冻结）**
-> 移动端规范 / 组件 / token / 门禁为**冻结资产**：仅修复明确 bug，不接受结构性 / 视觉性改动。
-> 任何改动须用户明确拍板；Web 端演进若涉及移动端（共享 token / 组件体系 / validate-spec 对称改动），
-> **必须先提醒用户拍板**，不得静默同步改动移动端。
+> **🔓 冻结已解除（2026-08-06 用户拍板：开始修改规范系统）**
+> 移动端规范 / 组件 / token / 门禁**恢复可修改**（此前为冻结资产）；结构性 / 视觉性改动仍建议先与用户确认方向。
+
+> **🎯 视觉唯一基准（2026-08-06）**：`移动端规范展示_20260806_0755.html` 是移动端视觉**唯一基准**——
+> 所有生成过程与规范使用方式都以该页面为准：`.screen` 容器 343 落位（居中 + gap:12 纵向）、区块自带 padding、组件不加水平 margin、
+> 阴影用 `--elev-raised-shadow`、文字走 `.m-text-*` 语义类、底部导航挂 home indicator。
 
 ---
 
@@ -59,6 +61,7 @@ START: 我要做什么类型的页面？
 #### 仪表盘 / KPI
 - KPI 概览条：三列等宽、品牌蓝底 120pt、padding-h 16 / padding-v 29；数值 28pt 语义色（运行 `--run` #16A34A / 故障 `--err` #EF4444），标签 12pt `#DAEAFA`。
 - 数据卡片 C 101pt：头部 16pt 标题 + 分割线 + 元数据 foot。
+- **图表卡**：按 `CHART-SPEC.md §6.1 折线卡标准结构`（mcard + chart-x-labels/legend 在 chart-box 外 + 网格/目标线 + style 内联 stroke + data-val + 点按交互附录 A）——折线/柱状一律照此。
 
 #### 个人中心
 - **Hero 纯 `--primary` 底（旧渐变 #005EAE→#003868 废弃——MASTER 渐变 A 同步作废）**；用户信息 24pt 白 / 组织 16pt `#DAEAFA`。
@@ -81,6 +84,12 @@ START: 我要做什么类型的页面？
 - 协议勾选 Checkbox 16×16 + `--link` 链接；「忘记密码」`.t-link` 类。
 - 登录按钮 343 落位宽、高 56、胶囊（`.mbtn-login`；Android 才 8px）。
 - 规则：无 BottomNav、顶部导航可选；协议未勾选禁用；主色用于按钮/链接/聚焦，背景用 N4 禁主色铺满；错误态 `--err`。
+
+#### 底部导航（BottomNav，2026-08-06 用户拍板）
+- **菜单项 3–5 个**（最少 3、最多 5），按业务需求增减——不是定死 3 个。
+- 结构：`.bottomnav.bottomnav-ios > .bn-item×N + .m-home-indicator.m-home-indicator--show`（home indicator 挂**最后一项后、`</nav>` 前**——iOS 黑条必须保留）。
+- 项：`.bn-icon`（SVG 24×24）+ `.bn-label`；当前项 `.bn-item.active`。
+- 移动端框架（导航/底部菜单）随页面类型按需组合，非固定；首页 Tab 容器才挂 BottomNav（见 §1.1 决策树）。
 
 ### 1.2 组件粒度选型
 
@@ -217,6 +226,12 @@ START: 我要做什么类型的页面？
 
 ---
 
+### § mlist-double 使用守则（2026-08-06 复盘补）
+- **禁 `.mlist` 与 `.mlist-double` 双类叠加**——`.mlist`（单行 56px flex row）的 `align-items:center;height:56px` 会干扰 `.mlist-double`（column）布局（子项水平居中不撑满 → 图标/底部信息错乱）。一律只用 `mlist-double` 单类。
+- **`.mlist-double-foot` 内禁 `.mlist-more`**——`.mlist-more` 是 top 行右箭头（24px 固定宽），放 foot 内会截断文字。foot 多元素用 flex 两端对齐（真源已内置 `display:flex;justify-content:space-between`）。
+- **`.mlist-thumb` 内 svg 必须带 `width/height`（26×26）**——svg 无尺寸会按浏览器默认（300×150）溢出 thumb（52×52）。
+- **`.mlist-double-head` 标题用 `.mlist-title`**（带 ellipsis 截断）；直接文字虽可渲染但无防溢出。
+
 ## 2. 禁止清单 Anti-Patterns
 
 ### 2.1 ❌ 绝对禁止
@@ -342,6 +357,38 @@ START: 我要做什么类型的页面？
 | `kv.row.required`（MEDIUM） | 卡片数据指标行 | 卡片 foot 用 "·" 串文本（如 `12,480 模 · 78% 负载`）——无信息层级 | `.kv-row > .kv-item` 分 cell（`<b>` 数字等宽 + 细线分隔）；`.mlist-sub` 单行辅助信息允许 · 串（不同场景） |
 | `m.empty.placeholder`（MEDIUM） | 动态列表空态 | 动态渲染列表（innerHTML 赋值）无空态占位——数据 0 时页面空白 | `.m-empty` 占位（居中提示 + 图标，template.css 原语） |
 
+**真源类名速查（2026-08-06 新增——防记错类名，validate-spec 按 template.css 校验，写错即 HIGH `class.undefined`）⚠️ 必读**
+
+| 组件 | 真源类（template.css 中可查） | 禁写（✗ 真源不存在） |
+|---|---|---|
+| 单行列表 | `.mlist` + `.mlist-icon` + `.mlist-title` + `.mlist-right` | `.mlist-row` / `.mlist-label` / `.mlist-value` |
+| 双行列表 | `.mlist-double` + `.mlist-double-top` + `.mlist-thumb` + `.mlist-double-text` + `.mlist-double-head` + `.mlist-sub` + `.mlist-more` + `.mlist-double-foot` | `.mlist-double-row` / `.mlist-double-main` / `.mlist-double-sub` |
+| 三行列表 | `.mlist-triple` + `.mlist-triple-text` + `.mlist-slot` | — |
+| 搜索框 | `.msearch` + `.msearch-icon` + 占位文字（`.msearch-ph` 需页面 `<style>` 内定义） | `.msearch-placeholder`（真源无） |
+| 输入框 | 真源无 `.m-input`——输入用 `.msearch`，或页面 `<style>` 定义白底输入（`.demo-input`：n1 底 / 聚焦描边） | `.m-input` / `.m-field` |
+| 状态点 | `.m-dot` + 变体**子类组合** `run / ok / warn / err`（`<span class="m-dot run"><i></i>文字</span>`） | `.m-dot-run` / `.m-dot-warn` / `.m-dot-err`（错误——变体不是独立类） |
+
+**标准 DOM（复制即用）**
+```html
+<!-- 单行 -->
+<div class="mlist"><svg class="mlist-icon">…</svg><span class="mlist-title">…</span><span class="mlist-right">…›</span></div>
+<!-- 双行 -->
+<div class="mlist-double">
+  <div class="mlist-double-top">
+    <div class="mlist-thumb">…</div>
+    <div class="mlist-double-text"><div class="mlist-double-head">…</div><div class="mlist-sub">…</div></div>
+    <span class="mlist-more">…</span>
+  </div>
+  <div class="mlist-double-foot">…</div>
+</div>
+<!-- 搜索 -->
+<div class="msearch"><svg class="msearch-icon">…</svg><span class="msearch-ph">占位文字</span></div>
+<!-- 状态点 -->
+<span class="m-dot run"><i></i>运行中</span>
+```
+
+**实证**（2026-08-06 展示页测试）：`mlist-row/label/value`、`mlist-double-row/main/sub`、`msearch-placeholder`、`m-dot-run/warn/err` 共 9 个类名全部 HIGH `class.undefined`——真源子类结构如上表。**写组件 DOM 前先查本速查或 template.css，勿凭记忆造类名。**
+
 **配套约定**
 1. 移动端门禁**仅在页面含 m 前缀组件类**（`mbtn/mlist/mtag/mtabs/m-dot/mcard/msearch` 任一）时触发，避免误伤 Web 页。
 2. 全部先 `stripScriptTags` 再扫（JS 模板字符串不参与），行号统一 0。
@@ -399,6 +446,7 @@ START: 我要做什么类型的页面？
 | 多屏跳转 | 每屏一个 `<section class="page-view" data-route="…">`；hash 路由控制 `.on` 显隐（`go('#/route')`），返回用 `back()` |
 | 弹窗 | `.mmask`（默认隐藏）+ `.mmodal`；`openModal('id')` / `closeModal()` 切换 `.show` |
 | BottomNav 浮起 | `--shadow-bottom-nav` token（向上 6px + 12px rgba .08 + 1px 发丝线）；BottomNav 加 `position:relative;z-index:5` 浮在内容之上 |
+| **BottomNav 结构（2026-08-06 修复后固化，必读）** | `.bottomnav` 必须是 **`.phone` 的直接子项**（`.phone-stage > .phone > (statusbar + navbar + screen-scroll + bottomnav)`），在 flex column 底部固定；**菜单 3–5 项**（图标 24 + 标签 12，`flex:1` 均分），iOS 版 `.bottomnav-ios` 高 83（含 home indicator 挂最后一项后）。**禁止**：把 bottomnav 移出 `.phone` / 插屏时破坏 div 闭合（多/少 `</div>` 会把 bottomnav 挤出手机壳——2026-08-06 实测 bottomnav 渲染到页面顶部）。门禁 `html.structure.pairing`（div 配对）+ `html.structure.bottomnav`（父链必须 `.phone`）+ `html.structure.body`（body/html 闭合完整）已落地 validate-spec.js，违反即 HIGH 拦截 |
 | 长页 PNG | URL 加 `?export=1`（`<html data-export="long">` 按内容**完整高度**展开，不足 812 保持手机比例）→ DevTools「Capture full size screenshot」或 headless 截图 |
 | 类名 | 一律 `m` 前缀组件类（白名单门禁），禁止自造布局类（页面级业务组件可接受 MED 提醒） |
 

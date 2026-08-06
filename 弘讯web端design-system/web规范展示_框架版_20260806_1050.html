@@ -195,7 +195,16 @@
       <section id="overview" class="sec">
         <div class="sec-head"><h1 class="t-h2">概览 · Overview</h1></div>
         <p class="sec-desc">本页是弘讯 B 端 Web 设计系统全部<b>视觉特征</b>的活体展示。所有色值、字阶、间距、圆角、投影、动效、组件均直接取自 <code>template.css</code> 与 <code>tokens.json</code> 真源，未做任何硬编码近似。Agent 生成页面以<b>本页为克隆源</b>（<code>cp page-template.html 新页面.html</code> → 删 demo 内容、保留框架外壳）。</p>
-        
+        <div class="stat-grid stat-grid--8">
+          <div class="card"><div class="card-body"><div class="stat-num">5</div><div class="stat-sub">品牌色阶</div></div></div>
+          <div class="card"><div class="card-body"><div class="stat-num">11</div><div class="stat-sub">中性色 N1–N11</div></div></div>
+          <div class="card"><div class="card-body"><div class="stat-num">12</div><div class="stat-sub">字阶层级</div></div></div>
+          <div class="card"><div class="card-body"><div class="stat-num">33</div><div class="stat-sub">生产组件（shadcn/ui）</div></div></div>
+          <div class="card"><div class="card-body"><div class="stat-num">5</div><div class="stat-sub">圆角档</div></div></div>
+          <div class="card"><div class="card-body"><div class="stat-num">4</div><div class="stat-sub">投影</div></div></div>
+          <div class="card"><div class="card-body"><div class="stat-num">5</div><div class="stat-sub">Elevation 层级</div></div></div>
+          <div class="card"><div class="card-body"><div class="stat-num">9</div><div class="stat-sub">动效(4 时长+5 缓动)</div></div></div>
+        </div>
         <div class="callout">布局骨架（顶栏 72 / 侧栏 240 / 底栏 32）本身即本规范的<b>固定滚动区规则 G8</b>：<code>html,body{overflow:hidden}</code>，仅 <code>.content</code> 滚动。侧栏可点右下「收起」验证 <b>G9 折叠</b>。</div>
       </section>
 

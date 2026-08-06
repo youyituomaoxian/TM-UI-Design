@@ -73,8 +73,9 @@
 > - 布局：`.row` `.row-tight` `.row-between` `.col` `.mt` `.mt-sm` `.mt-lg` `.mb`
 > - 栅格：`.grid12` + `.col-3/4/5/6/7/8/9/12`（≤1200px 自动堆叠为 12 列满宽）
 > - 标题：`.page-title` `.section-title`
-> - 指标卡：`.stat-grid`（容器）+ **KPI 仅两版（2026-08-06 定稿）**：`.stat-card--icon`（标准版）与 `.stat-card--ring`（环形版）；内部元素 `.stat-body` `.stat-label` `.stat-num` `.stat-foot` `.stat-delta`（禁简约 stat-num+stat-sub 独立卡、禁 --row/--mini 变体——已从真源删除）
+> - 指标卡：`.stat-grid`（容器）+ **KPI 两版（2026-08-06 用户拍板：标准版 = 图标卡，环形版保留需时使用）**：标准版 `.stat-card--icon`（KPI 图标卡——左浅底高圆角图标块 kpi-ico--lg 48×48 · radius-lg 16 + 右上大数字 stat-num + 底部行 stat-foot（标题左 stat-sub / 变化量右 stat-delta，贴图标底部对齐；变化量 12px 500 ↑=run 绿 ↓=err 红）——布局基准 = 回滚点 20260806_Web完成态 展示页）；环形版 `.stat-card--ring`（左环 64 + ring-info label/num/trend，需时使用）。**禁简约 stat-num+stat-sub 独立卡**（门禁 kpi.simple.forbidden HIGH 拦截）
 > - KPI 图标：`.kpi-ico`（+ `--lg` 尺寸，+ `--primary/--run/--warn/--neutral` 语义底色）。SVG 走 `currentColor`，**禁止在 `<svg>` 上写颜色**（黑图标 bug 根因）
+> - KPI 环（环形版需时使用）：`.ring`（64 svg 圆环，dashoffset = 163.4 × (1−%)）+ `.ring-val` + `.ring-fg--primary/run/warn/err/secondary`
 > - 图表：`.chart-wrap` `.chart-svg` `.chart-grid` `.chart-axis` `.chart-value` `.chart-caption` `.chart-legend`（+ `--list`）`.legend-item` `.legend-dot` `.legend-line`（+ `--dash`）`.legend-val`
 > - 指标行：`.metric-row` `.metric-label` `.metric-val` `.metric-unit`
 > - 迷你柱图：`.bars` `.bar-col`（+ `--muted`）`.bar-cap` `.bars-axis`
@@ -142,7 +143,7 @@ START: 我要做什么类型的页面？
 - 禁在 Modal 内用移动端组件；所有尺寸 / 颜色走 Web Token。
 
 #### 看板 / 数据大屏
-- KPI 卡用 `components.json` 登记的两版：`stat-card--icon`（图标卡·标准版）/ `stat-card--ring`（环形版）；禁自造第三种。
+- KPI 卡用 `components.json` 登记的两版：标准版 `stat-card--icon`（图标卡 · 回滚点布局）+ 环形版 `stat-card--ring`（需时使用）；禁自造其他版本（简约 stat-num+stat-sub 独立卡被门禁 kpi.simple.forbidden HIGH 拦截）
 - 图表按 §9 自建范式 + CHART-SPEC（原子 SVG，色走 `--chart-*` token，禁裸 hex）。
 
 ### 1.2 组件粒度选型
@@ -216,7 +217,7 @@ START: 我要做什么类型的页面？
    → 一级 N11 #212532 / 正文 N10 #334155 / 辅助 N9 #6C757D / 禁用 N8 #ADB5BD
 ```
 
-**KPI 图标色**（`.kpi-ico--*` 语义底色，2026-08-03 拍板：**不得 4 卡 4 色炫技**）：
+**KPI 环色**（`.ring-fg--*` 语义色，2026-08-03 拍板：**不得 4 卡 4 色炫技**）：
 
 | 场景 | 变体 |
 |------|------|

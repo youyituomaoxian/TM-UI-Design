@@ -1,5 +1,7 @@
 const fs = require('fs');
 const base = 'H:/global-workspace/设计系统/设计系统_V2.1/';
+const webCss = fs.readFileSync(base + '弘讯web端design-system/template.css','utf8');
+const mobCss = fs.readFileSync(base + '弘讯移动端design-system/template.css','utf8');
 const { generatePalette } = require(base + 'brand-color-engine/generate.js');
 // ============================================================
 // pages/examples/ 示例页生成器（2026-08-06 建立）
@@ -24,7 +26,9 @@ function webPage({ brand, mode, title, coverNote }) {
 -->
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="../../template.css">
+<style>
+${webCss}
+</style>
 </head>
 <body>
 <div class="app">
@@ -33,7 +37,9 @@ function webPage({ brand, mode, title, coverNote }) {
       <div class="topbar-titles"><span class="topbar-title">弘讯科技</span><span class="topbar-subtitle">智能工厂管理系统</span></div></div>
     <div class="spacer"></div>
     <div class="topbar-right">
-      <span class="topbar-item">首页</span><span class="topbar-sep"></span><span class="topbar-item">Admin</span>
+      <span class="topbar-item">首页</span><span class="topbar-sep"></span><span class="topbar-item"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>管理员</span>
+      <span class="topbar-sep"></span><button class="topbar-item" title="修改密码"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+      <button class="topbar-item" title="退出登录"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
       <span class="topbar-sep"></span><button class="topbar-item" title="全屏"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M16 21h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
     </div>
   </header>
@@ -58,22 +64,80 @@ function webPage({ brand, mode, title, coverNote }) {
         <div class="tabs mt"><div class="tab">概览</div><div class="tab active">实时监控</div><div class="tab">历史</div></div>
         <div class="stat-grid mt">
           <div class="card"><div class="card-body stat-card--icon">
-            <span class="kpi-ico kpi-ico--lg kpi-ico--run"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span>
-            <div class="stat-body"><div class="stat-label">在产设备</div><div class="stat-num">72</div><div class="stat-foot"><span>较昨日</span><span class="stat-delta stat-delta--up">+4.2%</span></div></div>
+            <span class="kpi-ico kpi-ico--lg kpi-ico--run"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span>
+            <div class="stat-body"><div class="stat-num">72</div><div class="stat-foot"><div class="stat-sub">在产设备</div><span class="stat-delta stat-delta--up">+4.2%</span></div></div>
           </div></div>
           <div class="card"><div class="card-body stat-card--icon">
-            <span class="kpi-ico kpi-ico--lg kpi-ico--primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
-            <div class="stat-body"><div class="stat-label">待机就绪</div><div class="stat-num">18</div><div class="stat-foot"><span>今日</span><span class="stat-delta stat-delta--up">+1.6%</span></div></div>
+            <span class="kpi-ico kpi-ico--lg kpi-ico--primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+            <div class="stat-body"><div class="stat-num">18</div><div class="stat-foot"><div class="stat-sub">待机就绪</div><span class="stat-delta stat-delta--up">+1.6%</span></div></div>
           </div></div>
           <div class="card"><div class="card-body stat-card--icon">
-            <span class="kpi-ico kpi-ico--lg kpi-ico--warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
-            <div class="stat-body"><div class="stat-label">需关注</div><div class="stat-num">3</div><div class="stat-foot"><span>较昨日</span><span class="stat-delta stat-delta--down">−1 台</span></div></div>
+            <span class="kpi-ico kpi-ico--lg kpi-ico--warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+            <div class="stat-body"><div class="stat-num">3</div><div class="stat-foot"><div class="stat-sub">需关注</div><span class="stat-delta stat-delta--down">−1 台</span></div></div>
           </div></div>
           <div class="card"><div class="card-body stat-card--icon">
-            <span class="kpi-ico kpi-ico--lg kpi-ico--err"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></span>
-            <div class="stat-body"><div class="stat-label">已停机</div><div class="stat-num">1</div><div class="stat-foot"><span>需处理</span><span class="stat-delta stat-delta--down">紧急</span></div></div>
+            <span class="kpi-ico kpi-ico--lg kpi-ico--err"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></span>
+            <div class="stat-body"><div class="stat-num">1</div><div class="stat-foot"><div class="stat-sub">已停机</div><span class="stat-delta stat-delta--down">紧急</span></div></div>
           </div></div>
         </div>
+        <!-- 图表区：折线图 col-7 + 柱状图 col-5 并排（grid12 · CHART-SPEC 五要素 + 三对齐） -->
+        <section class="grid12" style="margin-bottom:16px;">
+          <div class="col-7 card card--fill">
+            <div class="card-head"><h3 class="card-title">良品率趋势</h3></div>
+            <div class="card-body">
+              <div class="chart-box">
+                <svg class="chart-svg chart-svg--fill" viewBox="0 0 400 160" preserveAspectRatio="none" role="img" aria-label="良品率折线图">
+                  <g class="chart-grid">
+                    <line x1="20" y1="20" x2="380" y2="20"/><line x1="20" y1="50" x2="380" y2="50"/>
+                    <line x1="20" y1="80" x2="380" y2="80"/><line x1="20" y1="110" x2="380" y2="110"/><line x1="20" y1="150" x2="380" y2="150"/>
+                  </g>
+                  <polyline class="chart-line" fill="none" stroke="var(--chart-data-cyan)" stroke-width="2" points="20,112 80,90 140,98 200,62 260,72 320,42 380,55" style="stroke-dasharray:2000;stroke-dashoffset:0;"/>
+                  <circle class="chart-dot" cx="20" cy="112" r="4" fill="var(--primary)"/>
+                  <circle class="chart-dot" cx="80" cy="90" r="4" fill="var(--primary)"/>
+                  <circle class="chart-dot" cx="140" cy="98" r="4" fill="var(--primary)"/>
+                  <circle class="chart-dot" cx="200" cy="62" r="4" fill="var(--primary)"/>
+                  <circle class="chart-dot" cx="260" cy="72" r="4" fill="var(--primary)"/>
+                  <circle class="chart-dot" cx="320" cy="42" r="4" fill="var(--primary)"/>
+                  <circle class="chart-dot" cx="380" cy="55" r="4" fill="var(--primary)"/>
+                </svg>
+              </div>
+              <div class="chart-x-labels" style="padding:0 2.5%;"><span>周一</span><span>周二</span><span>周三</span><span>周四</span><span>周五</span><span>周六</span><span>周日</span></div>
+              <div class="chart-legend">
+                <span class="legend-item"><span class="legend-line" style="border-color:var(--chart-data-cyan)"></span>良品率</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-5 card card--fill">
+            <div class="card-head"><h3 class="card-title">近 7 日产能</h3></div>
+            <div class="card-body">
+              <div class="chart-box">
+                <svg class="chart-svg chart-svg--fill" viewBox="0 0 400 160" preserveAspectRatio="none" role="img" aria-label="近7日产能柱状图">
+                  <g class="chart-grid">
+                    <line x1="20" y1="25" x2="380" y2="25"/><line x1="20" y1="55" x2="380" y2="55"/>
+                    <line x1="20" y1="85" x2="380" y2="85"/><line x1="20" y1="115" x2="380" y2="115"/><line x1="20" y1="145" x2="380" y2="145"/>
+                  </g>
+                  <g fill="var(--chart-smart-cyan)">
+                    <rect class="chart-bar" x="40" y="83" width="40" height="62" rx="2"/>
+                    <rect class="chart-bar" x="110" y="65" width="40" height="80" rx="2"/>
+                    <rect class="chart-bar" x="180" y="45" width="40" height="100" rx="2"/>
+                    <rect class="chart-bar" x="250" y="93" width="40" height="52" rx="2"/>
+                    <rect class="chart-bar" x="320" y="35" width="40" height="110" rx="2"/>
+                  </g>
+                </svg>
+              <span class="chart-v t-overline" style="left:15%;top:46.9%;">62</span>
+              <span class="chart-v t-overline" style="left:32.5%;top:35.6%;">80</span>
+              <span class="chart-v t-overline" style="left:50%;top:23.1%;">100</span>
+              <span class="chart-v t-overline" style="left:67.5%;top:53.1%;">52</span>
+              <span class="chart-v t-overline" style="left:85%;top:16.9%;">110</span>
+              </div>
+              <div class="chart-x-labels" style="padding:0 7.5%;"><span>周一</span><span>周二</span><span>周三</span><span>周四</span><span>周五</span></div>
+              <div class="chart-legend">
+                <span class="legend-item"><span class="legend-dot" style="background:var(--chart-smart-cyan)"></span>产能</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- 表格卡：表头48 / 数值列 th.num↔td.num 右对齐 / 输入白底 / 分页上下对称 -->
         <div class="card mt">
           <div class="card-head">设备列表</div>
@@ -91,82 +155,34 @@ function webPage({ brand, mode, title, coverNote }) {
                 <tr><td>机械手 C-07</td><td><span class="status-dot"><i class="dot-ok"></i>正常</span></td><td class="num">41%</td><td class="num">625</td><td><span class="tag tag-warn">温度过高</span></td><td><button class="btn btn-sm btn-secondary">详情</button></td></tr>
                 <tr><td>输送带 D-02</td><td><span class="status-dot"><i class="dot-err"></i>故障</span></td><td class="num">—</td><td class="num">0</td><td><span class="tag tag-err">堵转</span></td><td><button class="btn btn-sm btn-secondary">详情</button></td></tr>
                 <tr><td>注塑机 A-03</td><td><span class="status-dot"><i class="dot-warn"></i>维护</span></td><td class="num">—</td><td class="num">320</td><td><span class="tag tag-suc">已排程</span></td><td><button class="btn btn-sm btn-secondary">详情</button></td></tr>
+                <tr><td>注塑机 A-05</td><td><span class="status-dot"><i class="dot-run"></i>运行中</span></td><td class="num">66%</td><td class="num">1,120</td><td><span class="tag tag-def">无</span></td><td><button class="btn btn-sm btn-secondary">详情</button></td></tr>
+                <tr><td>机械手 C-08</td><td><span class="status-dot"><i class="dot-ok"></i>正常</span></td><td class="num">35%</td><td class="num">480</td><td><span class="tag tag-def">无</span></td><td><button class="btn btn-sm btn-secondary">详情</button></td></tr>
+                <tr><td>注塑机 A-06</td><td><span class="status-dot"><i class="dot-warn"></i>维护</span></td><td class="num">—</td><td class="num">210</td><td><span class="tag tag-suc">已排程</span></td><td><button class="btn btn-sm btn-secondary">详情</button></td></tr>
               </tbody>
             </table>
             <div class="pager"><span class="pg">‹</span><span class="pg active">1</span><span class="pg">2</span><span class="pg">3</span><span class="pg">›</span><span class="pg-tot">共 142 条 · 29 页</span></div>
           </div>
         </div>
-        <!-- 图表卡：CHART-SPEC 范式二（SVG 数据层 + HTML 标签层，柱顶数值 .chart-v） -->
-        <div class="card mt">
-          <div class="card-head">近 7 日产能</div>
-          <div class="card-body">
-            <div class="chart-box"><svg class="chart-svg chart-svg--fill" viewBox="0 0 400 160" preserveAspectRatio="none" role="img" aria-label="近7日产能柱状图">
-              <line x1="12" y1="30" x2="388" y2="30" stroke="var(--n6)" stroke-width="1"/>
-              <line x1="12" y1="80" x2="388" y2="80" stroke="var(--n6)" stroke-width="1"/>
-              <line x1="12" y1="130" x2="388" y2="130" stroke="var(--n6)" stroke-width="1"/>
-              <rect class="chart-bar" x="12" y="68" width="42" height="62" rx="2" fill="var(--primary)"/>
-              <rect class="chart-bar" x="66" y="50" width="42" height="80" rx="2" fill="var(--chart-smart-cyan)"/>
-              <rect class="chart-bar" x="120" y="30" width="42" height="100" rx="2" fill="var(--primary)"/>
-              <rect class="chart-bar" x="174" y="78" width="42" height="52" rx="2" fill="var(--chart-data-cyan)"/>
-              <rect class="chart-bar" x="228" y="20" width="42" height="110" rx="2" fill="var(--primary)"/>
-              <rect class="chart-bar" x="282" y="58" width="42" height="72" rx="2" fill="var(--chart-smart-cyan)"/>
-              <rect class="chart-bar" x="336" y="42" width="42" height="88" rx="2" fill="var(--primary)"/>
-            </svg>
-            <div class="chart-x-labels"><span>周一</span><span>周二</span><span>周三</span><span>周四</span><span>周五</span><span>周六</span><span>周日</span></div>
-            </div>
+
+<section class="grid12">
+        <div class="col-7 card">
+          <div class="card-head"><h3 class="card-title">告警与提示</h3></div>
+          <div class="card-body" style="display:flex;flex-direction:column;gap:12px;">
+            <div class="alert alert-err"><b>3 台设备故障</b> — 机械手 C-07 已停机超过 15 分钟，建议立即处理。</div>
+            <div class="alert alert-warn"><b>干燥机 D-03 保养到期</b> — 剩余运行 6.2 小时后需例行保养。</div>
+            <div class="badge-row" style="margin-top:auto;"><span class="badge badge-outline">生产正常</span><span class="badge badge-run">开机率达标</span><span class="badge">今日已报警 5 次</span></div>
           </div>
         </div>
-        <!-- 状态标签区 -->
-        <div class="card mt">
-          <div class="card-head">状态标签</div>
+        <div class="col-5 card">
+          <div class="card-head"><h3 class="card-title">快速新建工单</h3></div>
           <div class="card-body">
-            <div class="badge-row">
-              <span class="badge badge-suc">已通过</span>
-              <span class="badge badge-warn">审核中</span>
-              <span class="badge badge-err">已驳回</span>
-              <span class="badge badge-muted">草稿</span>
-              <span class="badge badge-outline">已归档</span>
-              <span class="tag tag-run">运行中</span>
-              <span class="tag tag-suc">正常</span>
-              <span class="tag tag-warn">告警</span>
-              <span class="tag tag-err">故障</span>
-            </div>
+            <div class="form-row"><label class="label" style="width:80px;">设备</label><input class="input" style="flex:1;min-width:0;" placeholder="选择或搜索设备"></div>
+            <div class="form-row"><label class="label" style="width:80px;">故障类型</label><select class="sel-trigger" style="flex:1;min-width:0;"><option>机械故障</option><option>电气故障</option><option>保养需求</option></select></div>
+            <div class="form-row"><label class="label" style="width:80px;">描述</label><textarea class="textarea" style="flex:1;min-width:0;" placeholder="故障现象描述…"></textarea></div>
+            <div class="form-actions" style="display:flex;justify-content:flex-end;gap:12px;margin-top:16px;"><button class="btn btn-secondary">取消</button><button class="btn btn-primary">提交工单</button></div>
           </div>
         </div>
-        <!-- 折线图卡：CHART-SPEC 范式一（数据点 hover 三合一 + HTML 标签层） -->
-        <div class="card mt">
-          <div class="card-head">良品率趋势</div>
-          <div class="card-body">
-            <div class="chart-box"><svg class="chart-svg chart-svg--fill" viewBox="0 0 400 160" preserveAspectRatio="none" role="img" aria-label="良品率折线图">
-              <line x1="12" y1="30" x2="388" y2="30" stroke="var(--n6)" stroke-width="1"/>
-              <line x1="12" y1="80" x2="388" y2="80" stroke="var(--n6)" stroke-width="1"/>
-              <line x1="12" y1="130" x2="388" y2="130" stroke="var(--n6)" stroke-width="1"/>
-              <polyline class="chart-line" points="12,112 75,90 138,98 200,62 263,72 325,42 388,55" fill="none" stroke="var(--primary)" stroke-width="2"/>
-              <circle class="chart-dot" cx="12" cy="112" r="3.5" fill="var(--primary)"/>
-              <circle class="chart-dot" cx="75" cy="90" r="3.5" fill="var(--primary)"/>
-              <circle class="chart-dot" cx="138" cy="98" r="3.5" fill="var(--primary)"/>
-              <circle class="chart-dot" cx="200" cy="62" r="3.5" fill="var(--primary)"/>
-              <circle class="chart-dot" cx="263" cy="72" r="3.5" fill="var(--primary)"/>
-              <circle class="chart-dot" cx="325" cy="42" r="3.5" fill="var(--primary)"/>
-              <circle class="chart-dot" cx="388" cy="55" r="3.5" fill="var(--primary)"/>
-            </svg>
-            <div class="chart-x-labels"><span>周一</span><span>周二</span><span>周三</span><span>周四</span><span>周五</span><span>周六</span><span>周日</span></div>
-            </div>
-          </div>
-        </div>
-        <!-- 表单卡：输入/下拉/文本域（白底 + focus 描边） -->
-        <div class="card mt">
-          <div class="card-head">工单登记</div>
-          <div class="card-body">
-            <div class="form-row"><label class="label">工单号</label><input class="input" placeholder="WO-20260806"></div>
-            <div class="form-row"><label class="label">优先级</label>
-              <div class="sel" id="sel2"><div class="sel-trigger" onclick="document.getElementById('sel2').classList.toggle('open')">常规 <span style="color:var(--n9)">▾</span></div>
-                <div class="sel-panel"><div class="sel-opt on">常规</div><div class="sel-opt">紧急</div><div class="sel-opt">加急</div></div></div>
-            </div>
-            <div class="form-row"><label class="label">备注</label><textarea class="textarea" rows="2" placeholder="补充说明（可选）"></textarea></div>
-            <div class="form-actions"><button class="btn btn-secondary">取消</button><button class="btn btn-primary">提交工单</button></div>
-          </div>
-        </div>
+      </section>
       </main>
       <footer class="footer">弘讯 B 端页面示例（重新生成 2026-08-06）· 视觉取自 template.css 真源</footer>
     </div>
@@ -190,65 +206,117 @@ function mobilePage({ brand, mode, title, coverNote }) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=375, initial-scale=1.0">
-<link rel="stylesheet" href="../../template.css">
 <style>
-  /* 页面布局自造类（间距走 token：8/12/16） */
-  .page-pad{padding:16px;}
-  .stat-row{display:flex;gap:8px;margin-bottom:12px;}
-  .stat-cell{flex:1;background:var(--n1);border-radius:var(--radius-md);box-shadow:var(--elev-raised-shadow);padding:12px;display:flex;flex-direction:column;gap:4px;}
-  .mstat-num{font-size:22px;font-weight:600;line-height:28px;font-family:var(--font-cn);}
-  .msearch-input{flex:1;border:none;outline:none;background:transparent;font-size:14px;color:var(--n8);font-family:var(--font-cn);}
-  .mlist-main{flex:1;margin-left:12px;display:flex;flex-direction:column;gap:4px;min-width:0;}
-  .chart-card{margin-bottom:12px;}
+${mobCss}
 </style>
+
 </head>
 <body class="ios">
 <div class="phone-stage">
   <div class="phone">
-    <div class="navbar navbar-ios"><div class="navbar-main"><span class="navbar-title">设备监控</span></div></div>
-    <div class="page-pad">
-      <div class="stat-row">
-        <div class="stat-cell"><div class="mcard-title">运行中</div><div class="mstat-num" style="color:var(--run)">72</div></div>
-        <div class="stat-cell"><div class="mcard-title">故障</div><div class="mstat-num" style="color:var(--err)">1</div></div>
-        <div class="stat-cell"><div class="mcard-title">今日产量</div><div class="mstat-num" style="color:var(--primary)">2,480</div></div>
-      </div>
-      <div class="msearch"><input class="msearch-input" placeholder="搜索设备 / 工单"></div>
-      <!-- 双行列表 92px（mlist-thumb + 文本 + right） -->
-      <div class="mlist mlist-double">
-        <div class="mlist-thumb" style="background:var(--n3)"></div>
-        <div class="mlist-main"><div class="mlist-title">注塑机 A-01</div><div class="mlist-sub">运行中 · 负载 72%</div></div>
-        <div class="mlist-right">›</div>
-      </div>
-      <div class="mlist mlist-double">
-        <div class="mlist-thumb" style="background:var(--n3)"></div>
-        <div class="mlist-main"><div class="mlist-title">机械手 C-07</div><div class="mlist-sub">温度过高 · 需关注</div></div>
-        <div class="mlist-right">›</div>
-      </div>
-      <!-- 移动 CHART-SPEC：柱状图（.chart-box--sm 120px 真源 + SVG 数据层 + HTML 标签层） -->
-      <div class="chart-card"><div class="mcard-title">近 7 日产量</div>
-        <div class="chart-box chart-box--sm"><svg class="chart-svg" viewBox="0 0 340 120" preserveAspectRatio="xMidYMid meet" role="img" aria-label="近7日产量柱状图">
-          <line x1="16" y1="20" x2="324" y2="20" stroke="var(--n4)" stroke-width="1"/>
-          <line x1="16" y1="70" x2="324" y2="70" stroke="var(--n4)" stroke-width="1"/>
-          <line x1="16" y1="110" x2="324" y2="110" stroke="var(--n4)" stroke-width="1"/>
-          <rect class="chart-bar" x="16" y="72" width="28" height="38" rx="4" fill="var(--primary)"/>
-          <rect class="chart-bar" x="56" y="54" width="28" height="56" rx="4" fill="var(--primary)"/>
-          <rect class="chart-bar" x="96" y="36" width="28" height="74" rx="4" fill="var(--primary)"/>
-          <rect class="chart-bar" x="136" y="47" width="28" height="63" rx="4" fill="var(--primary)"/>
-          <rect class="chart-bar" x="176" y="27" width="28" height="83" rx="4" fill="var(--primary)"/>
-          <rect class="chart-bar" x="216" y="62" width="28" height="48" rx="4" fill="var(--primary)"/>
-          <rect class="chart-bar" x="256" y="41" width="28" height="69" rx="4" fill="var(--primary)"/>
-          <rect class="chart-bar" x="296" y="69" width="28" height="41" rx="4" fill="var(--primary)"/>
-        </svg>
-        <div class="chart-x-labels"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span><span></span></div>
-        </div>
+    <!-- 状态栏（透明悬浮，品牌导航栏上白字） -->
+    <div class="m-statusbar m-statusbar-ios">
+      <span class="sb-time">9:41</span>
+      <div class="sb-icons">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 17h2v3H2zM6.5 14h2v6h-2zM11 10.5h2V20h-2zM15.5 7h2v13h-2zM20 3.5h2V20h-2z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 6a9 9 0 0 1 6.36 2.64l-1.41 1.41A7 7 0 0 0 12 8a7 7 0 0 0-4.95 2.05L5.64 8.64A9 9 0 0 1 12 6zm0 4a5 5 0 0 1 3.54 1.46l-1.41 1.41A3 3 0 0 0 12 12a3 3 0 0 0-2.12.88l-1.42-1.42A5 5 0 0 1 12 10zm-2.12 6.12L12 18.24l2.12-2.12A3 3 0 0 0 12 14.6a3 3 0 0 0-2.12 1.52z"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1.5" y="9" width="17" height="11" rx="2.5"/><path d="M4.5 9V6.5a3.5 3.5 0 0 1 7 0V9"/><path d="M20.5 12.5v4"/></svg>
       </div>
     </div>
-    <div class="bottomnav bottomnav-ios">
-      <div class="bn-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>首页</span></div>
-      <div class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>工单</span></div>
-      <div class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>我的</span></div>
+    <!-- 顶部导航（三槽位：返回 + 标题 + 右侧操作，与展示页同构） -->
+    <header class="navbar navbar-ios">
+      <div class="navbar-main">
+        <button class="navbar-back" style="visibility:hidden;width:40px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="navbar-title">设备监控中心</div>
+        <div class="navbar-actions" style="width:40px"></div>
+      </div>
+    </header>
+
+  <div class="screen-scroll">
+    <div class="screen">
+    <div class="page-view on">
+      <!--       <!-- KPI 概览条（品牌蓝 3 列 · 页面组合：真源文字类 + 内联排布） -->
+      <div style="display:flex;background:var(--primary);border-radius:var(--radius-md);padding:14px 0;box-shadow:var(--elev-raised-shadow);">
+        <div style="flex:1;text-align:center;"><div class="mcard-title" style="color:rgba(255,255,255,.85)">设备总数</div><div class="m-text-num" style="color:#fff;font-size:22px">128</div></div>
+        <div style="flex:1;text-align:center;"><div class="mcard-title" style="color:rgba(255,255,255,.85)">开机率</div><div class="m-text-num" style="color:#fff;font-size:22px">90.1%</div></div>
+        <div style="flex:1;text-align:center;"><div class="mcard-title" style="color:rgba(255,255,255,.85)">今日产量</div><div class="m-text-num" style="color:#fff;font-size:22px">2,480</div></div>
+      </div>
+      <!-- 折线图（chart-box--sm 真源 + SVG 数据层 + 标签层） -->
+      <div class="mcard"><div class="mcard-body">
+        <div class="mcard-title">近 7 日产量趋势</div>
+        <div class="chart-box chart-box--sm"><svg class="chart-svg" viewBox="0 0 340 120" preserveAspectRatio="xMidYMid meet" role="img" aria-label="近7日产量折线图">
+          <line x1="16" y1="20" x2="324" y2="20" stroke="var(--n4)" stroke-width="1"/>
+          <line x1="16" y1="50" x2="324" y2="50" stroke="var(--n4)" stroke-width="1"/>
+          <line x1="16" y1="80" x2="324" y2="80" stroke="var(--n4)" stroke-width="1"/>
+          <line x1="16" y1="110" x2="324" y2="110" stroke="var(--n4)" stroke-width="1"/>
+          <polyline fill="none" stroke="var(--primary)" stroke-width="2" points="16,96 56,74 96,84 136,52 176,60 216,34 256,44 296,20"/>
+          <circle cx="296" cy="20" r="4" fill="var(--primary)"/>
+          <circle cx="256" cy="44" r="4" fill="var(--primary)"/>
+        </svg></div>
+        <div class="chart-x-labels"><span>周一</span><span>周二</span><span>周三</span><span>周四</span><span>周五</span><span>周六</span><span>周日</span><span></span></div>
+      </div></div>
+      <!-- 双行列表 92px（mlist-double 真源结构：top(thumb+text(head+sub)+more) + foot） -->
+      <div class="mlist-double">
+        <div class="mlist-double-top">
+          <div class="mlist-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round"><rect x="5" y="4" width="14" height="16" rx="2"/><path d="M9 8h6M9 12h6"/></svg></div>
+          <div class="mlist-double-text">
+            <div class="mlist-double-head"><span class="mlist-title">注塑机 A-01</span><span class="mtag mtag-sm mtag-run">运行中</span></div>
+            <div class="mlist-sub">负载 72% · 产量 1,860</div>
+          </div>
+          <div class="mlist-more">›</div>
+        </div>
+        <div class="mlist-double-foot"><span class="m-text-note">运行时长 8.2h · 更新于 10:24</span></div>
+      </div>
+      <div class="mlist-double">
+        <div class="mlist-double-top">
+          <div class="mlist-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round"><path d="M12 5a7 7 0 0 1 7 7v7"/><circle cx="12" cy="12" r="3"/><path d="M5 12a7 7 0 0 1 7-7"/></svg></div>
+          <div class="mlist-double-text">
+            <div class="mlist-double-head"><span class="mlist-title">机械手 C-07</span><span class="mtag mtag-sm mtag-warn">告警</span></div>
+            <div class="mlist-sub">温度过高 · 需关注</div>
+          </div>
+          <div class="mlist-more">›</div>
+        </div>
+        <div class="mlist-double-foot"><span class="m-text-note">已持续 15 分钟 · 建议立即处理</span></div>
+      </div>
+      <div class="mlist-double">
+        <div class="mlist-double-top">
+          <div class="mlist-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round"><path d="M4 8h16v12H4z"/><path d="M8 8V4h8v4"/><path d="M8 14h8M8 17h5"/></svg></div>
+          <div class="mlist-double-text">
+            <div class="mlist-double-head"><span class="mlist-title">干燥机 D-03</span><span class="mtag mtag-sm mtag-suc">保养</span></div>
+            <div class="mlist-sub">保养到期 · 剩余 6.2 小时</div>
+          </div>
+          <div class="mlist-more">›</div>
+        </div>
+        <div class="mlist-double-foot"><span class="m-text-note">已排程 · 下午 15:00 执行</span></div>
+      </div>
+      <!-- 主操作按钮（mbtn 真源） -->
+      <div style="display:flex;gap:12px;margin-top:4px;">
+        <button class="mbtn mbtn-primary mbtn-lg" style="flex:1">新建工单</button>
+        <button class="mbtn mbtn-secondary mbtn-lg" style="flex:1">设备巡检</button>
+      </div>
+</div>
     </div>
   </div>
+
+  <!-- 2. 底部导航（菜单项 3–5 个，按业务增减；最后一项后挂 iOS home indicator） -->
+  <div class="bottomnav bottomnav-ios">
+    <div class="bn-item active">
+      <svg class="bn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9.5 21v-6h5v6"/></svg>
+      <span class="bn-label">监控</span>
+    </div>
+    <div class="bn-item">
+      <svg class="bn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5 21 7v10l-9 4.5L3 17V7z"/><path d="M3 7l9 4.5L21 7"/><path d="M12 11.5V21.5"/></svg>
+      <span class="bn-label">参数</span>
+    </div>
+    <div class="bn-item">
+      <svg class="bn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+      <span class="bn-label">历史</span>
+    </div>
+    <div class="m-home-indicator m-home-indicator--show"></div>
+  </div>
+</div>
 </div>
 </body>
 </html>`;
@@ -270,22 +338,22 @@ function brandCover(brand, mode, platform) {
 }
 
 // ========== 生成 6 个页面 ==========
-const outDir = base + '弘讯web端design-system/pages/examples/';
-const mOutDir = base + '弘讯移动端design-system/pages/examples/';
+const outDir = base + 'docs/examples/';
+const mOutDir = base + 'docs/examples/';
 const jobs = [
-  { file: 'web-default-005EAE-light.html', fn: webPage, dir: outDir, arg: { brand: '#005EAE', mode: 'light', title: '默认品牌 #005EAE 亮色', coverNote: '零覆盖：与 template.css :root 默认值一致。' } },
-  { file: 'web-005EAE-dark.html', fn: webPage, dir: outDir, arg: { brand: '#005EAE', mode: 'dark', title: '默认品牌 #005EAE 暗色', coverNote: 'data-theme="dark" 切换暗色 token，零覆盖。' } },
-  { file: 'web-brand-2E7D5B-light.html', fn: webPage, dir: outDir, arg: { brand: '#2E7D5B', mode: 'light', title: '品牌 #2E7D5B 亮色', coverNote: '仅 :root 覆盖 primary 系（引擎 generatePalette 派生）。' } },
-  { file: 'mobile-default-005EAE-light.html', fn: mobilePage, dir: mOutDir, arg: { brand: '#005EAE', mode: 'light', title: '默认品牌 #005EAE 亮色', coverNote: '零覆盖：与 template.css :root 默认值一致。' } },
-  { file: 'mobile-005EAE-dark.html', fn: mobilePage, dir: mOutDir, arg: { brand: '#005EAE', mode: 'dark', title: '默认品牌 #005EAE 暗色', coverNote: 'data-theme="dark" 切换暗色 token，零覆盖。' } },
-  { file: 'mobile-brand-C2185B-light.html', fn: mobilePage, dir: mOutDir, arg: { brand: '#C2185B', mode: 'light', title: '品牌 #C2185B 亮色', coverNote: '仅 :root 覆盖 primary 系（引擎 generatePalette 派生）。' } }
+  { file: 'web-弘讯运营中心.html', fn: webPage, dir: outDir, arg: { brand: '#005EAE', mode: 'light', title: '默认品牌 #005EAE 亮色', coverNote: '零覆盖：与 template.css :root 默认值一致。' } },
+  { file: 'web-弘讯暗色.html', fn: webPage, dir: outDir, arg: { brand: '#005EAE', mode: 'dark', title: '默认品牌 #005EAE 暗色', coverNote: 'data-theme="dark" 切换暗色 token，零覆盖。' } },
+  { file: 'web-品牌色2E7D5B.html', fn: webPage, dir: outDir, arg: { brand: '#2E7D5B', mode: 'light', title: '品牌 #2E7D5B 亮色', coverNote: '仅 :root 覆盖 primary 系（引擎 generatePalette 派生）。' } },
+  { file: 'mobile-弘讯监控.html', fn: mobilePage, dir: mOutDir, arg: { brand: '#005EAE', mode: 'light', title: '默认品牌 #005EAE 亮色', coverNote: '零覆盖：与 template.css :root 默认值一致。' } },
+  { file: 'mobile-弘讯暗色.html', fn: mobilePage, dir: mOutDir, arg: { brand: '#005EAE', mode: 'dark', title: '默认品牌 #005EAE 暗色', coverNote: 'data-theme="dark" 切换暗色 token，零覆盖。' } },
+  { file: 'mobile-品牌色2E7D5B.html', fn: mobilePage, dir: mOutDir, arg: { brand: '#C2185B', mode: 'light', title: '品牌 #C2185B 亮色', coverNote: '仅 :root 覆盖 primary 系（引擎 generatePalette 派生）。' } }
 ];
 for (const j of jobs) {
   let html = j.fn(j.arg);
   if (j.arg.brand !== '#005EAE') {
-    // 品牌覆盖注入到 <head>（link 之后）
+    // 品牌覆盖注入到 <head>（内联 style 之后）
     const cover = brandCover(j.arg.brand, j.arg.mode, j.arg.brand === '#C2185B' ? 'mobile' : 'web');
-    html = html.replace('<link rel="stylesheet" href="../../template.css">', '<link rel="stylesheet" href="../../template.css">\n' + cover);
+    html = html.replace('</head>', cover + '</head>');
   }
   fs.writeFileSync(j.dir + j.file, html, 'utf8');
   console.log('已生成:', j.dir.split('design-system/')[0].slice(-2) + '/' + j.file, '(' + html.length + 'B)');

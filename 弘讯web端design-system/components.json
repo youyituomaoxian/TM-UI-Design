@@ -1265,7 +1265,7 @@
     },
     {
       "id": "stat-card--ring",
-      "name": "KPI 环形卡（统计卡变体）",
+      "name": "KPI 标准卡（环形布局 · 2026-08-06 用户拍板：KPI 仅此一版，stat-card--icon 已删除）",
       "category": "数据展示",
       "summary": "KPI 环形卡（KPI 环形版，2026-08-06 定义）：SVG 圆环 + stat-label/num/trend，环色 5 语义变体",
       "anatomy": {
@@ -1297,43 +1297,15 @@
       },
       "referenceCss": ".stat-card--ring{display:flex;gap:16px;align-items:center}.stat-card--ring .ring{position:relative;width:64px;height:64px;flex:none}.stat-card--ring .ring svg{width:64px;height:64px;display:block;transform:rotate(-90deg)}.stat-card--ring .ring .ring-bg{fill:none;stroke:var(--n3);stroke-width:6}.stat-card--ring .ring .ring-fg{fill:none;stroke-width:6;stroke-linecap:round}.stat-card--ring .ring .ring-val{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;font-family:var(--font-mono);color:var(--n11)}.stat-card--ring .ring-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.stat-card--ring .ring-info .stat-label{font-size:12px;color:var(--n9);margin-bottom:0}.stat-card--ring .ring-info .stat-num{font-size:22px;line-height:1.1}.stat-card--ring .ring-info .ring-trend{font-size:12px;color:var(--run)}.ring-fg--primary{stroke:var(--primary)}.ring-fg--run{stroke:var(--run)}.ring-fg--warn{stroke:var(--warn)}.ring-fg--err{stroke:var(--err)}.ring-fg--secondary{stroke:var(--secondary)}",
       "referenceHtml": "<div class=\"card\"><div class=\"card-body stat-card--ring\"><div class=\"ring\"><svg viewBox=\"0 0 64 64\"><circle class=\"ring-bg\" cx=\"32\" cy=\"32\" r=\"26\"/><circle class=\"ring-fg ring-fg--primary\" cx=\"32\" cy=\"32\" r=\"26\" stroke-dasharray=\"163.4\" stroke-dashoffset=\"40.8\"/></svg><span class=\"ring-val\">75%</span></div><div class=\"ring-info\"><span class=\"stat-label\">设备利用率</span><div class=\"stat-num\">$ 192</div><span class=\"ring-trend\">+20.9%</span></div></div></div>",
-      "note": "2026-08-06 登记：源自汽车配件厂运营中心页（1.9.7 基线视觉校验通过）。CSS 已于 2026-08-05 沉淀 template.css L664-679；dashoffset = 周长 × (1 - 百分比)。"
+      "note": "2026-08-06 登记：源自汽车配件厂运营中心页（1.9.7 基线视觉校验通过）。CSS 已于 2026-08-05 沉淀 template.css L664-679；dashoffset = 周长 × (1 - 百分比)。",
+      "notes": "2026-08-06 用户拍板：KPI 环形版保留（需要时使用）；KPI 标准版 = stat-card--icon（图标卡·回滚点布局）。简约版（stat-num+stat-sub 独立卡）门禁 kpi.simple.forbidden HIGH 拦截。"
     },
     {
       "id": "stat-card--icon",
-      "name": "KPI 图标卡（统计卡变体）",
+      "name": "KPI 图标卡（标准版 · 2026-08-06 用户拍板：KPI 标准版 = 图标卡，回滚点布局）",
       "category": "数据展示",
-      "summary": "KPI 图标卡（KPI 标准版，2026-08-06 定义）：kpi-ico--lg 图标块 + stat-label + stat-num + stat-foot/stat-delta 趋势",
-      "anatomy": {
-        "cardBody": ".card > .card-body.stat-card--icon（flex gap16 stretch）",
-        "icon": ".kpi-ico--lg + 语义色变体（--primary/--run/--warn/--err/--neutral，浅色低饱和底 #DAEAFA/#ECFDF5/#FFF7E6/#FDEEEE，高饱和图标）",
-        "statBody": ".stat-body（column space-between：数字顶 / foot 底）",
-        "statNum": "大数字 .stat-num（24px 500 n11，line-height 1.15）",
-        "statFoot": "底部行 .stat-foot（flex space-between：.stat-sub 标题 12px n9 左 + .stat-delta 变化量 12px 500 右）"
-      },
-      "tokens": [
-        "--run",
-        "--err",
-        "--n9",
-        "--n11",
-        "--radius-lg",
-        "--primary",
-        "--run-soft",
-        "--warn-soft",
-        "--err-soft",
-        "--primary-dis-bg"
-      ],
-      "sizing": {
-        "iconSize": 48,
-        "iconRadius": 16,
-        "iconGlyph": 24,
-        "numSize": 24,
-        "footSize": 12,
-        "gap": 16
-      },
-      "referenceCss": ".stat-card--icon{display:flex;gap:var(--space-base);align-items:stretch}.stat-card--icon .kpi-ico--lg{flex:none;border-radius:var(--radius-lg)}.stat-card--icon .stat-body{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:space-between}.stat-card--icon .stat-num{line-height:1.15}.stat-card--icon .stat-foot{display:flex;align-items:center;justify-content:space-between;gap:var(--space-sm)}.stat-card--icon .stat-foot .stat-sub{line-height:1.2}.stat-card--icon .stat-delta{font-size:12px;font-weight:500;line-height:1.2;white-space:nowrap}.stat-delta--up{color:var(--run)}.stat-delta--down{color:var(--err)}.card:has(.stat-card--icon),.card:has(.stat-card--ring){transition:transform var(--motion-duration-fast) var(--motion-ease-out),box-shadow var(--motion-duration-fast) var(--motion-ease-out)}.card:has(.stat-card--icon):hover,.card:has(.stat-card--ring):hover{transform:translateY(-2px);box-shadow:var(--shadow-float)}",
-      "referenceHtml": "<div class=\"card\"><div class=\"card-body stat-card--icon\"><span class=\"kpi-ico kpi-ico--lg kpi-ico--primary\"><svg …></svg></span><div class=\"stat-body\"><div class=\"stat-num\">142</div><div class=\"stat-foot\"><div class=\"stat-sub\">设备总数</div><span class=\"stat-delta stat-delta--up\">↑2.4%</span></div></div></div></div>",
-      "note": "2026-08-06 登记：源自汽车配件厂运营中心页 KPI 区（用户视觉拍板：图标低饱和浅底高圆角方 16 + 大数字顶 + 标题/变化量底行贴图标底）。同批沉淀 .kpi-ico--err（err-soft 底）与 .stat-card--mini（迷你统计卡：border+radius-md+padding 10/12，stat-top column）。"
+      "summary": "KPI 标准版（回滚点 20260806_Web完成态 布局）：左浅底高圆角图标块 48×48（kpi-ico--lg · radius-lg）+ 右上大数字 + 底部行（标题左 stat-sub / 变化量右 stat-delta，贴图标底部对齐）。变化量 12px 500，↑=run 绿 / ↓=err 红。",
+      "dom": "<div class=\"card\"><div class=\"card-body stat-card--icon\"><span class=\"kpi-ico kpi-ico--lg kpi-ico--primary\">svg</span><div class=\"stat-body\"><div class=\"stat-num\">142</div><div class=\"stat-foot\"><div class=\"stat-sub\">设备总数</div><span class=\"stat-delta stat-delta--up\">↑2.4%</span></div></div></div></div>"
     }
   ],
   "contract": [

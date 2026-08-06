@@ -3,6 +3,18 @@
 ---
 
 
+## [1.9.9] — 2026-08-06 晚 · KPI 两版定稿 + 图表五要素/三对齐 + 顶栏补全 + 生成器对齐
+### Changed
+- **KPI 两版定稿**：标准版 stat-card--icon（回滚点布局：图标块 + 数字 + 底部行标题左/趋势右）+ 环形版 stat-card--ring 保留；删除简约版（--row/--mini 变体）；门禁 kpi.simple.forbidden 拦截简约版。
+- **图表 CHART-SPEC 五要素 + 三对齐**：chart-grid / chart-bar+chart-v / polyline+dot / legend / x-labels；柱底基线对齐、柱区对称居中、chart-v 柱顶上方居中；chart-v 必须放 chart-box 内（门禁 chart.v.position 拦截，修复数值漂浮固定）；SVG var 必须真源 token（token.svg-var）；门禁 chart.baseline.align / chart.value.required。
+- **图表并排**：grid12 col-7（折线）+ col-5（柱状）布局（生成器模板）。
+- **表格分页器**：列表表格 >5 行必须 .pager（门禁 table.pager.required）。
+- **顶栏补全**：管理员 / 修改密码 / 退出登录 / 全屏（对齐 page-template 顶栏）。
+- **validate 修复**：checkOverride 加「与真源完全相同规则跳过」（页面内联 template.css 不再误报 css.override；canonMap 对比）。
+- **生成器对齐**：gen-examples.js webPage/mobilePage 内联 template.css 自包含 + 输出 docs/examples/（7 个视觉预览文件 + README）。
+- **移动暗色框架特例**（真源 template.css）：[data-theme="dark"] navbar/statusbar 用 bottomnav 同色（--n1/--n8），不用引擎提亮 --primary。
+
+---
 ## [1.9.8] — 2026-08-06 · 页面类型规格并入 RULES §1.1b + 纯框架化 + 产出分离 + N=1 构建链
 ### Changed
 - **pages/ 删除并入 RULES §1.1b**：6 个页面覆写文档删除，页面类型规格（登录/列表/详情/弹窗/看板）并入 `RULES.md §1.1b`；Agent 不再找近似模板，按规格自建。

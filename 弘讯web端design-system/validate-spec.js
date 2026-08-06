@@ -664,6 +664,12 @@ function checkUndefinedTokens(rules, varsByTheme) {
 function checkClassWhitelist(html, canonicalCss, selfCss, opts) {
   const violations = [];
   const canonical = buildDefinedClasses(canonicalCss);
+  const canonRules = parseRules('<style>' + canonicalCss + '</style>');
+  const canonMap = new Map();
+  for (const cr of canonRules) {
+    const ct = lastTargetClass(cr.selectors);
+    if (ct && !canonMap.has(ct)) canonMap.set(ct, JSON.stringify(cr.declarations || []));
+  }
   const self = buildDefinedClasses(selfCss || '');
   const used = collectUsedClasses(html);
   const ignore = (opts && opts.ignore) || new Set();
@@ -705,6 +711,12 @@ function lastTargetClass(selectors) {
 // H2 硬执行：页面 <style> 覆写真源组件类 → HIGH
 function checkOverride(selfCss, canonicalCss) {
   const canonical = buildDefinedClasses(canonicalCss);
+  const canonRules = parseRules('<style>' + canonicalCss + '</style>');
+  const canonMap = new Map();
+  for (const cr of canonRules) {
+    const ct = lastTargetClass(cr.selectors);
+    if (ct && !canonMap.has(ct)) canonMap.set(ct, JSON.stringify(cr.declarations || []));
+  }
   const selfRules = parseRules('<style>' + selfCss + '</style>');
   const seen = new Set();
   const violations = [];
@@ -1631,6 +1643,32 @@ function checkSvgPaint(html) {
   return violations;
 }
 
+// ===== KPI 卡门禁（2026-08-06 用户拍板：标准版 = 图标卡 stat-card--icon（回滚点布局），环形版 stat-card--ring 保留需时使用；简约版已删除）=====
+// 合法 KPI 卡 = stat-card--icon（kpi-ico 图标块 + stat-num + stat-foot）或 stat-card--ring（左环 + ring-info）。
+// 简约版 = stat-num/stat-sub 直接组成独立卡、无 kpi-ico 且无 ring 结构。
+function checkKpiSimple(html) {
+  const violations = [];
+  const noScript = stripScriptTags(html);
+  const grids = [...noScript.matchAll(/<[a-z]+ class="stat-grid"/g)].map(m => m.index);
+  for (const gIdx of grids) {
+    const seg = noScript.slice(gIdx, gIdx + 6000);
+    const cards = [...seg.matchAll(/<div class="card([^"]*)"/g)].map(m => ({ cls: m[1], idx: m.index }));
+    for (let i = 0; i < cards.length; i++) {
+      const cardSeg = seg.slice(cards[i].idx, cards[i + 1] ? cards[i + 1].idx : seg.length);
+      // 合法两版：stat-card--icon（kpi-ico 图标块）或 stat-card--ring（ring 圆环结构）
+      const isLegal = cardSeg.includes('stat-card--icon') || cardSeg.includes('kpi-ico') || cardSeg.includes('stat-card--ring') || cardSeg.includes('ring-fg');
+      const hasSimple = /stat-num|stat-sub/.test(cardSeg);
+      if (hasSimple && !isLegal) {
+        violations.push({
+          line: 0, src: 'html', severity: 'HIGH', contract: 'kpi.simple.forbidden', sel: 'stat-grid',
+          msg: '简约版 KPI 卡（stat-num/stat-sub 独立卡，无 kpi-ico 图标块且无 ring 圆环）——2026-08-06 用户拍板 KPI 两版：标准版 stat-card--icon（kpi-ico + stat-num + stat-foot(stat-sub + stat-delta)）+ 环形版 stat-card--ring（需时使用），简约版已删除'
+        });
+      }
+    }
+  }
+  return violations;
+}
+
 function run(specPath, targetPath) {
   const spec = loadSpec(specPath);
   PALETTE = buildPalette(specPath); // NEW-008：色板 = 手写额外色 ∪ tokens.json 全量 hex
@@ -1761,6 +1799,19 @@ function run(specPath, targetPath) {
     : [];
   // RED-018：引用未定义 CSS 变量（无 fallback）→ 该声明在浏览器整条失效，与 class.undefined 同级
   const tokenV = checkUndefinedTokens(rules, varsByTheme);
+  // SVG 属性 var() token 检查（2026-08-06：--chart-smart-blue 未定义导致折线 stroke 无效只剩数据点，门禁此前不查 HTML 属性 var——已补 HIGH）
+  const svgVarV = [];
+  const definedSvgVars = new Set([...Object.keys(varsByTheme.light), ...Object.keys(varsByTheme.dark)]);
+  const svgAttrRe = /\b(?:stroke|fill)="([^"]*var\(--[\w-]+[^"]*)"/g;
+  let svm;
+  while ((svm = svgAttrRe.exec(html))) {
+    for (const v of [...svm[1].matchAll(/var\((--[\w-]+)/g)].map(m => m[1])) {
+      if (!definedSvgVars.has(v)) {
+        svgVarV.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'token.svg-var', sel: 'svg', msg: `SVG 属性引用了未定义的 CSS 变量 ${v}——该声明在浏览器中整条失效（如折线 stroke 无效只剩数据点）。图表色须用真源 --chart-* token（--chart-tech-blue / --chart-smart-cyan / --chart-data-cyan / --chart-fresh-green / --chart-vivid-orange / --chart-alert-red / --chart-wisdom-purple / --chart-modern-pink），详见 CHART-SPEC` });
+        break;
+      }
+    }
+  }
   // M4（2026-08-02）：动效门禁对所有页面生效（不用 isTemplate 门控）——
   // transition 时长裸数字秒 HIGH / animation 时长裸数字秒 MEDIUM / 0s 白名单 / var(--motion-duration-*) 通过
   const motionV = checkMotion(rules);
@@ -1778,6 +1829,9 @@ function run(specPath, targetPath) {
   const chartFillV = checkChartSvgFill(html);
   // 图表布局门禁（2026-08-06 复盘补强）：SVG 内文字 / 左右对称 / 柱底基线
   const chartLayoutV = checkChartLayout(html);
+  const chartValueV = checkChartValue(html);
+  const chartBaselineV = checkChartBaseline(html);
+  const tablePagerV = checkTablePager(html);
   // 克隆源内联 :root 与 template.css 一致性门禁（2026-08-06：仅 page-template）
   const templateSyncV = checkTemplateRootSync(html, canonicalCss);
   // 跨模块间距门禁（2026-08-04，RULES §4.3）：页面层不得覆盖 stat-grid/grid12 margin-bottom <16px
@@ -1808,7 +1862,87 @@ function run(specPath, targetPath) {
   const overrideV = inlineClone ? [] : checkOverride(selfCss, canonicalCss);
   const gridV = inlineClone ? [] : checkGrid4px(selfCss);
   const customV = inlineClone ? [] : checkCustomProps(selfCss, canonicalCss);
-  return violations.concat(rootV, surfaceV, iconV, whitelistV, tokenV, motionV, chartV, svgV, topbarV, dimV, btnLabelV, statGridV, chartFillV, chartLayoutV, templateSyncV, moduleSpacingV, tableMinRowV, tableAlignV, cardFillV, mobileV, webAesV, wcagV, gridV, overrideV, customV);
+  // KPI 仅两版门禁（2026-08-06 定稿）：简约版（stat-num/stat-sub 独立卡、无 kpi-ico / stat-card--icon / stat-card--ring）已删除，Agent 生成简约版即 HIGH 拦截
+  const kpiV = checkKpiSimple(html);
+  return violations.concat(rootV, surfaceV, iconV, whitelistV, tokenV, motionV, chartV, svgV, topbarV, dimV, btnLabelV, statGridV, chartFillV, chartLayoutV, chartValueV, chartBaselineV, templateSyncV, moduleSpacingV, tableMinRowV, tableAlignV, tablePagerV, cardFillV, mobileV, webAesV, wcagV, gridV, overrideV, customV, kpiV, svgVarV);
+}
+
+// ===== 柱状图柱顶数值门禁（2026-08-06：示例页柱状图缺 .chart-v → 柱子无数据标签，门禁此前未查）=====
+// 含 .chart-bar 的图表必须有 .chart-v 柱顶数值标签（CHART-SPEC §2 范式二柱状图必备要素③）。
+// 横向柱状图（.chart-hbar）数值贴条端，不触发此门禁。
+function checkChartValue(html) {
+  const violations = [];
+  const noScript = stripScriptTags(html);
+  const boxes = [...noScript.matchAll(/class="[^"]*chart-box[^"]*"/g)].map(m => m.index);
+  for (const bi of boxes) {
+    // 跳过环形图容器（chart-box--ring）——环形图不是柱状图
+    const rawCls = noScript.slice(bi, bi + 60);
+    if (rawCls.includes('chart-box--ring')) continue;
+    // 按卡边界取段（chart-box 所属 <div class="card"> 到下一卡）——防覆盖相邻卡/代码示例误判
+    const cardStart = noScript.lastIndexOf('<div class="card', bi);
+    const nextCard = noScript.indexOf('<div class="card', bi + 1);
+    const seg = noScript.slice(cardStart, nextCard > -1 ? nextCard : cardStart + 6000);
+    // 精确检测：<rect class="chart-bar"（柱状图实体柱）
+    if (seg.includes('<rect class="chart-bar"') && !seg.includes('class="chart-v')) {
+      // 豁免：分组柱状图（范式五，多系列 —— <g fill= 出现 ≥2 次）柱顶数值会挤，CHART-SPEC 不要求
+      const seriesCount = (seg.match(/<g fill=/g) || []).length;
+      if (seriesCount >= 2) continue;
+      violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'chart.value.required', sel: 'chart-box', msg: '柱状图缺 .chart-v 柱顶数值标签——CHART-SPEC §2 范式二：每根柱上方标数值（left=柱中心 x%、top=柱顶 y%、数值=柱高）。参照展示页「柱状图 · Bar（范式二）」' });
+    }
+  }
+  // chart.v.position（2026-08-06）：chart-v 必须位于 chart-box 内（svg 后、chart-box 闭前）；
+  // 放 chart-box 外 → position:absolute 相对页面 → 数值漂浮固定（用户实测）
+  const outsideV = /<div class="chart-box"[^>]*>[\s\S]*?<\/svg>\s*<\/div>\s*<span class="chart-v[^"]*"/.test(html.replace(/<script>[\s\S]*?<\/script>/gi, m => m.replace(/[^\n]/g, ' ')));
+  if (outsideV) violations.push({ line: 0, severity: 'HIGH', contract: 'chart.v.position', sel: 'chart-box', msg: 'chart-v 在 chart-box 外（svg 后即闭合）——绝对定位相对页面漂浮固定；chart-v 必须放在 chart-box 内（svg 后、chart-box </div> 前）' });
+  return violations;
+}
+
+// ===== 柱状图柱底基线对齐门禁（2026-08-06：规则已写入 CHART-SPEC 但示例页柱底 152 ≠ 基线 145——门禁补齐）=====
+// 柱状图 rect.y + rect.height 必须等于 chart-grid 最下横向线的 y（基线）。
+function checkChartBaseline(html) {
+  const violations = [];
+  const noScript = stripScriptTags(html);
+  const svgRe = /<svg[^>]*>([\s\S]*?)<\/svg>/g;
+  let m;
+  while ((m = svgRe.exec(noScript))) {
+    const body = m[1];
+    if (!body.includes('chart-bar') || !body.includes('chart-grid')) continue;
+    // grid 横向线（y1 === y2 的 line）
+    const gridYs = [...body.matchAll(/<line[^>]*\by1="([\d.]+)"[^>]*\by2="([\d.]+)"/g)]
+      .filter(x => Math.abs(parseFloat(x[1]) - parseFloat(x[2])) < 0.5)
+      .map(x => parseFloat(x[1]));
+    if (!gridYs.length) continue;
+    const baseline = Math.max(...gridYs);
+    // rect 底（y + height）
+    const rects = [...body.matchAll(/<rect[^>]*\by="([\d.]+)"[^>]*\bheight="([\d.]+)"/g)];
+    for (const r of rects) {
+      const bottom = parseFloat(r[1]) + parseFloat(r[2]);
+      if (Math.abs(bottom - baseline) > 1) {
+        violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'chart.baseline.align', sel: 'chart-bar', msg: `柱底 y=${bottom} 未对齐最下网格线基线 y=${baseline}（CHART-SPEC §2 三对齐①：rect.y + rect.height = 基线）。参照展示页「柱状图 · Bar（范式二）」` });
+        break;
+      }
+    }
+  }
+  return violations;
+}
+
+// ===== 表格分页器门禁（2026-08-06：Web RULES 已有分页契约但示例页表格缺 pager——门禁补齐）=====
+// 列表表格（tbody > 5 行）必须有 .pager 分页器（components.json pager 契约：44 高，‹ 1 2 3 › 共 N 条）。
+function checkTablePager(html) {
+  const violations = [];
+  const noScript = stripScriptTags(html);
+  const tables = [...noScript.matchAll(/<table[^>]*>([\s\S]*?)<\/table>/g)];
+  for (const t of tables) {
+    const tb = t[1].match(/<tbody>([\s\S]*?)<\/tbody>/);
+    const rowCount = tb ? (tb[1].match(/<tr/g) || []).length : 0;
+    if (rowCount > 5) {
+      const after = noScript.slice(t.index, t.index + 2500);
+      if (!after.includes('class="pager"')) {
+        violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'table.pager.required', sel: 'table', msg: `列表表格 ${rowCount} 行（>5）缺 .pager 分页器——Web RULES 列表页规格（筛选 + 表格 + 分页）：表格后必有分页器（‹ 1 2 3 › 共 N 条，components.json pager 契约）` });
+      }
+    }
+  }
+  return violations;
 }
 
 function main() {
@@ -1847,4 +1981,6 @@ function main() {
   process.exit(0);
 }
 
-main();
+if (require.main === module) main();
+
+module.exports = { checkTablePager, checkChartBaseline, checkChartValue, checkKpiSimple, checkSvgVarTokens: null };

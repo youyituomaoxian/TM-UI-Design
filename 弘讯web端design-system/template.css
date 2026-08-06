@@ -672,6 +672,19 @@ body{margin:0;height:100%;overflow:hidden;font-family:var(--font-cn);font-size:1
 .stat-num small{font-size:14px;color:var(--n9);font-weight:400;}
 
 
+.stat-card--icon{display:flex;gap:var(--space-base);align-items:stretch;}
+
+.stat-card--icon .kpi-ico--lg{flex:none;border-radius:var(--radius-lg);}
+
+.stat-card--icon .stat-body{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:space-between;}
+
+.stat-card--icon .stat-num{line-height:1.15;}
+
+.stat-card--icon .stat-foot{display:flex;align-items:center;justify-content:space-between;gap:var(--space-sm);}
+
+.stat-card--icon .stat-foot .stat-sub{line-height:1.2;}
+
+.stat-card--icon .stat-delta{font-size:12px;font-weight:500;line-height:1.2;white-space:nowrap;}
 .stat-card--ring{display:flex;gap:16px;align-items:center;}
 .stat-card--ring .ring{position:relative;width:64px;height:64px;flex:none;}
 .stat-card--ring .ring svg{width:64px;height:64px;display:block;transform:rotate(-90deg);}
@@ -691,19 +704,11 @@ body{margin:0;height:100%;overflow:hidden;font-family:var(--font-cn);font-size:1
 
 
 
-.stat-card--icon{display:flex;gap:var(--space-base);align-items:stretch;}
-.stat-card--icon .kpi-ico--lg{flex:none;border-radius:var(--radius-lg);}
-.stat-card--icon .stat-body{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:space-between;}
-.stat-card--icon .stat-num{line-height:1.15;}
-.stat-card--icon .stat-foot{display:flex;align-items:center;justify-content:space-between;gap:var(--space-sm);}
-.stat-card--icon .stat-foot .stat-sub{line-height:1.2;}
-.stat-card--icon .stat-delta{font-size:12px;font-weight:500;line-height:1.2;white-space:nowrap;}
+
 .stat-delta--up{color:var(--run);}
 .stat-delta--down{color:var(--err);}
 
-.card:has(.stat-card--icon),
 .card:has(.stat-card--ring){transition:transform var(--motion-duration-fast) var(--motion-ease-out), box-shadow var(--motion-duration-fast) var(--motion-ease-out);}
-.card:has(.stat-card--icon):hover,
 .card:has(.stat-card--ring):hover{transform:translateY(-2px);box-shadow:var(--shadow-float);}
 
 .form-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;}

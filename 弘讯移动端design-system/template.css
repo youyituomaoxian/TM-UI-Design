@@ -144,9 +144,9 @@
 
 /* ============ 屏幕骨架（2026-08-04 手机壳化：body 深色底 + .phone-stage 375 手机壳 + 屏内滚动） ============ */
 /* 预览壳深色底：body 铺满视口深灰，手机壳水平+垂直居中（预览/导出专用，页面本身不依赖它）；padding 兜底小窗口可滚动查看 */
-body{background:#1b1f26;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;padding:24px 0;box-sizing:border-box}
+body{background:#1b1f26;min-height:100vh;margin:0;padding:24px 0;box-sizing:border-box;overflow-x:auto} /* 预览壳水平居中用 .phone-stage{margin:0 auto}（block 中 margin auto 溢出左对齐不裁左；flex justify-content:center 窄窗口溢出裁左，2026-08-06 用户反馈卡片左边距过大） */ /* 预览壳垂直+水平居中用 .phone-stage{margin:auto}（flex justify-content:center 在窄窗口溢出会裁左，2026-08-06 用户反馈卡片左边距过大） */
 /* 375 手机壳：固定 375×812（iPhone X 逻辑尺寸）+ 圆角 + 投影，overflow:hidden 保证圆角裁切、屏外内容不溢出视口 */
-.phone-stage{width:375px;height:812px;position:relative;border-radius:24px;box-shadow:0 0 32px rgba(0,0,0,.5);overflow:hidden}
+.phone-stage{width:375px;height:812px;position:relative;margin:0 auto;border-radius:24px;box-shadow:0 0 32px rgba(0,0,0,.5);overflow:hidden}
 .phone{position:relative;width:375px;height:812px;background:var(--n2);font-family:var(--font-cn);color:var(--n8);display:flex;flex-direction:column;overflow:hidden}
 /* 屏内滚动区：flex:1 撑满 navbar/bottomnav 之间的空间，内容在此滚动，nav/底栏固定不动；滚动条隐藏（移动端手势滚动，滚动条漏出会破坏沉浸感）；padding-bottom 让最后一项与 BottomNav 有呼吸 */
 .screen-scroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:24px;scrollbar-width:none;-ms-overflow-style:none}
@@ -201,6 +201,13 @@ body{background:#1b1f26;display:flex;justify-content:center;align-items:center;m
 /* ============ 1. 顶部导航 Navbar ============ */
 /* ============ 1. 顶部导航 Navbar（2026-08-04 按参考图升级：三槽位 返回+标题+右侧操作 + 搜索嵌入形态） ============ */
 .navbar{width:375px;background:var(--primary);color:var(--n1);display:flex;flex-direction:column;position:relative}
+/* 暗色特例（2026-08-06 用户拍板）：移动端框架顶部不使用引擎生成的品牌色（暗态 --primary 提亮 #3B82F6 在暗色页面刺眼）
+   改用中性 n 阶深色 + 浅色文字——navbar/statusbar 是框架，不随品牌色引擎漂移 */
+[data-theme="dark"] .navbar{background:var(--n1);color:var(--n8);}
+[data-theme="dark"] .m-statusbar{color:var(--n8);}
+[data-theme="dark"] .navbar-back svg,
+[data-theme="dark"] .navbar-action svg,
+[data-theme="dark"] .navbar-title{color:var(--n8);} /* 无障碍（2026-08-06 用户拍板）：顶部文字对比可稍弱但不能太弱——暗色 n1 底上用 n8（#94A3B8 ≈4.5:1）比 n7（≈2.5:1）可识别 */
 /* Navbar 含状态栏总高（iOS 88 = 状态栏 44pt + 内容 44pt / Android 80 = 状态栏 24dp + 内容 56dp；
    状态栏改透明悬浮后，navbar 品牌色背景延伸到状态栏区域，内容区用 padding-top 下推到安全区下方，flex-end 靠底对齐） */
 .navbar-ios{height:88px;display:flex;flex-direction:column;justify-content:flex-end;box-sizing:border-box;}
@@ -327,7 +334,7 @@ body{background:#1b1f26;display:flex;justify-content:center;align-items:center;m
 .kv-row>.kv-item b{color:var(--n8);font-weight:500;font-family:var(--font-mono);}
 .kv-row>.kv-item:not(:last-child)::after{content:"";display:inline-block;width:1px;height:12px;background:var(--n5);margin-left:12px;vertical-align:middle;}
 .mlist-icon{width:24px;height:24px;margin-right:8px;color:var(--n8)}
-.mlist-title{font-size:16px;line-height:24px;font-weight:500;color:var(--n8);flex:none}
+.mlist-title{font-size:16px;line-height:24px;font-weight:500;color:var(--n8);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
 .mlist-right{margin-left:auto;font-size:12px;color:var(--n7)}
 /* 双行列表（2026-08-04 升级为「卡片形态」：圆角 + elevation + 列表间距分隔；不再用 border-bottom 堆叠；相邻卡片间距由容器 .anim-list-in 或 .screen gap 提供）
    排版四原则（RULES §4.3 2026-08-05 v2）：条目间用 border-top 横线区分（对齐/重复），条目内部 foot 用 n2 浅灰底数据块（对比/亲密性——
@@ -346,13 +353,13 @@ body{background:#1b1f26;display:flex;justify-content:center;align-items:center;m
 .mcard-b .mlist-double + .mlist-double{border-top:1px solid var(--n4);}
 .mcard .mlist-double:first-child,.mcard-b .mlist-double:first-child{border-top:none;}
 .mlist-double-top{display:flex;align-items:center;gap:16px;min-height:52px}
-.mlist-thumb{width:52px;height:52px;border-radius:var(--radius-sm);background:var(--n2);flex:none}
+.mlist-thumb{width:52px;height:52px;border-radius:var(--radius-sm);background:var(--n2);flex:none;display:flex;align-items:center;justify-content:center}
 .mlist-double-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
 .mlist-double-head{display:flex;align-items:center;gap:8px;min-height:24px}
-.mlist-sub{font-size:13px;line-height:19px;color:var(--n7)}
+.mlist-sub{font-size:13px;line-height:19px;color:var(--n7);min-width:0;overflow-wrap:break-word;word-break:break-word}
 .mlist-more{width:24px;height:24px;color:var(--n7);flex:none;display:flex;align-items:center;justify-content:center;font-size:18px}
 .mlist-foot{font-size:12px;line-height:16px;color:var(--n7)}
-.mlist-double-foot{font-size:12px;line-height:16px;color:var(--n7);background:var(--n2);border-radius:var(--radius-sm);padding:8px 12px;margin-top:12px;}
+.mlist-double-foot{font-size:12px;line-height:16px;color:var(--n7);background:var(--n2);border-radius:var(--radius-sm);padding:8px 12px;margin-top:12px;min-width:0;overflow-wrap:break-word;word-break:break-word;display:flex;align-items:center;justify-content:space-between;gap:8px;}
 .mlist-triple{height:100px;background:var(--n1);border-radius:var(--radius-md);box-shadow:var(--elev-raised-shadow);font-family:var(--font-cn);display:flex;align-items:center;gap:16px;padding:16px}
 .mlist-slot{width:88px;height:68px;border-radius:var(--radius-sm);background:var(--n2);flex:none}
 .mlist-triple-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}

@@ -381,7 +381,7 @@
       "id": "list",
       "name": "列表 List Item",
       "category": "数据展示",
-      "summary": "单行高56、pad-x16、图标24、标题16/24 Medium N8；双行92、三行101。底分割线 N4。",
+      "summary": "单行高56、pad-x16、图标24、标题16/24 Medium N8；双行92（卡片形态 2026-08-06：radius+shadow+padding16，thumb 52 灰底图标 flex 居中，foot 灰条 padding 8/12）。",
       "anatomy": {
         "row": "列表行",
         "icon": "左侧图标(可选)",
@@ -436,7 +436,7 @@
         "带图标",
         "导向箭头"
       ],
-      "referenceCss": ".mlist{display:flex;align-items:center;height:56px;padding:0 16px;background:var(--n1);border-bottom:1px solid var(--n4);font-family:var(--font-cn)}.mlist-icon{width:24px;height:24px;margin-right:8px;color:var(--n8)}.mlist-title{font-size:16px;line-height:24px;font-weight:500;color:var(--n8)}.mlist-right{margin-left:auto;font-size:12px;color:var(--n7)}.mlist-double{height:92px;background:var(--n1);border-bottom:1px solid var(--n4);font-family:var(--font-cn);display:flex;flex-direction:column;justify-content:space-between;padding:16px}.mlist-double-top{display:flex;align-items:center;gap:16px}.mlist-thumb{width:52px;height:52px;border-radius:var(--radius-sm);background:var(--n2);flex:none}.mlist-double-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.mlist-double-head{display:flex;align-items:center;gap:8px}.mlist-sub{font-size:13px;line-height:19px;color:var(--n8)}.mlist-more{width:24px;height:24px;color:var(--n7);flex:none;display:flex;align-items:center;justify-content:center;font-size:18px}.mlist-foot{font-size:12px;line-height:16px;color:var(--n7)}.mlist-double-foot{font-size:12px;line-height:16px;color:var(--n7);border-top:1px solid var(--n4);padding-top:8px;margin-top:4px}.mlist-triple{height:101px;background:var(--n1);border-bottom:1px solid var(--n4);font-family:var(--font-cn);display:flex;align-items:center;gap:16px;padding:16px}.mlist-slot{width:89.7px;height:69px;border-radius:var(--radius-sm);background:var(--n2);flex:none}.mlist-triple-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}",
+      "referenceCss": ".mlist{display:flex;align-items:center;height:56px;padding:0 16px;background:var(--n1);border-radius:var(--radius-md);box-shadow:var(--elev-raised-shadow);font-family:var(--font-cn);transition:background var(--motion-duration-fast) var(--motion-ease-out);}.mlist-icon{width:24px;height:24px;margin-right:8px;color:var(--n8)}.mlist-title{font-size:16px;line-height:24px;font-weight:500;color:var(--n8);flex:none}.mlist-right{margin-left:auto;font-size:12px;color:var(--n7)}.mlist-double{min-height:92px;background:var(--n1);border-radius:var(--radius-md);box-shadow:var(--elev-raised-shadow);font-family:var(--font-cn);display:flex;flex-direction:column;padding:16px}.mlist-double-top{display:flex;align-items:center;gap:16px;min-height:52px}.mlist-thumb{width:52px;height:52px;border-radius:var(--radius-sm);background:var(--n2);flex:none;display:flex;align-items:center;justify-content:center}.mlist-double-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}.mlist-more{width:24px;height:24px;color:var(--n7);flex:none;display:flex;align-items:center;justify-content:center;font-size:18px}.mlist-double-head{display:flex;align-items:center;gap:8px;min-height:24px}.mlist-sub{font-size:13px;line-height:19px;color:var(--n7)}.mlist-double-foot{font-size:12px;line-height:16px;color:var(--n7);background:var(--n2);border-radius:var(--radius-sm);padding:8px 12px;margin-top:12px;}",
       "referenceHtml": "<div class=\"mlist\"><span class=\"mlist-icon\">⚙</span><span class=\"mlist-title\">注塑机 A-01</span><span class=\"mlist-right\">›</span></div><div class=\"mlist-double\"><div class=\"mlist-double-top\"><div class=\"mlist-thumb\"></div><div class=\"mlist-double-text\"><div class=\"mlist-double-head\"><span class=\"mlist-title\">注塑机 A-01</span><span class=\"mtag mtag-sm mtag-run\">运行中</span></div><div class=\"mlist-sub\">温度 218℃ · 压力 12.4MPa</div></div><span class=\"mlist-more\">⋮</span></div><div class=\"mlist-double-foot\">最近更新：2026-07-27 09:12 · 操作员 张工</div></div><div class=\"mlist-triple\"><div class=\"mlist-slot\"></div><div class=\"mlist-triple-text\"><div class=\"mlist-double-head\"><span class=\"mlist-title\">注塑机 A-01</span><span class=\"mtag mtag-sm mtag-run\">运行中</span></div><div class=\"mlist-sub\">温度 218℃ · 压力 12.4MPa</div><div class=\"mlist-foot\">最近更新：2026-07-27 09:12</div></div></div>",
       "ardot": {
         "libraryComponent": "单行标题列表 / 双行 / 三行（Ardot 移动端组件库）",
@@ -459,7 +459,8 @@
           "duration": "fast",
           "easing": "ease-out"
         }
-      }
+      },
+      "dom": "单行：<div class=\"mlist\"><svg class=\"mlist-icon\">…</svg><span class=\"mlist-title\">…</span><span class=\"mlist-right\">…›</span></div>；双行：<div class=\"mlist-double\"><div class=\"mlist-double-top\"><div class=\"mlist-thumb\">…</div><div class=\"mlist-double-text\"><div class=\"mlist-double-head\">…</div><div class=\"mlist-sub\">…</div></div><span class=\"mlist-more\">…</span></div><div class=\"mlist-double-foot\">…</div></div>；三行 .mlist-triple + .mlist-triple-text + .mlist-slot。禁写 .mlist-row/.mlist-label/.mlist-value/.mlist-double-row/.mlist-double-main/.mlist-double-sub（真源无，写错 HIGH class.undefined）"
     },
     {
       "id": "card",
@@ -680,7 +681,8 @@
           "duration": "fast",
           "easing": "ease-out"
         }
-      }
+      },
+      "dom": "<div class=\"msearch\"><svg class=\"msearch-icon\">…</svg><span class=\"msearch-ph\">占位文字</span></div>；.msearch-ph 需页面 <style> 内定义（真源无 .msearch-placeholder，禁写）"
     },
     {
       "id": "tabs",
@@ -803,7 +805,8 @@
       "dont": [
         "直径≠10",
         "移动端成功态用 Web #389E0D"
-      ]
+      ],
+      "dom": "<span class=\"m-dot run\"><i></i>运行中</span>；变体是子类组合 run/ok/warn/err（.m-dot .run i），禁写 .m-dot-run/.m-dot-warn/.m-dot-err（真源无独立变体类）"
     },
     {
       "id": "icon",
@@ -1406,4 +1409,10 @@
       ]
     }
   ]
-}
+,
+  "kpi-overview": {
+    "id": "kpi-overview",
+    "name": "KPI 概览条（品牌蓝 3 列）",
+    "desc": "页面组合范式（2026-08-06 复盘登记）：品牌蓝底 flex 3 列概览条（设备总数/开机率/今日产量），文字用 .mcard-title + .m-text-num，容器内联 flex（背景 var(--primary)），非独立 CSS 组件。参考 docs/examples/mobile-弘讯监控.html。",
+    "tokens": ["--primary"]
+  }}

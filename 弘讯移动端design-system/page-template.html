@@ -96,12 +96,14 @@
     </header>
 
   <div class="screen-scroll">
+    <div class="screen">
     <div class="page-view on">
-      <!-- 页面内容在此填充（Agent 克隆后按业务替换本占位） -->
+      <!-- 页面内容在此填充（Agent 克隆后按业务替换本占位；.screen 提供 343 落位，page-view 提供 gap:12 纵向间距） -->
 </div>
+    </div>
   </div>
 
-  <!-- 2. 底部导航 -->
+  <!-- 2. 底部导航（菜单项 3–5 个，按业务增减；最后一项后挂 iOS home indicator） -->
   <div class="bottomnav bottomnav-ios">
     <div class="bn-item active">
       <svg class="bn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9.5 21v-6h5v6"/></svg>
@@ -115,6 +117,7 @@
       <svg class="bn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
       <span class="bn-label">历史</span>
     </div>
+    <div class="m-home-indicator m-home-indicator--show"></div>
   </div>
 </div>
 </div>
