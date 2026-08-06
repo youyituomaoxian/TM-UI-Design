@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=375, initial-scale=1.0">
+<link rel="stylesheet" href="template.css">
+<title>弘讯移动端 · 可克隆起始模板 (page-template)</title>
+<!--
+  本模板是「Agent 读规范→自然语言生成合规移动端页面」的**纯框架克隆源**（2026-08-06 已删全部 demo 内容，只留框架）。
+  1. 框架 = 状态栏 + 导航栏（标题居中，back/actions 对称占位）+ 内容滚动区（page-view 内填业务内容）+ 底部导航。
+  2. 色彩 / 尺寸 / 字重 / 圆角一律走下方 :root 变量（短名，与 Web 端 components.json / page-template.html 1:1 对齐）。
+    内联 :root = 弘讯移动端design-system/template.css 亮色/dark 段全量副本（2026-08-06 同步）——**template.css :root 变更后须同步本块**，否则克隆页错色。
+  3. 视觉真理 N=1：组件类由 <link template.css> 提供（唯一真源）；本页仅保留 :root 同步副本与页面交互/布局自造类。
+  4. 落位宽 = 343（视口375 - 左右 gutter 各16），见 RULES.md §8 防溢出黄金法则。
+  5. 起手一律 clone 本文件，在 <div class="page-view on"> 内填业务内容；生成后用 `node validate-spec.js 本文件` 校验，0 HIGH 才许交付。
+  6. 移动端成功绿用 #10B981（合法）；运行/在线绿 #16A34A 两端共用；禁止 Web 功能色 #389E0D/#FA8C16/#F5222D。
+-->
+<style>
+:root{
+  /* 品牌色 */
+  --primary:#005EAE; --primary-hover:#1A75D2; --primary-active:#004ABF;
+  --primary-dis-bg:#DAEAFA; --primary-dis-fg:#A0B4C0;
+  --brand-surface:#005EAE;
+  /* 中性 N1-N10 */
+  --n1:#FFFFFF; --n2:#F5F7FB; --n3:#E9ECF0; --n4:#DEE2E5; --n5:#CED4E4;
+  --n6:#ADB5BF; --n7:#6C757D; --n8:#334155; --n9:#343A46; --n10:#21253C;
+  /* 功能色（移动端成功绿 #10B981 合法） */
+  --suc:#10B981; --suc-pressed:#0D9E6F; --suc-dis:#A6D4C5; --suc-text:#F0FFFA;
+  --warn:#F59E0B; --warn-pressed:#DB8E09; --warn-dis:#F5D9A6; --warn-text:#FEF2E8;
+  --err:#EF4444; --err-pressed:#D63B3B; --err-dis:#F5A6A6; --err-text:#FEDED8; --err-fg-deep:#101010;
+  --link:#1A75D2;
+  /* 功能色 soft 浅底（2026-08-06 新增，对齐 --run-bg/--run-border 命名；值=tokens.json colors.functional.*.bg/border） */
+  --suc-bg:#EAF9F3; --suc-border:#B7E7D5;
+  --warn-bg:#FEF6E8; --warn-border:#F9DBAA;
+  --err-bg:#FDEEEE; --err-border:#F8C5C5;
+  /* 运行/在线绿（跨端共用 #16A34A） */
+  --run:#16A34A; --run-pressed:#15803D; --run-bg:#ECFDF5; --run-border:#BBF7D0;
+  /* 图表色（13 色，2026-08-06 从 tokens.json colors.chart 落地；值=MASTER §1.3，SVG 内一律 var(--chart-*)） */
+  --chart-blue:#0061FF; --chart-green:#10B981; --chart-orange:#F59E0B; --chart-red:#EF4444;
+  --chart-blue-aux:#1D4ED8; --chart-green-g:#059669; --chart-yellow:#D97706; --chart-red-neg:#DC2626;
+  --chart-purple-a:#A78BFA; --chart-purple-b:#8B5CF6; --chart-cyan:#06B6D4; --chart-rose:#EC4899; --chart-gray:#64748B;
+  /* 圆角 */
+  --radius-sm:4px; --radius-md:8px; --radius-lg:16px; --radius-full:999px;
+  --radius-btn-ios:6px; --radius-card-ios:10px;
+  /* 投影（2026-08-04 质感升级：方向性 y 偏移 + 更大扩散，消除"贴纸感"；双层复合保留品牌发丝线；值=tokens.json shadows 节） */
+  --shadow-s:0 1px 2px rgba(0,94,174,0.06), 0 0 0 1px rgba(0,94,174,0.05);
+  --shadow-m:0 2px 8px rgba(0,94,174,0.10), 0 0 0 1px rgba(0,94,174,0.08);
+  --shadow-data-hover:0 1px 2px rgba(0,0,0,0.15); /* 图表数据元素点按/悬停阴影（CHART-SPEC：单阴影格式，card/row-hover 级轻弥散，禁 float/modal 级） */
+  --shadow-l:0 8px 24px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,94,174,0.10);
+  /* 底部导航阴影（2026-08-04 增强：向上 16px 扩散 + 1px 发丝线，浮起感明显） */
+  --shadow-bottom-nav:0 -8px 16px rgba(0,0,0,0.08), 0 -1px 0 rgba(0,94,174,0.10);
+  /* Elevation 层级体系（5 级，2026-08-04 质感升级：raised/overlay 扩散加大，层级递进明显；值=tokens.json elevation 节） */
+  --elev-sunken-surface:#F5F7FB; --elev-sunken-shadow:none;
+  --elev-default-surface:#FFFFFF; --elev-default-shadow:none;
+  --elev-raised-surface:#FFFFFF; --elev-raised-shadow:0 2px 8px rgba(0,94,174,0.10), 0 0 0 1px rgba(0,94,174,0.08);
+  --elev-overlay-surface:#FFFFFF; --elev-overlay-shadow:0 8px 24px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,94,174,0.10);
+  --elev-overflow-surface:#FFFFFF; --elev-overflow-shadow:0 12px 32px rgba(0,0,0,0.16), 0 0 0 1px rgba(0,94,174,0.08);
+  /* Motion 动效（2026-08-04 M=4 适度放宽：M=3 太机械，放宽 20% 更柔和自然；值=tokens.json motion 节） */
+  --motion-duration-instant:120ms; --motion-duration-fast:240ms; --motion-duration-normal:360ms; --motion-duration-slow:480ms;
+  --motion-ease-in-out:cubic-bezier(0.645,0.045,0.355,1); --motion-ease-out:cubic-bezier(0.215,0.61,0.355,1);
+  --motion-ease-out-quint:cubic-bezier(0.23,1,0.32,1); --motion-ease-in-out-circ:cubic-bezier(0.78,0.14,0.15,0.86);
+  --motion-ease-out-circ:cubic-bezier(0.08,0.82,0.17,1);
+  /* 字体（跨平台通用族，Ardot 内再按 Android/iOS 替换） */
+  --font-cn:"PingFang SC","Noto Sans SC",sans-serif;
+  /* 等宽字体（B 包新增；工控数据/代码） */
+  --font-mono:"JetBrains Mono","SF Mono",Consolas,"Liberation Mono",Menlo,monospace;
+  /* 密度模式（B 包新增；移动端只 comfortable 基准，compact/spacious 不启用） */
+  --density-row-height:52px; --density-content-padding:16px;
+  /* 间距 token（8 档，2026-08-06 落地；命名对齐 Web --space-*，值含移动 §10.4 克制体系核心 gap 12） */
+  --space-xs:4px; --space-sm:8px; --space-md:12px; --space-base:16px;
+  --space-lg:24px; --space-xl:32px; --space-xxl:48px; --space-huge:56px;
+}
+</style>
+</head>
+<body class="ios">
+<div class="phone-stage">
+  <div class="phone">
+    <!-- 状态栏（透明悬浮，品牌导航栏上白字） -->
+    <div class="m-statusbar m-statusbar-ios">
+      <span class="sb-time">9:41</span>
+      <div class="sb-icons">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 17h2v3H2zM6.5 14h2v6h-2zM11 10.5h2V20h-2zM15.5 7h2v13h-2zM20 3.5h2V20h-2z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 6a9 9 0 0 1 6.36 2.64l-1.41 1.41A7 7 0 0 0 12 8a7 7 0 0 0-4.95 2.05L5.64 8.64A9 9 0 0 1 12 6zm0 4a5 5 0 0 1 3.54 1.46l-1.41 1.41A3 3 0 0 0 12 12a3 3 0 0 0-2.12.88l-1.42-1.42A5 5 0 0 1 12 10zm-2.12 6.12L12 18.24l2.12-2.12A3 3 0 0 0 12 14.6a3 3 0 0 0-2.12 1.52z"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1.5" y="9" width="17" height="11" rx="2.5"/><path d="M4.5 9V6.5a3.5 3.5 0 0 1 7 0V9"/><path d="M20.5 12.5v4"/></svg>
+      </div>
+    </div>
+    <!-- 顶部导航（三槽位：返回 + 标题 + 右侧操作，与展示页同构） -->
+    <header class="navbar navbar-ios">
+      <div class="navbar-main">
+        <button class="navbar-back" style="visibility:hidden;width:40px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="navbar-title">设备监控中心</div>
+        <div class="navbar-actions" style="width:40px"></div>
+      </div>
+    </header>
+
+  <div class="screen-scroll">
+    <div class="page-view on">
+      <!-- 页面内容在此填充（Agent 克隆后按业务替换本占位） -->
+</div>
+  </div>
+
+  <!-- 2. 底部导航 -->
+  <div class="bottomnav bottomnav-ios">
+    <div class="bn-item active">
+      <svg class="bn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9.5 21v-6h5v6"/></svg>
+      <span class="bn-label">监控</span>
+    </div>
+    <div class="bn-item">
+      <svg class="bn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5 21 7v10l-9 4.5L3 17V7z"/><path d="M3 7l9 4.5L21 7"/><path d="M12 11.5V21.5"/></svg>
+      <span class="bn-label">参数</span>
+    </div>
+    <div class="bn-item">
+      <svg class="bn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+      <span class="bn-label">历史</span>
+    </div>
+  </div>
+</div>
+</div>
+</body>
+</html>

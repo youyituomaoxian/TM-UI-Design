@@ -1,0 +1,11 @@
+{
+  "frozen": "2026-07-30",
+  "note": "W1 修订版冻结的旧生成流水线核心 spec 文件集；W1 全程不得改动，validate-static.js 内置复核",
+  "files": {
+    "弘讯web端design-system/tokens.json": "353e32444dfed049c15850148df0438a1bea388c19d7cbbbce875ebabe08558a",
+    "弘讯web端design-system/components.json": "180f0f8f34930522e52ec3eb3237f3d11a30f7aa3c35a263cbfaec226f857aa5",
+    "弘讯web端design-system/validate-spec.js": "18ac723d4a1bf73897916822642ed73765b8292a40fcae2a6b17db34f589b3ac",
+    "弘讯web端design-system/page-template.html": "5d0af9dc5fb4989f39b3d9b90bf3c02936271b80f2ea4b9fadebeb9f68946127",
+    "弘讯web端design-system/scripts/generate-design-tokens-md.js": "5f94d77e0e49653df8968189333b011cb8da9490f2e025c4f41fbf4e48845949"
+  }
+}

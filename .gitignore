@@ -1,0 +1,70 @@
+# .gitignore for 弘讯设计系统仓库
+# ==================================
+
+# Agent workspace（内部记忆，绝不提交）；skills/ 需随仓库分发，纳入版本
+.workbuddy/*
+!.workbuddy/skills/
+
+# 本机 Agent 记忆 / 回滚点（绝不提交）
+.reasonix/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Node
+node_modules/
+package-lock.json
+
+# SWC 编译缓存（二进制，不入库）
+.swc/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Build output
+dist/
+build/
+*.log
+
+# Screenshots / 审计痕迹（本地工作草稿）
+screenshots/
+review/
+archive/
+
+# 配色引擎 demo 产物（按需由脚本再生成，不入库）
+brand-color-engine/examples/*.html
+
+# 原始色彩系统设计稿（引擎算法来源，保留为本地资产，不入库）
+【20251226】弘讯UI色彩系统_马守坤.html
+
+# ==================================
+# 设计过程产生的临时/内部文件（保留本地追溯，不入库）
+# ==================================
+
+# 阶段任务书（W1/W2/W3 系列）
+*-TASKBOOK.md
+
+# 内部过程文档
+PROGRESS.md
+HANDOFF.md
+BLOCKED.md
+TOKENS-EVIDENCE.md
+ARDOT-VARIANT-AUDIT.md
+
+# 展示快照与旧版说明（功能已被 USAGE-GUIDE.md 取代）
+A-PACK-SHOWCASE.html
+Techmation设计系统使用说明.html
+
+# 构建/检查产物
+dist-static/
+*.tsbuildinfo
+
+# 视觉稿产物（本地预览用，不入库——历史稿见 archive/output/ 或本地保留）
+output/

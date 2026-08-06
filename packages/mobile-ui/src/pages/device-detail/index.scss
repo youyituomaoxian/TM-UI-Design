@@ -1,0 +1,57 @@
+// DeviceDetail 详情页样式 — 全 var(--*) token，间距 4 倍数，343 落位
+.page-page {
+  height: 100vh;
+  background: var(--bg-page);
+  display: flex;
+  flex-direction: column;
+}
+
+.page-navbar {
+  flex-shrink: 0;
+  background: var(--primary);
+  color: var(--n1);
+}
+
+.page-content {
+  flex: 1;
+  min-height: 0;
+  padding: var(--space-16);
+}
+
+.page-card {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-16);
+}
+
+.page-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-16);
+}
+
+.page-name {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text-1);
+}
+
+.page-tag {
+  margin-left: var(--space-8);
+}
+
+.page-footer {
+  flex-shrink: 0;
+  padding: var(--space-16);
+}
+
+.page-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-16);
+  padding: var(--space-16);
+}

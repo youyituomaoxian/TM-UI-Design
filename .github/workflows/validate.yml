@@ -1,0 +1,27 @@
+name: design-system-spec-gate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate Web design system
+        working-directory: 弘讯web端design-system
+        run: node validate-spec.js page-template.html
+
+      - name: Validate Mobile design system
+        working-directory: 弘讯移动端design-system
+        run: node validate-spec.js page-template.html

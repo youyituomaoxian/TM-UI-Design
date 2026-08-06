@@ -1,0 +1,187 @@
+{
+  "brand": "#005EAE",
+  "version": "2026-07",
+  "description": "弘讯设计系统 005EAE 品牌色权威基准（2026 规范）。brand-color-engine 的唯一真值来源：亮色全量值由本文件直接提供，功能色固定不随品牌推导；暗色板由 generate.js 基于 darkDefaults 推导，005EAE 暗色特例与原 HTML 色彩系统保持一致。",
+  "platforms": {
+    "web": {
+      "light": {
+        "primary": {
+          "default": "#005EAE",
+          "hover": "#1A75D2",
+          "active": "#004A8F",
+          "disabledBg": "#DAEAFA",
+          "disabledFg": "#A0B4C0"
+        },
+        "neutral": [
+          { "name": "N1", "hex": "#FFFFFF", "usage": "卡片底色、次按钮填充" },
+          { "name": "N2", "hex": "#FAFAFA", "usage": "表头底色" },
+          { "name": "N3", "hex": "#F6F9FC", "usage": "行悬停" },
+          { "name": "N4", "hex": "#F5F7FB", "usage": "页面背景、禁用填充" },
+          { "name": "N5", "hex": "#EAEAED", "usage": "输入框底色" },
+          { "name": "N6", "hex": "#DEE2E6", "usage": "分割线、组件边框" },
+          { "name": "N7", "hex": "#CED4DA", "usage": "次按钮边框、未激活图标" },
+          { "name": "N8", "hex": "#ADB5BD", "usage": "禁用文字、辅助说明" },
+          { "name": "N9", "hex": "#6C757D", "usage": "三级文字、辅助说明" },
+          { "name": "N10", "hex": "#334155", "usage": "二级文字、正文" },
+          { "name": "N11", "hex": "#212532", "usage": "一级文字、主标题、关键数据" }
+        ],
+        "chart": [
+          { "name": "科技蓝", "hex": "#0066CC" },
+          { "name": "智能青", "hex": "#00A3E0" },
+          { "name": "数据青", "hex": "#00C7BE" },
+          { "name": "清新绿", "hex": "#00D4A1" },
+          { "name": "活力橙", "hex": "#FF9500" },
+          { "name": "醒目红", "hex": "#FF4D4D" },
+          { "name": "智慧紫", "hex": "#8A5CF5" },
+          { "name": "现代粉", "hex": "#FF66C2" }
+        ],
+        "functional": {
+          "success": { "default": "#389E0D", "hover": "#52C41A", "active": "#237804", "disabled": "#B7EB8F", "bg": "#F6FFED", "bgHover": "#D9F7BE", "border": "#B7EB8F", "borderHover": "#95DE64", "borderActive": "#73D13D", "text": "#FFFFFF" },
+          "warning": { "default": "#FA8C16", "hover": "#FFA940", "active": "#D46B08", "disabled": "#FFD591", "bg": "#FFF7E6", "bgHover": "#FFE7BA", "border": "#FFD591", "borderHover": "#FFC069", "borderActive": "#FF9C2A", "text": "#FFFFFF" },
+          "error":   { "default": "#F5222D", "hover": "#FF4D4F", "active": "#CF1322", "disabled": "#FFC8C5", "bg": "#FFF1F0", "bgHover": "#FFCCC7", "border": "#FFA39E", "borderHover": "#FF7875", "borderActive": "#FF4D4F", "text": "#FFFFFF" },
+          "running": { "default": "#16A34A", "hover": "#22C55E", "active": "#15803D", "bg": "#ECFDF5", "bgHover": "#D1FAE5", "border": "#BBF7D0", "borderHover": "#86EFAC", "text": "#FFFFFF" }
+        },
+        "background": {
+          "page": "#F5F7FB",
+          "surface": "#FFFFFF",
+          "elevated": "#FFFFFF",
+          "textPrimary": "#212532",
+          "textSecondary": "#334155",
+          "textTertiary": "#6C757D",
+          "border": "#DEE2E6",
+          "brandSurface": "#005EAE",
+          "brandSurfaceFg": "#FFFFFF"
+        }
+      }
+    },
+    "mobile": {
+      "light": {
+        "primary": {
+          "default": "#005EAE",
+          "pressed": "#004ABF",
+          "hover": "#1A75D2",
+          "disabledBg": "#DAEAFA",
+          "disabledFg": "#A0B4C0"
+        },
+        "neutral": [
+          { "name": "N1", "hex": "#FFFFFF", "usage": "卡片底色" },
+          { "name": "N2", "hex": "#F5F7FB", "usage": "页面背景、表头" },
+          { "name": "N3", "hex": "#E9ECF0", "usage": "输入框底色、次钮按压" },
+          { "name": "N4", "hex": "#DEE2E5", "usage": "分割线、边框" },
+          { "name": "N5", "hex": "#CED4E4", "usage": "按钮边框、未激活图标" },
+          { "name": "N6", "hex": "#ADB5BF", "usage": "禁用文字" },
+          { "name": "N7", "hex": "#6C757D", "usage": "辅助说明、表单提示" },
+          { "name": "N8", "hex": "#334155", "usage": "正文、基础按钮文字" },
+          { "name": "N9", "hex": "#343A46", "usage": "副标题、重要标签" },
+          { "name": "N10", "hex": "#21253C", "usage": "主标题、关键数据" }
+        ],
+        "chart": [
+          { "name": "核心蓝", "hex": "#0061FF" },
+          { "name": "正向绿", "hex": "#10B981" },
+          { "name": "中性橙", "hex": "#F59E0B" },
+          { "name": "负向红", "hex": "#EF4444" },
+          { "name": "辅线蓝", "hex": "#1D4ED8" },
+          { "name": "增长绿", "hex": "#059669" },
+          { "name": "警示橙", "hex": "#D97706" },
+          { "name": "负面红", "hex": "#DC2626" },
+          { "name": "多维紫A", "hex": "#A78BFA" },
+          { "name": "深度紫B", "hex": "#8B5CF6" },
+          { "name": "基准青", "hex": "#06B6D4" },
+          { "name": "紧急粉", "hex": "#EC4899" },
+          { "name": "中性灰", "hex": "#64748B" }
+        ],
+        "functional": {
+          "success": { "default": "#10B981", "pressed": "#0D9E6F", "disabled": "#A6D4C5", "text": "#F0FFFA" },
+          "warning": { "default": "#F59E0B", "pressed": "#DB8E09", "disabled": "#F5D9A6", "text": "#FEF2E8" },
+          "error":   { "default": "#EF4444", "pressed": "#D63B3B", "disabled": "#F5A6A6", "text": "#FEDED8" },
+          "link":    "#1A75D2",
+          "running": { "default": "#16A34A", "pressed": "#15803D", "bg": "#ECFDF5", "border": "#BBF7D0" }
+        },
+        "background": {
+          "page": "#F5F7FB",
+          "surface": "#FFFFFF",
+          "elevated": "#FFFFFF",
+          "textPrimary": "#21253C",
+          "textSecondary": "#334155",
+          "textTertiary": "#6C757D",
+          "border": "#DEE2E5",
+          "brandSurface": "#005EAE",
+          "brandSurfaceFg": "#FFFFFF"
+        }
+      }
+    }
+  },
+  "darkDefaults": {
+    "description": "暗色板共享常量。005EAE 暗主色/暗图表为特例值（与原 HTML 色彩系统一致）；中性暗阶、背景、功能色为两端共用的暗色基底。任意品牌暗色由 generate.js 推导。",
+    "neutralScale": [
+      { "name": "D1", "hex": "#1E293B", "usage": "表面（surface）" },
+      { "name": "D2", "hex": "#243044", "usage": "抬升（elevated）" },
+      { "name": "D3", "hex": "#334155", "usage": "边框（border）" },
+      { "name": "D4", "hex": "#121826", "usage": "页面（page）" },
+      { "name": "D5", "hex": "#1E293B", "usage": "输入框底色" },
+      { "name": "D6", "hex": "#334155", "usage": "分割线、边框" },
+      { "name": "D7", "hex": "#475569", "usage": "次要边框/分隔" },
+      { "name": "D8", "hex": "#94A3B8", "usage": "三级文字（textTertiary）" },
+      { "name": "D9", "hex": "#CBD5E1", "usage": "二级文字（textSecondary）" },
+      { "name": "D10", "hex": "#F1F5F9", "usage": "一级文字（textPrimary）" },
+      { "name": "D11", "hex": "#FFFFFF", "usage": "最强文字/白" }
+    ],
+    "background": {
+      "page": "#121826",
+      "surface": "#1E293B",
+      "elevated": "#243044",
+      "textPrimary": "#F1F5F9",
+      "textSecondary": "#CBD5E1",
+      "textTertiary": "#94A3B8",
+      "border": "#334155",
+      "brandSurface": "#0A2540",
+      "brandSurfaceFg": "#FFFFFF"
+    },
+    "primarySpecialNote": "规范键集 = default/hover/active/disabledBg/disabledFg（与亮色 primary 对齐，buildCss 直接消费）；click（web 端历史键）/pressed（移动端历史键）/disabledText 为向后兼容别名，值与规范键相同，勿单独改动。",
+    "primarySpecial": {
+      "web":    { "default": "#3B82F6", "hover": "#60A5FA", "active": "#2563EB", "click": "#2563EB", "disabledBg": "#374151", "disabledFg": "#9CA3AF", "disabledText": "#9CA3AF" },
+      "mobile": { "default": "#3B82F6", "hover": "#60A5FA", "active": "#2563EB", "pressed": "#2563EB", "disabledBg": "#374151", "disabledFg": "#9CA3AF", "disabledText": "#9CA3AF" }
+    },
+    "functional": {
+      "web": {
+        "success": { "default": "#52C41A", "bg": "#162312", "border": "#52C41A", "text": "#FFFFFF", "hover": "#6acc3a", "active": "#48ac17", "disabled": "#32642e", "bgHover": "#374233", "borderHover": "#75d048", "borderActive": "#89d763" },
+        "warning": { "default": "#FFA940", "bg": "#2E2410", "border": "#FFA940", "text": "#1A1A1A", "hover": "#ffb55b", "active": "#e09538", "disabled": "#745a3d", "bgHover": "#4b4331", "borderHover": "#ffba66", "borderActive": "#ffc57d" },
+        "error":   { "default": "#FF4D4F", "bg": "#2A1414", "border": "#FF4D4F", "text": "#FFFFFF", "hover": "#ff6668", "active": "#e04446", "disabled": "#743743", "bgHover": "#483535", "borderHover": "#ff7172", "borderActive": "#ff8687" },
+        "running": { "default": "#22C55E", "bg": "#0E2018", "border": "#22C55E", "text": "#FFFFFF", "hover": "#41cd75", "active": "#1ead53", "disabled": "#206448", "bgHover": "#303f38", "borderHover": "#4ed17e", "borderActive": "#69d892" }
+      },
+      "mobile": {
+        "success": { "default": "#34D399", "bg": "#0C2E22", "border": "#34D399", "text": "#06281C", "pressed": "#2eba87", "disabled": "#266a5f" },
+        "warning": { "default": "#FBBF24", "bg": "#2E2410", "border": "#FBBF24", "text": "#1A1A1A", "pressed": "#dda820", "disabled": "#726232" },
+        "error":   { "default": "#F87171", "bg": "#2A1414", "border": "#F87171", "text": "#FFFFFF", "pressed": "#da6363", "disabled": "#714450" },
+        "running": { "default": "#22C55E", "bg": "#0E2018", "border": "#22C55E", "text": "#FFFFFF", "pressed": "#1ead53", "disabled": "#206448" },
+        "link":    "#60A5FA"
+      }
+    },
+    "chartWeb": [
+      { "name": "科技蓝", "hex": "#3B8CFF" },
+      { "name": "智能青", "hex": "#00B8FF" },
+      { "name": "数据青", "hex": "#00E6DB" },
+      { "name": "清新绿", "hex": "#00FFC2" },
+      { "name": "活力橙", "hex": "#FFB74D" },
+      { "name": "醒目红", "hex": "#FF6B6B" },
+      { "name": "智慧紫", "hex": "#A17CFF" },
+      { "name": "现代粉", "hex": "#FF85D6" }
+    ],
+    "chartMobileNote": "移动端暗色图表色（2026-08 补齐）。亮色 12 色含 5 组同色系配对（核心蓝/辅线蓝、正向绿/增长绿、中性橙/警示橙、负向红/负面红、多维紫A/深度紫B），配对内靠明度区分——直接整体提亮会把配对压扁。故按 Tailwind 色阶重配对（配对内固定拉开 2 阶，整体落在 300~500 亮区）。实测：对 page #121826 最低对比度 4.19（深度紫B）≥3:1；两两最小 ΔE 19.0 ＞ 亮色基线 10.7；零退化对。辅线蓝取 #3B8CFF（复用 chartWeb 科技蓝）以避开暗色主色 #3B82F6，与 web 端同一纪律。",
+    "chartMobile": [
+      { "name": "核心蓝", "hex": "#93C5FD" },
+      { "name": "正向绿", "hex": "#6EE7B7" },
+      { "name": "中性橙", "hex": "#FCD34D" },
+      { "name": "负向红", "hex": "#FCA5A5" },
+      { "name": "辅线蓝", "hex": "#3B8CFF" },
+      { "name": "增长绿", "hex": "#10B981" },
+      { "name": "警示橙", "hex": "#F59E0B" },
+      { "name": "负面红", "hex": "#EF4444" },
+      { "name": "多维紫A", "hex": "#C4B5FD" },
+      { "name": "深度紫B", "hex": "#8B5CF6" },
+      { "name": "基准青", "hex": "#22D3EE" },
+      { "name": "紧急粉", "hex": "#F472B6" },
+      { "name": "中性灰", "hex": "#94A3B8" }
+    ]
+  }
+}

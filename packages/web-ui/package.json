@@ -1,0 +1,29 @@
+{
+  "name": "@techmation/web-ui",
+  "private": true,
+  "version": "0.1.0",
+  "description": "弘讯B端 Web 组件库（vendored shadcn 风格，消费 弘讯web端design-system/tokens.json 短名 token）",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "map-tokens": "node scripts/map-tokens.js",
+    "export-static": "node scripts/export-static.js",
+    "validate-static": "node scripts/validate-static.js",
+    "build:template": "node scripts/build-template-css.js"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.39",
+    "tailwindcss": "^3.4.6",
+    "typescript": "^5.5.3",
+    "vite": "^5.3.4"
+  }
+}

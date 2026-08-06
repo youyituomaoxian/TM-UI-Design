@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=375, initial-scale=1.0">
+<title>弘讯移动端 · 页面起始模板</title>
+<!--
+  ============================================================
+  弘讯移动端 Agent 起始模板（agent-starter.html）
+
+  角色：Agent 生成移动端页面的纯净起点（375 手机壳预览）。
+  用法：本文件只有骨架 + 交互 API，无任何 Demo 内容。
+        在 <body> 注释占位处填写页面结构，直接保存即可预览。
+
+  流程：按需求写 HTML → 跑 `node validate-spec.js agent-starter.html` → 0 HIGH 交付。
+
+  适用场景与分工（2026-08-06 明确）：
+    · 本文件 = 纯净起点（375 手机壳骨架 + 多屏路由 + 交互 API，无业务 Demo）：适合自由原型 / 快速预览。
+    · 标准移动端页面 → 一律用 page-template.html 克隆起步：
+      `cp page-template.html <用户项目>/output/<页面语义名>_<YYYYMMDD>_<HHmm>.html` → 按 RULES §1.1b 填内容（2026-08-06：产出落用户项目 output/）。
+      page-template 为纯框架（无 demo 组件）+ 内联 :root（受 template.root.sync 门禁监管，保证与 template.css 同步）。
+    · 无论哪条路，交付前跑 `node validate-spec.js <页面>` 至 0 HIGH。
+
+  —— 手机壳结构（2026-08-04 起强制）——
+  .phone-stage           375 手机壳（固定 375×812 + 圆角 + 深色底水平/垂直居中）
+    └ .phone            屏体（375×812 + flex column，溢出裁切）
+        ├ .navbar       顶部导航（固定不动）
+        ├ .screen-scroll 屏内滚动区（flex:1，内容在此滚动）
+        │   └ .screen    内容列（宽 343 = 375 − 左右 gutter 各 16）
+        └ .bottomnav    底部导航（固定不动）
+  .mmask（默认隐藏）     弹窗遮罩，openModal() 加 .show 打开
+
+  —— 多屏写法 ——
+  每屏一个 <section class="page-view" data-route="list">…</section>，
+  用 go('#/list') 跳转：hash 变化自动显示对应屏、隐藏其余屏；无 hash 时显示第一屏。
+
+  —— 交互 API（模板内置，直接调用）——
+  go('#/route')      hash 切屏（显示 data-route 匹配的 .page-view）
+  back()             返回上一屏（history.back）
+  openModal('id')    打开弹窗（给对应 .mmask 加 .show）
+  closeModal()       关闭当前弹窗；点击遮罩空白处亦可关闭
+
+  —— 长页 PNG 导出 ——
+  方式 A：浏览器打开页面 → DevTools（F12）→ 右上角 ⋮ → Capture full size screenshot。
+  方式 B（headless / 自动导出）：给 <html> 加 data-export="long"（或 URL 加 ?export=1），
+        页面自动切换为长页展开模式（取消 375×812 锁与滚动，按内容完整高度展开），再整页截图。
+
+  关键规则：
+    1. 落位宽 343（375 - 左右 gutter 各 16）
+    2. 组件类统一加 m 前缀（.mbtn/.mtag/.mlist/.mmodal 等）；双行列表用 .mlist-double 标准结构（.mlist-double-top > .mlist-thumb + .mlist-double-text > (.mlist-double-head + .mlist-sub) + .mlist-more）+ .mlist-double-foot，禁止自造 .list-line/.list-sub 等
+    3. 移动端成功绿 #10B981（合法）；运行绿 #16A34A 两端共用
+    4. 禁止 Web 功能色 #389E0D/#FA8C16/#F5222D
+    5. 页面内 <style> 的 transition/animation 一律用 var(--motion-duration-*)
+    6. 滚动条已隐藏（template.css .screen-scroll），不要在页面内手动显示
+    7. 预览页必须演示交互（按压 .anim-press / 进场 .anim-list-in / Tab 切换 / 弹窗 / Toast），详见移动端 RULES §4.4
+  ============================================================
+-->
+<link rel="stylesheet" href="template.css">
+</head>
+<body>
+
+<!--
+  手机壳骨架（结构固定，勿删）：
+  状态栏占位（真机感，可省略——无状态栏则 navbar 贴顶）：
+    <div class="m-statusbar m-statusbar-ios">       ← 或 m-statusbar-android / 品牌色 m-statusbar--brand
+      <span class="sb-time">9:41</span>
+      <div class="sb-icons">…信号/WiFi/电量 svg…</div>
+    </div>
+  顶部导航占位：
+    <header class="navbar navbar-ios">           ← 或 navbar-android
+      <div class="navbar-title">页面标题</div>
+    </header>
+  屏内滚动区（所有页面内容都在 .screen-scroll > .screen 内，禁止长页向下追加）：
+    <div class="screen-scroll">
+      <div class="screen">
+        <section class="page-view" data-route="list">…列表屏内容…</section>
+        <section class="page-view" data-route="detail">…详情屏内容…</section>
+      </div>
+    </div>
+  底部导航占位：
+    <nav class="bottomnav bottomnav-ios">…</nav>  ← 或 bottomnav-android；无底栏可省略
+  弹窗占位（默认隐藏）：
+    <div class="mmask" id="sheet"><div class="mmodal">…ActionSheet 项…</div></div>
+-->
+
+<div class="phone-stage">
+  <div class="phone">
+    <!-- 在此替换为 .navbar（navbar-ios / navbar-android） -->
+    <div class="screen-scroll">
+      <div class="screen">
+        <!-- 在此放置 <section class="page-view" data-route="..."> 各屏内容 -->
+      </div>
+    </div>
+    <!-- 在此替换为 .bottomnav（bottomnav-ios / bottomnav-android），无底栏可删除 -->
+  </div>
+  <!-- 在此放置 <div class="mmask" id="..."> 弹窗（默认隐藏，openModal 打开） -->
+</div>
+
+<script>
+/* ===== 手机壳预览交互 API（2026-08-04，零依赖原生 JS）=====
+ * go('#/route')       hash 切屏：显示 <section class="page-view" data-route="route">
+ * back()              返回上一屏（history.back）
+ * openModal('id')     打开弹窗：给 <div class="mmask" id="id"> 加 .show
+ * closeModal()        关闭当前弹窗；点击遮罩空白处同样关闭
+ * hashchange 自动监听：#/route 变化即切换对应屏；无 hash 时显示第一屏
+ */
+(function () {
+  function applyRoute() {
+    var route = location.hash.replace(/^#\/?/, '').trim();
+    var views = document.querySelectorAll('.page-view');
+    var hit = false;
+    views.forEach(function (s) {
+      var on = route !== '' && s.getAttribute('data-route') === route;
+      s.classList.toggle('on', on);
+      if (on) hit = true;
+    });
+    if (!hit && views.length) views[0].classList.add('on'); // 默认屏
+  }
+  window.go = function (h) { location.hash = h; };
+  window.back = function () { history.back(); };
+  window.openModal = function (id) {
+    var m = document.getElementById(id);
+    if (m) m.classList.add('show');
+  };
+  window.closeModal = function () {
+    document.querySelectorAll('.mmask.show').forEach(function (m) { m.classList.remove('show'); });
+  };
+  window.addEventListener('hashchange', applyRoute);
+  document.addEventListener('click', function (e) {
+    if (e.target.classList && e.target.classList.contains('mmask')) window.closeModal();
+  });
+  // 2026-08-04 渐进增强：入场动效默认可见（防截图/无 JS 残缺），JS 就绪后加 .mounted 才播放入场
+  document.querySelectorAll('.anim-list-in').forEach(function (el) { el.classList.add('mounted'); });
+  applyRoute();
+})();
+</script>
+
+</body>
+</html>

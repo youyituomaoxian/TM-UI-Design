@@ -1,0 +1,10 @@
+{
+  "generatedAt": "2026-08-06T01:48:16.116Z",
+  "files": {
+    "弘讯移动端design-system/tokens.json": "13ee657fb9ae2dc49ffd7b2ab9ae447f47927943fc6294c8532ffe5efc6c4f36",
+    "弘讯移动端design-system/components.json": "a30a4f336da4189b84bb56deaf29512088a0dc59fb3f57f966379e4765306258",
+    "弘讯移动端design-system/validate-spec.js": "6cfabcb7795d42fc0f395e4b4a86f5b3561153d79fff20fea9facc690a897d43",
+    "弘讯移动端design-system/page-template.html": "1207a0ed84c55bca49cfe0d1431d1cc6637b6900c7ef7774757b9540779462ec",
+    "弘讯移动端design-system/scripts/generate-design-tokens-md.js": "d2ec237f9da0d99814cb4485616cff22482fe85af8debf05d09a0f1b96c3a587"
+  }
+}

@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>弘讯 Web 端设计系统 · 规范展示（框架版）</title>
+<!--
+  ============================================================
+  弘讯B端 Web 设计规范 · 视觉特征展示页（page-template.html）
+
+  角色：规范真源的「活体展示」。人类查看本页即可一眼掌握全部视觉
+        特征；Agent 生成 HTML 原型以<b>本页为克隆源</b>：
+        <code>cp page-template.html 新页面.html</code> → 删 demo 仪表盘内容
+        （stat-grid / callout / swatch 展示段）、保留框架外壳
+        （顶栏72 / 侧栏240 / 底栏32 / 树带图标 / :root token）。
+
+  覆盖范围：布局骨架(G8/G9) · 品牌/中性/功能/图表色 · 12 级字阶 ·
+            间距/圆角/投影/Elevation/动效/密度 · 核心 11 组件(含状态) ·
+            暗色模式(仅色板参考，不内置切换开关，严守 17:05 决策)。
+            生产组件库为 packages/web-ui（shadcn/ui，33 件）。
+
+  规则：所有颜色走 :root 变量；组件用预定 class；无硬编码 hex；
+        Web 禁 #10B981。门禁：node validate-spec.js page-template.html → 0 HIGH。
+  ============================================================
+-->
+<link rel="stylesheet" href="template.css">
+<style>
+  /* 内联 :root 变量（规范真源副本，满足 validate-spec 对 page-template 的 :root 门禁；
+     与 template.css :root 完全同值，后者提供组件 class 定义） */
+  :root{
+    --primary:#005EAE; --primary-hover:#1A75D2; --primary-active:#004A8F;
+    --primary-dis-bg:#DAEAFA; --primary-dis-fg:#A0B4C0;
+    --brand-surface:#005EAE;
+    --secondary:#0A84FF; --secondary-hover:#3DA0FF; --secondary-active:#0066CC;
+    --n1:#FFFFFF; --n2:#FAFAFA; --n3:#F6F9FC; --n4:#F5F7FB; --n5:#EAEAED; --n6:#DEE2E6;
+    --n7:#CED4DA; --n8:#ADB5BD; --n9:#6C757D; --n10:#334155; --n11:#212532;
+    --suc:#389E0D; --suc-soft:#F6FFED; --suc-fg:#FFFFFF; --warn:#FA8C16; --warn-soft:#FFF7E6; --warn-fg:#FFFFFF;
+    --err:#F5222D; --err-soft:#FFF1F0; --err-fg:#FFFFFF; --run:#16A34A; --run-soft:#ECFDF5; --run-fg:#FFFFFF;
+    --radius-sm:2px; --radius-base:4px; --radius-md:8px; --radius-lg:16px; --radius-round:999px;
+    --shadow-card:0 1px 2px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04);
+    --shadow-modal:0 6px 16px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
+    --shadow-float:0 4px 8px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04);
+    --shadow-row-hover:0 1px 2px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03);
+    --elev-sunken-surface:#F5F7FB; --elev-sunken-shadow:none;
+    --elev-default-surface:#FFFFFF; --elev-default-shadow:none;
+    --elev-raised-surface:#FFFFFF; --elev-raised-shadow:0 1px 2px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04);
+    --elev-overlay-surface:#FFFFFF; --elev-overlay-shadow:0 6px 16px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
+    --elev-overflow-surface:#FFFFFF; --elev-overflow-shadow:0 0 8px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04);
+    --motion-duration-instant:120ms; --motion-duration-fast:240ms; --motion-duration-normal:360ms; --motion-duration-slow:480ms;
+    --motion-ease-in-out:cubic-bezier(0.645,0.045,0.355,1); --motion-ease-out:cubic-bezier(0.215,0.61,0.355,1);
+    --motion-ease-out-quint:cubic-bezier(0.23,1,0.32,1); --motion-ease-in-out-circ:cubic-bezier(0.78,0.14,0.15,0.86);
+    --motion-ease-out-circ:cubic-bezier(0.08,0.82,0.17,1);
+    --font-cn:"Source Han Sans CN","思源黑体",sans-serif; --font-en:"Roboto",sans-serif;
+    --font-display:500 32px/40px var(--font-cn); --font-h1:500 28px/36px var(--font-cn); --font-h2:500 24px/32px var(--font-cn);
+    --font-h3:500 20px/28px var(--font-cn); --font-h4:500 18px/26px var(--font-cn); --font-h5:500 16px/24px var(--font-cn);
+    --font-body1:400 14px/22px var(--font-cn); --font-body2:400 13px/20px var(--font-cn);
+    --font-caption:400 12px/16px var(--font-cn); --font-label:500 12px/16px var(--font-cn); --font-overline:500 11px/16px var(--font-cn);
+    --font-link:400 14px/22px var(--font-cn);
+    --font-mono:"JetBrains Mono","SF Mono",Consolas,"Liberation Mono",Menlo,monospace;
+    --density-row-height:44px; --density-content-padding:16px;
+    --topbar-height:72px; --sidebar-width:240px; --sidebar-collapsed-width:80px; --footer-height:32px;
+  }
+  :root[data-density="compact"]{--density-row-height:36px;--density-content-padding:12px;}
+  :root[data-density="comfortable"]{--density-row-height:44px;--density-content-padding:16px;}
+  :root[data-density="spacious"]{--density-row-height:52px;--density-content-padding:20px;}
+</style>
+<style>
+  /* 仅布局/容器助手，绝不含颜色裸值（颜色一律 var(--*) 或参考网格 hex） */
+  .sec{margin-bottom:48px;scroll-margin-top:16px;}
+  /* §8 区块进入动画（2026-08-06）：页面区块首次展示 fade+float-up，时长走 motion token；stagger 由脚本段 animationDelay 驱动 */
+  .sec{animation:secIn var(--motion-duration-normal) var(--motion-ease-out) both;}
+  @keyframes secIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--n6);}
+  .sec-desc{color:var(--n9);font:var(--font-body2);margin:0 0 16px;}
+  .sub{margin:20px 0 12px;color:var(--n10);}
+  .grid{display:grid;gap:12px;}
+  .swatch-grid{grid-template-columns:repeat(auto-fill,minmax(152px,1fr));}
+  .sw{border-radius:var(--radius-base);overflow:hidden;border:1px solid var(--n6);background:var(--n1);}
+  /* §8 悬停交互（2026-08-06）：色卡 hover 浮起，动效走 token */
+  .sw{transition:transform var(--motion-duration-fast) var(--motion-ease-out),box-shadow var(--motion-duration-fast) var(--motion-ease-out);}
+  .sw:hover{transform:translateY(-2px);box-shadow:var(--shadow-float);}
+  .sw-chip{height:56px;}
+  .sw-meta{padding:8px 12px;}
+  .sw-name{font:var(--font-body2);font-weight:500;color:var(--n10);}
+  .sw-hex{font:var(--font-overline);font-weight:400;color:var(--n9);font-family:var(--font-mono);text-transform:uppercase;margin-top:4px;}
+  .sw-note{font:var(--font-overline);font-weight:400;color:var(--n8);margin-top:4px;}
+  .sp-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+  .sp-label{width:132px;flex-shrink:0;font:var(--font-caption);color:var(--n9);font-family:var(--font-mono);}
+  .sp-bar{height:20px;background:var(--primary);border-radius:var(--radius-base);}
+  .sp-track{flex:1;background:var(--n3);border-radius:var(--radius-base);}
+  /* M1 动画演示（2026-08-02）：原语工具类实演；演示类仅用于舞台/触发按钮，动画一律走 .anim-*（token） */
+  .motion-stage{display:flex;align-items:center;justify-content:center;height:152px;background:var(--n3);border-radius:var(--radius-md);border:1px dashed var(--n6);margin:12px 0;}
+  .motion-target{width:96px;height:64px;background:var(--primary);color:var(--text-on-brand);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font:var(--font-body1);font-weight:500;}
+  .motion-triggers{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+  .shape{width:72px;height:72px;background:var(--primary);flex-shrink:0;}
+  .shape-row{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-end;}
+  .shape-cap{font:var(--font-overline);font-weight:400;color:var(--n9);font-family:var(--font-mono);text-align:center;margin-top:8px;}
+  .shape-box{width:96px;}
+  .demo-surface{padding:24px;background:var(--n1);border-radius:var(--radius-md);border:1px solid var(--n6);}
+  .demo-label{font:var(--font-caption);color:var(--n9);margin-top:8px;font-family:var(--font-mono);}
+  .type-row{display:flex;align-items:baseline;gap:16px;padding:12px 0;border-bottom:1px solid var(--n6);}
+  .type-label{width:96px;flex-shrink:0;font-family:var(--font-mono);font:var(--font-caption);color:var(--n9);}
+  .type-meta{width:152px;flex-shrink:0;font:var(--font-overline);font-weight:400;color:var(--n8);font-family:var(--font-mono);}
+  .type-sample{flex:1;min-width:0;}
+  .callout{background:var(--n3);border-left:3px solid var(--primary);padding:12px 16px;border-radius:var(--radius-base);font:var(--font-body2);color:var(--n10);margin:16px 0;}
+  .callout b{color:var(--primary-active);}
+  .demo-sidebar{background:var(--primary);border-radius:var(--radius-md);padding:8px;width:260px;max-width:100%;}
+  .modal-preview{position:relative;min-height:300px;background:var(--n4);border-radius:var(--radius-md);overflow:hidden;border:1px solid var(--n6);}
+  .avatar{width:32px;height:32px;border-radius:999px;background:var(--n1);color:var(--primary);display:inline-flex;align-items:center;justify-content:center;font:var(--font-body1);font-weight:500;}
+  .kv{font-family:var(--font-mono);font:var(--font-caption);color:var(--n9);}
+  .mono{font-family:var(--font-mono);}
+  .flex{display:flex;gap:16px;flex-wrap:wrap;}
+  .flex-col{flex-direction:column;}
+  .comp-card{background:var(--n1);border:1px solid var(--n6);border-radius:var(--radius-md);padding:16px;margin-bottom:16px;
+    transition:transform var(--motion-duration-fast) var(--motion-ease-out), box-shadow var(--motion-duration-fast) var(--motion-ease-out);}
+  .comp-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-card), 0 6px 16px rgba(0,0,0,0.08);}
+  .comp-title{font:var(--font-body1);font-weight:500;color:var(--n11);margin-bottom:4px;}
+  .comp-tokens{font:var(--font-overline);font-weight:400;color:var(--n8);font-family:var(--font-mono);margin-bottom:12px;}
+  .icon-cell{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;border:1px solid var(--n6);border-radius:var(--radius-md);background:var(--n1);}
+  .icon-cell svg{width:20px;height:20px;color:var(--primary);}
+  /* 7A（2026-08-03）：内联裸 px 尺寸合规化——尺寸进页面自身 <style>，inline style 禁裸 px（门禁 layout.inline.dimension） */
+  .topbar-logo .ico{width:32px;height:32px;}
+  .dp-panel .row{margin-bottom:8px;}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- ===== 顶栏（布局骨架 · G8 固定滚动区之一） ===== -->
+  <!-- 结构（左→右）：logo + 平台名 + 副标题 | spacer | 首页 / 用户名 / 修改密码 / 退出登录 / 全屏 -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <span class="topbar-logo">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
+        </svg>
+      </span>
+      <div class="topbar-titles">
+        <span class="topbar-title">弘讯设计系统</span>
+        <span class="topbar-subtitle">Web 端设计系统规范展示 · 活体参考</span>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="topbar-right">
+      <span class="topbar-item">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>首页
+      </span>
+      <span class="topbar-sep"></span>
+      <span class="topbar-item">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>管理员
+      </span>
+      <span class="topbar-sep"></span>
+      <button class="topbar-item" title="修改密码">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </button>
+      <button class="topbar-item" title="退出登录">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+      <button class="topbar-item" title="全屏">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M16 21h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="body">
+      <!-- ===== 侧栏（章节导航 · G9 可折叠） ===== -->
+  <aside class="sidebar">
+    <div class="tree">
+      <div class="group-title">规范导航</div>
+      <div class="tree-node tree-node--child" data-leaf onclick="scrollToSec('overview')"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/></svg></span><span class="tree-text">总览</span></div>
+      <div class="tree-node tree-node--child" data-leaf onclick="scrollToSec('brand')"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/></svg></span><span class="tree-text">品牌色</span></div>
+      <div class="tree-node tree-node--child" data-leaf onclick="scrollToSec('functional')"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3.5 22 20H2z"/></svg></span><span class="tree-text">功能色 / 图表色</span></div>
+      <div class="tree-node tree-node--child" data-leaf onclick="scrollToSec('type')"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h10M4 17h13"/></svg></span><span class="tree-text">字阶</span></div>
+      <div class="tree-node tree-node--child" data-leaf onclick="scrollToSec('spacing')"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/></svg></span><span class="tree-text">间距 / 圆角 / 投影</span></div>
+      <div class="tree-node tree-node--child" data-leaf onclick="scrollToSec('components')"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg></span><span class="tree-text">组件</span></div>
+      <div class="tree-node tree-node--child" data-leaf onclick="scrollToSec('icons')"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11.5V6a2 2 0 0 1 4 0v4"/><path d="M13 10V7a2 2 0 0 1 4 0v5"/><path d="M17 12v-1.5a2 2 0 0 1 4 0V15a6 6 0 0 1-6 6h-1.5a6 6 0 0 1-4.5-2.1L5 13.4a2 2 0 0 1 3-2.7l1.5 1.6"/></svg></span><span class="tree-text">图标集 · 84</span></div>
+      <div class="tree-node tree-node--child" data-leaf onclick="scrollToSec('motion')"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v16"/><path d="M6 4c6 2 8 6 8 8s-2 6-8 8"/></svg></span><span class="tree-text">动效</span></div>
+      <div class="tree-node tree-node--child" data-leaf onclick="scrollToSec('dark')"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/></svg></span><span class="tree-text">暗色参考</span></div>
+      <div class="tree-node tree-node--child" data-leaf onclick="scrollToSec('rules')"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3l7 2.5V11c0 4.5-3 8-7 9.5C8 19 5 15.5 5 11V5.5z"/></svg></span><span class="tree-text">自造守则</span></div>
+    </div>
+    <div class="sidebar-foot">
+      <button class="collapse-btn" onclick="toggleSidebar()" title="收起/展开侧栏" aria-label="收起侧栏">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+      </button>
+    </div>
+  </aside>
+
+    <!-- ===== 右侧主区域：内容区 + 底栏（与 Ardot 画板右侧 1680px 对齐） ===== -->
+    <div class="main">
+
+    <!-- ===== 内容区（唯一可滚动区 · G8） ===== -->
+    <main class="content">
+
+      <!-- 概览 -->
+      <section id="overview" class="sec">
+        <div class="sec-head"><h1 class="t-h2">概览 · Overview</h1></div>
+        <p class="sec-desc">本页是弘讯 B 端 Web 设计系统全部<b>视觉特征</b>的活体展示。所有色值、字阶、间距、圆角、投影、动效、组件均直接取自 <code>template.css</code> 与 <code>tokens.json</code> 真源，未做任何硬编码近似。Agent 生成页面以<b>本页为克隆源</b>（<code>cp page-template.html 新页面.html</code> → 删 demo 内容、保留框架外壳）。</p>
+        
+        <div class="callout">布局骨架（顶栏 72 / 侧栏 240 / 底栏 32）本身即本规范的<b>固定滚动区规则 G8</b>：<code>html,body{overflow:hidden}</code>，仅 <code>.content</code> 滚动。侧栏可点右下「收起」验证 <b>G9 折叠</b>。</div>
+      </section>
+
+      <!-- KPI 环形卡（2026-08-06 登记组件 · 源自汽车配件厂运营中心页 · components.json stat-card--ring） -->
+      <section id="kpi-ring" class="sec">
+        <div class="sec-head"><h2 class="t-h2">KPI 环形卡 · StatCard Ring</h2></div>
+        <p class="sec-desc">KPI 统计卡环形变体（2026-08-06 入组件库，<code>components.json</code> <code>stat-card--ring</code>）：左环 64 + 右 label/num/trend，环色 5 语义变体（primary/run/warn/err/secondary），dashoffset = 周长 163.4 × (1 − 百分比)。</p>
+        <div class="stat-grid">
+          <div class="card"><div class="card-body stat-card--ring">
+            <div class="ring"><svg viewBox="0 0 64 64"><circle class="ring-bg" cx="32" cy="32" r="26"/><circle class="ring-fg ring-fg--primary" cx="32" cy="32" r="26" stroke-dasharray="163.4" stroke-dashoffset="78.4"/></svg><span class="ring-val">52%</span></div>
+            <div class="ring-info"><span class="stat-label">设备利用率</span><div class="stat-num">$ 192</div><span class="ring-trend">+20.90%</span></div>
+          </div></div>
+          <div class="card"><div class="card-body stat-card--ring">
+            <div class="ring"><svg viewBox="0 0 64 64"><circle class="ring-bg" cx="32" cy="32" r="26"/><circle class="ring-fg ring-fg--run" cx="32" cy="32" r="26" stroke-dasharray="163.4" stroke-dashoffset="40.8"/></svg><span class="ring-val">75%</span></div>
+            <div class="ring-info"><span class="stat-label">产品销售</span><div class="stat-num">$ 14,546</div><span class="ring-trend">+20.12%</span></div>
+          </div></div>
+          <div class="card"><div class="card-body stat-card--ring">
+            <div class="ring"><svg viewBox="0 0 64 64"><circle class="ring-bg" cx="32" cy="32" r="26"/><circle class="ring-fg ring-fg--warn" cx="32" cy="32" r="26" stroke-dasharray="163.4" stroke-dashoffset="65.4"/></svg><span class="ring-val">60%</span></div>
+            <div class="ring-info"><span class="stat-label">产能负荷</span><div class="stat-num">84%</div><span class="ring-trend">+3.20%</span></div>
+          </div></div>
+          <div class="card"><div class="card-body stat-card--ring">
+            <div class="ring"><svg viewBox="0 0 64 64"><circle class="ring-bg" cx="32" cy="32" r="26"/><circle class="ring-fg ring-fg--err" cx="32" cy="32" r="26" stroke-dasharray="163.4" stroke-dashoffset="32.7"/></svg><span class="ring-val">80%</span></div>
+            <div class="ring-info"><span class="stat-label">总产能达成</span><div class="stat-num">$ 8,210</div><span class="ring-trend">+3.96%</span></div>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- KPI 图标卡（2026-08-06 登记组件 · 源自汽车配件厂运营中心页 · components.json stat-card--icon） -->
+      <section id="kpi-icon" class="sec">
+        <div class="sec-head"><h2 class="t-h2">KPI 图标卡 · StatCard Icon</h2></div>
+        <p class="sec-desc">KPI 统计卡图标变体（2026-08-06 入组件库，<code>components.json</code> <code>stat-card--icon</code>）：左浅底高圆角图标块（48×48 · radius-lg 16）+ 右上大数字 + 底部行（标题左 / 变化量右，贴图标底部对齐）。变化量 12px 500，↑=run 绿 / ↓=err 红。</p>
+        <div class="stat-grid">
+          <div class="card"><div class="card-body stat-card--icon">
+            <span class="kpi-ico kpi-ico--lg kpi-ico--primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span>
+            <div class="stat-body">
+              <div class="stat-num">142</div>
+              <div class="stat-foot"><div class="stat-sub">设备总数</div><span class="stat-delta stat-delta--up">↑2.4%</span></div>
+            </div>
+          </div></div>
+          <div class="card"><div class="card-body stat-card--icon">
+            <span class="kpi-ico kpi-ico--lg kpi-ico--run"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg></span>
+            <div class="stat-body">
+              <div class="stat-num">90.1%</div>
+              <div class="stat-foot"><div class="stat-sub">开机率</div><span class="stat-delta stat-delta--up">↑3.2%</span></div>
+            </div>
+          </div></div>
+          <div class="card"><div class="card-body stat-card--icon">
+            <span class="kpi-ico kpi-ico--lg kpi-ico--err"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+            <div class="stat-body">
+              <div class="stat-num">4</div>
+              <div class="stat-foot"><div class="stat-sub">故障设备</div><span class="stat-delta stat-delta--down">↓28.6%</span></div>
+            </div>
+          </div></div>
+          <div class="card"><div class="card-body stat-card--icon">
+            <span class="kpi-ico kpi-ico--lg kpi-ico--warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+            <div class="stat-body">
+              <div class="stat-num">32,680</div>
+              <div class="stat-foot"><div class="stat-sub">能耗(kWh)</div><span class="stat-delta stat-delta--down">↓1.2%</span></div>
+            </div>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- 品牌色 -->
+      <section id="brand" class="sec">
+        <div class="sec-head"><h2 class="t-h2">品牌色 · Brand</h2></div>
+        <p class="sec-desc">主色源自 <code>#005EAE</code>（引擎 <code>generatePalette('#005EAE')</code>）。hover/active 为派生深浅，disabled 为弱化态。</p>
+        <div class="grid swatch-grid">
+          <div class="sw"><div class="sw-chip" style="background:var(--primary)"></div><div class="sw-meta"><div class="sw-name">primary</div><div class="sw-hex">#005EAE</div><div class="sw-note">默认</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:var(--primary-hover)"></div><div class="sw-meta"><div class="sw-name">primary-hover</div><div class="sw-hex">#1A75D2</div><div class="sw-note">悬停</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:var(--primary-active)"></div><div class="sw-meta"><div class="sw-name">primary-active</div><div class="sw-hex">#004A8F</div><div class="sw-note">按下</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:var(--primary-dis-bg)"></div><div class="sw-meta"><div class="sw-name">primary-dis-bg</div><div class="sw-hex">#DAEAFA</div><div class="sw-note">禁用底</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:var(--primary-dis-fg)"></div><div class="sw-meta"><div class="sw-name">primary-dis-fg</div><div class="sw-hex">#A0B4C0</div><div class="sw-note">禁用字</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:var(--secondary)"></div><div class="sw-meta"><div class="sw-name">secondary</div><div class="sw-hex">#0A84FF</div><div class="sw-note">辅助强调</div></div></div>
+        </div>
+      </section>
+
+      <!-- 中性色 -->
+      <section id="neutral" class="sec">
+        <div class="sec-head"><h2 class="t-h2">中性色 · Neutral N1–N11</h2></div>
+        <p class="sec-desc">N1 最浅（纸白）→ N11 最深（墨黑）。N5 为输入框底、N6 为边框、N2 为表头底、N10/N11 为正文/标题文字。</p>
+        <div class="grid swatch-grid">
+          <div class="sw"><div class="sw-chip" style="background:var(--n1)"></div><div class="sw-meta"><div class="sw-name">N1</div><div class="sw-hex">#FFFFFF</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:var(--n2)"></div><div class="sw-meta"><div class="sw-name">N2</div><div class="sw-hex">#FAFAFA</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:var(--n3)"></div><div class="sw-meta"><div class="sw-name">N3</div><div class="sw-hex">#F6F9FC</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:var(--n4)"></div><div class="sw-meta"><div class="sw-name">N4</div><div class="sw-hex">#F5F7FB</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:var(--n5)"></div><div class="sw-meta"><div class="sw-name">N5</div><div class="sw-hex">#EAEAED</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:var(--n6)"></div><div class="sw-meta"><div class="sw-name">N6</div><div class="sw-hex">#DEE2E6</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:var(--n7)"></div><div class="sw-meta"><div class="sw-name">N7</div><div class="sw-hex">#CED4DA</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:var(--n8)"></div><div class="sw-meta"><div class="sw-name">N8</div><div class="sw-hex">#ADB5BD</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:var(--n9)"></div><div class="sw-meta"><div class="sw-name">N9</div><div class="sw-hex">#6C757D</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:var(--n10)"></div><div class="sw-meta"><div class="sw-name">N10</div><div class="sw-hex">#334155</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:var(--n11)"></div><div class="sw-meta"><div class="sw-name">N11</div><div class="sw-hex">#212532</div></div></div>
+        </div>
+      </section>
+
+      <!-- 功能色 -->
+      <section id="functional" class="sec">
+        <div class="sec-head"><h2 class="t-h2">功能色 · Functional</h2></div>
+        <p class="sec-desc">语义对齐 Ant Design。成功/警告/错误/运行四态，各含实底(bg)、浅底(soft)、白字(fg)。<b>运行绿 #16A34A 独立于成功绿 #389E0D</b>——状态灯必用运行绿，成功绿仅表业务成功。</p>
+        <h3 class="t-h4 sub">状态标签（Tag 组件 · 高22 / 圆角4 / 字重400）</h3>
+        <div class="row">
+          <span class="tag tag-suc">成功</span>
+          <span class="tag tag-warn">警告</span>
+          <span class="tag tag-err">错误</span>
+          <span class="tag tag-run">运行</span>
+          <span class="tag tag-def">默认</span>
+        </div>
+        <h3 class="t-h4 sub">实底 / 浅底对照</h3>
+        <div class="grid swatch-grid">
+          <div class="sw"><div class="sw-chip" style="background:var(--suc)"></div><div class="sw-meta"><div class="sw-name">success</div><div class="sw-hex">#389E0D</div><div class="sw-note">bg</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:var(--suc-soft)"></div><div class="sw-meta"><div class="sw-name">success-soft</div><div class="sw-hex">#F6FFED</div><div class="sw-note">浅底</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:var(--warn)"></div><div class="sw-meta"><div class="sw-name">warning</div><div class="sw-hex">#FA8C16</div><div class="sw-note">bg</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:var(--warn-soft)"></div><div class="sw-meta"><div class="sw-name">warning-soft</div><div class="sw-hex">#FFF7E6</div><div class="sw-note">浅底</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:var(--err)"></div><div class="sw-meta"><div class="sw-name">error</div><div class="sw-hex">#F5222D</div><div class="sw-note">bg</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:var(--err-soft)"></div><div class="sw-meta"><div class="sw-name">error-soft</div><div class="sw-hex">#FFF1F0</div><div class="sw-note">浅底</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:var(--run)"></div><div class="sw-meta"><div class="sw-name">running</div><div class="sw-hex">#16A34A</div><div class="sw-note">bg · 独立</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:var(--run-soft)"></div><div class="sw-meta"><div class="sw-name">running-soft</div><div class="sw-hex">#ECFDF5</div><div class="sw-note">浅底</div></div></div>
+        </div>
+        <div class="callout"><b>Web 禁止 #10B981</b>（移动端成功绿合法，两端分治）。状态点运行态绑 <code>--run #16A34A</code>，与成功绿明确区分。</div>
+      </section>
+
+      <!-- 图表色 -->
+      <section id="chart" class="sec">
+        <div class="sec-head"><h2 class="t-h2">图表色 · Chart Palette</h2></div>
+        <p class="sec-desc">数据可视化专用 8 色，区分度高、与品牌蓝协调。注：<code>template.css</code> 已暴露 <code>--chart-*</code> 8 变量（L36）与 <code>.c-*</code> 工具类（L659），以下 swatch 为参考色值；<b>生成页一律 <code>var(--chart-*)</code>，禁裸 hex</b>（门禁 svg.paint）。</p>
+        <div class="grid swatch-grid">
+          <div class="sw"><div class="sw-chip" style="background:#0066CC"></div><div class="sw-meta"><div class="sw-name">techBlue</div><div class="sw-hex">#0066CC</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:#00A3E0"></div><div class="sw-meta"><div class="sw-name">smartCyan</div><div class="sw-hex">#00A3E0</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:#00C7BE"></div><div class="sw-meta"><div class="sw-name">dataCyan</div><div class="sw-hex">#00C7BE</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:#00D4A1"></div><div class="sw-meta"><div class="sw-name">freshGreen</div><div class="sw-hex">#00D4A1</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:#FF9500"></div><div class="sw-meta"><div class="sw-name">vividOrange</div><div class="sw-hex">#FF9500</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:#FF4D4D"></div><div class="sw-meta"><div class="sw-name">alertRed</div><div class="sw-hex">#FF4D4D</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:#8A5CF5"></div><div class="sw-meta"><div class="sw-name">wisdomPurple</div><div class="sw-hex">#8A5CF5</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:#FF66C2"></div><div class="sw-meta"><div class="sw-name">modernPink</div><div class="sw-hex">#FF66C2</div></div></div>
+        </div>
+      </section>
+
+      <!-- 字体层级 -->
+      <section id="type" class="sec">
+        <div class="sec-head"><h2 class="t-h2">字体层级 · Typography 12 级</h2></div>
+        <p class="sec-desc">字阶唯一真源 = <code>tokens.json.font.scale</code> / MASTER §2 / components.json（已对齐）。字体：中文 Source Han Sans CN，英文 Roboto，数据 JetBrains Mono。</p>
+        <div class="type-row"><span class="type-label">display</span><span class="type-sample t-display">注塑车间生产监控总览</span><span class="type-meta">32 / 40 · Medium 500</span></div>
+        <div class="type-row"><span class="type-label">h1</span><span class="type-sample t-h1">设备群览与实时状态</span><span class="type-meta">28 / 36 · Medium 500</span></div>
+        <div class="type-row"><span class="type-label">h2</span><span class="type-sample t-h2">模块标题与区块划分</span><span class="type-meta">24 / 32 · Medium 500</span></div>
+        <div class="type-row"><span class="type-label">h3</span><span class="type-sample t-h3">卡片标题与弹窗标题</span><span class="type-meta">20 / 28 · Medium 500</span></div>
+        <div class="type-row"><span class="type-label">h4</span><span class="type-sample t-h4">子标题与小节引导</span><span class="type-meta">18 / 26 · Medium 500</span></div>
+        <div class="type-row"><span class="type-label">h5</span><span class="type-sample t-h5">小节标题与列表头</span><span class="type-meta">16 / 24 · Medium 500</span></div>
+        <div class="type-row"><span class="type-label">body1</span><span class="type-sample t-body1">正文内容，用于列表、表单与多数文本区域，行高 22 保证可读性。</span><span class="type-meta">14 / 22 · Regular 400</span></div>
+        <div class="type-row"><span class="type-label">body2</span><span class="type-sample t-body2">辅助说明文字，用于次要提示与注释内容。</span><span class="type-meta">13 / 20 · Regular 400</span></div>
+        <div class="type-row"><span class="type-label">caption</span><span class="type-sample t-caption">图表标注与表单提示文字</span><span class="type-meta">12 / 16 · Regular 400</span></div>
+        <div class="type-row"><span class="type-label">label</span><span class="type-sample t-label">标签与按钮文字（Medium 强调）</span><span class="type-meta">12 / 16 · Medium 500</span></div>
+        <div class="type-row"><span class="type-label">overline</span><span class="type-sample t-overline">极小标注 · 章节 eyebrow</span><span class="type-meta">11 / 16 · Medium 500</span></div>
+        <div class="type-row"><span class="type-label">link</span><span class="type-sample t-link">这是一条可点击的超链接文本</span><span class="type-meta">14 / 22 · Regular 400</span></div>
+        <div class="callout">数据/代码用等宽：<span class="mono">72,480 h · 98.6% · OEE 82.4%</span>（<code>--font-mono</code> JetBrains Mono，tabular-nums 对齐）。</div>
+      </section>
+
+      <!-- 间距 -->
+      <section id="spacing" class="sec">
+        <div class="sec-head"><h2 class="t-h2">间距 · Spacing（4px 网格）</h2></div>
+        <p class="sec-desc">全部间距为 4 的倍数（Polaris 4px 网格）。常用：内容内边距 16、卡片间距 16、页面左右 24。</p>
+        <div class="sp-row"><span class="sp-label">xs 4</span><div class="sp-track"><div class="sp-bar" style="width:8%"></div></div></div>
+        <div class="sp-row"><span class="sp-label">sm 8</span><div class="sp-track"><div class="sp-bar" style="width:16%"></div></div></div>
+        <div class="sp-row"><span class="sp-label">md 12</span><div class="sp-track"><div class="sp-bar" style="width:24%"></div></div></div>
+        <div class="sp-row"><span class="sp-label">base 16</span><div class="sp-track"><div class="sp-bar" style="width:32%"></div></div></div>
+        <div class="sp-row"><span class="sp-label">lg 24</span><div class="sp-track"><div class="sp-bar" style="width:48%"></div></div></div>
+        <div class="sp-row"><span class="sp-label">xl 32</span><div class="sp-track"><div class="sp-bar" style="width:64%"></div></div></div>
+        <div class="sp-row"><span class="sp-label">xxl 48</span><div class="sp-track"><div class="sp-bar" style="width:96%"></div></div></div>
+        <div class="sp-row"><span class="sp-label">pagePadX 24</span><div class="sp-track"><div class="sp-bar" style="width:48%"></div></div></div>
+        <div class="sp-row"><span class="sp-label">contentPad 16</span><div class="sp-track"><div class="sp-bar" style="width:32%"></div></div></div>
+        <div class="sp-row"><span class="sp-label">cardGap 16</span><div class="sp-track"><div class="sp-bar" style="width:32%"></div></div></div>
+      </section>
+
+      <!-- 圆角 -->
+      <section id="radius" class="sec">
+        <div class="sec-head"><h2 class="t-h2">圆角 · Radius</h2></div>
+        <p class="sec-desc">5 档：sm 2（细微）/ base 4（输入、标签）/ md 8（按钮、卡片、浮层）/ lg 16（大容器）/ round 999（全圆，状态点、分页钮、头像）。</p>
+        <div class="shape-row">
+          <div class="shape-box"><div class="shape" style="border-radius:var(--radius-sm)"></div><div class="shape-cap">sm 2</div></div>
+          <div class="shape-box"><div class="shape" style="border-radius:var(--radius-base)"></div><div class="shape-cap">base 4</div></div>
+          <div class="shape-box"><div class="shape" style="border-radius:var(--radius-md)"></div><div class="shape-cap">md 8</div></div>
+          <div class="shape-box"><div class="shape" style="border-radius:var(--radius-lg)"></div><div class="shape-cap">lg 16</div></div>
+          <div class="shape-box"><div class="shape" style="border-radius:var(--radius-round)"></div><div class="shape-cap">round 999</div></div>
+        </div>
+      </section>
+
+      <!-- 投影 -->
+      <section id="shadow" class="sec">
+        <div class="sec-head"><h2 class="t-h2">投影 · Shadow（双层复合）</h2></div>
+        <p class="sec-desc">所有投影为「柔光层 + 1px 发丝线」双层结构（A 包升级），保证浅色界面下的精致分隔。暗色态自动切白发丝线（见暗色参考）。</p>
+        <div class="grid swatch-grid">
+          <div class="demo-surface" style="box-shadow:var(--shadow-card)"><div class="t-caption">card</div><div class="demo-label">0 1px 2px + hairline</div></div>
+          <div class="demo-surface" style="box-shadow:var(--shadow-modal)"><div class="t-caption">modal</div><div class="demo-label">0 6px 16px + hairline</div></div>
+          <div class="demo-surface" style="box-shadow:var(--shadow-float)"><div class="t-caption">float</div><div class="demo-label">0 4px 8px + hairline</div></div>
+          <div class="demo-surface" style="box-shadow:var(--shadow-row-hover)"><div class="t-caption">row-hover</div><div class="demo-label">0 1px 2px + hairline</div></div>
+        </div>
+      </section>
+
+      <!-- Elevation -->
+      <section id="elevation" class="sec">
+        <div class="sec-head"><h2 class="t-h2">Elevation 层级 · 5 级</h2></div>
+        <p class="sec-desc">表面层级体系：sunken（凹槽/分组容器）→ default（基线平面）→ raised（可移动卡片）→ overlay（浮层 modal/dropdown）→ overflow（滚动溢出边界）。</p>
+        <div class="grid swatch-grid">
+          <div class="demo-surface" style="background:var(--elev-sunken-surface);box-shadow:var(--elev-sunken-shadow)"><div class="t-caption">sunken</div><div class="demo-label">#F5F7FB · no shadow</div></div>
+          <div class="demo-surface" style="background:var(--elev-default-surface);box-shadow:var(--elev-default-shadow)"><div class="t-caption">default</div><div class="demo-label">#FFFFFF · no shadow</div></div>
+          <div class="demo-surface" style="background:var(--elev-raised-surface);box-shadow:var(--elev-raised-shadow)"><div class="t-caption">raised</div><div class="demo-label">card shadow</div></div>
+          <div class="demo-surface" style="background:var(--elev-overlay-surface);box-shadow:var(--elev-overlay-shadow)"><div class="t-caption">overlay</div><div class="demo-label">modal shadow</div></div>
+          <div class="demo-surface" style="background:var(--elev-overflow-surface);box-shadow:var(--elev-overflow-shadow)"><div class="t-caption">overflow</div><div class="demo-label">glow border</div></div>
+        </div>
+      </section>
+
+      <!-- 动效 -->
+      <section id="motion" class="sec">
+        <div class="sec-head"><h2 class="t-h2">动效 · Motion</h2></div>
+        <p class="sec-desc">时长 4 档（100/200/300/400ms）+ 缓动 5 种（cubic-bezier）。侧栏折叠即使用 <code>--motion-duration-normal</code> + <code>--motion-ease-out</code>。</p>
+        <h3 class="t-h4 sub">时长 Durations</h3>
+        <div class="sp-row"><span class="sp-label">instant 100</span><div class="sp-track"><div class="sp-bar" style="width:25%"></div></div></div>
+        <div class="sp-row"><span class="sp-label">fast 200</span><div class="sp-track"><div class="sp-bar" style="width:50%"></div></div></div>
+        <div class="sp-row"><span class="sp-label">normal 300</span><div class="sp-track"><div class="sp-bar" style="width:75%"></div></div></div>
+        <div class="sp-row"><span class="sp-label">slow 400</span><div class="sp-track"><div class="sp-bar" style="width:100%"></div></div></div>
+        <h3 class="t-h4 sub">缓动 Easings</h3>
+        <div class="table-wrap">
+          <table class="table">
+            <thead><tr><th>名称</th><th>cubic-bezier</th></tr></thead>
+            <tbody>
+              <tr><td>ease-in-out</td><td class="kv">cubic-bezier(0.645,0.045,0.355,1)</td></tr>
+              <tr><td>ease-out</td><td class="kv">cubic-bezier(0.215,0.61,0.355,1)</td></tr>
+              <tr><td>ease-out-quint</td><td class="kv">cubic-bezier(0.23,1,0.32,1)</td></tr>
+              <tr><td>ease-in-out-circ</td><td class="kv">cubic-bezier(0.78,0.14,0.15,0.86)</td></tr>
+              <tr><td>ease-out-circ</td><td class="kv">cubic-bezier(0.08,0.82,0.17,1)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3 class="t-h4 sub">原语动画 · Keyframes</h3>
+        <p class="sec-desc">点击触发，观察 `.anim-*` 工具类效果（时长/缓动走 motion token）。</p>
+        <div class="motion-stage"><div class="motion-target" id="motion-target">动效</div></div>
+        <div class="motion-triggers">
+          <button type="button" class="btn btn-primary" data-anim="anim-fade-in">fade-in</button>
+          <button type="button" class="btn" data-anim="anim-float-up">float-up</button>
+          <button type="button" class="btn" data-anim="anim-scale-in">scale-in</button>
+          <button type="button" class="btn" data-anim="anim-slide-in-right">slide-in-right</button>
+          <button type="button" class="btn btn-secondary" data-anim="anim-spin">spin</button>
+        </div>
+      </section>
+
+      <!-- 密度 -->
+      <section id="density" class="sec">
+        <div class="sec-head"><h2 class="t-h2">密度模式 · Density</h2></div>
+        <p class="sec-desc">opt-in 非默认。在 <code>&lt;html data-density="compact|comfortable|spacious"&gt;</code> 切换行高与内边距：compact 36/12（数据密集）、comfortable 44/16（默认）、spacious 52/20（聚焦大间距）。</p>
+        <div class="table-wrap">
+          <table class="table">
+            <thead><tr><th>模式</th><th>行高</th><th>内容内边距</th><th>适用</th></tr></thead>
+            <tbody>
+              <tr><td class="kv">compact</td><td class="kv">36px</td><td class="kv">12px</td><td>表格 / 长表单</td></tr>
+              <tr><td class="kv">comfortable</td><td class="kv">44px</td><td class="kv">16px</td><td>默认基准</td></tr>
+              <tr><td class="kv">spacious</td><td class="kv">52px</td><td class="kv">20px</td><td>聚焦 / 大间距</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 组件库 -->
+      <section id="components" class="sec">
+        <div class="sec-head"><h2 class="t-h2">组件库 · Components（核心 11 件）</h2></div>
+        <p class="sec-desc">以下展示本规范最早对齐的 <b>11 件核心组件</b>真实渲染。生产代码真源已切换为 <code>packages/web-ui</code>（shadcn/ui，共 33 件），完整集合与 Tailwind 实现见 <code>src/components/ui/</code>。</p>
+
+        <div class="comp-card">
+          <div class="comp-title">Button 按钮</div>
+          <div class="comp-tokens">高 32 / 大 40 / 小 24 · 圆角 8 · 字重 400 · 文本绑 Body1</div>
+          <div class="row">
+            <button class="btn btn-primary">主按钮</button>
+            <button class="btn btn-secondary">次按钮</button>
+            <button class="btn btn-text">文字按钮</button>
+            <button class="btn btn-primary btn-lg">大按钮</button>
+            <button class="btn btn-primary btn-sm">小按钮</button>
+            <button class="btn btn-primary" disabled>禁用</button>
+          </div>
+        </div>
+
+        <div class="comp-card">
+          <div class="comp-title">Input 单行输入</div>
+          <div class="comp-tokens">高 32 · 半径 4 · N5 底 N6 边 · 聚焦 primary 边框 + 2px ring</div>
+          <div class="row">
+            <input class="input" placeholder="请输入设备编号 / 名称…">
+            <input class="input" value="只读 / 禁用态" disabled>
+          </div>
+        </div>
+
+        <div class="comp-card">
+          <div class="comp-title">Select / Dropdown 下拉选择</div>
+          <div class="comp-tokens">触发器同输入 · 浮层半径 8 · 选中浅 primary 底 + 深 primary 字</div>
+          <div class="sel" data-sel>
+            <div class="sel-trigger">请选择设备 <span>▾</span></div>
+            <div class="sel-panel">
+              <div class="sel-opt">注塑机 A-01</div>
+              <div class="sel-opt on">注塑机 A-02</div>
+              <div class="sel-opt">机械手 C-07</div>
+              <div class="sel-opt">干燥机 D-03</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="comp-card">
+          <div class="comp-title">DatePicker 日期选择</div>
+          <div class="comp-tokens">触发器同输入 · 日历浮层 260 宽 · 选中 primary 实底白字</div>
+          <div class="dp" data-dp>
+            <div class="dp-trigger">2026-07-31
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1.5" y="2.5" width="11" height="10" rx="1.5"/><path d="M1.5 5.5h11M4.5 1v2M9.5 1v2"/></svg>
+            </div>
+            <div class="dp-panel">
+              <div class="row" style="justify-content:space-between;font-size:12px;color:var(--n9);"><span>‹</span><b>2026年7月</b><span>›</span></div>
+              <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-size:12px;color:var(--n10);">
+                <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+                <span style="color:var(--n8)">28</span><span style="color:var(--n8)">29</span><span style="color:var(--n8)">30</span>
+                <span>1</span><span>2</span><span>3</span><span>4</span>
+                <span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span>
+                <span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span>
+                <span>19</span><span>20</span><span>21</span><span>22</span><span>23</span><span>24</span><span>25</span>
+                <span>26</span><span>27</span><span>28</span><span>29</span><span>30</span><span>31</span><span style="color:var(--n8)">1</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="comp-card">
+          <div class="comp-title">Tree 树菜单（真实上下文）</div>
+          <div class="comp-tokens">节点高 32 · 每级缩进 16 · 选中按表面分两种：白底=浅 primary 底+深 primary 字；品牌色表面(本卡 .demo-sidebar)=深 primary 实底+白字（不用左侧白强调条）</div>
+          <div class="demo-sidebar">
+            <div class="tree" data-tree>
+              <div class="tree-node on" data-expand><span class="tree-sw">▾</span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></span><span class="tree-text">注塑车间</span></div>
+              <div class="tree-group">
+                <div class="tree-node tree-node--child"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg></span><span class="tree-text">A 线 · 注塑机 A-01</span></div>
+                <div class="tree-node tree-node--child"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/></svg></span><span class="tree-text">B 线 · 机械手 C-07</span></div>
+                <div class="tree-node tree-node--child"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg></span><span class="tree-text">干燥机 D-03</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="comp-card">
+          <div class="comp-title">Tag 标签</div>
+          <div class="comp-tokens">高 22 · 半径 4 · 字重 400 · 功能色底 + 功能色字</div>
+          <div class="row">
+            <span class="tag tag-suc">成功</span>
+            <span class="tag tag-warn">警告</span>
+            <span class="tag tag-err">错误</span>
+            <span class="tag tag-run">运行</span>
+            <span class="tag tag-def">默认</span>
+          </div>
+        </div>
+
+        <div class="comp-card">
+          <div class="comp-title">Table 表格</div>
+          <div class="comp-tokens">表头高 44 · N2 底 · 字重 500 · 行高 44 · 单元左右 16 · 底边 N6</div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead><tr><th>设备</th><th>状态</th><th>负载</th><th>运行时长</th></tr></thead>
+              <tbody>
+                <tr><td>注塑机 A-01</td><td><span class="status-dot"><i class="dot-run"></i>运行中</span></td><td>72%</td><td class="mono">1,204 h</td></tr>
+                <tr><td>注塑机 A-02</td><td><span class="status-dot"><i class="dot-warn"></i>待机</span></td><td>0%</td><td class="mono">980 h</td></tr>
+                <tr><td>机械手 C-07</td><td><span class="status-dot"><i class="dot-err"></i>故障</span></td><td>—</td><td class="mono">2,310 h</td></tr>
+                <tr><td>干燥机 D-03</td><td><span class="status-dot"><i class="dot-off"></i>离线</span></td><td>—</td><td class="mono">—</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="comp-card">
+          <div class="comp-title">Tabs 页签</div>
+          <div class="comp-tokens">高 32 · 字 13 · 激活 primary 字 + 2px primary 下划线 + 字重 500</div>
+          <div class="tabs" data-tabs>
+            <div class="tab">概览</div>
+            <div class="tab active">实时监控</div>
+            <div class="tab">历史趋势</div>
+            <div class="tab">告警</div>
+          </div>
+        </div>
+
+        <div class="comp-card">
+          <div class="comp-title">Pager 分页器</div>
+          <div class="comp-tokens">24×24 圆钮 · 半径 999 · 字 12 · 激活 primary 实底白字</div>
+          <div class="pager" data-pager>
+            <span class="pg">‹</span>
+            <span class="pg active">1</span>
+            <span class="pg">2</span>
+            <span class="pg">3</span>
+            <span class="pg">›</span>
+            <span class="pg-tot">共 27 条</span>
+          </div>
+        </div>
+
+        <div class="comp-card">
+          <div class="comp-title">StatusDot 状态指示灯</div>
+          <div class="comp-tokens">直径 10 · 圆 · 运行绑 #16A34A（独立成功绿）</div>
+          <div class="row">
+            <span class="status-dot"><i class="dot-run"></i>运行</span>
+            <span class="status-dot"><i class="dot-ok"></i>正常</span>
+            <span class="status-dot"><i class="dot-warn"></i>警告</span>
+            <span class="status-dot"><i class="dot-err"></i>故障</span>
+            <span class="status-dot"><i class="dot-off"></i>离线</span>
+          </div>
+        </div>
+
+        <div class="comp-card">
+          <div class="comp-title">Modal 弹窗</div>
+          <div class="comp-tokens">382×257 · 圆角 8 · 头 40 · 遮罩半透明黑 · footer 按钮右对齐</div>
+          <button class="btn btn-primary" data-open-modal="#demoModal">打开弹窗</button>
+          <div class="modal-mask" id="demoModal" style="position:fixed;">
+            <div class="modal">
+              <div class="modal-head">设备参数确认</div>
+              <div class="modal-body">确认将注塑机 A-01 切换至自动模式？此操作将下发至现场控制器，预计耗时 3 秒。</div>
+              <div class="modal-foot">
+                <button class="btn btn-secondary" data-close-modal="#demoModal">取消</button>
+                <button class="btn btn-primary" data-close-modal="#demoModal">确认切换</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- §9 图表自建范式（2026-08-06 方案 C：信息化图表不设组件，保留容器原语，内部按原子自建） -->
+      <section id="chart-demo" class="sec">
+        <div class="sec-head"><h2 class="t-h2">图表自建范式 · Chart（方案 C）</h2></div>
+        <p class="sec-desc">信息化图表<b>不设组件</b>（2026-08-06 拍板）：保留容器原语 <code>.chart-box</code>（定高 320 防跳动，门禁 <code>chart.container.missing</code> / <code>checkChartBox</code>）；图表内部 Agent 按原子自建——图表色走 <code>--chart-*</code> token（禁裸 hex）、文字走 <code>.chart-axis / .chart-value / .chart-grid</code> 原子类、防变形防裁切按 RULES §9 范式（viewBox 比例匹配容器、内容 x ≤ 宽−20、环状图禁用 none 拉伸）。以下 4 种范式示范即规范。</p>
+        <div class="grid12">
+          <div class="col-8">
+            <div class="card card--fill">
+              <div class="card-head"><span class="card-title">折线图 · Line（范式一）</span><span class="tag tag-run">达标</span></div>
+              <div class="card-body">
+                <div class="chart-box">
+                  <svg class="chart-svg--fill" viewBox="0 0 400 160" preserveAspectRatio="none" role="img" aria-label="产能趋势折线图">
+                    <g class="chart-grid">
+                      <line x1="20" y1="20" x2="380" y2="20"/><line x1="20" y1="50" x2="380" y2="50"/>
+                      <line x1="20" y1="80" x2="380" y2="80"/><line x1="20" y1="110" x2="380" y2="110"/><line x1="20" y1="150" x2="380" y2="150"/>
+                    </g>
+                    <line x1="20" y1="85" x2="380" y2="85" style="stroke:var(--warn);stroke-width:1;stroke-dasharray:4 3;"/>
+                    <polyline class="chart-line" fill="none" style="stroke:var(--chart-data-cyan)" stroke-width="2" points="25,120 57,104 89,112 121,88 152,96 184,72 216,84 248,64 280,76 312,56 343,66 375,48"/>
+                    <polyline class="chart-line" fill="none" style="stroke:var(--chart-tech-blue)" stroke-width="2" points="25,130 57,116 89,120 121,100 152,108 184,88 216,98 248,80 280,90 312,72 343,82 375,64"/>
+                    <circle class="chart-dot" cx="25" cy="120" r="3.5" style="fill:var(--chart-data-cyan)"/>
+                    <circle class="chart-dot" cx="25" cy="130" r="3.5" style="fill:var(--chart-tech-blue)"/>
+                    <circle class="chart-dot" cx="375" cy="48" r="3.5" style="fill:var(--chart-data-cyan)"/>
+                    <circle class="chart-dot" cx="375" cy="64" r="3.5" style="fill:var(--chart-tech-blue)"/>
+                  </svg>
+                </div>
+                <div class="chart-x-labels"><span class="t-caption">1月</span><span class="t-caption">2月</span><span class="t-caption">3月</span><span class="t-caption">4月</span><span class="t-caption">5月</span><span class="t-caption">6月</span><span class="t-caption">7月</span><span class="t-caption">8月</span><span class="t-caption">9月</span><span class="t-caption">10月</span><span class="t-caption">11月</span><span class="t-caption">12月</span></div>
+                <div class="chart-legend">
+                  <span class="legend-item"><span class="legend-line" style="border-color:var(--chart-data-cyan)"></span>产量</span>
+                  <span class="legend-item"><span class="legend-line" style="border-color:var(--chart-tech-blue)"></span>目标</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="card card--fill">
+              <div class="card-head"><span class="card-title">环状图 · Ring（范式四）</span></div>
+              <div class="card-body">
+                <div class="chart-box chart-box--ring">
+                  <svg class="chart-ring-svg chart-ring-anim" width="260" height="260" viewBox="0 0 260 260" role="img" aria-label="设备利用率环形图">
+                    <circle cx="130" cy="130" r="100" style="fill:none;stroke:var(--n3);stroke-width:22;"/>
+                    <circle class="ring-seg--a" cx="130" cy="130" r="100" style="fill:none;stroke:var(--chart-tech-blue);stroke-width:22;stroke-linecap:round;stroke-dasharray:628.3;stroke-dashoffset:188.5;transform:rotate(-90 130 130);"/>
+                    <circle class="ring-seg--b" cx="130" cy="130" r="100" style="fill:none;stroke:var(--chart-data-cyan);stroke-width:22;stroke-linecap:round;stroke-dasharray:628.3;stroke-dashoffset:439.8;transform:rotate(-90 130 130);"/>
+                  </svg>
+                  <div class="chart-ring-center">
+                    <div class="chart-ring-default"><span class="stat-num">70%</span><span class="t-caption">设备利用率</span></div>
+                    <div class="chart-ring-tip chart-ring-tip--a"><span class="stat-num">70%</span><span class="t-caption">运行</span></div>
+                    <div class="chart-ring-tip chart-ring-tip--b"><span class="stat-num">30%</span><span class="t-caption">待机</span></div>
+                  </div>
+                </div>
+                <div class="chart-legend">
+                  <span class="legend-item"><span class="legend-dot" style="background:var(--chart-tech-blue)"></span>运行 70%</span>
+                  <span class="legend-item"><span class="legend-dot" style="background:var(--chart-data-cyan)"></span>待机 30%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="grid12">
+          <div class="col-8">
+            <div class="card card--fill">
+              <div class="card-head"><span class="card-title">柱状图 · Bar（范式二）</span></div>
+              <div class="card-body">
+                <div class="chart-box">
+                  <svg class="chart-svg--fill" viewBox="0 0 400 160" preserveAspectRatio="none" role="img" aria-label="月度产量柱状图">
+                    <g class="chart-grid">
+                      <line x1="12" y1="25" x2="388" y2="25"/><line x1="12" y1="55" x2="388" y2="55"/>
+                      <line x1="12" y1="85" x2="388" y2="85"/><line x1="12" y1="115" x2="388" y2="115"/><line x1="12" y1="145" x2="388" y2="145"/>
+                    </g>
+                    <rect class="chart-bar" x="12" y="68" width="24" height="77" rx="2" style="fill:var(--chart-tech-blue);opacity:.85"/>
+                    <rect class="chart-bar" x="44" y="95" width="24" height="50" rx="2" style="fill:var(--chart-tech-blue);opacity:.85"/>
+                    <rect class="chart-bar" x="76" y="57" width="24" height="88" rx="2" style="fill:var(--chart-tech-blue);opacity:.85"/>
+                    <rect class="chart-bar" x="108" y="79" width="24" height="66" rx="2" style="fill:var(--chart-tech-blue);opacity:.85"/>
+                    <rect class="chart-bar" x="140" y="44" width="24" height="101" rx="2" style="fill:var(--chart-tech-blue);opacity:.85"/>
+                    <rect class="chart-bar" x="172" y="85" width="24" height="60" rx="2" style="fill:var(--chart-tech-blue);opacity:.85"/>
+                    <rect class="chart-bar" x="204" y="63" width="24" height="82" rx="2" style="fill:var(--chart-tech-blue);opacity:.85"/>
+                    <rect class="chart-bar" x="236" y="70" width="24" height="75" rx="2" style="fill:var(--chart-tech-blue);opacity:.85"/>
+                    <rect class="chart-bar" x="268" y="51" width="24" height="94" rx="2" style="fill:var(--chart-tech-blue);opacity:.85"/>
+                    <rect class="chart-bar" x="300" y="90" width="24" height="55" rx="2" style="fill:var(--chart-tech-blue);opacity:.85"/>
+                    <rect class="chart-bar" x="332" y="41" width="24" height="104" rx="2" style="fill:var(--chart-tech-blue);opacity:.85"/>
+                    <rect class="chart-bar" x="364" y="35" width="24" height="110" rx="2" style="fill:var(--chart-tech-blue);opacity:.85"/>
+                  </svg>
+                  <span class="chart-v t-overline" style="left:6%;top:37.5%;">70</span>
+                  <span class="chart-v t-overline" style="left:14%;top:54.4%;">45</span>
+                  <span class="chart-v t-overline" style="left:22%;top:30.6%;">80</span>
+                  <span class="chart-v t-overline" style="left:30%;top:44.4%;">60</span>
+                  <span class="chart-v t-overline" style="left:38%;top:22.5%;">92</span>
+                  <span class="chart-v t-overline" style="left:46%;top:48.1%;">55</span>
+                  <span class="chart-v t-overline" style="left:54%;top:34.4%;">75</span>
+                  <span class="chart-v t-overline" style="left:62%;top:38.75%;">68</span>
+                  <span class="chart-v t-overline" style="left:70%;top:26.9%;">85</span>
+                  <span class="chart-v t-overline" style="left:78%;top:51.25%;">50</span>
+                  <span class="chart-v t-overline" style="left:86%;top:20.6%;">95</span>
+                  <span class="chart-v t-overline" style="left:94%;top:16.9%;">100</span>
+                </div>
+                <div class="chart-x-labels"><span class="t-caption">1月</span><span class="t-caption">2月</span><span class="t-caption">3月</span><span class="t-caption">4月</span><span class="t-caption">5月</span><span class="t-caption">6月</span><span class="t-caption">7月</span><span class="t-caption">8月</span><span class="t-caption">9月</span><span class="t-caption">10月</span><span class="t-caption">11月</span><span class="t-caption">12月</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="card card--fill">
+              <div class="card-head"><span class="card-title">横向柱状图 · HBar（范式三）</span></div>
+              <div class="card-body">
+                <div class="chart-box">
+                  <svg class="chart-svg--fill" viewBox="0 0 400 160" preserveAspectRatio="none" role="img" aria-label="车间产能横向柱状图">
+                    <rect class="chart-hbar" x="40" y="24" width="239" height="14" rx="2" style="fill:var(--chart-smart-cyan);"/>
+                    <rect class="chart-hbar" x="40" y="52" width="224" height="14" rx="2" style="fill:var(--chart-fresh-green);"/>
+                    <rect class="chart-hbar" x="40" y="80" width="252" height="14" rx="2" style="fill:var(--chart-vivid-orange);"/>
+                    <rect class="chart-hbar" x="40" y="108" width="229" height="14" rx="2" style="fill:var(--chart-wisdom-purple);"/>
+                    <rect class="chart-hbar" x="40" y="136" width="260" height="14" rx="2" style="fill:var(--chart-modern-pink);"/>
+                  </svg>
+                  <span class="chart-hl t-caption" style="top:19.4%;">冲压</span>
+                  <span class="chart-hl t-caption" style="top:36.9%;">机加工</span>
+                  <span class="chart-hl t-caption" style="top:54.4%;">焊接</span>
+                  <span class="chart-hl t-caption" style="top:71.9%;">涂装</span>
+                  <span class="chart-hl t-caption" style="top:89.4%;">总装</span>
+                  <span class="chart-hr t-overline" style="left:71.75%;top:19.4%;">92%</span>
+                  <span class="chart-hr t-overline" style="left:68%;top:36.9%;">86%</span>
+                  <span class="chart-hr t-overline" style="left:75%;top:54.4%;">97%</span>
+                  <span class="chart-hr t-overline" style="left:69.25%;top:71.9%;">88%</span>
+                  <span class="chart-hr t-overline" style="left:77%;top:89.4%;">100%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="grid12">
+          <div class="col-12">
+            <div class="card card--fill">
+              <div class="card-head"><span class="card-title">柱状图变体 · Grouped Bar（分组双色，范式五）</span></div>
+              <div class="card-body">
+                <div class="chart-box">
+                  <svg class="chart-svg--fill" viewBox="0 0 400 160" preserveAspectRatio="none" role="img" aria-label="计划与实际分组柱状图">
+                    <g class="chart-grid">
+                      <line x1="8" y1="25" x2="392" y2="25"/><line x1="8" y1="55" x2="392" y2="55"/>
+                      <line x1="8" y1="85" x2="392" y2="85"/><line x1="8" y1="115" x2="392" y2="115"/><line x1="8" y1="145" x2="392" y2="145"/>
+                    </g>
+                    <rect class="chart-bar" x="8" y="101" width="24" height="44" rx="2" style="fill:var(--chart-tech-blue);opacity:.85"/>
+                    <rect class="chart-bar" x="38" y="109" width="24" height="36" rx="2" style="fill:var(--chart-data-cyan);opacity:.85"/>
+                    <rect class="chart-bar" x="74" y="89" width="24" height="56" rx="2" style="fill:var(--chart-tech-blue);opacity:.85"/>
+                    <rect class="chart-bar" x="104" y="95" width="24" height="50" rx="2" style="fill:var(--chart-data-cyan);opacity:.85"/>
+                    <rect class="chart-bar" x="140" y="77" width="24" height="68" rx="2" style="fill:var(--chart-tech-blue);opacity:.85"/>
+                    <rect class="chart-bar" x="170" y="73" width="24" height="72" rx="2" style="fill:var(--chart-data-cyan);opacity:.85"/>
+                    <rect class="chart-bar" x="206" y="95" width="24" height="50" rx="2" style="fill:var(--chart-tech-blue);opacity:.85"/>
+                    <rect class="chart-bar" x="236" y="99" width="24" height="46" rx="2" style="fill:var(--chart-data-cyan);opacity:.85"/>
+                    <rect class="chart-bar" x="272" y="71" width="24" height="74" rx="2" style="fill:var(--chart-tech-blue);opacity:.85"/>
+                    <rect class="chart-bar" x="302" y="75" width="24" height="70" rx="2" style="fill:var(--chart-data-cyan);opacity:.85"/>
+                    <rect class="chart-bar" x="338" y="65" width="24" height="80" rx="2" style="fill:var(--primary);"/>
+                    <rect class="chart-bar" x="368" y="68" width="24" height="77" rx="2" style="fill:var(--chart-data-cyan);opacity:.85"/>
+                  </svg>
+                  <span class="chart-v t-overline" style="left:5%;top:53.1%;">55</span>
+                  <span class="chart-v t-overline" style="left:12.5%;top:58.1%;">45</span>
+                  <span class="chart-v t-overline" style="left:21.5%;top:45.6%;">70</span>
+                  <span class="chart-v t-overline" style="left:29%;top:49.4%;">62</span>
+                  <span class="chart-v t-overline" style="left:38%;top:38.1%;">85</span>
+                  <span class="chart-v t-overline" style="left:45.5%;top:35.6%;">90</span>
+                  <span class="chart-v t-overline" style="left:54.5%;top:49.4%;">62</span>
+                  <span class="chart-v t-overline" style="left:62%;top:51.9%;">58</span>
+                  <span class="chart-v t-overline" style="left:71%;top:34.4%;">92</span>
+                  <span class="chart-v t-overline" style="left:78.5%;top:36.9%;">88</span>
+                  <span class="chart-v t-overline" style="left:87.5%;top:30.6%;">100</span>
+                  <span class="chart-v t-overline" style="left:95%;top:32.5%;">96</span>
+                </div>
+                <div class="chart-x-labels"><span class="t-caption">1月</span><span class="t-caption">2月</span><span class="t-caption">3月</span><span class="t-caption">4月</span><span class="t-caption">5月</span><span class="t-caption">6月</span></div>
+                <div class="chart-legend">
+                  <span class="legend-item"><span class="legend-dot" style="background:var(--chart-tech-blue)"></span>计划</span>
+                  <span class="legend-item"><span class="legend-dot" style="background:var(--chart-data-cyan)"></span>实际</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="sec-desc">防变形铁律：折线/柱状/横向柱状用 <code>viewBox 0 0 400 160</code>（2.5:1 接近内容区比例）+ <code>preserveAspectRatio="none"</code> + <code>.chart-svg--fill</code>（non-scaling-stroke 防线条变形），内容 x ≤ 380（viewBox 宽 − 20 门禁）；环状图定尺寸 svg 居中，<b>禁用 none 拉伸</b>（圆会变椭圆）。<b>默认交互（§9）</b>：图形挂动画类（柱 <code>.chart-bar</code> 升起 / 条 <code>.chart-hbar</code> 生长 / 线 <code>.chart-line</code> 描边生长 / 环 <code>.chart-ring-anim</code> 放大），图表卡 hover 浮起 + 阴影提升 float。</p>
+      </section>
+
+      <!-- 暗色模式 -->
+      <section id="dark" class="sec">
+        <div class="sec-head"><h2 class="t-h2">暗色模式 · Dark（仅色板参考）</h2></div>
+        <p class="sec-desc">暗色 token 真值来自 brand-color-engine <code>generatePalette('#005EAE',{mode:'dark',platform:'web'})</code>（base-spec.json darkDefaults）。以下为实际生效的暗色值（取自 template.css <code>:root[data-theme="dark"]</code>）。</p>
+        <div class="callout"><b>激活方式</b>：在 <code>&lt;html data-theme="dark"&gt;</code> 即可切换整套暗色 token。按 2026-07-31 决策，<b>生成链路模板不内置暗色切换开关</b>——本展示页亦不附带切换按钮，仅作色板参考。</div>
+        <h3 class="t-h4 sub">品牌 / 中性（暗态实际值）</h3>
+        <div class="grid swatch-grid">
+          <div class="sw"><div class="sw-chip" style="background:#3B82F6"></div><div class="sw-meta"><div class="sw-name">primary</div><div class="sw-hex">#3B82F6</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:#60A5FA"></div><div class="sw-meta"><div class="sw-name">primary-hover</div><div class="sw-hex">#60A5FA</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:#2563EB"></div><div class="sw-meta"><div class="sw-name">primary-active</div><div class="sw-hex">#2563EB</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:#374151"></div><div class="sw-meta"><div class="sw-name">primary-dis-bg</div><div class="sw-hex">#374151</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:#9CA3AF"></div><div class="sw-meta"><div class="sw-name">primary-dis-fg</div><div class="sw-hex">#9CA3AF</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:#0A2540"></div><div class="sw-meta"><div class="sw-name">brand-surface</div><div class="sw-hex">#0A2540</div><div class="sw-note">Chrome 底</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:#1E293B"></div><div class="sw-meta"><div class="sw-name">N1 表面</div><div class="sw-hex">#1E293B</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:#243044"></div><div class="sw-meta"><div class="sw-name">N2 抬升</div><div class="sw-hex">#243044</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:#334155"></div><div class="sw-meta"><div class="sw-name">N3 悬停</div><div class="sw-hex">#334155</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:#121826"></div><div class="sw-meta"><div class="sw-name">N4 页面</div><div class="sw-hex">#121826</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:#475569"></div><div class="sw-meta"><div class="sw-name">N7</div><div class="sw-hex">#475569</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:#94A3B8"></div><div class="sw-meta"><div class="sw-name">N8 三级文字</div><div class="sw-hex">#94A3B8</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:#CBD5E1"></div><div class="sw-meta"><div class="sw-name">N9 二级文字</div><div class="sw-hex">#CBD5E1</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:#F1F5F9"></div><div class="sw-meta"><div class="sw-name">N10 一级文字</div><div class="sw-hex">#F1F5F9</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:#FFFFFF"></div><div class="sw-meta"><div class="sw-name">N11 白</div><div class="sw-hex">#FFFFFF</div></div></div>
+        </div>
+        <h3 class="t-h4 sub">功能色（暗态）</h3>
+        <div class="grid swatch-grid">
+          <div class="sw"><div class="sw-chip" style="background:#52C41A"></div><div class="sw-meta"><div class="sw-name">success</div><div class="sw-hex">#52C41A</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:#FFA940"></div><div class="sw-meta"><div class="sw-name">warning</div><div class="sw-hex">#FFA940</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:#FF4D4F"></div><div class="sw-meta"><div class="sw-name">error</div><div class="sw-hex">#FF4D4F</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:#22C55E"></div><div class="sw-meta"><div class="sw-name">running</div><div class="sw-hex">#22C55E</div></div></div>
+        </div>
+        <div class="callout"><b>已对齐</b>：暗色中性色阶现由 <code>map-tokens.js</code> 直接读取 <code>tokens.json.dark.colors.neutral</code> 生成，<code>template.css</code> 与 tokens 真源保持一致；规则⑤暗色等式门禁全绿。</div>
+      </section>
+
+      <!-- 图标集 -->
+            <!-- 图标集 -->
+            <!-- 图标集 -->
+      <section id="icons" class="sec">
+        <div class="sec-head"><h2 class="t-h2">图标集 · Icon（142）</h2></div>
+        <p class="sec-desc">通用 + B 端特有 + 旧图标迁移（批 1/批 2）。规格：viewBox 24×24 · stroke 1.8 · round · currentColor。尺寸类 .ico 16 / .btn-ico 16 / .tree-ico 16 / .kpi-ico 20 / .kpi-ico--lg 24。</p>
+        <div class="grid" style="grid-template-columns:repeat(12,1fr);gap:8px">
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="12" height="14" rx="1.5"/><path d="M8 9h4M8 12.5h4"/><path d="M20 9v7M16.5 12.5h7"/></svg><span class="t-caption">添加机器</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2.5h-15z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/></svg><span class="t-caption">告警铃</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="4" width="13" height="16" rx="1.5"/><path d="M9 9l3-2 2 2 3-3"/><path d="M9 16l2 2 4-4"/></svg><span class="t-caption">审核</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5h16v3H4z"/><path d="M5.5 9.5h13v8a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2z"/><path d="M10 13h4"/></svg><span class="t-caption">归档</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 6 6v5"/></svg><span class="t-caption">返回</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H12v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M12 4h6.5A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5H12"/></svg><span class="t-caption">基础资料</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v9M9.5 15.5c.5 1 1.4 1.5 2.5 1.5s2-.5 2-1.5-1-1.2-2.5-1.5-2.5-.6-2.5-1.7 1-1.6 2.5-1.6 2 .5 2.5 1.3"/></svg><span class="t-caption">收费管理</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15.5" rx="2"/><path d="M8 2.5V7M16 2.5V7M4 9.5h16"/><path d="M8 13.5h8M8 17h5"/></svg><span class="t-caption">日历</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg><span class="t-caption">取消</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="13" height="14" rx="1.5"/><path d="M8 9h5M8 12.5h5"/><path d="M19.5 6.5v11"/><rect x="18" y="7.5" width="3" height="6" rx="1"/></svg><span class="t-caption">设备产能监控</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19C5 9 12 5 19 5c0 8-4 14-14 14z"/><path d="M5 19c3-6 7-9 11-11"/></svg><span class="t-caption">碳排放</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="16" rx="1.5"/><path d="M9 8.5l1.5 1.5L14 6.5"/><path d="M9 14l1.5 1.5L14 12.5"/></svg><span class="t-caption">点检</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg><span class="t-caption">展开</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg><span class="t-caption">右箭头</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg><span class="t-caption">收起</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="5" width="15" height="3" rx="1"/><rect x="4.5" y="16" width="15" height="3" rx="1"/><path d="M9.5 8v8M14.5 8v8"/></svg><span class="t-caption">锁模力</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11.5V6.5a2 2 0 0 1 4 0v4"/><path d="M13 10V7.5a2 2 0 0 1 4 0v4.5"/><path d="M17 12v-1.5a1.8 1.8 0 0 1 3.5.6V15a6.5 6.5 0 0 1-6.5 6.5H12a6 6 0 0 1-4.6-2.1L4.8 15.5a1.8 1.8 0 0 1 2.6-2.5l1.6 1.7"/></svg><span class="t-caption">click</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg><span class="t-caption">关闭</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17.5a4 4 0 0 1 .5-7.9 5.5 5.5 0 0 1 10.7 1.4 3.5 3.5 0 0 1-1.7 6.5z"/></svg><span class="t-caption">云端</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="1.5"/><path d="M10 5v14M15 5v14"/></svg><span class="t-caption">列设置</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19.5 7"/></svg><span class="t-caption">确定</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="8.5" width="11" height="11" rx="1.5"/><path d="M5.5 15.5H5A1.5 1.5 0 0 1 3.5 14V5.5A1.5 1.5 0 0 1 5 4h8.5A1.5 1.5 0 0 1 15 5.5V6"/></svg><span class="t-caption">复制</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9.5" cy="9" r="3.5"/><path d="M4 20c.8-3 2.8-5 5.5-5s4.7 2 5.5 5"/><path d="M17.5 7v6M14.5 10h6"/></svg><span class="t-caption">客户管理</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="7"/><path d="M12 14V9.5"/><path d="M12 5.5V4M9.2 5.5l1.8 1.8M14.8 5.5L13 7.3"/></svg><span class="t-caption">周期</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="11" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="17" width="7" height="3" rx="1"/></svg><span class="t-caption">看板</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7.5" ry="2.5"/><path d="M4.5 6v6c0 1.4 3.4 2.5 7.5 2.5s7.5-1.1 7.5-2.5V6"/><path d="M4.5 12v6c0 1.4 3.4 2.5 7.5 2.5s7.5-1.1 7.5-2.5v-6"/></svg><span class="t-caption">数据采集</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M9 9l6 6M15 9l-6 6"/></svg><span class="t-caption">缺陷</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="4" width="13" height="16" rx="1.5"/><circle cx="12" cy="13.5" r="2.8"/><path d="M9.5 12.5c.8-1.6 1.6-2.4 2.5-2.4s1.7.8 2.5 2.4"/></svg><span class="t-caption">详情</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 6 3.5 12l5 6M15.5 6l5 6-5 6"/></svg><span class="t-caption">开发者</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="13" height="14" rx="1.5"/><path d="M8 9h5M8 12.5h5"/><circle cx="19" cy="7" r="2"/><path d="M19 2.5v2M19 9.5v2"/></svg><span class="t-caption">设备管理</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="13" height="14" rx="1.5"/><path d="M8 9h5M8 12.5h5"/><path d="M17 7.5l3 3M20 7.5l-3 3"/></svg><span class="t-caption">设备开通</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="13" height="14" rx="1.5"/><path d="M8 9h5M8 12.5h5"/><circle cx="19.5" cy="9" r="2"/><circle cx="19.5" cy="16.5" r="2"/></svg><span class="t-caption">设备状态监控</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4v12"/><path d="M2 8.5 5 12l3-3.5"/><path d="M12 7h7"/><path d="M15.5 3.5 19 7l-3.5 3.5"/><path d="M12 16h7M15.5 12.5 19 16l-3.5 3.5"/></svg><span class="t-caption">下达</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3.5h8A4.5 4.5 0 0 1 20.5 8v8A4.5 4.5 0 0 1 16 20.5H8A4.5 4.5 0 0 1 3.5 16V8A4.5 4.5 0 0 1 8 3.5z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg><span class="t-caption">完成</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/><path d="M4.5 4.5l15 15"/></svg><span class="t-caption">停机记录</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3.5h11l-2.8 5h-5.4z"/><rect x="8.5" y="8.5" width="7" height="8.5" rx="1"/><path d="M8.5 17h7"/></svg><span class="t-caption">干燥机</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3.5"/><circle cx="12" cy="12" r="3.2"/></svg><span class="t-caption">急停</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5h15"/><path d="M13.8 5.2l4 4L7.5 19.5H4.5v-3z"/></svg><span class="t-caption">编辑</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3 5 13.5h5.5L10 21l8-10.5h-5.5z"/></svg><span class="t-caption">能耗</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 18.5h5"/><path d="M10.5 21.5h3"/><path d="M8 14.5a5 5 0 1 1 8 0c-.8.8-1.2 1.5-1.2 2.5h-5.6c0-1-.4-1.7-1.2-2.5z"/></svg><span class="t-caption">节能</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/><path d="M8.5 8.5l7 7"/></svg><span class="t-caption">设备过期</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10"/><path d="M8 8l4-4 4 4"/><path d="M5.5 14v3.5a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V14"/></svg><span class="t-caption">导出</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12s3.5-5.5 9-5.5S21 12 21 12s-3.5 5.5-9 5.5S3 12 3 12z"/><path d="M4 4l16 16"/><path d="M10 12.5a2 2 0 0 0 3 1.5"/></svg><span class="t-caption">隐藏</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4 22 19.5H2z"/><path d="M12 9.5v5"/><path d="M12 17.4v.1"/></svg><span class="t-caption">故障</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="9" r="3.5"/><path d="M4.5 20c.8-3 2.8-5 5.5-5 1.5 0 2.8.7 3.8 1.9"/><path d="M18 8v5M15.5 10.5 18 13l2.5-2.5"/></svg><span class="t-caption">外出服务</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16l-6 7v6l-4 2v-8z"/></svg><span class="t-caption">筛选</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 3.5h6"/><path d="M10.5 3.5v6l-5 7.5a2 2 0 0 0 1.6 3.2h9.8a2 2 0 0 0 1.6-3.2l-5-7.5v-6"/></svg><span class="t-caption">配方</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5"/></svg><span class="t-caption">全屏</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M8.5 10h7M8.5 14h7"/></svg><span class="t-caption">保压</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9.5 21v-6h5v6"/></svg><span class="t-caption">首页</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6v10"/><path d="M8 12l4 4 4-4"/><path d="M5.5 14v3.5a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V14"/></svg><span class="t-caption">导入</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><circle cx="12" cy="8" r="1"/></svg><span class="t-caption">关于</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v6h6"/><path d="M18 20v-6h-6"/><path d="M6 10a8 8 0 0 1 13-3.5M18 14a8 8 0 0 1-13 3.5"/></svg><span class="t-caption">初始化数据</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 17 15.5 9.5"/><path d="M13.5 5l5 5"/><path d="M16.5 3l4.5 4.5"/></svg><span class="t-caption">注射压力</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 18h17"/><rect x="5.5" y="8.5" width="4" height="9.5" rx="1"/><rect x="9.5" y="11" width="8" height="7" rx="1"/><path d="M8.5 7h7l-2 4h-3z"/></svg><span class="t-caption">注塑机</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="6" width="14" height="8" rx="1.5"/><path d="M8 6V4.5h8V6"/><path d="M5 10h14M7 13h.5M10.5 13h.5M14 13h.5"/></svg><span class="t-caption">检测管理</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 14-5"/><path d="M20 12a8 8 0 0 1-14 5"/><path d="M20 3.5V8h-4.5"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg><span class="t-caption">IPQC</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 17h16"/><path d="M8 4.5 5 7l3 2.5M16 14.5l3 2.5-3 2.5"/></svg><span class="t-caption">上下限</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 6.5h15M4.5 12h15M4.5 17.5h15"/><circle cx="9" cy="6.5" r=".7"/><circle cx="9" cy="12" r=".7"/><circle cx="9" cy="17.5" r=".7"/></svg><span class="t-caption">列表</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M12 9.5v5M10 12l2 2 2-2"/></svg><span class="t-caption">工艺调取</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.3-6.5-10.5a6.5 6.5 0 0 1 13 0C18.5 15.7 12 21 12 21z"/><circle cx="12" cy="10.5" r="2.3"/></svg><span class="t-caption">位置</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="10.5" width="13" height="9" rx="1.5"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/><circle cx="12" cy="15" r="1.2"/></svg><span class="t-caption">安全锁</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="4" width="13" height="16" rx="1.5"/><path d="M9 8.5h4"/><circle cx="15.5" cy="15.5" r="3"/><path d="M15.5 14v1.8l1.3 1"/></svg><span class="t-caption">日志</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4"/><path d="M16 16l4-4-4-4"/><path d="M20 12H9"/></svg><span class="t-caption">退出登录</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c3.5 4 6 6.8 6 10a6 6 0 0 1-12 0c0-3.2 2.5-6 6-10z"/></svg><span class="t-caption">润滑</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="13" height="14" rx="1.5"/><path d="M8 9h4M8 12.5h4"/><path d="M18 7h4M18 11h4M18 15h4"/><circle cx="16.5" cy="9" r="1.5"/></svg><span class="t-caption">机器设定</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 2.5V7M16 2.5V7M4 9.5h16"/><path d="M9 14.5l2 2 4-4"/></svg><span class="t-caption">保养计划</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5.8a4.5 4.5 0 0 0-5.7 5L4 15.2V20h4.8l4.4-4.3a4.5 4.5 0 0 0 5-5.7l-2.5 2.5-2.9-2.9z"/></svg><span class="t-caption">维护</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/><path d="M10.5 7h3a3 3 0 0 1 3 3v3.5"/><path d="M11 13.5 13.5 11"/></svg><span class="t-caption">标准库映射</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 9 8v9l-5-3z"/><path d="M9 8l8-3v13l-8-3"/><path d="M17 12h3"/></svg><span class="t-caption">营销规则</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 20 7v10l-8 3.5L4 17V7z"/><path d="M4 7l8 3.5L20 7M12 10.5v10"/></svg><span class="t-caption">材料管理</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v2H7v14H5z"/><path d="M10 8h5M10 12h5"/></svg><span class="t-caption">卡尺</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="4" width="13" height="16" rx="1.5"/><path d="M9 9l3-2 2 2 3-3"/></svg><span class="t-caption">测量报告</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg><span class="t-caption">菜单</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H9.5L4 19z"/></svg><span class="t-caption">消息</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16"/><path d="M12 10v7"/><path d="M12 17l4-4"/></svg><span class="t-caption">电表</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 4h7.5v16H3.5z"/><path d="M13 4h7.5v16H13z"/><path d="M3.5 12h7.5M13 12h7.5"/><path d="M8 8v8"/></svg><span class="t-caption">模具</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="16" height="12" rx="2"/><path d="M8 6V4.5h8V6"/><circle cx="12" cy="12" r="3.8"/><path d="M12 10.2V12l1.6 1.4"/></svg><span class="t-caption">模温机</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/></svg><span class="t-caption">更多</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5.5"/><path d="M12 6.5V3M12 21v-3.5M6.5 12H3M21 12h-3.5"/></svg><span class="t-caption">电机</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17a8 8 0 1 1 16 0"/><path d="M12 17l3.5-4.5"/><circle cx="12" cy="17" r="1"/></svg><span class="t-caption">稼动率</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 14.5a3.5 3.5 0 0 1 .5-6.9A5 5 0 0 1 17.5 8.5 3 3 0 0 1 17 14.5"/><path d="M4 4l16 16"/></svg><span class="t-caption">离线</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="4" width="13" height="16" rx="1.5"/><path d="M9 8.5h6M9 12h6M9 15.5h4"/></svg><span class="t-caption">订单</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 12h16M12 4v16"/></svg><span class="t-caption">概览</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h6M14 6h6"/><circle cx="12" cy="6" r="2"/><path d="M4 18h10M18 18h2"/><circle cx="16" cy="18" r="2"/></svg><span class="t-caption">参数对比</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 5.5v2M12 16.5v2M5.5 12h2M16.5 12h2"/><path d="M3.5 19h4M10 19h10"/><circle cx="8.5" cy="19" r="1.5"/></svg><span class="t-caption">参数配置</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="4" width="13" height="16" rx="1.5"/><circle cx="16" cy="14.5" r="3.5"/><path d="M18.5 17 21 19.5"/><path d="M9 8l1.5 1.5L14 6"/></svg><span class="t-caption">巡检</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="5" width="3" height="14" rx="1"/><rect x="12.5" y="5" width="3" height="14" rx="1"/></svg><span class="t-caption">暂停</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9.5" cy="8" r="3"/><path d="M4 20c.7-2.8 2.7-4.5 5.5-4.5 1.5 0 2.8.5 3.9 1.5"/><path d="M15.5 12.5l5 1.8V18c0 2.5-2 4.5-5 5-3-.5-5-2.5-5-5v-3.7z"/></svg><span class="t-caption">权限管理</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg><span class="t-caption">新增</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 12l4.5-4.5"/><circle cx="12" cy="12" r="1"/></svg><span class="t-caption">压力</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8V4h10v4"/><path d="M7 17H5.5A1.5 1.5 0 0 1 4 15.5v-4A1.5 1.5 0 0 1 5.5 10h13A1.5 1.5 0 0 1 20 11.5v4a1.5 1.5 0 0 1-1.5 1.5H17"/><rect x="7.5" y="14" width="9" height="6" rx="1"/><path d="M16.5 12.5h.6"/></svg><span class="t-caption">打印</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M4 13h7M14 13h6"/><circle cx="12" cy="13" r="2"/></svg><span class="t-caption">工艺管理</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h7M14.5 6H20"/><circle cx="12" cy="6" r="2"/><path d="M4 15c2-4 3-2 5-4s3 1 5-1 3 0 6 3"/></svg><span class="t-caption">工艺监控</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h8M16.5 8H20"/><circle cx="14" cy="8" r="2"/><path d="M4 16h4M12.5 16H20"/><circle cx="10" cy="16" r="2"/></svg><span class="t-caption">工艺参数</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="8" width="15" height="11" rx="1.5"/><path d="M4.5 8 12 4l7.5 4"/><path d="M9 12.5h6M9 16h4"/></svg><span class="t-caption">产品管理</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4" width="6" height="6" rx="1"/><rect x="13.5" y="4" width="6" height="6" rx="1"/><rect x="4.5" y="14" width="6" height="6" rx="1"/></svg><span class="t-caption">产品类别</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9h9"/><path d="M11 5l4 4-4 4"/><rect x="12.5" y="12" width="7" height="8" rx="1.5"/><path d="M15.5 16.5h1"/></svg><span class="t-caption">产品追溯</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="12.5" width="3.5" height="7.5" rx="1"/><rect x="10.2" y="6.5" width="3.5" height="13.5" rx="1"/><rect x="16" y="9.5" width="3.5" height="10.5" rx="1"/></svg><span class="t-caption">产量</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15.5" rx="2"/><path d="M8 2.5V7M16 2.5V7M4 9.5h16"/><path d="M8 13.5l2 2 4-4"/></svg><span class="t-caption">生产计划</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/><path d="M8.5 11l2 2 3.5-3.5"/></svg><span class="t-caption">质检</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h8M15.5 7H20"/><circle cx="12.5" cy="7" r="2"/><path d="M4 17h4M11 17h9"/><circle cx="8.5" cy="17" r="2"/><path d="M17.5 3l1.5 1.5 3-3"/></svg><span class="t-caption">品质参数监控</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4.5v5h-5"/></svg><span class="t-caption">刷新</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M12 16v4M8.5 20h7"/></svg><span class="t-caption">远程监控</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4.5V9h-4.5"/><path d="M9 13.5l2 2 4-4.5"/></svg><span class="t-caption">续费</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="4" width="13" height="16" rx="1.5"/><path d="M9 16v-4M12 16V9M15 16v-2"/></svg><span class="t-caption">报表</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="3.5" width="13" height="17" rx="1.5"/><path d="M9 8h6M9 12h6"/><path d="M8.5 16.5l2 2 4.5-4.5"/></svg><span class="t-caption">报工</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="17" width="6" height="3.5" rx="1"/><path d="M7 17v-6"/><path d="M7 11h8"/><path d="M15 11v4.5"/><path d="M12.5 15.5h5"/></svg><span class="t-caption">机械臂</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9.5" cy="8.5" r="3"/><path d="M4.5 19c.7-2.6 2.6-4.2 5-4.2"/><path d="M15.5 16.5l2 2 4-4.5"/></svg><span class="t-caption">角色授权</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5.5l10 6.5-10 6.5z"/></svg><span class="t-caption">运行</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg><span class="t-caption">安全确认</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11l4 4v11a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19V5.5A1.5 1.5 0 0 1 5.5 4z"/><path d="M8 4v5h8V4"/><path d="M8 20v-6h8v6"/></svg><span class="t-caption">保存</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 9.5h16M4 15h16"/><path d="M9 6.5v2M15 12v2"/><rect x="7" y="11" width="9" height="2.5" rx="1"/></svg><span class="t-caption">排产</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg><span class="t-caption">搜索</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v3M12 18.2v3M2.8 12h3M18.2 12h3M5.4 5.4l2.1 2.1M16.5 16.5l2.1 2.1M18.6 5.4l-2.1 2.1M7.5 16.5l-2.1 2.1"/></svg><span class="t-caption">设置</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4 20 12l-8 8-8-8z"/><circle cx="12" cy="12" r="2.5"/></svg><span class="t-caption">图形</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 2.5V11c0 4.5-3 8-7 9.5C8 19 5 15.5 5 11V5.5z"/></svg><span class="t-caption">防护盾</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3.5" width="12" height="17" rx="2"/><path d="M10 3.5v5l-3 4M14 20.5v-5l3-4"/></svg><span class="t-caption">SIM卡</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6v12M8 6 5 9M8 6l3 3M16 18V6M16 18l-3-3M16 18l3-3"/></svg><span class="t-caption">排序</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h12M13 3.5 16.5 7 13 10.5"/><path d="M20 17H8M11 13.5 7.5 17 11 20.5"/></svg><span class="t-caption">备件更换</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17c2-6 4-9 8-9s6 3 8 9"/><path d="M4 14h16M4 20h16"/></svg><span class="t-caption">过程控制</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4" width="15" height="16" rx="1.5"/><path d="M9 8v8M12.5 8v8M16 8v8"/><path d="M4.5 12h15"/></svg><span class="t-caption">库存管理</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7.5" y="7.5" width="9" height="9" rx="1"/></svg><span class="t-caption">停机</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="3"/><path d="M2.5 19c.7-2.6 2.6-4.2 5.5-4.2 1.8 0 3.4.8 4.4 2.2"/><path d="M16.5 4l4 4-4 4"/><path d="M20.5 8h-9"/></svg><span class="t-caption">转换用户</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15c2-5 4-2 5.5-5s3-2.5 5.5 0 3-1 5 3"/><path d="M8 18.5h8"/></svg><span class="t-caption">温度区段</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4.5a2 2 0 0 1 4 0v9a3.8 3.8 0 1 1-4 0z"/><path d="M10.3 11h3.4"/></svg><span class="t-caption">温度</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h9M9.5 4.5 13 8l-3.5 3.5"/><path d="M20 16h-9M14.5 12.5 11 16l3.5 3.5"/></svg><span class="t-caption">处理量</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="12" height="10" rx="1.5"/><path d="M19 4v10"/><path d="M16 7l3 3-3 3"/></svg><span class="t-caption">抛转</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 6.5h15M9.5 6.5V4.8h5v1.7M7 6.5l1 13h8l1-13M10 10v6M14 10v6"/></svg><span class="t-caption">删除</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v16"/><path d="M6 9h7v5H6"/><path d="M17 8v5M14.5 10.5h5"/></svg><span class="t-caption">增加下级</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v16"/><path d="M6 9h5v4H6"/><path d="M15 11v6M12 14h6"/></svg><span class="t-caption">增加同级</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v16"/><path d="M6 8h6v5H6M6 15h5v5H6"/><circle cx="18.5" cy="7" r="2.5"/><path d="M18.5 2v2M18.5 10v2"/></svg><span class="t-caption">作业树管理</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 17.5l5-5 3.5 3 7-7"/><path d="M15 8.5h4.5V13"/></svg><span class="t-caption">趋势</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6"/><path d="M7.5 10.5 12 6l4.5 4.5"/><path d="M6 19h12"/></svg><span class="t-caption">升级</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V6"/><path d="M8 10l4-4 4 4"/><path d="M5.5 14v3.5a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V14"/></svg><span class="t-caption">上传</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.2-3.2 3.8-5 7-5s5.8 1.8 7 5"/></svg><span class="t-caption">我的</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 19c.8-2.8 2.8-4.5 5.5-4.5s4.7 1.7 5.5 4.5"/><circle cx="17" cy="9.5" r="2.5"/><path d="M16 14.5c2 .5 3.5 1.8 4.2 3.5"/></svg><span class="t-caption">用户组</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l8-4 8 4v11H4z"/><path d="M4 8h16"/><path d="M8 13h8M8 16.5h8"/></svg><span class="t-caption">仓储</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5 21.5 19.5h-19z"/><path d="M12 10v4.5"/><circle cx="12" cy="17" r=".9"/></svg><span class="t-caption">警告</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.8"/><path d="M12 5.5v3M12 15.5v3M5.5 12h3M15.5 12h3"/><path d="M7.2 7.2l2 2"/></svg><span class="t-caption">易损件</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="16" rx="1.5"/><path d="M9.5 4.5a2.5 2.5 0 0 1 5 0"/><path d="M9 9.5h6M9 13h6M9 16.5h4"/></svg><span class="t-caption">工单</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5 12 4l8 4.5V19H4z"/><path d="M4 19h16"/><path d="M10 19v-5h4v5"/><path d="M8.5 12h7"/></svg><span class="t-caption">车间</span></div>
+          <div class="icon-cell"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 8.5v7M9.3 14.8h5.4"/></svg><span class="t-caption">合格率</span></div>
+        </div>
+      </section>
+
+<!-- 自造守则 -->
+      <section id="rules" class="sec">
+        <div class="sec-head"><h2 class="t-h2">页面级自造类守则 · RULES §7.9</h2></div>
+        <div class="callout"><b>平衡原则</b>：约束「新原子」（token 级资产），放开「新结构」（布局/组合）。<b>优先级铁律</b>：组合 → 变体 → 页面级布局自造 →（禁）原子自造；<b>非必要不自造</b>；新增原子是兜底资源、不是自造许可。自造底线：颜色 var(--*) / 文字 .t-* / 动效 var(--motion-duration-*) / 4px 网格 / 禁 t- 前缀。</div>
+      </section>
+
+    </main>
+
+    <!-- ===== 底栏（G8 固定滚动区之一，位于 .main 内 → 宽 1680px） ===== -->
+    <footer class="footer">弘讯 Web 端设计系统规范展示 · 所有视觉特征取自 template.css / tokens.json 真源</footer>
+  </div>
+</div>
+
+<script>
+  // 侧栏折叠（G9）
+  function toggleSidebar(){
+    var sb = document.querySelector('.sidebar');
+    var collapsed = sb.classList.toggle('collapsed');
+    var btn = sb.querySelector('.collapse-btn');
+    if (btn){
+      btn.setAttribute('title', collapsed ? '展开侧栏' : '收起侧栏');
+      btn.setAttribute('aria-expanded', String(!collapsed));
+    }
+  }
+
+  // M1 动画演示：点击触发 .anim-* 工具类（先移除再重放，force reflow）
+  document.querySelectorAll('[data-anim]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var target = document.getElementById('motion-target');
+      var anim = btn.getAttribute('data-anim');
+      target.classList.remove('anim-fade-in','anim-float-up','anim-scale-in','anim-slide-in-right','anim-spin');
+      void target.offsetWidth; // 强制 reflow 保证动画重放
+      target.classList.add(anim);
+    });
+  });
+
+  // 锚点平滑滚动
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      var id = a.getAttribute('href');
+      if(id.length < 2) return;
+      var t = document.querySelector(id);
+      if(t){ e.preventDefault(); t.scrollIntoView({behavior:'smooth', block:'start'}); }
+    });
+  });
+
+  // 侧栏作业树交互：父节点展开/折叠 + 单选高亮 + 叶子滚动到对应章节
+  (function(){
+    var tree = document.querySelector('.sidebar .tree');
+    if(!tree) return;
+    tree.querySelectorAll('.tree-node').forEach(function(node){
+      node.addEventListener('click', function(){
+        if(node.hasAttribute('data-expand')){
+          var group = node.nextElementSibling;
+          if(group && group.classList.contains('tree-group')){
+            var collapsed = group.classList.toggle('is-collapsed');
+            var sw = node.querySelector('.tree-sw');
+            if(sw) sw.textContent = collapsed ? '▸' : '▾';
+          }
+        }
+        tree.querySelectorAll('.tree-node.on').forEach(function(n){ n.classList.remove('on'); });
+        node.classList.add('on');
+        var anchor = node.getAttribute('data-anchor');
+        if(anchor){
+          var target = document.getElementById(anchor);
+          if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+        }
+      });
+    });
+  })();
+
+  // 组件展示交互：Select / DatePicker / Tabs / Pager / Modal / TreeCard
+  (function(){
+    // Select
+    document.querySelectorAll('[data-sel]').forEach(function(sel){
+      var trigger = sel.querySelector('.sel-trigger');
+      var panel = sel.querySelector('.sel-panel');
+      if(trigger){
+        trigger.addEventListener('click', function(e){ e.stopPropagation(); sel.classList.toggle('open'); });
+      }
+      if(panel){
+        panel.addEventListener('click', function(e){
+          var opt = e.target.closest('.sel-opt');
+          if(!opt) return;
+          sel.querySelectorAll('.sel-opt').forEach(function(o){ o.classList.remove('on'); });
+          opt.classList.add('on');
+          trigger.firstChild.textContent = opt.textContent + ' ';
+          sel.classList.remove('open');
+        });
+      }
+    });
+    // DatePicker
+    document.querySelectorAll('[data-dp]').forEach(function(dp){
+      var trigger = dp.querySelector('.dp-trigger');
+      if(trigger){
+        trigger.addEventListener('click', function(e){ e.stopPropagation(); dp.classList.toggle('open'); });
+      }
+    });
+    // Tabs
+    document.querySelectorAll('[data-tabs]').forEach(function(tabs){
+      tabs.querySelectorAll('.tab').forEach(function(tab){
+        tab.addEventListener('click', function(){
+          tabs.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+          tab.classList.add('active');
+        });
+      });
+    });
+    // Pager
+    document.querySelectorAll('[data-pager]').forEach(function(pager){
+      pager.querySelectorAll('.pg').forEach(function(pg){
+        pg.addEventListener('click', function(){
+          if(pg.classList.contains('pg-tot')) return;
+          pager.querySelectorAll('.pg').forEach(function(p){ p.classList.remove('active'); });
+          pg.classList.add('active');
+        });
+      });
+    });
+    // Modal
+    document.querySelectorAll('[data-open-modal]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var m = document.querySelector(btn.getAttribute('data-open-modal'));
+        if(m) m.classList.add('show');
+      });
+    });
+    document.querySelectorAll('[data-close-modal]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var m = document.querySelector(btn.getAttribute('data-close-modal'));
+        if(m) m.classList.remove('show');
+      });
+    });
+    document.querySelectorAll('.modal-mask').forEach(function(mask){
+      mask.addEventListener('click', function(e){
+        if(e.target === mask) mask.classList.remove('show');
+      });
+    });
+    // Tree card
+    document.querySelectorAll('[data-tree]').forEach(function(tree){
+      tree.querySelectorAll('.tree-node').forEach(function(node){
+        node.addEventListener('click', function(){
+          if(node.hasAttribute('data-expand')){
+            var group = node.nextElementSibling;
+            if(group && group.classList.contains('tree-group')){
+              var collapsed = group.classList.toggle('is-collapsed');
+              var sw = node.querySelector('.tree-sw');
+              if(sw) sw.textContent = collapsed ? '▸' : '▾';
+            }
+          }
+          tree.querySelectorAll('.tree-node.on').forEach(function(n){ n.classList.remove('on'); });
+          node.classList.add('on');
+        });
+      });
+    });
+    // 点击外部关闭浮层
+    document.addEventListener('click', function(){
+      document.querySelectorAll('[data-sel].open, [data-dp].open').forEach(function(el){ el.classList.remove('open'); });
+    });
+  })();
+function scrollToSec(id){
+  var el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+// §8 区块进入动画 stagger（2026-08-06：section 依次入场，动效走 token）
+document.querySelectorAll('main .sec').forEach(function(s, i){ s.style.animationDelay = (i * 80) + 'ms'; });
+</script>
+</body>
+</html>

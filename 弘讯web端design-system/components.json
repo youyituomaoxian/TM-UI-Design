@@ -1,0 +1,2045 @@
+{
+  "meta": {
+    "name": "弘讯B端组件规格层 (Component Spec Layer)",
+    "version": "2.0.0",
+    "platform": "web",
+    "sourceOfTruth": "生产代码真源：① Web = packages/web-ui（@techmation/web-ui，shadcn/ui 33 件 + Tailwind）；② 移动端 = packages/mobile-ui（@techmation/mobile-ui，NutUI-React-Taro + Taro 4.2.1）。弘讯web端design-system/template.css 及 .html 原型页属于「HTML 视觉原型预览」——用于 Agent 快速验证、设计师对照、门禁演示，不进入生产构建。本文件是 Web 组件的【机器可读契约/SSoT】，驱动 validate-spec.js 门禁；CSS 视觉样式手写真源 = packages/web-ui/src/styles/{globals,components,framework,utilities}.css（四件，N=1），template.css 由 `npm run build:template`（scripts/build-template-css.js）合并上述四件【自动生成】，仅供 HTML 原型路径消费。React 新页面必须从 web-ui 脚手架导入真实组件，禁止基于 template.css 自搓组件。Ardot 画板 19:3578 仅作框架维度校准参考。",
+    "consumers": [
+      "【生产真源】Web：packages/web-ui（@techmation/web-ui，shadcn 33 件，Tailwind）——新 B 端页从脚手架生成，导入真实 React 组件",
+      "【生产真源】移动端：packages/mobile-ui（@techmation/mobile-ui，NutUI-React-Taro 4.0.0-beta.5 + Taro 4.2.1）——小程序/App 真源",
+      "【HTML 视觉原型预览】Agent 生成的单文件 HTML 页 link template.css，仅使用其中已定义的类（validate-spec.js 类名白名单门禁）；禁止另写 HTML 重搓组件",
+      "UI 设计师（Ardot）：读本层 → 在 Ardot 内对齐变量集/组件库（真源为 packages/web-ui/src/styles/* 四件手写源）"
+    ],
+    "tokensSource": "命名统一为短名（--primary/--n5/--suc/--run/--radius-base …），与 page-template.html :root 及 DESIGN-TOKENS.md（由 scripts/generate-design-tokens-md.js 从 tokens.json 自动生成）1:1 对齐。改 token 请编辑 tokens.json 后重跑生成脚本，勿手改 DESIGN-TOKENS.md。",
+    "conventions": {
+      "radius": {
+        "sm": 2,
+        "base": 4,
+        "md": 8,
+        "lg": 16,
+        "full": 999
+      },
+      "fontWeight": {
+        "regular": 400,
+        "medium": 500
+      },
+      "fontSize": {
+        "caption": 12,
+        "body": 14,
+        "title": 16
+      },
+      "minInteractive": "Web 点击目标最小 32px",
+      "colorRule": "功能色严格对齐 Ant Design（成功#389E0D/警告#FA8C16/错误#F5222D）；运行/在线绿#16A34A 独立于成功绿，状态灯必用；Web 禁止#10B981"
+    },
+    "scope_v1": "（已弃用）v1.1 覆盖 11 个 HTML 组件；2026-07-31 起生产切换 packages/web-ui。本 components[] 仅作 HTML 原型对照与门禁来源，supersededBy 指向 web-ui 真实组件。",
+    "productionLibraries": {
+      "web": "packages/web-ui — shadcn/ui 落地，33 件 React 组件（accordion/alert/button/card/dialog/select/table/tree/tabs/tag/pagination/status-dot…），Tailwind 实现。组件清单见 packages/web-ui/src/components/ui/。",
+      "mobile": "packages/mobile-ui — @nutui/nutui-react-taro@4.0.0-beta.5 + @tarojs/*@4.2.1。小程序/App 真源。"
+    },
+    "deprecationNote": "原 11 个 HTML-CSS 组件（components[] 内 dropdown/datepicker/tree/modal/button/input/table/tag/tabs/pager/status-dot）于 2026-07-31 裁定【弃用】——新页面改用 packages/web-ui 真实组件（映射见各组件 supersededBy）。HTML 原型仅保留视觉对照，新页面禁止基于 template.css 自搓组件。contract[] 字段保留以继续驱动既有 HTML 原型的门禁，不被删除。"
+  },
+  "typography": {
+    "fontFamily": {
+      "cn": "Source Han Sans CN",
+      "en": "Roboto"
+    },
+    "note": "字阶 SSoT：与 MASTER §2 Typography / tokens.json.font.scale / DESIGN-TOKENS.md §3.1 1:1 对齐。值真源为 tokens.json.font.scale；本段为机器可读契约 + Agent 克隆参考。page-template.html 的 .t-* 类与下方 contract.type.* 强制校验。",
+    "scale": {
+      "display": {
+        "size": 32,
+        "lineHeight": 40,
+        "weight": 500,
+        "usage": "页面主标题",
+        "className": "t-display",
+        "cssVar": "--font-display"
+      },
+      "h1": {
+        "size": 28,
+        "lineHeight": 36,
+        "weight": 500,
+        "usage": "模块标题",
+        "className": "t-h1",
+        "cssVar": "--font-h1"
+      },
+      "h2": {
+        "size": 24,
+        "lineHeight": 32,
+        "weight": 500,
+        "usage": "区块标题",
+        "className": "t-h2",
+        "cssVar": "--font-h2"
+      },
+      "h3": {
+        "size": 20,
+        "lineHeight": 28,
+        "weight": 500,
+        "usage": "卡片标题/弹窗标题",
+        "className": "t-h3",
+        "cssVar": "--font-h3"
+      },
+      "h4": {
+        "size": 18,
+        "lineHeight": 26,
+        "weight": 500,
+        "usage": "子标题",
+        "className": "t-h4",
+        "cssVar": "--font-h4"
+      },
+      "h5": {
+        "size": 16,
+        "lineHeight": 24,
+        "weight": 500,
+        "usage": "小节标题",
+        "className": "t-h5",
+        "cssVar": "--font-h5"
+      },
+      "body1": {
+        "size": 14,
+        "lineHeight": 22,
+        "weight": 400,
+        "usage": "正文/列表/表单",
+        "className": "t-body1",
+        "cssVar": "--font-body1"
+      },
+      "body2": {
+        "size": 13,
+        "lineHeight": 20,
+        "weight": 400,
+        "usage": "辅助说明",
+        "className": "t-body2",
+        "cssVar": "--font-body2"
+      },
+      "caption": {
+        "size": 12,
+        "lineHeight": 16,
+        "weight": 400,
+        "usage": "图表标注/表单提示",
+        "className": "t-caption",
+        "cssVar": "--font-caption"
+      },
+      "label": {
+        "size": 12,
+        "lineHeight": 16,
+        "weight": 500,
+        "usage": "标签/按钮文字",
+        "className": "t-label",
+        "cssVar": "--font-label"
+      },
+      "overline": {
+        "size": 11,
+        "lineHeight": 16,
+        "weight": 500,
+        "usage": "极小标注",
+        "className": "t-overline",
+        "cssVar": "--font-overline"
+      },
+      "link": {
+        "size": 14,
+        "lineHeight": 22,
+        "weight": 400,
+        "usage": "超链接文本",
+        "className": "t-link",
+        "cssVar": "--font-link",
+        "color": "--primary-hover"
+      }
+    },
+    "referenceCss": ".t-display{font-family:var(--font-cn);font-size:32px;line-height:40px;font-weight:500} .t-h1{font-family:var(--font-cn);font-size:28px;line-height:36px;font-weight:500} .t-h2{font-family:var(--font-cn);font-size:24px;line-height:32px;font-weight:500} .t-h3{font-family:var(--font-cn);font-size:20px;line-height:28px;font-weight:500} .t-h4{font-family:var(--font-cn);font-size:18px;line-height:26px;font-weight:500} .t-h5{font-family:var(--font-cn);font-size:16px;line-height:24px;font-weight:500} .t-body1{font-family:var(--font-cn);font-size:14px;line-height:22px;font-weight:400} .t-body2{font-family:var(--font-cn);font-size:13px;line-height:20px;font-weight:400} .t-caption{font-family:var(--font-cn);font-size:12px;line-height:16px;font-weight:400} .t-label{font-family:var(--font-cn);font-size:12px;line-height:16px;font-weight:500} .t-overline{font-family:var(--font-cn);font-size:11px;line-height:16px;font-weight:500} .t-link{font-family:var(--font-cn);font-size:14px;line-height:22px;font-weight:400;color:var(--primary-hover)}",
+    "referenceHtml": "<div class=\"t-display\">Display 32 · 页面主标题</div><div class=\"t-h1\">H1 28 · 模块标题</div><div class=\"t-h2\">H2 24 · 区块标题</div><div class=\"t-h3\">H3 20 · 卡片/弹窗标题</div><div class=\"t-h4\">H4 18 · 子标题</div><div class=\"t-h5\">H5 16 · 小节标题</div><p class=\"t-body1\">正文 Body1 思源黑体 14/22</p><p class=\"t-body2\">辅助说明 Body2 13/20</p><span class=\"t-caption\">标注 Caption 12/16</span><span class=\"t-label\">标签 Label 12/16</span><span class=\"t-overline\">极小标注 Overline 11/16</span><a class=\"t-link\" href=\"#\">超链接 Link 14/22</a>"
+  },
+  "components": [
+    {
+      "id": "dropdown",
+      "name": "下拉选择 Select / Dropdown",
+      "category": "数据录入",
+      "summary": "单/多选触发器 + 浮层选项列表；外观沿用输入框语言，保持与 Input 视觉一致。",
+      "anatomy": {
+        "trigger": "触发框（外观同单行输入）",
+        "arrow": "右侧展开箭头（中性色）",
+        "panel": "浮层选项容器（带阴影浮层）",
+        "option": "单个选项行"
+      },
+      "tokens": [
+        "--n5",
+        "--n6",
+        "--n7",
+        "--n3",
+        "--n10",
+        "--n8",
+        "--primary",
+        "--primary-hover",
+        "--primary-active",
+        "--primary-dis-bg",
+        "--primary-dis-fg",
+        "--radius-base",
+        "--radius-md",
+        "--font-cn"
+      ],
+      "sizing": {
+        "trigger": {
+          "height": 32,
+          "minWidth": 120,
+          "paddingX": 12,
+          "radius": 4,
+          "fontSize": 14,
+          "fontWeight": 400,
+          "bg": "N5",
+          "border": "N6"
+        },
+        "panel": {
+          "minWidth": "=触发框宽",
+          "radius": 8,
+          "bg": "N1",
+          "border": "N6",
+          "shadow": "overlay",
+          "paddingY": 4,
+          "maxHeight": 240,
+          "fontSize": 14
+        },
+        "option": {
+          "height": 32,
+          "paddingX": 12,
+          "gap": 4
+        }
+      },
+      "states": {
+        "trigger.default": {
+          "bg": "N5",
+          "border": "N6",
+          "text": "N10"
+        },
+        "trigger.hover": {
+          "border": "N7",
+          "text": "N10"
+        },
+        "trigger.focus": {
+          "border": "primary",
+          "ring": "rgba(0,94,174,.2)"
+        },
+        "trigger.disabled": {
+          "bg": "N4",
+          "text": "N8",
+          "cursor": "not-allowed"
+        },
+        "option.hover": {
+          "bg": "N3",
+          "text": "N10"
+        },
+        "option.selected": {
+          "bg": "primary-dis-bg(#DAEAFA)",
+          "text": "primary-active(#004A8F)"
+        },
+        "panel.open": {
+          "shadow": "overlay"
+        }
+      },
+      "variants": [
+        "默认",
+        "带搜索",
+        "禁用",
+        "多选(Tag 化回显)"
+      ],
+      "referenceCss": ".sel{position:relative;display:inline-block;min-width:120px}.sel-trigger{height:32px;width:100%;padding:0 12px;display:flex;align-items:center;justify-content:space-between;background:var(--n5);border:1px solid var(--n6);border-radius:var(--radius-base);font-size:14px;font-weight:400;color:var(--n10);font-family:var(--font-cn);cursor:pointer}.sel-trigger:hover{border-color:var(--n7)}.sel-trigger:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(0,94,174,.2)}.sel-trigger:disabled{background:var(--n4);color:var(--n8);cursor:not-allowed}.sel-arrow{color:var(--n9);font-size:12px}.sel-panel{position:absolute;top:calc(100% + 4px);left:0;min-width:100%;max-height:240px;overflow:auto;background:var(--n1);border:1px solid var(--n6);border-radius:var(--radius-md);box-shadow:var(--elev-overlay-shadow);padding:4px 0;z-index:50}.sel-opt{height:32px;display:flex;align-items:center;gap:4px;padding:0 12px;font-size:14px;color:var(--n10);cursor:pointer}.sel-opt:hover{background:var(--n3)}.sel-opt.on{background:var(--primary-dis-bg);color:var(--primary-active)}",
+      "referenceHtml": "<div class=\"sel\"><div class=\"sel-trigger\">请选择设备 <span class=\"sel-arrow\">▾</span></div><div class=\"sel-panel\"><div class=\"sel-opt\">注塑机 A-01</div><div class=\"sel-opt on\">注塑机 A-02</div><div class=\"sel-opt\">机械手 C-07</div></div></div>",
+      "ardot": {
+        "libraryComponent": "Select / Dropdown（Ardot 组件库）",
+        "variantMapping": "trigger 高度32/半径4/底色N5 对应 Ardot 主组件默认态；panel 浮层对应 Ardot overlay 变体；option 行高32 对应 Ardot option 变体。",
+        "notes": "Ardot 内选中项背景用 primary-dis-bg(#DAEAFA)+文字 primary-active(#004A8F)，勿整行用纯 primary 填充（过重）。箭头用 N9 中性色，不用品牌色。"
+      },
+      "do": [
+        "触发器外观与单行输入完全一致（高32/半径4/N5底/N6边）",
+        "选中项用浅 primary 底+深 primary 字",
+        "浮层用 Shadow-Float + 半径8"
+      ],
+      "dont": [
+        "整行 primary 填充",
+        "箭头用品牌色",
+        "panel 圆角≠8",
+        "选项 hover 用 primary 而非 N3"
+      ],
+      "deprecated": true,
+      "supersededBy": "select",
+      "note": "2026-07-31 弃用：新页面改用 packages/web-ui 真实组件「select」（shadcn）。本条目仅作 HTML 原型对照与门禁来源。",
+      "motion": {
+        "enter": {
+          "animation": "float-up",
+          "duration": "fast",
+          "easing": "ease-out"
+        },
+        "exit": {
+          "animation": "float-down",
+          "duration": "fast",
+          "easing": "ease-in-out"
+        }
+      }
+    },
+    {
+      "id": "datepicker",
+      "name": "日期选择 DatePicker",
+      "category": "数据录入",
+      "summary": "触发器（同输入）+ 日历浮层（290 宽，含月导航/星期/日期格）。",
+      "anatomy": {
+        "trigger": "触发框（外观同单行输入，右侧日历图标）",
+        "panel": "日历浮层",
+        "header": "年月标题 + 上/下月箭头",
+        "grid": "星期行 + 日期单元格"
+      },
+      "tokens": [
+        "--n5",
+        "--n6",
+        "--n3",
+        "--n10",
+        "--n8",
+        "--n9",
+        "--n11",
+        "--primary",
+        "--primary-hover",
+        "--primary-active",
+        "--primary-dis-bg",
+        "--radius-base",
+        "--radius-md",
+        "--font-cn"
+      ],
+      "sizing": {
+        "trigger": {
+          "height": 32,
+          "minWidth": 160,
+          "paddingX": 12,
+          "radius": 4,
+          "fontSize": 14,
+          "bg": "N5",
+          "border": "N6"
+        },
+        "panel": {
+          "width": 290,
+          "radius": 8,
+          "bg": "N1",
+          "border": "N6",
+          "shadow": "overlay",
+          "padding": 12
+        },
+        "header": {
+          "titleFontSize": 14,
+          "titleWeight": 500,
+          "titleColor": "N11",
+          "arrowColor": "N9",
+          "arrowHover": "N10"
+        },
+        "cell": {
+          "size": 36,
+          "fontSize": 14,
+          "radius": 4,
+          "gap": 2
+        }
+      },
+      "states": {
+        "trigger.default": {
+          "bg": "N5",
+          "border": "N6",
+          "text": "N10"
+        },
+        "trigger.focus": {
+          "border": "primary",
+          "ring": "rgba(0,94,174,.2)"
+        },
+        "trigger.disabled": {
+          "bg": "N4",
+          "text": "N8"
+        },
+        "cell.default": {
+          "text": "N10"
+        },
+        "cell.hover": {
+          "bg": "N3"
+        },
+        "cell.selected": {
+          "bg": "primary",
+          "text": "#FFFFFF"
+        },
+        "cell.today": {
+          "border": "1px solid var(--primary)",
+          "text": "primary"
+        },
+        "cell.disabled": {
+          "text": "N8",
+          "cursor": "not-allowed"
+        },
+        "cell.outside": {
+          "text": "N8"
+        }
+      },
+      "variants": [
+        "单日期",
+        "日期范围(起止双选)",
+        "日期时间(时分秒)",
+        "禁用"
+      ],
+      "referenceCss": ".dp{position:relative;display:inline-block}.dp-trigger{height:32px;min-width:160px;padding:0 12px;display:flex;align-items:center;justify-content:space-between;background:var(--n5);border:1px solid var(--n6);border-radius:var(--radius-base);font-size:14px;color:var(--n10);font-family:var(--font-cn);cursor:pointer}.dp-trigger:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(0,94,174,.2)}.dp-panel{width:290px;background:var(--n1);border:1px solid var(--n6);border-radius:var(--radius-md);box-shadow:var(--elev-overlay-shadow);padding:12px}.dp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.dp-title{font-size:14px;font-weight:500;color:var(--n11)}.dp-nav{color:var(--n9);cursor:pointer;padding:4px}.dp-nav:hover{color:var(--n10)}.dp-week{display:grid;grid-template-columns:repeat(7,1fr);font-size:12px;color:var(--n8);text-align:center;margin-bottom:4px}.dp-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}.dp-cell{height:36px;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--n10);border-radius:var(--radius-base);cursor:pointer}.dp-cell:hover{background:var(--n3)}.dp-cell.on{background:var(--primary);color:#fff}.dp-cell.today{border:1px solid var(--primary);color:var(--primary)}.dp-cell.di{color:var(--n8);cursor:not-allowed}",
+      "referenceHtml": "<div class=\"dp\"><div class=\"dp-trigger\">2026-07-27 <span>📅</span></div><div class=\"dp-panel\"><div class=\"dp-head\"><span class=\"dp-nav\">‹</span><span class=\"dp-title\">2026 年 7 月</span><span class=\"dp-nav\">›</span></div><div class=\"dp-week\"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div><div class=\"dp-grid\"><div class=\"dp-cell di\">30</div><div class=\"dp-cell\">1</div><div class=\"dp-cell today\">27</div><div class=\"dp-cell on\">28</div><div class=\"dp-cell\">31</div></div></div></div>",
+      "ardot": {
+        "libraryComponent": "DatePicker / Calendar（Ardot 组件库）",
+        "variantMapping": "trigger 复用 Input 组件；panel 对应 Ardot Calendar overlay；cell 36 对应 Ardot day-cell 变体。",
+        "notes": "选中日用 primary 实底+白字；今日用 primary 描边+primary 字；范围选择起止用 primary 实底、区间用 primary-dis-bg 浅底。勿用成功绿表达选中。"
+      },
+      "do": [
+        "触发器与输入完全一致",
+        "选中日用 primary 实底白字，今日用 primary 描边",
+        "cell hover 用 N3"
+      ],
+      "dont": [
+        "选中用成功绿#389E0D（那是功能语义，非选择态）",
+        "cell 圆角≠4",
+        "panel 宽≠290"
+      ],
+      "deprecated": true,
+      "supersededBy": "date-picker",
+      "note": "2026-07-31 弃用：新页面改用 packages/web-ui 真实组件「date-picker」（shadcn）。本条目仅作 HTML 原型对照与门禁来源。"
+    },
+    {
+      "id": "tree",
+      "name": "树菜单 Tree（作业树 / 二级菜单）",
+      "category": "导航",
+      "summary": "层级节点列表，用于设备作业树、侧边树菜单；节点高32，按层级缩进。",
+      "anatomy": {
+        "node": "树节点行",
+        "switcher": "展开/收起箭头",
+        "indent": "按层级缩进（每级 16px）",
+        "icon": "节点图标（.tree-ico 内嵌 .ico SVG，stroke=currentColor）；每个节点（含二级子节点）都必须带；收起侧栏(.sidebar.collapsed)时只显示图标、隐藏文字与箭头",
+        "collapsed": "侧栏收起(.sidebar.collapsed)：宽 80px，节点 justify-center、只显示图标，.tree-label/.tree-sw 隐藏",
+        "connector": "层级连接线（可选，N6）"
+      },
+      "tokens": [
+        "--n1",
+        "--n3",
+        "--n10",
+        "--n8",
+        "--n9",
+        "--n11",
+        "--primary",
+        "--primary-active",
+        "--primary-dis-bg",
+        "--radius-base",
+        "--font-cn"
+      ],
+      "sizing": {
+        "node": {
+          "height": 32,
+          "fontSize": 14,
+          "fontWeight": 400,
+          "textColor": "N10",
+          "paddingX": 8,
+          "radius": 4
+        },
+        "indentPerLevel": 16,
+        "switcher": {
+          "size": 16,
+          "color": "N9",
+          "hover": "N10"
+        }
+      },
+      "states": {
+        "node.default": {
+          "text": "N10"
+        },
+        "node.hover": {
+          "bg": "N3"
+        },
+        "node.selected": {
+          "bg": "primary-dis-bg(#DAEAFA)",
+          "text": "primary-active(#004A8F)",
+          "note": "白底/内容表面：浅 primary 底+深 primary 字"
+        },
+        "node.selectedOnBrand": {
+          "bg": "primary-active(#004A8F)",
+          "text": "#FFFFFF(亮色取 N1 / 暗色取 N11)",
+          "arrow": "同选中字色（白）",
+          "note": "品牌色表面(.sidebar/.demo-sidebar/.tree--brand)：深 primary 实底+白字+白箭头，不用左侧白强调条（2026-07-31 领导裁定取消，靠实底+白字+字重 500 表达，避免与折叠态图标居中打架）。⚠️暗色下中性梯反相（亮 --n1=白，暗 --n1=#1E293B 深表面），白字须改取 --n11，见 referenceCss 的 :root[data-theme=dark] 覆盖"
+        },
+        "switcher.default": {
+          "color": "N9"
+        },
+        "switcher.hover": {
+          "color": "N10"
+        }
+      },
+      "variants": [
+        "单选树",
+        "多选树(checkbox)",
+        "可拖拽",
+        "禁用节点"
+      ],
+      "referenceCss": ".tree{font-family:var(--font-cn);font-size:14px;color:var(--n10)}.tree-node{height:32px;display:flex;align-items:center;padding:0 8px;border-radius:var(--radius-base);cursor:pointer}.tree-node:hover{background:var(--n3)}.tree-node.on{background:var(--primary-dis-bg);color:var(--primary-active)}.tree-sw{width:16px;height:16px;margin-right:4px;color:var(--n9);display:inline-flex;align-items:center;justify-content:center}.tree-sw:hover{color:var(--n10)}.tree-label{flex:1}.sidebar .tree-node.on,.demo-sidebar .tree-node.on,.tree--brand .tree-node.on{background:var(--primary-active);color:var(--n1)}.sidebar .tree-node.on .tree-sw,.demo-sidebar .tree-node.on .tree-sw,.tree--brand .tree-node.on .tree-sw{color:var(--n1)}:root[data-theme=\"dark\"] .sidebar .tree-node.on,:root[data-theme=\"dark\"] .demo-sidebar .tree-node.on,:root[data-theme=\"dark\"] .tree--brand .tree-node.on{color:var(--n11)}:root[data-theme=\"dark\"] .sidebar .tree-node.on .tree-sw,:root[data-theme=\"dark\"] .demo-sidebar .tree-node.on .tree-sw,:root[data-theme=\"dark\"] .tree--brand .tree-node.on .tree-sw{color:var(--n11)}",
+      "referenceHtml": "<div class=\"tree\"><div class=\"tree-node\"><span class=\"tree-sw\">▾</span><span class=\"tree-ico\"><svg class=\"ico\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polygon points=\"12 2 2 7 12 12 22 7 12 2\"/><polyline points=\"2 17 12 22 22 17\"/><polyline points=\"2 12 12 17 22 12\"/></svg></span><span class=\"tree-label\">注塑车间</span></div><div class=\"tree-node on tree-node--child\" data-leaf><span class=\"tree-sw\"></span><span class=\"tree-ico\"><svg class=\"ico\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"/></svg></span><span class=\"tree-label\">A 线 · 注塑机 A-01</span></div><div class=\"tree-node tree-node--child\" data-leaf><span class=\"tree-sw\"></span><span class=\"tree-ico\"><svg class=\"ico\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><rect x=\"4\" y=\"4\" width=\"16\" height=\"16\" rx=\"2\"/></svg></span><span class=\"tree-label\">B 线 · 机械手 C-07</span></div></div>",
+      "ardot": {
+        "libraryComponent": "Tree / 作业树（Ardot 组件库）",
+        "variantMapping": "node 高32 对应 Ardot tree-item；switcher 对应 Ardot expand-icon 变体；缩进每级16 对应 Ardot padding 变体。",
+        "notes": "选中节点分表面：①白底/内容表面用 primary-dis-bg(#DAEAFA)+primary-active(#004A8F)，与下拉选中态一致；②品牌色表面(.sidebar/.demo-sidebar/.tree--brand)用深 primary 实底 primary-active(#004A8F)+白字(#FFFFFF/N1)，不用左侧白强调条（2026-07-31 取消，靠实底+白字+字重 500 表达；template.css 已对 .sidebar/.demo-sidebar 自动套用，新品牌表面加 .tree--brand 即可）。勿在品牌表面用浅 primary-dis-bg 浅 chip——那是「禁用」语义，在蓝侧栏里像逃出的禁用块，非选中。连接线用 N6，缩进每级 16px。每个节点（含二级子节点）必须带 .tree-ico 图标；收起侧栏(.sidebar.collapsed)时只显示图标、隐藏文字与箭头。"
+      },
+      "do": [
+        "节点高32、按级缩进16",
+        "每个节点（含二级子节点）带 .tree-ico 图标；收起侧栏只显示图标",
+        "选中按表面分两种：白底=浅 primary 底+深 primary 字（与下拉统一）；品牌色表面=深 primary 实底+白字（不用左侧白强调条）",
+        "switcher 用 N9 中性色"
+      ],
+      "dont": [
+        "在白底表面用整行 primary 实底（过重）；品牌表面须用更深 primary-active 实底+白字",
+        "在品牌表面用浅 primary-dis-bg 浅 chip 当选中（语义是禁用态，非选中）",
+        "节点不带图标",
+        "缩进非 16 倍数",
+        "switcher 用品牌色"
+      ],
+      "deprecated": true,
+      "supersededBy": "tree",
+      "note": "2026-07-31 弃用：新页面改用 packages/web-ui 真实组件「tree」（shadcn）。本条目仅作 HTML 原型对照与门禁来源。",
+      "motion": {
+        "transition": {
+          "property": "max-height",
+          "duration": "normal",
+          "easing": "ease-out"
+        }
+      }
+    },
+    {
+      "id": "modal",
+      "name": "弹窗 Modal / Dialog",
+      "category": "反馈",
+      "summary": "居中模态对话框，382×257 基准，头40，N1底，Shadow-Modal，遮罩半透明。",
+      "anatomy": {
+        "mask": "全屏遮罩（半透明黑）",
+        "dialog": "对话框容器",
+        "header": "标题栏（高40）",
+        "body": "内容区",
+        "footer": "操作区（按钮右对齐）"
+      },
+      "tokens": [
+        "--n1",
+        "--n6",
+        "--n11",
+        "--primary",
+        "--primary-hover",
+        "--primary-active",
+        "--primary-dis-bg",
+        "--primary-dis-fg",
+        "--radius-md",
+        "--font-cn"
+      ],
+      "sizing": {
+        "dialog": {
+          "width": 382,
+          "minHeight": 257,
+          "radius": 8,
+          "bg": "N1",
+          "border": "N6",
+          "shadow": "0 6px 16px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)"
+        },
+        "header": {
+          "height": 40,
+          "titleFontSize": 16,
+          "titleWeight": 500,
+          "titleColor": "N11",
+          "paddingX": 16,
+          "borderBottom": "N6"
+        },
+        "body": {
+          "padding": "16px 24px",
+          "fontSize": 14,
+          "color": "N10"
+        },
+        "footer": {
+          "padding": "12px 16px",
+          "borderTop": "N6",
+          "align": "right",
+          "gap": 8
+        }
+      },
+      "states": {
+        "mask": {
+          "bg": "rgba(0,0,0,0.45)"
+        },
+        "header.title": {
+          "color": "N11",
+          "weight": 500
+        },
+        "footer.primaryBtn": {
+          "bg": "primary",
+          "text": "#FFFFFF",
+          "hover": "primary-hover",
+          "active": "primary-active"
+        },
+        "footer.cancelBtn": {
+          "bg": "N1",
+          "text": "primary",
+          "border": "N6"
+        }
+      },
+      "variants": [
+        "信息确认",
+        "表单弹窗(内嵌输入)",
+        "危险操作(错误红主按钮)",
+        "无遮罩抽屉(后续并入)"
+      ],
+      "referenceCss": ".modal-mask{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;z-index:100}.modal{width:382px;min-height:257px;background:var(--n1);border:1px solid var(--n6);border-radius:var(--radius-md);box-shadow:0 6px 16px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);display:flex;flex-direction:column}.modal-head{height:40px;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid var(--n6);font-size:16px;font-weight:500;color:var(--n11)}.modal-body{flex:1;padding:16px 24px;font-size:14px;color:var(--n10);font-family:var(--font-cn)}.modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 16px;border-top:1px solid var(--n6)}.modal-foot .btn-p{height:32px;padding:0 16px;border:none;border-radius:var(--radius-md);background:var(--primary);color:#fff;font-size:14px;cursor:pointer}.modal-foot .btn-p:hover{background:var(--primary-hover)}.modal-foot .btn-c{height:32px;padding:0 16px;border:1px solid var(--n6);border-radius:var(--radius-md);background:var(--n1);color:var(--primary);font-size:14px;cursor:pointer}",
+      "referenceHtml": "<div class=\"modal-mask\"><div class=\"modal\"><div class=\"modal-head\">设备参数确认</div><div class=\"modal-body\">确认将注塑机 A-01 切换至自动模式？此操作将下发至现场控制器。</div><div class=\"modal-foot\"><button class=\"btn-c\">取消</button><button class=\"btn-p\">确认</button></div></div></div>",
+      "ardot": {
+        "libraryComponent": "Modal / Dialog（Ardot 组件库）",
+        "variantMapping": "dialog 382 对应 Ardot Modal 主组件；header 40 对应 Ardot modal-header 变体；footer 按钮用 Button 组件(高32/半径8)。",
+        "notes": "Ardot 内 dialog 圆角8、头40、底色 N1；遮罩用 rgba(0,0,0,.45) 半透明黑，勿用主色遮罩。危险操作用错误红主按钮（err），非 primary。"
+      },
+      "do": [
+        "dialog 宽382/圆角8/底N1/Shadow-Modal",
+        "头40、标题16 Medium N11",
+        "遮罩半透明黑 rgba(0,0,0,.45)"
+      ],
+      "dont": [
+        "遮罩用主色(过饱和)",
+        "圆角≠8",
+        "头高≠40",
+        "footer 按钮高≠32"
+      ],
+      "deprecated": true,
+      "supersededBy": "dialog",
+      "note": "2026-07-31 弃用：新页面改用 packages/web-ui 真实组件「dialog」（shadcn）。本条目仅作 HTML 原型对照与门禁来源。",
+      "motion": {
+        "enter": {
+          "animation": "scale-in",
+          "duration": "normal",
+          "easing": "ease-out-circ"
+        },
+        "exit": {
+          "animation": "scale-out",
+          "duration": "fast",
+          "easing": "ease-in-out"
+        },
+        "mask": {
+          "enter": {
+            "animation": "fade-in",
+            "duration": "fast",
+            "easing": "ease-out"
+          },
+          "exit": {
+            "animation": "fade-out",
+            "duration": "fast",
+            "easing": "ease-in-out"
+          }
+        }
+      }
+    },
+    {
+      "id": "button",
+      "name": "按钮 Button",
+      "category": "通用",
+      "summary": "主/次/文字/大/小/禁用，文本绑 Body1（14px/Regular 400）；默认高32、大40、小24，圆角8。",
+      "anatomy": {
+        "base": "基础按钮",
+        "primary": "主按钮(实底)",
+        "secondary": "次按钮(白底描边)",
+        "text": "文字按钮(仅字)",
+        "sizes": "大/小",
+        "disabled": "禁用"
+      },
+      "tokens": [
+        "--primary",
+        "--primary-hover",
+        "--primary-active",
+        "--primary-dis-bg",
+        "--primary-dis-fg",
+        "--radius-md",
+        "--font-cn"
+      ],
+      "sizing": {
+        "default": {
+          "height": 32,
+          "radius": 8,
+          "fontSize": 14,
+          "fontWeight": 400,
+          "paddingX": 16
+        },
+        "lg": {
+          "height": 40
+        },
+        "sm": {
+          "height": 24,
+          "fontSize": 14,
+          "paddingX": 12
+        }
+      },
+      "states": {
+        "primary.default": {
+          "bg": "primary",
+          "text": "#FFFFFF"
+        },
+        "primary.hover": {
+          "bg": "primary-hover"
+        },
+        "primary.active": {
+          "bg": "primary-active"
+        },
+        "secondary.default": {
+          "bg": "N1",
+          "text": "primary",
+          "border": "primary"
+        },
+        "secondary.hover": {
+          "bg": "primary-dis-bg(浅)"
+        },
+        "text.default": {
+          "bg": "none",
+          "text": "primary"
+        },
+        "disabled": {
+          "bg": "primary-dis-bg(#DAEAFA)",
+          "text": "primary-dis-fg(#A0B4C0)",
+          "cursor": "not-allowed"
+        }
+      },
+      "variants": [
+        "主按钮",
+        "次按钮",
+        "文字按钮",
+        "大按钮(40)",
+        "小按钮(24)",
+        "禁用"
+      ],
+      "referenceCss": ".btn{height:32px;padding:0 16px;border-radius:var(--radius-md);border:none;font-size:14px;font-family:var(--font-cn);cursor:pointer}.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-hover)}.btn-secondary{background:#fff;color:var(--primary);border:1px solid var(--primary)}.btn-text{background:none;color:var(--primary)}.btn-lg{height:40px}.btn-sm{height:24px;padding:0 12px}.btn:disabled{background:var(--primary-dis-bg);color:var(--primary-dis-fg);cursor:not-allowed}",
+      "referenceHtml": "<span class=\"btn btn-primary\">主按钮</span><span class=\"btn btn-secondary\">次按钮</span><span class=\"btn btn-text\">文字按钮</span>",
+      "ardot": {
+        "libraryComponent": "Button（Ardot 组件库）",
+        "variantMapping": "主/次/文字对应 Ardot Button 三变体；大/小对应 Ardot size 变体；圆角8、字重400、全尺寸文本绑 Body1（14px/400）对齐 Ardot 默认态。",
+        "notes": "主按钮 primary 实底白字；次按钮白底+primary 边框+primary 字；文字按钮仅 primary 字。禁用用 primary-dis-bg + primary-dis-fg 字（#A0B4C0，品牌色弱化色），勿整块深 primary。文本绑 Body1（14px/Regular 400，全尺寸统一）；字重 400，非 600。"
+      },
+      "do": [
+        "默认高32/大40/小24",
+        "圆角8",
+        "字重400 Regular",
+        "禁用用浅 primary 底+灰字"
+      ],
+      "dont": [
+        "字重 600（旧 bug，过重）",
+        "圆角≠8",
+        "整块深 primary 作禁用",
+        "带 .btn-ico 的按钮文字不包 .btn-label（容器收窄时中文逐字断行竖排截断，2026-08-04 契约）"
+      ],
+      "deprecated": true,
+      "supersededBy": "button",
+      "note": "2026-07-31 弃用：新页面改用 packages/web-ui 真实组件「button」（shadcn）。本条目仅作 HTML 原型对照与门禁来源。",
+      "motion": {
+        "transition": {
+          "property": "background,color",
+          "duration": "fast",
+          "easing": "ease-out"
+        }
+      }
+    },
+    {
+      "id": "input",
+      "name": "单行输入 Input",
+      "category": "数据录入",
+      "summary": "高32、半径4、N5底、N6边；聚焦 primary 边框+2px ring。",
+      "anatomy": {
+        "field": "输入域",
+        "placeholder": "占位文字",
+        "focusRing": "聚焦环"
+      },
+      "tokens": [
+        "--n5",
+        "--n6",
+        "--n10",
+        "--n8",
+        "--primary",
+        "--radius-base",
+        "--font-cn"
+      ],
+      "sizing": {
+        "height": 32,
+        "radius": 4,
+        "fontSize": 14,
+        "paddingX": 12,
+        "bg": "N5",
+        "border": "N6"
+      },
+      "states": {
+        "default": {
+          "bg": "N5",
+          "border": "N6",
+          "text": "N10"
+        },
+        "focus": {
+          "border": "primary",
+          "ring": "rgba(0,94,174,.2)"
+        },
+        "disabled": {
+          "bg": "N4",
+          "text": "N8"
+        }
+      },
+      "variants": [
+        "默认",
+        "带前缀图标",
+        "禁用",
+        "错误态(红边)"
+      ],
+      "referenceCss": ".input{height:32px;width:220px;padding:0 12px;background:var(--n5);border:1px solid var(--n6);border-radius:var(--radius-base);font-size:14px;color:var(--n10);font-family:var(--font-cn)}.input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(0,94,174,.2)}",
+      "referenceHtml": "<input class=\"input\" placeholder=\"请输入设备编号 / 名称…\">",
+      "ardot": {
+        "libraryComponent": "Input（Ardot 组件库）",
+        "variantMapping": "Input 主组件；聚焦态对应 Ardot focus 变体（primary 边框+ring）。",
+        "notes": "高32/半径4/N5底/N6边；聚焦 primary 边框+2px rgba 环。占位符用 N8。勿 radius≠4 或底非 N5。"
+      },
+      "do": [
+        "高32/半径4/N5底/N6边",
+        "聚焦 primary 边框+ring"
+      ],
+      "dont": [
+        "半径≠4",
+        "底非 N5",
+        "占位符用主色"
+      ],
+      "deprecated": true,
+      "supersededBy": "input",
+      "note": "2026-07-31 弃用：新页面改用 packages/web-ui 真实组件「input」（shadcn）。本条目仅作 HTML 原型对照与门禁来源。",
+      "motion": {
+        "transition": {
+          "property": "border-color",
+          "duration": "fast",
+          "easing": "ease-out"
+        }
+      }
+    },
+    {
+      "id": "table",
+      "name": "表格 Table",
+      "category": "数据展示",
+      "summary": "表头高48、N2底、字重500；行高44、单元左右16、底边 N6。",
+      "anatomy": {
+        "header": "表头",
+        "row": "数据行",
+        "cell": "单元格"
+      },
+      "tokens": [
+        "--n2",
+        "--n6",
+        "--n10",
+        "--n3",
+        "--font-cn"
+      ],
+      "sizing": {
+        "headerHeight": 48,
+        "rowHeight": 44,
+        "headerBg": "N2",
+        "headerWeight": 500,
+        "cellPaddingX": 16,
+        "fontSize": 13
+      },
+      "states": {
+        "header": {
+          "bg": "N2",
+          "weight": 500,
+          "text": "N10"
+        },
+        "row.default": {
+          "text": "N10",
+          "borderBottom": "N6"
+        },
+        "row.hover": {
+          "bg": "N3"
+        }
+      },
+      "variants": [
+        "基础表",
+        "带选择",
+        "带状态点",
+        "分页表"
+      ],
+      "referenceCss": ".table{width:100%;border-collapse:collapse;font-size:13px}.table th{height:48px;background:var(--n2);text-align:left;padding:0 16px;color:var(--n10);font-weight:500}.table td{height:var(--density-row-height);padding:0 16px;border-bottom:1px solid var(--n6);color:var(--n10)}.table tbody tr:hover{background:var(--n3)}",
+      "referenceHtml": "<table class=\"table\"><thead><tr><th>设备</th><th>状态</th><th>负载</th></tr></thead><tbody><tr><td>注塑机 A-01</td><td>运行中</td><td>72%</td></tr></tbody></table>",
+      "ardot": {
+        "libraryComponent": "Table（Ardot 组件库）",
+        "variantMapping": "th 对应 Ardot table-header 变体(高48/N2/字重500)；td 对应 Ardot table-cell(高44/左右16)。",
+        "notes": "表头高48、N2底、字重500；行高44、单元左右16、底边 N6。hover 行用 N3。勿表头字重≠500 或底非 N2。"
+      },
+      "do": [
+        "表头高48/N2底/字重500",
+        "行高44/单元左右16",
+        "hover 行 N3"
+      ],
+      "dont": [
+        "表头字重≠500",
+        "表头底非 N2",
+        "单元左右≠16"
+      ],
+      "deprecated": true,
+      "supersededBy": "table",
+      "note": "2026-07-31 弃用：新页面改用 packages/web-ui 真实组件「table」（shadcn）。本条目仅作 HTML 原型对照与门禁来源。",
+      "motion": {
+        "transition": {
+          "property": "background",
+          "duration": "fast",
+          "easing": "ease-out"
+        }
+      }
+    },
+    {
+      "id": "tag",
+      "name": "标签 Tag",
+      "category": "数据展示",
+      "summary": "高22、半径4、字重400；4 态用功能色底+功能色字。",
+      "anatomy": {
+        "base": "标签基",
+        "suc": "成功",
+        "warn": "警告",
+        "err": "错误",
+        "def": "默认/中性",
+        "run": "运行"
+      },
+      "tokens": [
+        "--suc",
+        "--suc-soft",
+        "--warn",
+        "--warn-soft",
+        "--err",
+        "--err-soft",
+        "--run",
+        "--run-soft",
+        "--n3",
+        "--n9",
+        "--radius-base"
+      ],
+      "sizing": {
+        "height": 22,
+        "radius": 4,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "paddingX": 10
+      },
+      "states": {
+        "suc": {
+          "bg": "suc-soft(#F6FFED)",
+          "text": "suc(#389E0D)"
+        },
+        "warn": {
+          "bg": "warn-soft(#FFF7E6)",
+          "text": "warn(#FA8C16)"
+        },
+        "err": {
+          "bg": "err-soft(#FFF1F0)",
+          "text": "err(#F5222D)"
+        },
+        "run": {
+          "bg": "run-soft(#ECFDF5)",
+          "text": "run(#16A34A)"
+        },
+        "def": {
+          "bg": "N3",
+          "text": "N9"
+        }
+      },
+      "variants": [
+        "成功",
+        "警告",
+        "错误",
+        "运行",
+        "默认"
+      ],
+      "referenceCss": ".tag{display:inline-flex;align-items:center;height:22px;padding:0 10px;border-radius:var(--radius-base);font-size:12px;margin-right:8px}.tag-suc{background:var(--suc-soft);color:var(--suc)}.tag-warn{background:var(--warn-soft);color:var(--warn)}.tag-err{background:var(--err-soft);color:var(--err)}.tag-def{background:var(--n3);color:var(--n9)}",
+      "referenceHtml": "<span class=\"tag tag-suc\">成功</span><span class=\"tag tag-warn\">警告</span><span class=\"tag tag-err\">错误</span><span class=\"tag tag-def\">默认</span>",
+      "ardot": {
+        "libraryComponent": "Tag / 状态标签（Ardot 组件库）",
+        "variantMapping": "各态对应 Ardot Tag 变体；运行态用 run 而非 suc。",
+        "notes": "高22/半径4/字重400；4 态用功能色底+功能色字（底为 -bg 浅色）。运行态用 run(#16A34A) 系列，勿与成功绿混。Web 内禁止 #10B981。"
+      },
+      "do": [
+        "高22/半径4/字重400",
+        "功能色底+功能色字",
+        "运行态单独用 run"
+      ],
+      "dont": [
+        "字重 600",
+        "半径≠4",
+        "Web 内用 #10B981",
+        "运行态用成功绿"
+      ],
+      "deprecated": true,
+      "supersededBy": "tag",
+      "note": "2026-07-31 弃用：新页面改用 packages/web-ui 真实组件「tag」（shadcn）。本条目仅作 HTML 原型对照与门禁来源。",
+      "motion": {
+        "transition": {
+          "property": "background",
+          "duration": "fast",
+          "easing": "ease-out"
+        }
+      }
+    },
+    {
+      "id": "tabs",
+      "name": "页签 Tabs",
+      "category": "导航",
+      "summary": "高32、字13；激活态 primary 字+2px primary 下划线、字重500。",
+      "anatomy": {
+        "bar": "页签条",
+        "tab": "单个页签",
+        "active": "激活态"
+      },
+      "tokens": [
+        "--n6",
+        "--n9",
+        "--primary",
+        "--font-cn"
+      ],
+      "sizing": {
+        "height": 32,
+        "fontSize": 13,
+        "activeWeight": 500,
+        "barBorder": "N6"
+      },
+      "states": {
+        "default": {
+          "text": "N9"
+        },
+        "active": {
+          "text": "primary",
+          "borderBottom": "2px primary"
+        }
+      },
+      "variants": [
+        "基础",
+        "带徽标",
+        "滚动"
+      ],
+      "referenceCss": ".tabs{display:flex;gap:4px;border-bottom:1px solid var(--n6);height:32px;align-items:flex-end}.tab{padding:0 12px;height:32px;display:flex;align-items:center;font-size:13px;color:var(--n9);cursor:pointer;border-bottom:2px solid transparent}.tab.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:500}",
+      "referenceHtml": "<div class=\"tabs\"><div class=\"tab\">概览</div><div class=\"tab active\">实时监控</div><div class=\"tab\">历史</div></div>",
+      "ardot": {
+        "libraryComponent": "Tabs（Ardot 组件库）",
+        "variantMapping": "tab 对应 Ardot Tab 变体；active 对应 Ardot Tab/active。",
+        "notes": "高32/字13；激活 primary 字+2px primary 下划线、字重500。未激活用 N9。勿激活字重≠500 或下划线非 primary。"
+      },
+      "do": [
+        "高32/字13",
+        "激活 primary+2px 下划线+字重500"
+      ],
+      "dont": [
+        "激活字重≠500",
+        "下划线非 primary",
+        "字号≠13"
+      ],
+      "deprecated": true,
+      "supersededBy": "tabs",
+      "note": "2026-07-31 弃用：新页面改用 packages/web-ui 真实组件「tabs」（shadcn）。本条目仅作 HTML 原型对照与门禁来源。",
+      "motion": {
+        "transition": {
+          "property": "color",
+          "duration": "fast",
+          "easing": "ease-out"
+        }
+      }
+    },
+    {
+      "id": "pager",
+      "name": "分页器 Pager",
+      "category": "导航",
+      "summary": "24×24 圆钮、半径999、字12；激活 primary 实底白字；总条14/N9。",
+      "anatomy": {
+        "bar": "分页条",
+        "pg": "页码钮",
+        "active": "当前页",
+        "total": "总条数"
+      },
+      "tokens": [
+        "--n6",
+        "--n10",
+        "--primary",
+        "--n9"
+      ],
+      "sizing": {
+        "height": 44,
+        "btnSize": 24,
+        "btnRadius": 999,
+        "btnFontSize": 12,
+        "activeBg": "primary",
+        "totalFontSize": 14,
+        "totalColor": "N9"
+      },
+      "states": {
+        "pg.default": {
+          "border": "N6",
+          "text": "N10"
+        },
+        "pg.active": {
+          "bg": "primary",
+          "text": "#FFFFFF"
+        },
+        "pg.hover": {
+          "bg": "N3"
+        }
+      },
+      "variants": [
+        "基础",
+        "带跳转",
+        "带总条数"
+      ],
+      "referenceCss": ".pager{display:flex;align-items:center;gap:4px;height:44px}.pg{width:24px;height:24px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:12px;border:1px solid var(--n6);cursor:pointer;color:var(--n10)}.pg.active{background:var(--primary);color:#fff;border-color:var(--primary)}.pg-total{margin-left:auto;font-size:14px;color:var(--n9)}",
+      "referenceHtml": "<div class=\"pager\"><span class=\"pg\">‹</span><span class=\"pg active\">1</span><span class=\"pg\">2</span><span class=\"pg\">3</span><span class=\"pg\">›</span><span class=\"pg-total\">共 27 条</span></div>",
+      "ardot": {
+        "libraryComponent": "Pagination（Ardot 组件库）",
+        "variantMapping": "pg 对应 Ardot page-item 变体(24圆钮)；active 对应 Ardot page-item/active；total 对应 Ardot total 文本。",
+        "notes": "24×24 圆钮、半径999、字12；激活 primary 实底白字；总条14/N9。勿方角或尺寸≠24。"
+      },
+      "do": [
+        "24圆钮/半径999/字12",
+        "激活 primary 实底白字"
+      ],
+      "dont": [
+        "方角",
+        "尺寸≠24",
+        "激活非 primary"
+      ],
+      "deprecated": true,
+      "supersededBy": "pagination",
+      "note": "2026-07-31 弃用：新页面改用 packages/web-ui 真实组件「pagination」（shadcn）。本条目仅作 HTML 原型对照与门禁来源。"
+    },
+    {
+      "id": "status-dot",
+      "name": "状态指示灯 / 状态点",
+      "category": "数据展示",
+      "summary": "直径10px 圆点；状态色绑运行绿/功能色（运行 #16A34A 两端共用）。",
+      "anatomy": {
+        "dot": "圆点",
+        "label": "状态文字(可选)"
+      },
+      "tokens": [
+        "--run",
+        "--suc",
+        "--warn",
+        "--err",
+        "--n9"
+      ],
+      "sizing": {
+        "size": 10,
+        "radius": 999
+      },
+      "states": {
+        "run": {
+          "color": "run(#16A34A)"
+        },
+        "ok": {
+          "color": "suc(#389E0D)"
+        },
+        "warn": {
+          "color": "warn(#FA8C16)"
+        },
+        "err": {
+          "color": "err(#F5222D)"
+        },
+        "offline": {
+          "color": "N9"
+        }
+      },
+      "variants": [
+        "运行",
+        "成功",
+        "警告",
+        "错误",
+        "离线"
+      ],
+      "referenceCss": ".status-dot{display:inline-flex;align-items:center;gap:6px;font-size:13px;margin-right:14px}.status-dot i{width:10px;height:10px;border-radius:999px;display:inline-block}",
+      "referenceHtml": "<span class=\"status-dot\"><i style=\"background:var(--run)\"></i>运行中</span><span class=\"status-dot\"><i style=\"background:var(--suc)\"></i>正常</span>",
+      "ardot": {
+        "libraryComponent": "StatusDot / 状态指示灯（Ardot 组件库）",
+        "variantMapping": "i 对应 Ardot status-dot 变体(直径10)；各态对应 Ardot 颜色变体。",
+        "notes": "直径10px 圆；运行态绑 run(#16A34A) 两端共用。Web 成功态用 suc(#389E0D) 非 #10B981。勿直径≠10。"
+      },
+      "do": [
+        "直径10/圆",
+        "运行态绑 #16A34A"
+      ],
+      "dont": [
+        "直径≠10",
+        "Web 成功态用 #10B981"
+      ],
+      "deprecated": true,
+      "supersededBy": "status-dot",
+      "note": "2026-07-31 弃用：新页面改用 packages/web-ui 真实组件「status-dot」（shadcn）。本条目仅作 HTML 原型对照与门禁来源。"
+    },
+    {
+      "id": "chart-box",
+      "name": "图表容器（canvas 挂载点）",
+      "category": "数据可视化",
+      "summary": "canvas 图表库（ECharts 等）定高容器：position relative + width 100% + height 320px（4px 网格），防图表四周留白失控。业务页可覆盖高度。",
+      "anatomy": {
+        "box": "定高容器(默认320px，业务页可覆盖)",
+        "canvas": "canvas 本体(.chart-canvas 占满)"
+      },
+      "tokens": [
+        "--bg-surface",
+        "--shadow-card",
+        "--n6"
+      ],
+      "sizing": {
+        "height": 320
+      },
+      "referenceCss": ".chart-box{position:relative;width:100%;height:320px}",
+      "referenceHtml": "<div class=\"chart-box\"><canvas class=\"chart-canvas\"></canvas></div>",
+      "note": "2026-08-03 新增容器原语：ECharts 等 canvas 库挂载点，不绑定具体库只约束容器。2026-08-04 补充：SVG 图表请用 .chart-svg--fill（width/height:100% + non-scaling-stroke），禁 preserveAspectRatio=xMidYMid meet 硬塞（等比缩放撑不满容器，见 RULES §3.7）；preserveAspectRatio=none 拉伸态 viewBox 右侧须留 16-20px 内部边距（元素 x ≤ viewBox 宽-20，门禁 chart.svg.viewbox-edge，否则末端 X 轴标签被 card-body padding 裁切）。"
+    },
+    {
+      "id": "chart-canvas",
+      "name": "图表画布（占满容器）",
+      "category": "数据可视化",
+      "summary": "canvas 本体：absolute inset 0 占满 .chart-box 容器，宽高 100%。",
+      "anatomy": {
+        "canvas": "canvas 元素(absolute inset:0)"
+      },
+      "tokens": [],
+      "sizing": {},
+      "referenceCss": ".chart-canvas{position:absolute;inset:0;width:100%;height:100%}",
+      "referenceHtml": "<div class=\"chart-box\"><canvas class=\"chart-canvas\"></canvas></div>",
+      "note": "2026-08-03 新增容器原语：与 .chart-box 成对使用。"
+    },
+    {
+      "id": "card--fill",
+      "name": "卡片撑满变体（等高收底）",
+      "category": "数据展示",
+      "summary": "flex column 撑满父容器实现卡片等高、内容不满收底；body flex:1 + min-height:0，内容超限配 .card-body--scroll 滚动。",
+      "anatomy": {
+        "card": "卡片(flex column)",
+        "body": "内容区(flex:1;min-height:0)"
+      },
+      "tokens": [],
+      "sizing": {},
+      "referenceCss": ".card--fill{display:flex;flex-direction:column}.card--fill .card-body{flex:1;min-height:0}",
+      "referenceHtml": "<div class=\"card card--fill\"><div class=\"card-body\">内容</div></div>",
+      "note": "2026-08-03 新增容器原语：配合 grid/flex 父容器实现等高收底。2026-08-04 补强：.grid12 > .col-N 内卡片一律 .card--fill（col-N 弹性容器自动分配高度，单卡撑满/多卡平分），卡片内图表/表格容器（.donut-wrap/.chart-box/.table-wrap）再 flex:1 吃掉剩余高度；门禁 card.fill-in-grid（RULES §4.4）。"
+    },
+    {
+      "id": "col-grid",
+      "name": "栅格列弹性容器（col-N）",
+      "category": "数据展示",
+      "summary": "grid12 的列容器原语：grid item 身份不变，内部转 flex column（gap 16px），直接子 .card flex:1 平分列高——单卡撑满/多卡平分，与同 grid 行其他列对齐。",
+      "anatomy": {
+        "col": "列容器(display:flex;flex-direction:column;gap:16px)",
+        "cards": "直接子 .card(flex:1;min-height:0)"
+      },
+      "tokens": [],
+      "sizing": {},
+      "referenceCss": ".col-3,.col-4,.col-5,.col-6,.col-7,.col-8,.col-9,.col-12{display:flex;flex-direction:column;gap:var(--space-base)}.col-3 > .card,.col-4 > .card,.col-5 > .card,.col-6 > .card,.col-7 > .card,.col-8 > .card,.col-9 > .card,.col-12 > .card{flex:1;min-height:0}",
+      "referenceHtml": "<div class=\"grid12\"><div class=\"col-7\"><div class=\"card card--fill\">图表卡</div></div><div class=\"col-5\"><div class=\"card card--fill\">列表卡</div></div></div>",
+      "note": "2026-08-04 新增：机器群览页实测 col 内卡片高度=内容高度、与同 grid 行其他卡片不齐。弹性容器 + 卡片 flex:1 根因层修复；门禁 card.fill-in-grid（RULES §4.4）。"
+    },
+    {
+      "id": "table-wrap",
+      "name": "表格容器（横向滚动）",
+      "category": "数据展示",
+      "summary": "表格包裹容器：width 100% + overflow auto，表格过长时容器内滚动，杜绝「最后一行下方空白」。",
+      "anatomy": {
+        "wrap": "滚动容器(overflow:auto)",
+        "table": ".table 本体"
+      },
+      "tokens": [],
+      "sizing": {},
+      "referenceCss": ".table-wrap{width:100%;overflow:auto}",
+      "referenceHtml": "<div class=\"table-wrap\"><table class=\"table\">…</table></div>",
+      "note": "2026-08-03 新增容器原语。"
+    },
+    {
+      "id": "stat-grid",
+      "name": "栅格卡片容器（KPI 统计卡）",
+      "category": "数据展示",
+      "summary": "KPI 统计卡栅格：基础类默认 4 列；卡数 ≠ 4 必须显式 --N 后缀（--5/--6/--8），否则第 N 张卡掉行只占 1/4 宽。",
+      "anatomy": {
+        "grid": "栅格容器(默认4列)",
+        "cards": "直接子元素为卡片(.card/.stat-card)"
+      },
+      "tokens": [],
+      "sizing": {
+        "columns": {
+          "default": 4,
+          "variants": [
+            5,
+            6,
+            8
+          ]
+        }
+      },
+      "referenceCss": ".stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-base)}.stat-grid--5{grid-template-columns:repeat(5,1fr)}.stat-grid--6{grid-template-columns:repeat(6,1fr)}.stat-grid--8{grid-template-columns:repeat(8,1fr)}",
+      "referenceHtml": "<div class=\"stat-grid stat-grid--5\"><div class=\"stat-card\">…</div>×5</div>",
+      "note": "2026-08-04 新增：机器群览页实测 5 张 KPI 用基础 .stat-grid（默认 4 列）导致第 5 张掉行。DOM 契约：直接子卡片数=N 时容器必须带 --N（见 RULES §3.7 / validate-spec stat-grid.count.match）。",
+      "notes": "**KPI 卡仅两个版本（2026-08-06 重新定义，禁其他排列）**：① 标准版 = `stat-card--icon`（KPI 图标卡：kpi-ico 图标块 + label + num + foot/delta）；② 环形版 = `stat-card--ring`（KPI 环形卡：SVG 圆环 + label/num/trend）。**禁止**：简约 `stat-num`+`stat-sub` 独立卡（品牌色阶/字阶层级等规范统计信息不得用 KPI 卡样式）、自造 kpi-trend 等内联覆盖。stat-grid 容器卡数 ≠ 4 显式 --N（门禁 stat-grid.count.match）。"
+    },
+    {
+      "id": "stat-card--ring",
+      "name": "KPI 环形卡（统计卡变体）",
+      "category": "数据展示",
+      "summary": "KPI 环形卡（KPI 环形版，2026-08-06 定义）：SVG 圆环 + stat-label/num/trend，环色 5 语义变体",
+      "anatomy": {
+        "cardBody": ".card > .card-body.stat-card--ring（flex gap16 居中）",
+        "ring": "环形图容器 64×64，relative + flex none",
+        "ringBg": "底环 .ring-bg（n3 底，stroke-width 6，fill none）",
+        "ringFg": "进度环 .ring-fg + 色变体（stroke-width 6，linecap round，fill none）",
+        "ringVal": "环心数值 .ring-val（14px mono 500，n11）",
+        "ringInfo": "右侧信息列 .ring-info（.stat-label 12px n9 + .stat-num 22px + .ring-trend 12px run）"
+      },
+      "tokens": [
+        "--n3",
+        "--n9",
+        "--n11",
+        "--run",
+        "--primary",
+        "--warn",
+        "--err",
+        "--secondary"
+      ],
+      "sizing": {
+        "ringSize": 64,
+        "ringRadius": 26,
+        "strokeWidth": 6,
+        "circumference": 163.4,
+        "ringValSize": 14,
+        "infoNumSize": 22,
+        "trendSize": 12
+      },
+      "referenceCss": ".stat-card--ring{display:flex;gap:16px;align-items:center}.stat-card--ring .ring{position:relative;width:64px;height:64px;flex:none}.stat-card--ring .ring svg{width:64px;height:64px;display:block;transform:rotate(-90deg)}.stat-card--ring .ring .ring-bg{fill:none;stroke:var(--n3);stroke-width:6}.stat-card--ring .ring .ring-fg{fill:none;stroke-width:6;stroke-linecap:round}.stat-card--ring .ring .ring-val{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;font-family:var(--font-mono);color:var(--n11)}.stat-card--ring .ring-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.stat-card--ring .ring-info .stat-label{font-size:12px;color:var(--n9);margin-bottom:0}.stat-card--ring .ring-info .stat-num{font-size:22px;line-height:1.1}.stat-card--ring .ring-info .ring-trend{font-size:12px;color:var(--run)}.ring-fg--primary{stroke:var(--primary)}.ring-fg--run{stroke:var(--run)}.ring-fg--warn{stroke:var(--warn)}.ring-fg--err{stroke:var(--err)}.ring-fg--secondary{stroke:var(--secondary)}",
+      "referenceHtml": "<div class=\"card\"><div class=\"card-body stat-card--ring\"><div class=\"ring\"><svg viewBox=\"0 0 64 64\"><circle class=\"ring-bg\" cx=\"32\" cy=\"32\" r=\"26\"/><circle class=\"ring-fg ring-fg--primary\" cx=\"32\" cy=\"32\" r=\"26\" stroke-dasharray=\"163.4\" stroke-dashoffset=\"40.8\"/></svg><span class=\"ring-val\">75%</span></div><div class=\"ring-info\"><span class=\"stat-label\">设备利用率</span><div class=\"stat-num\">$ 192</div><span class=\"ring-trend\">+20.9%</span></div></div></div>",
+      "note": "2026-08-06 登记：源自汽车配件厂运营中心页（1.9.7 基线视觉校验通过）。CSS 已于 2026-08-05 沉淀 template.css L664-679；dashoffset = 周长 × (1 - 百分比)。"
+    },
+    {
+      "id": "stat-card--icon",
+      "name": "KPI 图标卡（统计卡变体）",
+      "category": "数据展示",
+      "summary": "KPI 图标卡（KPI 标准版，2026-08-06 定义）：kpi-ico--lg 图标块 + stat-label + stat-num + stat-foot/stat-delta 趋势",
+      "anatomy": {
+        "cardBody": ".card > .card-body.stat-card--icon（flex gap16 stretch）",
+        "icon": ".kpi-ico--lg + 语义色变体（--primary/--run/--warn/--err/--neutral，浅色低饱和底 #DAEAFA/#ECFDF5/#FFF7E6/#FDEEEE，高饱和图标）",
+        "statBody": ".stat-body（column space-between：数字顶 / foot 底）",
+        "statNum": "大数字 .stat-num（24px 500 n11，line-height 1.15）",
+        "statFoot": "底部行 .stat-foot（flex space-between：.stat-sub 标题 12px n9 左 + .stat-delta 变化量 12px 500 右）"
+      },
+      "tokens": [
+        "--run",
+        "--err",
+        "--n9",
+        "--n11",
+        "--radius-lg",
+        "--primary",
+        "--run-soft",
+        "--warn-soft",
+        "--err-soft",
+        "--primary-dis-bg"
+      ],
+      "sizing": {
+        "iconSize": 48,
+        "iconRadius": 16,
+        "iconGlyph": 24,
+        "numSize": 24,
+        "footSize": 12,
+        "gap": 16
+      },
+      "referenceCss": ".stat-card--icon{display:flex;gap:var(--space-base);align-items:stretch}.stat-card--icon .kpi-ico--lg{flex:none;border-radius:var(--radius-lg)}.stat-card--icon .stat-body{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:space-between}.stat-card--icon .stat-num{line-height:1.15}.stat-card--icon .stat-foot{display:flex;align-items:center;justify-content:space-between;gap:var(--space-sm)}.stat-card--icon .stat-foot .stat-sub{line-height:1.2}.stat-card--icon .stat-delta{font-size:12px;font-weight:500;line-height:1.2;white-space:nowrap}.stat-delta--up{color:var(--run)}.stat-delta--down{color:var(--err)}.card:has(.stat-card--icon),.card:has(.stat-card--ring){transition:transform var(--motion-duration-fast) var(--motion-ease-out),box-shadow var(--motion-duration-fast) var(--motion-ease-out)}.card:has(.stat-card--icon):hover,.card:has(.stat-card--ring):hover{transform:translateY(-2px);box-shadow:var(--shadow-float)}",
+      "referenceHtml": "<div class=\"card\"><div class=\"card-body stat-card--icon\"><span class=\"kpi-ico kpi-ico--lg kpi-ico--primary\"><svg …></svg></span><div class=\"stat-body\"><div class=\"stat-num\">142</div><div class=\"stat-foot\"><div class=\"stat-sub\">设备总数</div><span class=\"stat-delta stat-delta--up\">↑2.4%</span></div></div></div></div>",
+      "note": "2026-08-06 登记：源自汽车配件厂运营中心页 KPI 区（用户视觉拍板：图标低饱和浅底高圆角方 16 + 大数字顶 + 标题/变化量底行贴图标底）。同批沉淀 .kpi-ico--err（err-soft 底）与 .stat-card--mini（迷你统计卡：border+radius-md+padding 10/12，stat-top column）。"
+    }
+  ],
+  "contract": [
+    {
+      "id": "button.radius",
+      "component": "button",
+      "selector": [
+        ".btn"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "border-radius",
+          "expect": 8,
+          "severity": "HIGH",
+          "note": "按钮圆角8"
+        }
+      ]
+    },
+    {
+      "id": "button.weight",
+      "component": "button",
+      "selector": [
+        ".btn"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "font-weight",
+          "expect": [
+            400
+          ],
+          "severity": "HIGH",
+          "note": "14px=Regular 400"
+        }
+      ]
+    },
+    {
+      "id": "button.height",
+      "component": "button",
+      "selector": [
+        ".btn"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "height",
+          "expect": [
+            24,
+            32,
+            40
+          ],
+          "severity": "MEDIUM",
+          "note": "默认32/大40/小24"
+        }
+      ]
+    },
+    {
+      "id": "input.size",
+      "component": "input",
+      "selector": [
+        ".input"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "height",
+          "expect": 32,
+          "severity": "HIGH"
+        },
+        {
+          "prop": "border-radius",
+          "expect": 4,
+          "severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "id": "tag.size",
+      "component": "tag",
+      "selector": [
+        ".tag"
+      ],
+      "scope": "web",
+      "exclude": [
+        ".hero"
+      ],
+      "rules": [
+        {
+          "prop": "height",
+          "expect": 22,
+          "severity": "HIGH"
+        },
+        {
+          "prop": "border-radius",
+          "expect": 4,
+          "severity": "HIGH"
+        },
+        {
+          "prop": "font-weight",
+          "expect": [
+            400
+          ],
+          "severity": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "id": "table.head",
+      "component": "table",
+      "selector": [
+        ".tbl th",
+        ".table th"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "height",
+          "expect": 48,
+          "severity": "HIGH"
+        },
+        {
+          "prop": "font-weight",
+          "expect": 500,
+          "severity": "HIGH"
+        },
+        {
+          "prop": "background",
+          "expectToken": true,
+          "severity": "MEDIUM",
+          "note": "表头底须为 token(N2)"
+        }
+      ]
+    },
+    {
+      "id": "tabs.size",
+      "component": "tabs",
+      "selector": [
+        ".tabs .tab"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "height",
+          "expect": 32,
+          "severity": "HIGH"
+        },
+        {
+          "prop": "font-size",
+          "expect": 13,
+          "severity": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "id": "tabs.active",
+      "component": "tabs",
+      "selector": [
+        ".tab.active",
+        ".tabs .tab.on",
+        ".tab.on"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "font-weight",
+          "expect": 500,
+          "severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "id": "pager.btn",
+      "component": "pager",
+      "selector": [
+        ".pager .pg",
+        ".pg"
+      ],
+      "scope": "web",
+      "exclude": [
+        ".pg-tot"
+      ],
+      "rules": [
+        {
+          "prop": "width",
+          "expect": 24,
+          "severity": "HIGH"
+        },
+        {
+          "prop": "height",
+          "expect": 24,
+          "severity": "HIGH"
+        },
+        {
+          "prop": "border-radius",
+          "expect": 999,
+          "severity": "HIGH"
+        },
+        {
+          "prop": "font-size",
+          "expect": 12,
+          "severity": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "id": "dot.size",
+      "component": "status-dot",
+      "selector": [
+        ".dot",
+        ".status-dot i"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "width",
+          "expect": 10,
+          "severity": "HIGH"
+        },
+        {
+          "prop": "height",
+          "expect": 10,
+          "severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "id": "web.forbid.mobile-green",
+      "component": "*",
+      "selector": [
+        ".btn",
+        ".input",
+        ".tbl",
+        ".tag",
+        ".tabs",
+        ".pager",
+        ".dot"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "color",
+          "forbidHex": [
+            "#10B981"
+          ],
+          "severity": "HIGH",
+          "note": "Web 组件禁用移动端成功绿"
+        },
+        {
+          "prop": "background",
+          "forbidHex": [
+            "#10B981"
+          ],
+          "severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "id": "web.nontoken.hex",
+      "component": "*",
+      "selector": [
+        ".btn",
+        ".input",
+        ".tbl",
+        ".tag",
+        ".tabs",
+        ".pager",
+        ".dot"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "*",
+          "forbidNonTokenHex": true,
+          "severity": "MEDIUM",
+          "note": "Web 组件 CSS 不得出现非 token 硬编码色"
+        }
+      ]
+    },
+    {
+      "id": "type.display",
+      "component": "typography",
+      "selector": [
+        ".t-display"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "font-size",
+          "expect": 32,
+          "severity": "HIGH",
+          "note": "Display 32px（M3 headlineLarge）"
+        },
+        {
+          "prop": "line-height",
+          "expect": 40,
+          "severity": "HIGH",
+          "note": "Display 行高40"
+        },
+        {
+          "prop": "font-weight",
+          "expect": [
+            500
+          ],
+          "severity": "MEDIUM",
+          "note": "Display Medium 500"
+        }
+      ]
+    },
+    {
+      "id": "type.h1",
+      "component": "typography",
+      "selector": [
+        ".t-h1"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "font-size",
+          "expect": 28,
+          "severity": "HIGH",
+          "note": "H1 28px（M3 headlineMedium）"
+        },
+        {
+          "prop": "line-height",
+          "expect": 36,
+          "severity": "HIGH",
+          "note": "H1 行高36"
+        },
+        {
+          "prop": "font-weight",
+          "expect": [
+            500
+          ],
+          "severity": "MEDIUM",
+          "note": "H1 Medium 500"
+        }
+      ]
+    },
+    {
+      "id": "type.h2",
+      "component": "typography",
+      "selector": [
+        ".t-h2"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "font-size",
+          "expect": 24,
+          "severity": "HIGH",
+          "note": "H2 24px（M3 headlineSmall）"
+        },
+        {
+          "prop": "line-height",
+          "expect": 32,
+          "severity": "HIGH",
+          "note": "H2 行高32"
+        },
+        {
+          "prop": "font-weight",
+          "expect": [
+            500
+          ],
+          "severity": "MEDIUM",
+          "note": "H2 Medium 500"
+        }
+      ]
+    },
+    {
+      "id": "type.h3",
+      "component": "typography",
+      "selector": [
+        ".t-h3"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "font-size",
+          "expect": 20,
+          "severity": "HIGH",
+          "note": "H3 20px（M3 titleLarge）"
+        },
+        {
+          "prop": "line-height",
+          "expect": 28,
+          "severity": "HIGH",
+          "note": "H3 行高28"
+        },
+        {
+          "prop": "font-weight",
+          "expect": [
+            500
+          ],
+          "severity": "MEDIUM",
+          "note": "H3 Medium 500"
+        }
+      ]
+    },
+    {
+      "id": "type.h4",
+      "component": "typography",
+      "selector": [
+        ".t-h4"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "font-size",
+          "expect": 18,
+          "severity": "HIGH",
+          "note": "H4 18px"
+        },
+        {
+          "prop": "line-height",
+          "expect": 26,
+          "severity": "HIGH",
+          "note": "H4 行高26"
+        },
+        {
+          "prop": "font-weight",
+          "expect": [
+            500
+          ],
+          "severity": "MEDIUM",
+          "note": "H4 Medium 500"
+        }
+      ]
+    },
+    {
+      "id": "type.h5",
+      "component": "typography",
+      "selector": [
+        ".t-h5"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "font-size",
+          "expect": 16,
+          "severity": "HIGH",
+          "note": "H5 16px（M3 titleMedium）"
+        },
+        {
+          "prop": "line-height",
+          "expect": 24,
+          "severity": "HIGH",
+          "note": "H5 行高24"
+        },
+        {
+          "prop": "font-weight",
+          "expect": [
+            500
+          ],
+          "severity": "MEDIUM",
+          "note": "H5 Medium 500"
+        }
+      ]
+    },
+    {
+      "id": "type.body1",
+      "component": "typography",
+      "selector": [
+        ".t-body1"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "font-size",
+          "expect": 14,
+          "severity": "HIGH",
+          "note": "Body1 14px（M3 bodyMedium）"
+        },
+        {
+          "prop": "line-height",
+          "expect": 22,
+          "severity": "HIGH",
+          "note": "Body1 行高22"
+        },
+        {
+          "prop": "font-weight",
+          "expect": [
+            400
+          ],
+          "severity": "MEDIUM",
+          "note": "Body1 Regular 400"
+        }
+      ]
+    },
+    {
+      "id": "type.body2",
+      "component": "typography",
+      "selector": [
+        ".t-body2"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "font-size",
+          "expect": 13,
+          "severity": "HIGH",
+          "note": "Body2 13px"
+        },
+        {
+          "prop": "line-height",
+          "expect": 20,
+          "severity": "HIGH",
+          "note": "Body2 行高20"
+        },
+        {
+          "prop": "font-weight",
+          "expect": [
+            400
+          ],
+          "severity": "MEDIUM",
+          "note": "Body2 Regular 400"
+        }
+      ]
+    },
+    {
+      "id": "type.caption",
+      "component": "typography",
+      "selector": [
+        ".t-caption"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "font-size",
+          "expect": 12,
+          "severity": "HIGH",
+          "note": "Caption 12px（M3 bodySmall）"
+        },
+        {
+          "prop": "line-height",
+          "expect": 16,
+          "severity": "HIGH",
+          "note": "Caption 行高16（4px网格）"
+        },
+        {
+          "prop": "font-weight",
+          "expect": [
+            400
+          ],
+          "severity": "MEDIUM",
+          "note": "Caption Regular 400"
+        }
+      ]
+    },
+    {
+      "id": "type.label",
+      "component": "typography",
+      "selector": [
+        ".t-label"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "font-size",
+          "expect": 12,
+          "severity": "HIGH",
+          "note": "Label 12px（M3 labelMedium）"
+        },
+        {
+          "prop": "line-height",
+          "expect": 16,
+          "severity": "HIGH",
+          "note": "Label 行高16"
+        },
+        {
+          "prop": "font-weight",
+          "expect": [
+            500
+          ],
+          "severity": "MEDIUM",
+          "note": "Label Medium 500"
+        }
+      ]
+    },
+    {
+      "id": "type.overline",
+      "component": "typography",
+      "selector": [
+        ".t-overline"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "font-size",
+          "expect": 11,
+          "severity": "HIGH",
+          "note": "Overline 11px（M3 labelSmall）"
+        },
+        {
+          "prop": "line-height",
+          "expect": 16,
+          "severity": "HIGH",
+          "note": "Overline 行高16"
+        },
+        {
+          "prop": "font-weight",
+          "expect": [
+            500
+          ],
+          "severity": "MEDIUM",
+          "note": "Overline Medium 500"
+        }
+      ]
+    },
+    {
+      "id": "type.link",
+      "component": "typography",
+      "selector": [
+        ".t-link"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "font-size",
+          "expect": 14,
+          "severity": "HIGH",
+          "note": "Link 14px"
+        },
+        {
+          "prop": "line-height",
+          "expect": 22,
+          "severity": "HIGH",
+          "note": "Link 行高22"
+        },
+        {
+          "prop": "font-weight",
+          "expect": [
+            400
+          ],
+          "severity": "MEDIUM",
+          "note": "Link Regular 400"
+        }
+      ]
+    },
+    {
+      "id": "input.fill",
+      "component": "input",
+      "selector": [
+        ".input",
+        ".sel-trigger",
+        ".textarea",
+        ".checkbox",
+        ".radio"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "background",
+          "expect": [
+            "var(--n1)",
+            "var(--n4)",
+            "var(--primary)"
+          ],
+          "severity": "HIGH",
+          "note": "输入控件背景语义白名单（2026-08-06）：n1 基础态 / n4 禁用 / primary 选中——禁其他（含旧 n5 灰底）；边框 --n6；focus 边框 --primary + 2px --primary-dis-bg 描边；例外：进度轨道 .progress 用 --n5 是轨道语义非输入"
+        }
+      ]
+    },
+    {
+      "id": "table.head.num-align",
+      "component": "table",
+      "selector": [
+        ".table th.num"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "text-align",
+          "expect": [
+            "right"
+          ],
+          "severity": "HIGH",
+          "note": "数值列表头 th.num 必须右对齐（2026-08-06：.table th 的 left 特异性 0-1-1 高于 .num 的 right 0-1-0，必须显式 .table th.num{text-align:right} 覆盖，否则表头与数据错位）"
+        },
+        {
+          "prop": "font-variant-numeric",
+          "expect": [
+            "normal"
+          ],
+          "severity": "HIGH",
+          "note": "表头 th.num 禁 tabular-nums（表头为中文标题无数字；数字特性会触发浏览器字体回退到宋体等衬线）"
+        }
+      ]
+    },
+    {
+      "id": "table.head.font",
+      "component": "table",
+      "selector": [
+        ".table th"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "font-family",
+          "expect": [
+            "var(--font-cn)"
+          ],
+          "severity": "HIGH",
+          "note": "表头 th 必须显式 font-family:var(--font-cn)（2026-08-06：锁定黑体家族，防 font-variant 特性回退落宋体；表头 13px/500 与数据 14px 区分）"
+        }
+      ]
+    }
+  ]
+}

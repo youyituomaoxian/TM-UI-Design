@@ -1,0 +1,143 @@
+/* components.css — W2 任务3：移动端组件参考样式（token 变量驱动，4 倍数间距）
+ * 契约样式真源：React(Taro) 与 export-static 静态预览共用。
+ * 约定：颜色一律走 :root 变量；白字用 #FFFFFF（门禁白名单）；间距仅 4 倍数；
+ *       font-size 仅取 android∪ios 尺寸集 {10,11,12,13,14,15,16,17,18,20,22,24,26,28,36,38}。
+ */
+
+/* ---------- 页面骨架 ---------- */
+.mn-page { padding: 16px; background: var(--bg-page); }
+.mn-section { margin-bottom: 24px; }
+.mn-section-title {
+  display: block;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-2);
+  margin-bottom: 12px;
+}
+
+/* ---------- 顶部导航 NavBar ---------- */
+.mn-navbar {
+  display: flex;
+  align-items: center;
+  height: 88px;
+  padding: 0 16px;
+  background: var(--primary);
+}
+.mn-navbar-title { font-size: 18px; color: #FFFFFF; }
+
+/* ---------- 底部导航 BottomNav ---------- */
+.mn-bottom-nav {
+  display: flex;
+  height: 56px;
+  padding: 8px 0;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border);
+}
+.mn-bottom-nav-item { flex: 1; text-align: center; }
+.mn-bottom-nav-icon { font-size: 24px; color: var(--text-3); }
+.mn-bottom-nav-label { font-size: 12px; color: var(--text-3); margin-top: 4px; }
+.mn-bottom-nav-item--active .mn-bottom-nav-icon,
+.mn-bottom-nav-item--active .mn-bottom-nav-label { color: var(--primary); }
+
+/* ---------- 按钮 Button ---------- */
+.mn-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 16px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  font-weight: 500;
+  margin-right: 12px;
+  margin-bottom: 12px;
+}
+.mn-btn--primary { background: var(--primary); color: #FFFFFF; }
+.mn-btn--secondary { background: var(--n3); color: var(--text-1); }
+.mn-btn--sm { min-height: 32px; padding: 0 12px; font-size: 12px; font-weight: 400; }
+.mn-btn--lg { min-height: 48px; padding: 0 24px; font-size: 16px; }
+.mn-btn--block { display: flex; width: 100%; margin-right: 0; }
+
+/* ---------- 标签 Tag ---------- */
+.mn-tag {
+  display: inline-block;
+  height: 24px;
+  line-height: 24px;
+  padding: 0 8px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+  margin-right: 8px;
+}
+.mn-tag--primary { background: var(--primary); color: #FFFFFF; }
+.mn-tag--success { background: var(--suc); color: #FFFFFF; }
+.mn-tag--warning { background: var(--warn); color: #FFFFFF; }
+.mn-tag--error { background: var(--err); color: #FFFFFF; }
+
+/* ---------- 列表项 ListItem ---------- */
+.mn-list { margin: 0; padding: 0; list-style: none; }
+.mn-list-item {
+  display: flex;
+  align-items: center;
+  min-height: 56px;
+  padding: 0 16px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+}
+.mn-list-title { font-size: 16px; font-weight: 500; color: var(--text-1); }
+.mn-list-desc { font-size: 14px; color: var(--text-3); margin-top: 4px; }
+
+/* ---------- 卡片 Card ---------- */
+.mn-card {
+  border-radius: var(--radius-md);
+  padding: 16px;
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-m);
+  margin-bottom: 16px;
+}
+.mn-card-title { font-size: 16px; font-weight: 500; color: var(--text-1); margin-bottom: 8px; }
+.mn-card-body { font-size: 14px; color: var(--text-2); }
+
+/* ---------- 弹窗 Dialog ---------- */
+.mn-dialog-mask { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; }
+.mn-dialog {
+  width: 280px;
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-l);
+}
+.mn-dialog-title { font-size: 18px; color: var(--text-1); margin-bottom: 12px; }
+.mn-dialog-body { font-size: 14px; color: var(--text-2); margin-bottom: 16px; }
+
+/* ---------- 搜索 Search ---------- */
+.mn-search {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 12px;
+  background: var(--n3);
+  border-radius: var(--radius-md);
+}
+.mn-search-input { flex: 1; border: none; background: transparent; outline: none; font-size: 14px; color: var(--text-1); }
+
+/* ---------- 页签 Tabs ---------- */
+.mn-tabs { display: flex; border-bottom: 1px solid var(--border); }
+.mn-tab { padding: 12px 16px; font-size: 14px; font-weight: 500; color: var(--text-3); }
+.mn-tab--active { color: var(--primary); font-weight: 500; border-bottom: 2px solid var(--primary); }
+
+/* ---------- 状态点 StatusDot ---------- */
+.mn-status-dot { display: inline-block; width: 10px; height: 10px; border-radius: 999px; margin-right: 8px; }
+.mn-status-dot--success { background: var(--suc); }
+.mn-status-dot--warning { background: var(--warn); }
+.mn-status-dot--error { background: var(--err); }
+.mn-status-dot--running { background: var(--run); }
+
+/* ---------- 图标 Icon ---------- */
+.mn-icon { font-size: 24px; color: var(--text-2); }
+
+/* ---------- 字阶参考 Typography ---------- */
+.mn-type-row { display: flex; align-items: baseline; margin-bottom: 8px; }
+.mn-type-name { width: 96px; font-size: 12px; color: var(--text-3); }
+.mn-type-sample { font-size: 16px; color: var(--text-1); }

@@ -1,0 +1,52 @@
+{
+  "name": "@techmation/mobile-ui",
+  "version": "0.1.0",
+  "private": true,
+  "description": "弘讯移动端组件库（NutUI-React-Taro 吃升级后移动端 tokens）",
+  "templateInfo": {
+    "name": "default",
+    "typescript": true,
+    "css": "sass",
+    "framework": "react"
+  },
+  "scripts": {
+    "build:weapp": "taro build --type weapp",
+    "map-tokens": "node scripts/map-tokens.js",
+    "export-static": "node scripts/export-static.js",
+    "validate-static": "node scripts/validate-static.js",
+    "freeze-baseline": "node scripts/freeze-baseline.js"
+  },
+  "browserslist": [
+    "last 3 versions",
+    "Android >= 4.1",
+    "ios >= 8"
+  ],
+  "dependencies": {
+    "@babel/runtime": "^7.24.0",
+    "@nutui/nutui-react-taro": "4.0.0-beta.5",
+    "@tarojs/components": "4.2.1",
+    "@tarojs/helper": "4.2.1",
+    "@tarojs/plugin-framework-react": "^4.2.1",
+    "@tarojs/plugin-platform-weapp": "^4.2.1",
+    "@tarojs/react": "4.2.1",
+    "@tarojs/runtime": "4.2.1",
+    "@tarojs/shared": "4.2.1",
+    "@tarojs/taro": "4.2.1",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.0",
+    "@babel/preset-react": "^8.0.1",
+    "@babel/preset-typescript": "^8.0.1",
+    "@napi-rs/triples": "^2.1.16",
+    "@tarojs/cli": "4.2.1",
+    "@tarojs/webpack5-runner": "4.2.1",
+    "@types/react": "^18.0.0",
+    "@types/webpack-env": "^1.18.0",
+    "babel-preset-taro": "4.2.1",
+    "sass": "^1.77.0",
+    "typescript": "^5.4.0",
+    "webpack": "5.91.0"
+  }
+}

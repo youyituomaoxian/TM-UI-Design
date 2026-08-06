@@ -1,0 +1,1409 @@
+{
+  "meta": {
+    "name": "弘讯移动端组件规格层 (Mobile Component Spec Layer)",
+    "version": "1.1.0",
+    "platform": "mobile",
+    "subplatform": "微信小程序 / Android / iOS 跨端",
+    "sourceOfTruth": "本文件是移动端组件唯一真源（格式中立的结构化 spec）。Ardot 组件库与 HTML/小程序生成产物均须对齐本层，禁止各自另立尺寸/色值。",
+    "consumers": [
+      "① 其他同事（非 Ardot）：读本层 + referenceCss/referenceHtml → 直接生成合规 HTML / 小程序 WXML",
+      "② UI 设计师（Ardot）：读本层 → 在 Ardot 内搭建/维护组件库，对齐 ardot 字段"
+    ],
+    "tokensSource": "命名统一为短名（--primary/--n5/--suc/--run/--radius-md …），与 Web 端 components.json 及 page-template.html :root 1:1 对齐，方便 Agent 跨平台共用一套命名。改 token 请编辑 tokens.json 后重跑 scripts/generate-design-tokens-md.js 重生成 DESIGN-TOKENS.md。注意：移动端 --suc/--warn/--err/--run 语义=背景色（filled），与 Web 端（--suc=前景色）存在差异，跨端复用组件勿混用（见 components.md 命名约定）。",
+    "conventions": {
+      "radius": {
+        "sm": 4,
+        "md": 8,
+        "lg": 16,
+        "full": 999,
+        "btnIos": 6,
+        "cardIos": 10
+      },
+      "fontWeight": {
+        "regular": 400,
+        "medium": 500
+      },
+      "viewport": "375pt 设计基准 / 343pt 内容落位（左右 gutter 16）",
+      "colorRule": "移动端成功绿 = #10B981（合法，区别于 Web #389E0D）。运行/在线绿 #16A34A 两端共用，≠ 成功绿。移动端禁止出现 Web 功能色（#389E0D/#FA8C16/#F5222D）。"
+    },
+    "weight_note": "移动端组件字重与 Web 不同：按钮/标签/列表标题/卡片标题/页签/导航标题普遍用 Medium 500（Web 按钮用 Regular 400）。请勿照搬 Web 字重。",
+    "scope_v1": "v1.1 覆盖 11 个核心组件：导航栏/底栏/按钮/标签/列表/卡片/弹窗/搜索/页签/状态点/图标。`contract` 字段为机器可校验硬约束（驱动移动端 validate-spec.js），与 components 同源。"
+  },
+  "components": [
+    {
+      "id": "navbar",
+      "name": "顶部导航 Top Navigation",
+      "category": "导航",
+      "summary": "固定顶部导航；iOS 高88(状态44+导航44)、Android 高80(状态24+导航56)；主色底、白字、标题 17/22 Medium。",
+      "anatomy": {
+        "status": "状态栏（高度随平台）",
+        "nav": "导航条（标题居中 iOS / 居左 Android）",
+        "title": "导航标题",
+        "icon": "左右操作图标 24×24"
+      },
+      "tokens": [
+        "--primary",
+        "--n1",
+        "--font-cn"
+      ],
+      "sizing": {
+        "ios": {
+          "height": 88,
+          "status": 44,
+          "nav": 44
+        },
+        "android": {
+          "height": 80,
+          "status": 24,
+          "nav": 56
+        },
+        "bg": "primary",
+        "titleColor": "N1",
+        "titleSize": 17,
+        "titleWeight": 500,
+        "icon": 24
+      },
+      "states": {
+        "default": {
+          "bg": "primary",
+          "titleColor": "N1"
+        }
+      },
+      "variants": [
+        "iOS / Android",
+        "小程序 / 默认",
+        "返回按钮 开/关"
+      ],
+      "referenceCss": ".navbar{position:relative;width:375px;background:var(--primary);color:var(--n1);display:flex;flex-direction:column}.navbar-ios{height:88px}.navbar-android{height:80px}.navbar-title{font-size:17px;line-height:22px;font-weight:500;color:var(--n1);font-family:var(--font-cn)}.navbar-ios .navbar-title{text-align:center}.navbar-android .navbar-title{text-align:left;padding-left:16px}.navbar-icon{width:24px;height:24px;color:var(--n1)}",
+      "referenceHtml": "<div class=\"navbar navbar-ios\"><div class=\"navbar-title\">设备监控中心</div></div>",
+      "ardot": {
+        "libraryComponent": "顶部导航（Ardot 移动端组件库）",
+        "variantMapping": "navbar-ios / navbar-android 对应 Ardot 顶部导航 系统(安卓/iOS) 变体；标题 17/22 Medium 对应 Ardot 导航标题变体。",
+        "notes": "iOS 状态栏白字；Android 返回用 ← 符号、标题居左。主色底白字是铁律。勿在导航内用中性色文字。"
+      },
+      "do": [
+        "iOS 高88 / Android 高80",
+        "主色底 + 白字标题",
+        "标题 17/22 Medium"
+      ],
+      "dont": [
+        "导航内用中性色文字",
+        "标题字重≠500",
+        "iOS/Android 高度混用"
+      ]
+    },
+    {
+      "id": "bottomnav",
+      "name": "底部导航 Bottom Navigation",
+      "category": "导航",
+      "summary": "固定底部标签栏；Android 高56(图标24+文字12)、iOS 高83(导航49+安全区34)；N1 底、Shadow-Bottom-Nav。",
+      "anatomy": {
+        "bar": "底部栏容器",
+        "item": "单个标签项（图标+文字）",
+        "icon": "24×24（iOS 25）/ 文字 12"
+      },
+      "tokens": [
+        "--n1",
+        "--n7",
+        "--primary",
+        "--shadow-bottom-nav"
+      ],
+      "sizing": {
+        "android": {
+          "height": 56,
+          "icon": 24,
+          "label": 12
+        },
+        "ios": {
+          "height": 83,
+          "nav": 49,
+          "safe": 34
+        },
+        "bg": "N1",
+        "labelColor": "N7",
+        "activeColor": "primary",
+        "shadow": "bottom-nav"
+      },
+      "states": {
+        "item.default": {
+          "icon": "N7",
+          "label": "N7"
+        },
+        "item.active": {
+          "icon": "primary",
+          "label": "primary"
+        }
+      },
+      "variants": [
+        "Android / iOS",
+        "有文字 / 无文字",
+        "最多 5 项"
+      ],
+      "referenceCss": ".bottomnav{width:375px;background:var(--n1);box-shadow:var(--shadow-bottom-nav);display:flex}.bottomnav-android{height:56px}.bottomnav-ios{height:83px}.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}.bn-icon{width:24px;height:24px;color:var(--n7)}.bn-label{font-size:12px;color:var(--n7);font-family:var(--font-cn)}.bn-item.active .bn-icon,.bn-item.active .bn-label{color:var(--primary)}",
+      "referenceHtml": "<div class=\"bottomnav bottomnav-android\"><div class=\"bn-item active\"><span class=\"bn-icon\">▣</span><span class=\"bn-label\">监控</span></div><div class=\"bn-item\"><span class=\"bn-icon\">▤</span><span class=\"bn-label\">参数</span></div></div>",
+      "ardot": {
+        "libraryComponent": "底部导航（Ardot 移动端组件库）",
+        "variantMapping": "bn-item 对应 Ardot 底部导航元素（是否有文字 × 选中，共 4 变体）；bn-item.active 对应 选中=是 格（图标+文字=主色 #005EAE）。",
+        "notes": "Android 56 / iOS 83（含 34 安全区）。N1 底、未激活 N7、激活 primary。最多 5 项。勿在底栏用主色背景（主色留给顶部导航）。"
+      },
+      "do": [
+        "Android 56 / iOS 83",
+        "N1 底 + N7 未激活 + primary 激活",
+        "底部投影 bottom-nav"
+      ],
+      "dont": [
+        "底栏用主色背景",
+        "高度跨平台混用",
+        "单项用非 primary 激活色"
+      ]
+    },
+    {
+      "id": "button",
+      "name": "按钮 Button（移动端）",
+      "category": "通用",
+      "summary": "主/次；字重 Medium 500（≠ Web 400）。登录56/大48/中40/小32，圆角 Android8 / iOS6。",
+      "anatomy": {
+        "primary": "主按钮实底",
+        "secondary": "次按钮白底描边",
+        "sizes": "登录/大/中/小",
+        "disabled": "禁用"
+      },
+      "tokens": [
+        "--primary",
+        "--primary-hover",
+        "--primary-active",
+        "--primary-dis-bg",
+        "--primary-dis-fg",
+        "--n1",
+        "--radius-md",
+        "--radius-btn-ios",
+        "--font-cn"
+      ],
+      "sizing": {
+        "login": {
+          "height": 56,
+          "minWidth": 300,
+          "fontSize": 16,
+          "fontWeight": 500,
+          "paddingX": 0
+        },
+        "lg": {
+          "height": 48,
+          "minWidth": 120,
+          "fontSize": 16,
+          "fontWeight": 500,
+          "paddingX": 16
+        },
+        "md": {
+          "height": 40,
+          "minWidth": 80,
+          "fontSize": 14,
+          "fontWeight": 500,
+          "paddingX": 16
+        },
+        "sm": {
+          "height": 32,
+          "minWidth": 64,
+          "fontSize": 12,
+          "fontWeight": 400,
+          "paddingX": 16
+        },
+        "radius": "8 (Android) / 6 (iOS)"
+      },
+      "states": {
+        "primary.default": {
+          "bg": "primary",
+          "text": "N1"
+        },
+        "primary.hover": {
+          "bg": "primary-hover"
+        },
+        "primary.active": {
+          "bg": "primary-active"
+        },
+        "secondary.default": {
+          "bg": "N1",
+          "text": "primary",
+          "border": "primary"
+        },
+        "disabled": {
+          "bg": "primary-dis-bg",
+          "text": "primary-dis-fg"
+        }
+      },
+      "variants": [
+        "主按钮",
+        "次按钮",
+        "登录(56)",
+        "大(48)",
+        "中(40)",
+        "小(32)",
+        "禁用",
+        "Button/小/次按钮B(子集)"
+      ],
+      "referenceCss": ".mbtn{display:inline-flex;align-items:center;justify-content:center;border:none;font-family:var(--font-cn);font-weight:500;cursor:pointer;border-radius:var(--radius-md)}.mbtn-lg{height:48px;min-width:120px;padding:0 16px;font-size:16px}.mbtn-md{height:40px;min-width:80px;padding:0 16px;font-size:14px}.mbtn-sm{height:32px;min-width:64px;padding:0 16px;font-size:12px;font-weight:400}.mbtn-login{height:56px;min-width:300px;font-size:16px;font-weight:500}.mbtn-primary{background:var(--primary);color:var(--n1)}.mbtn-primary:active{background:var(--primary-active)}.mbtn-secondary{background:var(--n1);color:var(--primary);border:1px solid var(--primary)}.mbtn:disabled{background:var(--primary-dis-bg);color:var(--primary-dis-fg)}.ios .mbtn{border-radius:var(--radius-btn-ios)}",
+      "referenceHtml": "<button class=\"mbtn mbtn-lg mbtn-primary\">主操作</button><button class=\"mbtn mbtn-md mbtn-secondary\">次操作</button>",
+      "ardot": {
+        "libraryComponent": "Button（Ardot 移动端组件库）",
+        "variantMapping": "mbtn-lg/md/sm/login 对应 Ardot Button/大/中/小/登录 变体（类型[主按钮/次按钮] × 状态）；mbtn 另含 Ardot 子集 Button/小/次按钮B（仅状态变体，无类型）。移动端无 文字按钮 类型（仅 主/次）。",
+        "notes": "移动端按钮字重 Medium 500（关键：Web 是 400）。大按钮实测 48px（非 44）。圆角 Android8 / iOS6。禁用用浅 primary 底 + 灰字。"
+      },
+      "do": [
+        "登录56/大48/中40/小32",
+        "字重 500 Medium",
+        "主色实底白字 / 次按钮白底描边"
+      ],
+      "dont": [
+        "字重 400（移动端是 500）",
+        "大按钮用 44（实测 48）",
+        "圆角≠8(Android)/6(iOS)",
+        "整块深 primary 作禁用"
+      ],
+      "motion": {
+        "transition": {
+          "property": "background,color",
+          "duration": "fast",
+          "easing": "ease-out"
+        }
+      }
+    },
+    {
+      "id": "tag",
+      "name": "标签 Tag（移动端）",
+      "category": "数据展示",
+      "summary": "大28/中24/小20，半径4，字重 Medium 500；线型(白底主色边)/面型(主色底白字)/功能色(成功#10B981/警告#F59E0B/错误#EF4444)。",
+      "anatomy": {
+        "base": "标签基",
+        "linear": "线型",
+        "filled": "面型",
+        "suc": "成功",
+        "warn": "警告",
+        "err": "错误",
+        "run": "运行"
+      },
+      "tokens": [
+        "--primary",
+        "--n1",
+        "--suc",
+        "--warn",
+        "--err",
+        "--run",
+        "--n5",
+        "--radius-sm",
+        "--font-cn"
+      ],
+      "sizing": {
+        "lg": {
+          "height": 28,
+          "minWidth": 96,
+          "fontSize": 14,
+          "fontWeight": 500,
+          "paddingX": 12
+        },
+        "md": {
+          "height": 24,
+          "minWidth": 86,
+          "fontSize": 12,
+          "fontWeight": 500,
+          "paddingX": 12
+        },
+        "sm": {
+          "height": 20,
+          "minWidth": 72,
+          "fontSize": 11,
+          "fontWeight": 500,
+          "paddingX": 8
+        },
+        "radius": 4
+      },
+      "states": {
+        "linear": {
+          "bg": "N1",
+          "border": "primary",
+          "text": "primary"
+        },
+        "filled": {
+          "bg": "primary",
+          "text": "N1"
+        },
+        "suc": {
+          "bg": "suc(#10B981)",
+          "text": "N1"
+        },
+        "warn": {
+          "bg": "warn(#F59E0B)",
+          "text": "N1"
+        },
+        "err": {
+          "bg": "err(#EF4444)",
+          "text": "N1"
+        },
+        "run": {
+          "bg": "run(#16A34A)",
+          "text": "N1"
+        }
+      },
+      "variants": [
+        "线型(主色)",
+        "面型(主色)",
+        "成功",
+        "警告",
+        "错误",
+        "运行",
+        "大/中/小"
+      ],
+      "referenceCss": ".mtag{display:inline-flex;align-items:center;height:24px;padding:0 12px;border-radius:var(--radius-sm);font-size:12px;font-weight:500;font-family:var(--font-cn)}.mtag-lg{height:28px;min-width:96px;font-size:14px;padding:0 12px}.mtag-md{min-width:86px}.mtag-sm{height:20px;min-width:72px;font-size:11px;padding:0 8px}.mtag-linear{background:var(--n1);border:1px solid var(--primary);color:var(--primary)}.mtag-filled{background:var(--primary);color:var(--n1)}.mtag-suc{background:var(--suc);color:var(--n1)}.mtag-warn{background:var(--warn);color:var(--n1)}.mtag-err{background:var(--err);color:var(--n1)}.mtag-run{background:var(--run);color:var(--n1)}",
+      "referenceHtml": "<span class=\"mtag mtag-filled\">主色</span><span class=\"mtag mtag-suc\">成功</span><span class=\"mtag mtag-run\">运行中</span><span class=\"mtag mtag-err\">故障</span>",
+      "ardot": {
+        "libraryComponent": "Tag / 状态标签（Ardot 移动端组件库）",
+        "variantMapping": "mtag-lg/md/sm 对应 Ardot Tag/大/中/小；linear/filled/suc/warn/err 对应 Ardot 5 态变体。",
+        "notes": "移动端成功绿用 #10B981（合法，区别于 Web #389E0D）。运行态用 run(#16A34A) 系列。字重 500 Medium。"
+      },
+      "do": [
+        "大28/中24/小20",
+        "半径4",
+        "字重 500"
+      ],
+      "dont": [
+        "字重 400",
+        "半径≠4",
+        "移动端用 Web 成功绿 #389E0D"
+      ],
+      "motion": {
+        "transition": {
+          "property": "background",
+          "duration": "fast",
+          "easing": "ease-out"
+        }
+      }
+    },
+    {
+      "id": "list",
+      "name": "列表 List Item",
+      "category": "数据展示",
+      "summary": "单行高56、pad-x16、图标24、标题16/24 Medium N8；双行92、三行101。底分割线 N4。",
+      "anatomy": {
+        "row": "列表行",
+        "icon": "左侧图标(可选)",
+        "title": "标题",
+        "sub": "副标题",
+        "right": "右侧文字/箭头",
+        "divider": "底分割线"
+      },
+      "tokens": [
+        "--n1",
+        "--n4",
+        "--n8",
+        "--n7",
+        "--font-cn"
+      ],
+      "sizing": {
+        "single": {
+          "height": 56,
+          "padX": 16,
+          "icon": 24,
+          "iconGap": 8,
+          "titleSize": 16,
+          "titleWeight": 500,
+          "titleColor": "N8",
+          "rightSize": 12,
+          "rightColor": "N7"
+        },
+        "double": {
+          "height": 92,
+          "pad": 16,
+          "thumb": 52,
+          "thumbGap": 16
+        },
+        "triple": {
+          "height": 101,
+          "pad": 16
+        }
+      },
+      "states": {
+        "row.default": {
+          "bg": "N1",
+          "divider": "N4"
+        },
+        "row.pressed": {
+          "bg": "N3"
+        }
+      },
+      "variants": [
+        "单行标题",
+        "双行",
+        "三行",
+        "带图标",
+        "导向箭头"
+      ],
+      "referenceCss": ".mlist{display:flex;align-items:center;height:56px;padding:0 16px;background:var(--n1);border-bottom:1px solid var(--n4);font-family:var(--font-cn)}.mlist-icon{width:24px;height:24px;margin-right:8px;color:var(--n8)}.mlist-title{font-size:16px;line-height:24px;font-weight:500;color:var(--n8)}.mlist-right{margin-left:auto;font-size:12px;color:var(--n7)}.mlist-double{height:92px;background:var(--n1);border-bottom:1px solid var(--n4);font-family:var(--font-cn);display:flex;flex-direction:column;justify-content:space-between;padding:16px}.mlist-double-top{display:flex;align-items:center;gap:16px}.mlist-thumb{width:52px;height:52px;border-radius:var(--radius-sm);background:var(--n2);flex:none}.mlist-double-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.mlist-double-head{display:flex;align-items:center;gap:8px}.mlist-sub{font-size:13px;line-height:19px;color:var(--n8)}.mlist-more{width:24px;height:24px;color:var(--n7);flex:none;display:flex;align-items:center;justify-content:center;font-size:18px}.mlist-foot{font-size:12px;line-height:16px;color:var(--n7)}.mlist-double-foot{font-size:12px;line-height:16px;color:var(--n7);border-top:1px solid var(--n4);padding-top:8px;margin-top:4px}.mlist-triple{height:101px;background:var(--n1);border-bottom:1px solid var(--n4);font-family:var(--font-cn);display:flex;align-items:center;gap:16px;padding:16px}.mlist-slot{width:89.7px;height:69px;border-radius:var(--radius-sm);background:var(--n2);flex:none}.mlist-triple-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}",
+      "referenceHtml": "<div class=\"mlist\"><span class=\"mlist-icon\">⚙</span><span class=\"mlist-title\">注塑机 A-01</span><span class=\"mlist-right\">›</span></div><div class=\"mlist-double\"><div class=\"mlist-double-top\"><div class=\"mlist-thumb\"></div><div class=\"mlist-double-text\"><div class=\"mlist-double-head\"><span class=\"mlist-title\">注塑机 A-01</span><span class=\"mtag mtag-sm mtag-run\">运行中</span></div><div class=\"mlist-sub\">温度 218℃ · 压力 12.4MPa</div></div><span class=\"mlist-more\">⋮</span></div><div class=\"mlist-double-foot\">最近更新：2026-07-27 09:12 · 操作员 张工</div></div><div class=\"mlist-triple\"><div class=\"mlist-slot\"></div><div class=\"mlist-triple-text\"><div class=\"mlist-double-head\"><span class=\"mlist-title\">注塑机 A-01</span><span class=\"mtag mtag-sm mtag-run\">运行中</span></div><div class=\"mlist-sub\">温度 218℃ · 压力 12.4MPa</div><div class=\"mlist-foot\">最近更新：2026-07-27 09:12</div></div></div>",
+      "ardot": {
+        "libraryComponent": "单行标题列表 / 双行 / 三行（Ardot 移动端组件库）",
+        "variantMapping": "mlist 对应 Ardot 单行标题列表(Default/更多图标/单选/导向，含左侧图标显示布尔)；mlist-double/triple 对应 Ardot 双行/三行变体。",
+        "notes": "单行高56、pad-x16、标题 16/24 Medium N8。底分割线 N4。落位宽必须 343（见 RULES §8 防溢出）。勿标题字重≠500。"
+      },
+      "do": [
+        "单行高56 / pad-x16",
+        "标题 16/24 Medium N8",
+        "底分割线 N4"
+      ],
+      "dont": [
+        "标题字重≠500",
+        "落位宽≠343",
+        "分割线非 N4"
+      ],
+      "motion": {
+        "transition": {
+          "property": "background",
+          "duration": "fast",
+          "easing": "ease-out"
+        }
+      }
+    },
+    {
+      "id": "card",
+      "name": "卡片 Card（B/C）",
+      "category": "数据展示",
+      "summary": "卡片 B 高120、头40、标题16/22 Medium N9、半径 Android8/iOS10；卡片 C 高101、pad-x16/pad-y8。",
+      "anatomy": {
+        "b": "带标题栏卡片",
+        "c": "内容卡片",
+        "head": "标题栏",
+        "body": "内容区",
+        "footer": "页脚"
+      },
+      "tokens": [
+        "--n1",
+        "--n4",
+        "--n9",
+        "--n8",
+        "--n7",
+        "--shadow-m",
+        "--radius-md",
+        "--radius-card-ios",
+        "--font-cn"
+      ],
+      "sizing": {
+        "b": {
+          "height": 120,
+          "headerHeight": 40,
+          "headerPadX": 16,
+          "titleSize": 16,
+          "titleWeight": 500,
+          "titleColor": "N9",
+          "radius": "8 (Android) / 10 (iOS)"
+        },
+        "c": {
+          "height": 101,
+          "padX": 16,
+          "padY": 8,
+          "titleSize": 16,
+          "titleWeight": 500,
+          "titleColor": "N8"
+        }
+      },
+      "states": {
+        "default": {
+          "bg": "N1",
+          "shadow": "M",
+          "divider": "N4"
+        }
+      },
+      "variants": [
+        "卡片 B（标题栏）",
+        "卡片 C（内容）"
+      ],
+      "referenceCss": ".mcard-b{width:343px;background:var(--n1);border-radius:var(--radius-md);box-shadow:var(--shadow-m);overflow:hidden}.mcard-b-head{height:40px;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid var(--n4);font-size:16px;font-weight:500;color:var(--n9);font-family:var(--font-cn)}.mcard-c{width:343px;background:var(--n1);border-radius:var(--radius-md);box-shadow:var(--shadow-m);padding:8px 16px}.mcard-c-title{font-size:16px;font-weight:500;color:var(--n8);font-family:var(--font-cn)}.ios .mcard-b,.ios .mcard-c{border-radius:var(--radius-card-ios)}",
+      "referenceHtml": "<div class=\"mcard-b\"><div class=\"mcard-b-head\">实时产量</div></div>",
+      "ardot": {
+        "libraryComponent": "卡片 B / 卡片 C（Ardot 移动端组件库）",
+        "variantMapping": "mcard-b 对应 Ardot 卡片 B（带标题栏）；mcard-c 对应 Ardot 卡片 C（内容卡片）。",
+        "notes": "卡片 B 头高40、标题 16/22 Medium N9。半径 Android8 / iOS10。落位宽 343。勿头高≠40 或标题字重≠500。"
+      },
+      "do": [
+        "卡片 B 头高40 / 标题 16/22 Medium N9",
+        "半径 Android8 / iOS10",
+        "落位宽 343"
+      ],
+      "dont": [
+        "头高≠40",
+        "标题字重≠500",
+        "落位宽≠343"
+      ]
+    },
+    {
+      "id": "modal",
+      "name": "弹窗 Modal / Dialog（移动端）",
+      "category": "反馈",
+      "summary": "单选弹窗 375×296、标题栏46、选项行56、半径16、N1底、Shadow-L；含 iOS 底部安全区 34。",
+      "anatomy": {
+        "mask": "全屏遮罩",
+        "dialog": "对话框",
+        "title": "标题栏(46)",
+        "body": "选项列表",
+        "item": "选项行(56)",
+        "footer": "操作按钮"
+      },
+      "tokens": [
+        "--n1",
+        "--n4",
+        "--n9",
+        "--n8",
+        "--primary",
+        "--shadow-l",
+        "--radius-lg",
+        "--font-cn"
+      ],
+      "sizing": {
+        "select": {
+          "width": 375,
+          "height": 296,
+          "radius": 16
+        },
+        "title": {
+          "height": 46,
+          "size": 17,
+          "weight": 500,
+          "color": "N9"
+        },
+        "item": {
+          "height": 56,
+          "fontSize": 16,
+          "weight": 500,
+          "padX": 16
+        },
+        "divider": "N4"
+      },
+      "states": {
+        "mask": {
+          "bg": "rgba(0,0,0,0.45)"
+        },
+        "title": {
+          "color": "N9",
+          "weight": 500
+        },
+        "item.default": {
+          "text": "N8"
+        },
+        "item.selected": {
+          "text": "primary"
+        }
+      },
+      "variants": [
+        "单选弹窗",
+        "多项输入弹窗",
+        "长文本弹窗",
+        "危险操作(错误红主按钮)"
+      ],
+      "referenceCss": ".mmask{position:absolute;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:flex-end;z-index:10}.mmodal{width:343px;margin:0 auto 0;background:var(--n1);border-radius:var(--radius-lg) var(--radius-lg) 0 0;box-shadow:var(--shadow-l);overflow:hidden}.mmodal-title{height:46px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:500;color:var(--n9);font-family:var(--font-cn)}.mmodal-item{height:56px;display:flex;align-items:center;padding:0 16px;font-size:16px;font-weight:500;color:var(--n8);border-bottom:1px solid var(--n4);font-family:var(--font-cn)}.mmodal-item.on{color:var(--primary)}",
+      "referenceHtml": "<div class=\"mmask\"><div class=\"mmodal\"><div class=\"mmodal-title\">选择设备</div><div class=\"mmodal-item on\">注塑机 A-01</div><div class=\"mmodal-item\">机械手 C-07</div></div></div>",
+      "ardot": {
+        "libraryComponent": "单选弹窗 / 多项输入弹窗 / 长文本弹窗（Ardot 移动端组件库）",
+        "variantMapping": "mmodal 对应 Ardot 单选/多项输入/长文本 弹窗（三项独立组件）；mmodal-title 对应 Ardot 标题栏变体；mmodal-item 对应 Ardot 选项行变体。",
+        "notes": "单选弹窗 375×296、标题栏46、选项56、半径16。遮罩半透明黑 rgba(0,0,0,.45)。危险操作用错误红主按钮（err），非 primary。iOS 底部预留 34 安全区。"
+      },
+      "do": [
+        "标题栏高46 / 选项行高56",
+        "半径16",
+        "遮罩半透明黑"
+      ],
+      "dont": [
+        "标题栏高≠46",
+        "选项行高≠56",
+        "半径≠16",
+        "遮罩用主色"
+      ],
+      "note": "移动端弹窗(.mmodal)纯显示、无进出场动画（M5 拍板不编造），故无 motion 契约字段。"
+    },
+    {
+      "id": "search",
+      "name": "搜索框 Search Bar",
+      "category": "数据录入",
+      "summary": "高40、宽343、半径16(pill)、N1底、搜索图标24、占位符14 N5。",
+      "anatomy": {
+        "field": "输入域",
+        "icon": "搜索图标 24",
+        "placeholder": "占位文字",
+        "mic": "麦克风图标(可选)"
+      },
+      "tokens": [
+        "--n1",
+        "--n5",
+        "--n8",
+        "--font-cn"
+      ],
+      "sizing": {
+        "height": 40,
+        "width": 343,
+        "radius": 16,
+        "icon": 24,
+        "iconGap": 9,
+        "placeholderSize": 14,
+        "placeholderColor": "N5"
+      },
+      "states": {
+        "default": {
+          "bg": "N1",
+          "border": "N4",
+          "placeholder": "N5"
+        },
+        "focus": {
+          "border": "primary"
+        }
+      },
+      "variants": [
+        "白色输入框",
+        "背景色输入框",
+        "聚焦态"
+      ],
+      "referenceCss": ".msearch{width:343px;height:40px;display:flex;align-items:center;padding:0 8px;background:var(--n1);border:1px solid var(--n4);border-radius:var(--radius-lg);font-family:var(--font-cn)}.msearch-icon{width:24px;height:24px;margin-right:9px;color:var(--n8)}.msearch input{flex:1;border:none;outline:none;background:transparent;font-size:14px;color:var(--n8)}.msearch input::placeholder{color:var(--n5)}",
+      "referenceHtml": "<div class=\"msearch\"><span class=\"msearch-icon\">🔍</span><input placeholder=\"搜索设备 / 工单…\"></div>",
+      "ardot": {
+        "libraryComponent": "查询搜索（Ardot 移动端组件库）",
+        "variantMapping": "msearch 对应 Ardot 白色输入框 A/B / 背景色输入框 A/B 变体。",
+        "notes": "高40、宽343、半径16(pill)、N1底。搜索图标 24、占位符 14 N5。落位宽 343。"
+      },
+      "do": [
+        "高36 / 宽343 / 半径16",
+        "N1 底 + N5 占位符",
+        "落位宽 343"
+      ],
+      "dont": [
+        "半径≠16",
+        "宽≠343",
+        "占位符用主色"
+      ],
+      "motion": {
+        "transition": {
+          "property": "border-color",
+          "duration": "fast",
+          "easing": "ease-out"
+        }
+      }
+    },
+    {
+      "id": "tabs",
+      "name": "页签 Tabs（移动端）",
+      "category": "导航",
+      "summary": "Tab 导航字14 Medium；激活态 primary 字 + 下划线；未激活 N7。单 Tab 高约44。",
+      "anatomy": {
+        "bar": "页签条",
+        "tab": "单个页签",
+        "active": "激活态",
+        "icon": "图标(可选 24)"
+      },
+      "tokens": [
+        "--n4",
+        "--n7",
+        "--primary",
+        "--font-cn"
+      ],
+      "sizing": {
+        "tabHeight": 44,
+        "fontSize": 14,
+        "activeWeight": 500,
+        "barBorder": "N4"
+      },
+      "states": {
+        "default": {
+          "text": "N7"
+        },
+        "active": {
+          "text": "primary",
+          "borderBottom": "2px primary"
+        }
+      },
+      "variants": [
+        "基础",
+        "带图标",
+        "数量固定/不固定(滑动)"
+      ],
+      "referenceCss": ".mtabs{display:flex;border-bottom:1px solid var(--n4);height:44px;align-items:flex-end}.mtab{height:44px;display:flex;align-items:center;padding:0 16px;font-size:14px;font-weight:500;color:var(--n7);font-family:var(--font-cn);border-bottom:2px solid transparent}.mtab.active{color:var(--primary);border-bottom-color:var(--primary)}",
+      "referenceHtml": "<div class=\"mtabs\"><div class=\"mtab\">监控</div><div class=\"mtab active\">参数</div><div class=\"mtab\">历史</div></div>",
+      "ardot": {
+        "libraryComponent": "顶部 Tab A / Tab B / Tab 导航（Ardot 移动端组件库）",
+        "variantMapping": "mtab 对应 Ardot 顶部 Tab A/B 变体；active 对应 Ardot 选中变体。",
+        "notes": "字14 Medium；激活 primary 字 + 2px primary 下划线；未激活 N7。单 Tab 高约44。"
+      },
+      "do": [
+        "字14 Medium",
+        "激活 primary + 2px 下划线",
+        "未激活 N7"
+      ],
+      "dont": [
+        "激活字重≠500",
+        "下划线非 primary",
+        "字号≠14"
+      ],
+      "motion": {
+        "transition": {
+          "property": "color",
+          "duration": "fast",
+          "easing": "ease-out"
+        }
+      }
+    },
+    {
+      "id": "status-dot",
+      "name": "状态指示灯 / 状态点（移动端）",
+      "category": "数据展示",
+      "summary": "直径10px 圆点；状态色绑运行绿/功能色（运行 #16A34A 两端共用，移动端成功绿 #10B981 合法）。",
+      "anatomy": {
+        "dot": "圆点",
+        "label": "状态文字(可选)"
+      },
+      "tokens": [
+        "--run",
+        "--suc",
+        "--warn",
+        "--err",
+        "--n7",
+        "--font-cn"
+      ],
+      "sizing": {
+        "size": 10,
+        "radius": 999
+      },
+      "states": {
+        "run": {
+          "color": "run(#16A34A)"
+        },
+        "ok": {
+          "color": "suc(#10B981)"
+        },
+        "warn": {
+          "color": "warn(#F59E0B)"
+        },
+        "err": {
+          "color": "err(#EF4444)"
+        },
+        "offline": {
+          "color": "N7"
+        }
+      },
+      "variants": [
+        "运行",
+        "成功",
+        "警告",
+        "错误",
+        "离线"
+      ],
+      "referenceCss": ".m-dot{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-family:var(--font-cn);color:var(--n8)}.m-dot i{width:10px;height:10px;border-radius:999px;display:inline-block}.m-dot.run i{background:var(--run)}.m-dot.ok i{background:var(--suc)}.m-dot.warn i{background:var(--warn)}.m-dot.err i{background:var(--err)}.m-dot.offline i{background:var(--n7)}",
+      "referenceHtml": "<span class=\"m-dot run\"><i></i>运行中</span><span class=\"m-dot offline\"><i></i>离线</span>",
+      "ardot": {
+        "libraryComponent": "状态指示灯（Ardot 移动端组件库）",
+        "variantMapping": "m-dot i 对应 Ardot 状态指示灯变体(直径10)；各态对应 Ardot 颜色变体。",
+        "notes": "直径10px 圆；运行态绑 run(#16A34A) 两端共用。移动端成功态用 suc(#10B981)（合法）。勿直径≠10。"
+      },
+      "do": [
+        "直径10 / 圆",
+        "运行态绑 #16A34A"
+      ],
+      "dont": [
+        "直径≠10",
+        "移动端成功态用 Web #389E0D"
+      ]
+    },
+    {
+      "id": "icon",
+      "name": "图标 Icon（移动端）",
+      "category": "通用",
+      "summary": "导航/功能类 24×24；列表/操作类 20×20；标签/辅助类 12×12；线性为主。",
+      "anatomy": {
+        "nav": "24 导航/功能",
+        "op": "20 列表/操作",
+        "aux": "12 标签/辅助"
+      },
+      "tokens": [
+        "--n8",
+        "--n7",
+        "--primary"
+      ],
+      "sizing": {
+        "nav": {
+          "size": 24
+        },
+        "op": {
+          "size": 20
+        },
+        "aux": {
+          "size": 12
+        }
+      },
+      "states": {
+        "default": {
+          "color": "N8"
+        },
+        "active": {
+          "color": "primary"
+        }
+      },
+      "variants": [
+        "24 导航/功能",
+        "20 列表/操作",
+        "12 标签/辅助",
+        "线/面切换"
+      ],
+      "referenceCss": ".m-icon{display:inline-flex;align-items:center;justify-content:center;color:var(--n8)}.m-icon-24{width:24px;height:24px}.m-icon-20{width:20px;height:20px}.m-icon-12{width:12px;height:12px}.m-icon.active{color:var(--primary)}",
+      "referenceHtml": "<span class=\"m-icon m-icon-24\">⚙</span><span class=\"m-icon m-icon-12\">⏱</span>",
+      "ardot": {
+        "libraryComponent": "图标集（Ardot 移动端组件库，~30+）",
+        "variantMapping": "m-icon-24/20/12 对应 Ardot 24/20/12 图标变体。",
+        "notes": "三档尺寸 24/20/12；线性为主，部分支持线/面切换。颜色默认 N8、激活 primary。勿在非图标场景挪用尺寸。"
+      },
+      "do": [
+        "三档 24/20/12",
+        "线性为主",
+        "默认 N8 / 激活 primary"
+      ],
+      "dont": [
+        "尺寸非 24/20/12",
+        "图标颜色用主色(除非激活)"
+      ]
+    }
+  ],
+  "contract": [
+    {
+      "id": "navbar.height",
+      "component": "navbar",
+      "selector": [
+        ".navbar"
+      ],
+      "scope": "mobile",
+      "exclude": [
+        ".navbar-icon",
+        ".navbar-title"
+      ],
+      "rules": [
+        {
+          "prop": "height",
+          "expect": [
+            80,
+            88
+          ],
+          "severity": "HIGH",
+          "note": "iOS88/Android80"
+        }
+      ]
+    },
+    {
+      "id": "navbar.bg",
+      "component": "navbar",
+      "selector": [
+        ".navbar"
+      ],
+      "scope": "mobile",
+      "rules": [
+        {
+          "prop": "background",
+          "expectToken": true,
+          "severity": "HIGH",
+          "note": "导航主色底(primary/N1白字)"
+        }
+      ]
+    },
+    {
+      "id": "bottomnav.height",
+      "component": "bottomnav",
+      "selector": [
+        ".bottomnav"
+      ],
+      "scope": "mobile",
+      "rules": [
+        {
+          "prop": "height",
+          "expect": [
+            56,
+            83
+          ],
+          "severity": "HIGH",
+          "note": "Android56/iOS83(含34安全区)"
+        }
+      ]
+    },
+    {
+      "id": "bottomnav.bg",
+      "component": "bottomnav",
+      "selector": [
+        ".bottomnav"
+      ],
+      "scope": "mobile",
+      "rules": [
+        {
+          "prop": "background",
+          "expectToken": true,
+          "severity": "HIGH",
+          "note": "底栏N1底"
+        }
+      ]
+    },
+    {
+      "id": "button.height",
+      "component": "button",
+      "selector": [
+        ".mbtn"
+      ],
+      "scope": "mobile",
+      "exclude": [
+        ".mbtn .m-icon"
+      ],
+      "rules": [
+        {
+          "prop": "height",
+          "expect": [
+            24,
+            32,
+            40,
+            48,
+            56
+          ],
+          "severity": "HIGH",
+          "note": "极小24(触控豁免场景)/小32/中40/大48/登录56（RULES §3.3 L181 补 xs 档）"
+        }
+      ]
+    },
+    {
+      "id": "button.weight",
+      "component": "button",
+      "selector": [
+        ".mbtn-lg",
+        ".mbtn-md",
+        ".mbtn-login"
+      ],
+      "scope": "mobile",
+      "rules": [
+        {
+          "prop": "font-weight",
+          "expect": [
+            500
+          ],
+          "severity": "HIGH",
+          "note": "移动端大/中/登录按钮 Medium 500（小按钮 Regular 400，故排除；≠Web 400）"
+        }
+      ]
+    },
+    {
+      "id": "button.radius",
+      "component": "button",
+      "selector": [
+        ".mbtn"
+      ],
+      "scope": "mobile",
+      "exclude": [
+        ".mbtn-text"
+      ],
+      "rules": [
+        {
+          "prop": "border-radius",
+          "expect": [
+            0,
+            8,
+            999
+          ],
+          "severity": "MEDIUM",
+          "note": "iOS 胶囊=高/2(999)、Android 8px、dialog-foot 直角0（RULES §3.3 平台化基准）"
+        }
+      ]
+    },
+    {
+      "id": "tag.height",
+      "component": "tag",
+      "selector": [
+        ".mtag"
+      ],
+      "scope": "mobile",
+      "exclude": [
+        ".mtag .mtag-icon",
+        ".mtag .mtag-suffix"
+      ],
+      "rules": [
+        {
+          "prop": "height",
+          "expect": [
+            20,
+            24,
+            28
+          ],
+          "severity": "HIGH",
+          "note": "大28/中24/小20"
+        }
+      ]
+    },
+    {
+      "id": "tag.weight",
+      "component": "tag",
+      "selector": [
+        ".mtag"
+      ],
+      "scope": "mobile",
+      "rules": [
+        {
+          "prop": "font-weight",
+          "expect": [
+            500
+          ],
+          "severity": "HIGH",
+          "note": "移动端标签 Medium 500"
+        }
+      ]
+    },
+    {
+      "id": "tag.radius",
+      "component": "tag",
+      "selector": [
+        ".mtag"
+      ],
+      "scope": "mobile",
+      "rules": [
+        {
+          "prop": "border-radius",
+          "expect": [
+            8,
+            999
+          ],
+          "severity": "HIGH",
+          "note": "iOS 胶囊(999)/Android 8px，与按钮体系统一（RULES §3.3 L380）"
+        }
+      ]
+    },
+    {
+      "id": "list.height",
+      "component": "list",
+      "selector": [
+        ".mlist"
+      ],
+      "scope": "mobile",
+      "exclude": [
+        ".mlist-double",
+        ".mlist-triple",
+        ".mlist-icon",
+        ".mlist-title",
+        ".mlist-right",
+        ".mlist-thumb",
+        ".mlist-more",
+        ".mlist-slot",
+        ".mlist-double-top",
+        ".mlist-double-text",
+        ".mlist-double-head",
+        ".mlist-sub",
+        ".mlist-foot",
+        ".mlist-double-foot",
+        ".mlist-triple-text"
+      ],
+      "rules": [
+        {
+          "prop": "height",
+          "expect": 56,
+          "severity": "HIGH",
+          "note": "单行列表高56（双行/三行及其所有子元素已排除）"
+        }
+      ]
+    },
+    {
+      "id": "list.padx",
+      "component": "list",
+      "selector": [
+        ".mlist"
+      ],
+      "scope": "mobile",
+      "rules": [
+        {
+          "prop": "padding-left",
+          "expect": 16,
+          "severity": "MEDIUM"
+        },
+        {
+          "prop": "padding-right",
+          "expect": 16,
+          "severity": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "id": "card.header",
+      "component": "card",
+      "selector": [
+        ".mcard-b-head"
+      ],
+      "scope": "mobile",
+      "rules": [
+        {
+          "prop": "height",
+          "expect": 40,
+          "severity": "HIGH",
+          "note": "卡片B标题栏高40"
+        }
+      ]
+    },
+    {
+      "id": "card.radius",
+      "component": "card",
+      "selector": [
+        ".mcard-b",
+        ".mcard-c"
+      ],
+      "scope": "mobile",
+      "rules": [
+        {
+          "prop": "border-radius",
+          "expect": [
+            8,
+            10
+          ],
+          "severity": "MEDIUM",
+          "note": "Android8/iOS10"
+        }
+      ]
+    },
+    {
+      "id": "modal.title",
+      "component": "modal",
+      "selector": [
+        ".mmodal-title"
+      ],
+      "scope": "mobile",
+      "rules": [
+        {
+          "prop": "height",
+          "expect": 46,
+          "severity": "HIGH",
+          "note": "弹窗标题栏高46"
+        }
+      ]
+    },
+    {
+      "id": "modal.item",
+      "component": "modal",
+      "selector": [
+        ".mmodal-item"
+      ],
+      "scope": "mobile",
+      "exclude": [
+        ".mmodal-item .m-icon"
+      ],
+      "rules": [
+        {
+          "prop": "height",
+          "expect": 56,
+          "severity": "HIGH",
+          "note": "弹窗选项行高56"
+        }
+      ]
+    },
+    {
+      "id": "modal.radius",
+      "component": "modal",
+      "selector": [
+        ".mmodal"
+      ],
+      "scope": "mobile",
+      "rules": [
+        {
+          "prop": "border-radius",
+          "expect": 16,
+          "severity": "HIGH",
+          "note": "弹窗半径16"
+        }
+      ]
+    },
+    {
+      "id": "search.height",
+      "component": "search",
+      "selector": [
+        ".msearch"
+      ],
+      "scope": "mobile",
+      "exclude": [
+        ".msearch-icon",
+        ".msearch input"
+      ],
+      "rules": [
+        {
+          "prop": "height",
+          "expect": 40,
+          "severity": "HIGH",
+          "note": "搜索框高40，与 mbtn-md 同排对齐 + Apple HIG 触控（RULES §3.3 L77 已同步）"
+        }
+      ]
+    },
+    {
+      "id": "search.radius",
+      "component": "search",
+      "selector": [
+        ".msearch"
+      ],
+      "scope": "mobile",
+      "exclude": [
+        ".msearch-icon",
+        ".msearch input"
+      ],
+      "rules": [
+        {
+          "prop": "border-radius",
+          "expect": 16,
+          "severity": "HIGH",
+          "note": "搜索框半径16(pill)"
+        }
+      ]
+    },
+    {
+      "id": "search.width",
+      "component": "search",
+      "selector": [
+        ".msearch"
+      ],
+      "scope": "mobile",
+      "exclude": [
+        ".msearch-icon",
+        ".msearch input"
+      ],
+      "rules": [
+        {
+          "prop": "width",
+          "expect": 343,
+          "severity": "MEDIUM",
+          "note": "落位宽343"
+        }
+      ]
+    },
+    {
+      "id": "tabs.font",
+      "component": "tabs",
+      "selector": [
+        ".mtab"
+      ],
+      "scope": "mobile",
+      "rules": [
+        {
+          "prop": "font-size",
+          "expect": 14,
+          "severity": "MEDIUM",
+          "note": "Tab字14"
+        }
+      ]
+    },
+    {
+      "id": "tabs.weight",
+      "component": "tabs",
+      "selector": [
+        ".mtab"
+      ],
+      "scope": "mobile",
+      "rules": [
+        {
+          "prop": "font-weight",
+          "expect": [
+            500
+          ],
+          "severity": "HIGH",
+          "note": "Tab字重500"
+        }
+      ]
+    },
+    {
+      "id": "dot.size",
+      "component": "status-dot",
+      "selector": [
+        ".m-dot i"
+      ],
+      "scope": "mobile",
+      "rules": [
+        {
+          "prop": "width",
+          "expect": 10,
+          "severity": "HIGH"
+        },
+        {
+          "prop": "height",
+          "expect": 10,
+          "severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "id": "icon.size",
+      "component": "icon",
+      "selector": [
+        ".m-icon-24",
+        ".m-icon-20",
+        ".m-icon-12"
+      ],
+      "scope": "mobile",
+      "rules": [
+        {
+          "prop": "width",
+          "expect": [
+            12,
+            20,
+            24
+          ],
+          "severity": "MEDIUM",
+          "note": "三档24/20/12"
+        }
+      ]
+    },
+    {
+      "id": "mobile.forbid.web-green",
+      "component": "*",
+      "selector": [
+        ".mbtn",
+        ".mtag",
+        ".mlist",
+        ".mcard-b",
+        ".mcard-c",
+        ".mmodal",
+        ".msearch",
+        ".mtab",
+        ".m-dot"
+      ],
+      "scope": "mobile",
+      "rules": [
+        {
+          "prop": "color",
+          "forbidHex": [
+            "#389E0D",
+            "#FA8C16",
+            "#F5222D"
+          ],
+          "severity": "HIGH",
+          "note": "移动端禁用 Web 功能色（成功/警告/错误）"
+        },
+        {
+          "prop": "background",
+          "forbidHex": [
+            "#389E0D",
+            "#FA8C16",
+            "#F5222D"
+          ],
+          "severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "id": "mobile.nontoken.hex",
+      "component": "*",
+      "selector": [
+        ".mbtn",
+        ".mtag",
+        ".mlist",
+        ".mcard-b",
+        ".mcard-c",
+        ".mmodal",
+        ".msearch",
+        ".mtab",
+        ".m-dot",
+        ".m-icon"
+      ],
+      "scope": "mobile",
+      "rules": [
+        {
+          "prop": "*",
+          "forbidNonTokenHex": true,
+          "severity": "MEDIUM",
+          "note": "移动端组件 CSS 不得出现非 token 硬编码色"
+        }
+      ]
+    }
+  ]
+}

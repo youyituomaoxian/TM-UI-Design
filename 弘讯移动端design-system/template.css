@@ -1,0 +1,703 @@
+:root{
+  /* 品牌色 */
+  --primary:#005EAE; --primary-hover:#1A75D2; --primary-active:#004ABF;
+  --primary-dis-bg:#DAEAFA; --primary-dis-fg:#A0B4C0;
+  --brand-surface:#005EAE;
+  /* 中性 N1-N10 */
+  --n1:#FFFFFF; --n2:#F5F7FB; --n3:#E9ECF0; --n4:#DEE2E5; --n5:#CED4E4;
+  --n6:#ADB5BF; --n7:#6C757D; --n8:#334155; --n9:#343A46; --n10:#21253C;
+  /* 功能色（移动端成功绿 #10B981 合法） */
+  --suc:#10B981; --suc-pressed:#0D9E6F; --suc-dis:#A6D4C5; --suc-text:#F0FFFA;
+  --warn:#F59E0B; --warn-pressed:#DB8E09; --warn-dis:#F5D9A6; --warn-text:#FEF2E8;
+  --err:#EF4444; --err-pressed:#D63B3B; --err-dis:#F5A6A6; --err-text:#FEDED8; --err-fg-deep:#101010;
+  --link:#1A75D2;
+  /* 功能色 soft 浅底（2026-08-06 新增，对齐 --run-bg/--run-border 命名；值=tokens.json colors.functional.*.bg/border） */
+  --suc-bg:#EAF9F3; --suc-border:#B7E7D5;
+  --warn-bg:#FEF6E8; --warn-border:#F9DBAA;
+  --err-bg:#FDEEEE; --err-border:#F8C5C5;
+  /* 运行/在线绿（跨端共用 #16A34A） */
+  --run:#16A34A; --run-pressed:#15803D; --run-bg:#ECFDF5; --run-border:#BBF7D0;
+  /* 图表色（13 色，2026-08-06 从 tokens.json colors.chart 落地；值=MASTER §1.3，SVG 内一律 var(--chart-*)） */
+  --chart-blue:#0061FF; --chart-green:#10B981; --chart-orange:#F59E0B; --chart-red:#EF4444;
+  --chart-blue-aux:#1D4ED8; --chart-green-g:#059669; --chart-yellow:#D97706; --chart-red-neg:#DC2626;
+  --chart-purple-a:#A78BFA; --chart-purple-b:#8B5CF6; --chart-cyan:#06B6D4; --chart-rose:#EC4899; --chart-gray:#64748B;
+  /* 圆角 */
+  --radius-sm:4px; --radius-md:8px; --radius-lg:16px; --radius-full:999px;
+  --radius-btn-ios:6px; --radius-card-ios:10px;
+  /* 投影（2026-08-04 质感升级：方向性 y 偏移 + 更大扩散，消除"贴纸感"；双层复合保留品牌发丝线；值=tokens.json shadows 节） */
+  --shadow-s:0 1px 2px rgba(0,94,174,0.06), 0 0 0 1px rgba(0,94,174,0.05);
+  --shadow-m:0 2px 8px rgba(0,94,174,0.10), 0 0 0 1px rgba(0,94,174,0.08);
+  --shadow-data-hover:0 1px 2px rgba(0,0,0,0.15); /* 图表数据元素点按/悬停阴影（CHART-SPEC：单阴影格式，card/row-hover 级轻弥散，禁 float/modal 级） */
+  --shadow-l:0 8px 24px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,94,174,0.10);
+  /* 底部导航阴影（2026-08-04 增强：向上 16px 扩散 + 1px 发丝线，浮起感明显） */
+  --shadow-bottom-nav:0 -8px 16px rgba(0,0,0,0.08), 0 -1px 0 rgba(0,94,174,0.10);
+  /* Elevation 层级体系（5 级，2026-08-04 质感升级：raised/overlay 扩散加大，层级递进明显；值=tokens.json elevation 节） */
+  --elev-sunken-surface:#F5F7FB; --elev-sunken-shadow:none;
+  --elev-default-surface:#FFFFFF; --elev-default-shadow:none;
+  --elev-raised-surface:#FFFFFF; --elev-raised-shadow:0 2px 8px rgba(0,94,174,0.10), 0 0 0 1px rgba(0,94,174,0.08);
+  --elev-overlay-surface:#FFFFFF; --elev-overlay-shadow:0 8px 24px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,94,174,0.10);
+  --elev-overflow-surface:#FFFFFF; --elev-overflow-shadow:0 12px 32px rgba(0,0,0,0.16), 0 0 0 1px rgba(0,94,174,0.08);
+  /* Motion 动效（2026-08-04 M=4 适度放宽：M=3 太机械，放宽 20% 更柔和自然；值=tokens.json motion 节） */
+  --motion-duration-instant:120ms; --motion-duration-fast:240ms; --motion-duration-normal:360ms; --motion-duration-slow:480ms;
+  --motion-ease-in-out:cubic-bezier(0.645,0.045,0.355,1); --motion-ease-out:cubic-bezier(0.215,0.61,0.355,1);
+  --motion-ease-out-quint:cubic-bezier(0.23,1,0.32,1); --motion-ease-in-out-circ:cubic-bezier(0.78,0.14,0.15,0.86);
+  --motion-ease-out-circ:cubic-bezier(0.08,0.82,0.17,1);
+  /* 字体（跨平台通用族，Ardot 内再按 Android/iOS 替换） */
+  --font-cn:"PingFang SC","Noto Sans SC",sans-serif;
+  /* 等宽字体（B 包新增；工控数据/代码） */
+  --font-mono:"JetBrains Mono","SF Mono",Consolas,"Liberation Mono",Menlo,monospace;
+  /* 密度模式（B 包新增；移动端只 comfortable 基准，compact/spacious 不启用） */
+  --density-row-height:52px; --density-content-padding:16px;
+  /* 间距 token（8 档，2026-08-06 落地；命名对齐 Web --space-*，值含移动 §10.4 克制体系核心 gap 12） */
+  --space-xs:4px; --space-sm:8px; --space-md:12px; --space-base:16px;
+  --space-lg:24px; --space-xl:32px; --space-xxl:48px; --space-huge:56px;
+}
+
+/* ===== M1 动效原语库（2026-08-02 补齐，仅 opacity/transform，shimmer 为 background-position 特例；两端同构同值） ===== */
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+@keyframes fade-in{from{opacity:0;}to{opacity:1;}}
+@keyframes fade-out{from{opacity:1;}to{opacity:0;}}
+@keyframes float-up{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+@keyframes float-down{from{opacity:1;transform:translateY(0);}to{opacity:0;transform:translateY(8px);}}
+@keyframes slide-in-right{from{opacity:0;transform:translateX(16px);}to{opacity:1;transform:translateX(0);}}
+@keyframes slide-out-right{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(16px);}}
+@keyframes scale-in{from{opacity:0;transform:scale(.95);}to{opacity:1;transform:scale(1);}}
+@keyframes scale-out{from{opacity:1;transform:scale(1);}to{opacity:0;transform:scale(.95);}}
+@keyframes shimmer{from{background-position:-200% 0;}to{background-position:200% 0;}}
+
+/* ===== M1 动效工具类（duration/easing 一律走 token） ===== */
+.anim-fade-in{animation:fade-in var(--motion-duration-fast) var(--motion-ease-out) both;}
+.anim-fade-out{animation:fade-out var(--motion-duration-fast) var(--motion-ease-in-out) both;}
+.anim-float-up{animation:float-up var(--motion-duration-normal) var(--motion-ease-out) both;}
+.anim-float-down{animation:float-down var(--motion-duration-fast) var(--motion-ease-in-out) both;}
+.anim-slide-in-right{animation:slide-in-right var(--motion-duration-fast) var(--motion-ease-out) both;}
+.anim-slide-out-right{animation:slide-out-right var(--motion-duration-fast) var(--motion-ease-in-out) both;}
+.anim-scale-in{animation:scale-in var(--motion-duration-normal) var(--motion-ease-out-circ) both;}
+.anim-scale-out{animation:scale-out var(--motion-duration-fast) var(--motion-ease-in-out) both;}
+.anim-spin{animation:spin var(--motion-duration-slow) linear infinite;}
+
+/* ===== M5 交互演示类（2026-08-04 新增：移动端预览标准动效集，token 驱动） ===== */
+/* 按压反馈：active 时缩放 0.98，100ms 极短反馈；用于列表项/按钮点击态 */
+.anim-press{transition:transform var(--motion-duration-instant) var(--motion-ease-out);}
+.anim-press:active{transform:scale(.98);}
+/* 列表进场（2026-08-04 渐进增强修复）：nth-child 自动阶梯延迟 50ms，第 8 项后保持 0；
+   容器 display:flex+gap 让列表项之间有 12px 间距（独立于 .screen gap）。
+   ⚠️ 修复首帧隐藏 bug：animation 只作用于 .anim-list-in.mounted > *（JS 加载后加 .mounted），
+   未触发前默认可见——headless 截图/无 JS/分享版不再残缺（animation-fill-mode:both 会让首帧 = opacity:0） */
+@keyframes list-in{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.anim-list-in{display:flex;flex-direction:column;gap:12px}
+/* 渐进增强开关：默认无动画（可见）；JS 加载完成加 .mounted 才播放入场 */
+.anim-list-in>*{animation:none;}
+.anim-list-in.mounted>*{animation:list-in var(--motion-duration-normal) var(--motion-ease-out) both;}
+.anim-list-in.mounted>*:nth-child(1){animation-delay:0ms}
+.anim-list-in.mounted>*:nth-child(2){animation-delay:50ms}
+.anim-list-in.mounted>*:nth-child(3){animation-delay:100ms}
+.anim-list-in.mounted>*:nth-child(4){animation-delay:150ms}
+.anim-list-in.mounted>*:nth-child(5){animation-delay:200ms}
+.anim-list-in.mounted>*:nth-child(6){animation-delay:250ms}
+.anim-list-in.mounted>*:nth-child(7){animation-delay:300ms}
+.anim-list-in.mounted>*:nth-child(8){animation-delay:350ms}
+.anim-list-in.mounted>*:nth-child(n+9){animation-delay:0ms}
+/* Toast：顶部滑入 + 短暂停留 + 滑出；visibility 控制隐藏，避免 transform 不影响布局 */
+@keyframes toast-in{from{opacity:0;transform:translate(-50%,-100%);}to{opacity:1;transform:translate(-50%,0);}}
+@keyframes toast-out{from{opacity:1;transform:translate(-50%,0);}to{opacity:0;transform:translate(-50%,-100%);}}
+.toast{position:absolute;top:12px;left:50%;transform:translate(-50%,0);background:rgba(0,0,0,.82);color:var(--n1);padding:8px 16px;border-radius:var(--radius-md);font-size:13px;font-family:var(--font-cn);z-index:20;visibility:hidden;}
+.toast.show{visibility:visible;animation:toast-in var(--motion-duration-fast) var(--motion-ease-out) forwards;}
+.toast.hide{visibility:visible;animation:toast-out var(--motion-duration-fast) var(--motion-ease-in-out) forwards;}
+
+/* ===== 暗色模式（C 包新增；[data-theme="dark"] 切换；值=tokens.json dark 节，来自 brand-color-engine generatePalette('#005EAE',{mode:'dark'}) 快照） ===== */
+:root[data-theme="dark"]{
+  /* 品牌色（暗态提亮以保对比） */
+  --primary:#3B82F6; --primary-hover:#60A5FA; --primary-active:#2563EB;
+  --primary-dis-bg:#374151; --primary-dis-fg:#9CA3AF;
+  /* 中性 N1–N10（暗态语义映射：n1=surface / n2=elevated / n3=border / n4=page / n8=textTertiary / n9=textSecondary / n10=textPrimary） */
+  --n1:#1E293B; --n2:#243044; --n3:#334155; --n4:#121826; --n5:#1E293B; --n6:#334155;
+  --n7:#475569; --n8:#94A3B8; --n9:#CBD5E1; --n10:#F1F5F9;
+  /* 功能色（暗态；移动端成功绿 #34D399 / 警告 #FBBF24 / 错误 #F87171；与 tokens.dark 对齐） */
+  --suc:#34D399; --suc-hover:#50d9a7; --suc-pressed:#2eba87; --suc-dis:#266a5f; --suc-text:#06281C;
+  --suc-soft-hover:#2e4b41; --suc-soft-active:#0b281e; --suc-border-hover:#5ddcad; --suc-border-active:#75e1ba; --suc-dis-fg:#13292d;
+  --warn:#FBBF24; --warn-hover:#fcc843; --warn-pressed:#dda820; --warn-dis:#726232; --warn-text:#1A1A1A;
+  --warn-soft-hover:#4b4331; --warn-soft-active:#28200e; --warn-border-hover:#fccc50; --warn-border-active:#fcd36a; --warn-dis-fg:#1c222c;
+  --err:#F87171; --err-hover:#f98585; --err-pressed:#da6363; --err-dis:#714450; --err-text:#FFFFFF;
+  --err-soft-hover:#483535; --err-soft-active:#251212; --err-border-hover:#f98d8d; --err-border-active:#fa9e9e; --err-dis-fg:#838993;
+  --link:#60A5FA;
+  /* 运行/在线绿（暗态 #22C55E） */
+  --run:#22C55E; --run-hover:#41cd75; --run-pressed:#1ead53; --run-dis:#206448; --run-bg:#0E2018; --run-border:#22C55E;
+  --run-soft-hover:#303f38; --run-soft-active:#0c1c15; --run-border-hover:#4ed17e; --run-border-active:#69d892; --run-dis-fg:#838993;
+  /* 品牌深表面（暗态） */
+  --brand-surface:#0A2540;
+  /* 投影（暗态双层：暗底+白色发丝线） */
+  --shadow-s:0 0 4px rgba(0,0,0,0.30), 0 0 0 1px rgba(255,255,255,0.06);
+  --shadow-m:0 0 8px rgba(0,0,0,0.40), 0 0 0 1px rgba(255,255,255,0.08);
+  --shadow-l:0 0 12px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.10);
+  --shadow-bottom-nav:0 -4px 4px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.08);
+  /* Elevation 层级（暗态） */
+  --elev-sunken-surface:#0F172A; --elev-sunken-shadow:none;
+  --elev-default-surface:#1E293B; --elev-default-shadow:none;
+  --elev-raised-surface:#243044; --elev-raised-shadow:0 1px 2px rgba(0,0,0,0.40), 0 0 0 1px rgba(255,255,255,0.04);
+  --elev-overlay-surface:#1E293B; --elev-overlay-shadow:0 6px 16px rgba(0,0,0,0.50), 0 0 0 1px rgba(255,255,255,0.06);
+  --elev-overflow-surface:#1E293B; --elev-overflow-shadow:0 0 8px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.06);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+
+/* ============ 屏幕骨架（2026-08-04 手机壳化：body 深色底 + .phone-stage 375 手机壳 + 屏内滚动） ============ */
+/* 预览壳深色底：body 铺满视口深灰，手机壳水平+垂直居中（预览/导出专用，页面本身不依赖它）；padding 兜底小窗口可滚动查看 */
+body{background:#1b1f26;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;padding:24px 0;box-sizing:border-box}
+/* 375 手机壳：固定 375×812（iPhone X 逻辑尺寸）+ 圆角 + 投影，overflow:hidden 保证圆角裁切、屏外内容不溢出视口 */
+.phone-stage{width:375px;height:812px;position:relative;border-radius:24px;box-shadow:0 0 32px rgba(0,0,0,.5);overflow:hidden}
+.phone{position:relative;width:375px;height:812px;background:var(--n2);font-family:var(--font-cn);color:var(--n8);display:flex;flex-direction:column;overflow:hidden}
+/* 屏内滚动区：flex:1 撑满 navbar/bottomnav 之间的空间，内容在此滚动，nav/底栏固定不动；滚动条隐藏（移动端手势滚动，滚动条漏出会破坏沉浸感）；padding-bottom 让最后一项与 BottomNav 有呼吸 */
+.screen-scroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:24px;scrollbar-width:none;-ms-overflow-style:none}
+.screen-scroll::-webkit-scrollbar{display:none;width:0;height:0;background:transparent}
+.screen{width:343px;margin:0 auto;display:flex;flex-direction:column;gap:12px;padding-top:16px}
+.section-title{font-size:14px;font-weight:500;color:var(--n9);margin:0 0 8px;letter-spacing:.5px}
+/* 多屏切换：每屏一个 <section class="page-view" data-route="...">，hash 路由控制 .on 显示 */
+/* ⚠️ 2026-08-05 修复：.page-view 原为 display:block，屏内模块间距完全依赖 .screen gap 但 gap 只作用于直接子级（多屏之间）→ 屏内模块 0px 贴死。
+   现改为 flex column gap:12px——与 .screen 同构，屏内模块获得基础 12px 间距；间距补丁（§4.5 区域交界/卡片叠）必须同时写 .screen > 与 .page-view > 两种选择器
+   （2026-08-05 二次收敛：工业后台调性，基础 12px + 累加 4 = 模块间距 16px） */
+.page-view{display:none}
+.page-view.on{display:flex;flex-direction:column;gap:12px;animation:fade-in var(--motion-duration-fast) var(--motion-ease-out) both}
+/* 长页导出模式（?export=1 或 <html data-export="long">）：按内容完整高度展开整页，供 DevTools 整页截图 / headless PNG（内容不足 812 时保持手机比例） */
+[data-export="long"] body{min-height:auto}
+[data-export="long"] .phone-stage{height:auto;overflow:visible;border-radius:0;box-shadow:none}
+[data-export="long"] .phone{height:auto;min-height:812px}
+[data-export="long"] .screen-scroll{overflow:visible;padding-bottom:0}
+
+/* ============ 0.5 Status Bar 模拟状态栏（2026-08-04 升级：iOS HIG 标准尺寸） ============ */
+/* 位置：.phone 顶部 absolute 悬浮（覆盖在 .navbar 品牌色之上），透明背景 + 白字（导航栏场景）；
+   非品牌色导航栏（白底）时用 .m-statusbar--light 深色字。
+   iOS 标准尺寸：状态栏 44pt，时间左 padding-left 32pt（iPhone 标准），字号 17px/600；图标右 padding-right 32pt。 */
+.m-statusbar{display:flex;align-items:center;justify-content:space-between;padding:0 32px;color:var(--n1);height:44px;flex:none;position:absolute;top:0;left:0;right:0;z-index:20;background:transparent;pointer-events:none;box-sizing:border-box;}
+.m-statusbar-ios{font-size:17px;font-weight:600;}
+.m-statusbar-android{height:24px;font-size:13px;font-weight:500;padding:0 20px;}
+.m-statusbar .sb-time{font-weight:600;font-variant-numeric:tabular-nums;line-height:1;}
+.m-statusbar .sb-icons{display:flex;align-items:center;gap:8px;}
+.m-statusbar .sb-icons svg{width:16px;height:16px;display:block;}
+/* 浅色导航栏（白底）上的状态栏：深色字 */
+.m-statusbar--light{color:var(--n9);}
+
+/* ============ 0.6 数值工具类（2026-08-04 新增：工控数值对齐 tabular-nums + 等宽优先） ============ */
+.m-num{font-variant-numeric:tabular-nums;font-family:var(--font-mono);}
+.m-num-md{font-variant-numeric:tabular-nums;font-family:var(--font-mono);font-size:20px;font-weight:500;line-height:1.2;}
+.m-num-lg{font-variant-numeric:tabular-nums;font-family:var(--font-mono);font-size:24px;font-weight:500;line-height:1.2;}
+
+/* ============ 0.7 文字语义类（2026-08-04 新增：哪里改用什么层级——Agent 按语义选类，禁裸 font-size） ============ */
+/* 对齐 antd-mobile 字阶体系（10 级→本地化 8 级）+ typography 9 级；门禁 text.layer 强制（裸 inline font-size ≥3 且无语义类 → MED） */
+.m-text-h1{font-size:24px;line-height:32px;font-weight:600;}
+.m-text-h2{font-size:20px;line-height:28px;font-weight:600;}
+.m-text-h3{font-size:17px;line-height:24px;font-weight:600;}
+.m-text-h4{font-size:18px;line-height:26px;font-weight:600;}
+.m-text-h0{font-size:26px;line-height:34px;font-weight:600;}
+.m-text-body1{font-size:16px;line-height:24px;font-weight:400;}
+.m-text-body2{font-size:14px;line-height:22px;font-weight:400;}
+.m-text-body3{font-size:15px;line-height:22px;font-weight:400;}
+.m-text-caption{font-size:12px;line-height:16px;font-weight:400;color:var(--n7);}
+.m-text-note{font-size:13px;line-height:20px;font-weight:400;color:var(--n7);}
+.m-text-label{font-size:12px;line-height:16px;font-weight:500;}
+.m-text-num{font-variant-numeric:tabular-nums;font-family:var(--font-mono);font-size:16px;line-height:22px;font-weight:600;}
+
+/* ============ 1. 顶部导航 Navbar ============ */
+/* ============ 1. 顶部导航 Navbar（2026-08-04 按参考图升级：三槽位 返回+标题+右侧操作 + 搜索嵌入形态） ============ */
+.navbar{width:375px;background:var(--primary);color:var(--n1);display:flex;flex-direction:column;position:relative}
+/* Navbar 含状态栏总高（iOS 88 = 状态栏 44pt + 内容 44pt / Android 80 = 状态栏 24dp + 内容 56dp；
+   状态栏改透明悬浮后，navbar 品牌色背景延伸到状态栏区域，内容区用 padding-top 下推到安全区下方，flex-end 靠底对齐） */
+.navbar-ios{height:88px;display:flex;flex-direction:column;justify-content:flex-end;box-sizing:border-box;}
+.navbar-android{height:80px;display:flex;flex-direction:column;justify-content:flex-end;box-sizing:border-box;}
+/* 导航主体行：返回(左) + 标题(中) + 右侧操作(右)；iOS 三槽位 44pt 内容区；Android 56dp */
+.navbar-main{display:flex;align-items:center;height:44px;padding:0 8px;flex:none;box-sizing:border-box;}
+.navbar-android .navbar-main{height:56px}
+.navbar-back{display:inline-flex;align-items:center;gap:4px;height:44px;padding:0 8px;color:var(--n1);font-size:16px;flex:none;cursor:pointer;background:none;border:none;font-family:var(--font-cn);}
+.navbar-back svg{width:24px;height:24px;}
+.navbar-back:active{opacity:.7;}
+.navbar-title{flex:1;font-size:17px;line-height:22px;font-weight:600;color:var(--n1);font-family:var(--font-cn);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.navbar-actions{display:inline-flex;align-items:center;gap:8px;flex:none;}
+.navbar-actions .nav-action{width:32px;height:44px;display:inline-flex;align-items:center;justify-content:center;color:var(--n1);background:none;border:none;cursor:pointer;}
+.navbar-actions .nav-action svg{width:24px;height:24px;}
+.navbar-actions .nav-action:active{opacity:.7;}
+/* 搜索嵌入形态（参考图：navbar 内嵌搜索框 + iOS Cancel） */
+.navbar-search{flex:1;height:32px;display:flex;align-items:center;padding:0 12px;margin:8px 12px;background:rgba(255,255,255,.15);border-radius:var(--radius-full);color:var(--n1);}
+.navbar-search svg{width:16px;height:16px;margin-right:8px;flex:none;}
+.navbar-search input{flex:1;background:none;border:none;outline:none;color:var(--n1);font-size:14px;font-family:var(--font-cn);}
+.navbar-search input::placeholder{color:rgba(255,255,255,.6);}
+.navbar-cancel{color:var(--n1);font-size:15px;padding:0 12px;background:none;border:none;cursor:pointer;font-family:var(--font-cn);}
+.navbar-icon{width:24px;height:24px;color:var(--n1)}
+
+/* ============ 2. 底部导航 BottomNav（2026-08-04 按参考图升级：选中态 实底圆点 + 图标/文字品牌色） ============ */
+.bottomnav{width:375px;background:var(--n1);box-shadow:var(--shadow-bottom-nav);display:flex;position:relative;z-index:5}
+.bottomnav-android{height:56px}
+.bottomnav-ios{height:83px}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;position:relative;cursor:pointer;}
+.bn-icon{width:24px;height:24px;color:var(--n7);position:relative;}
+.bn-label{font-size:12px;color:var(--n7);font-family:var(--font-cn)}
+/* 选中态：仅图标/文字品牌色双激活（2026-08-04 用户确认不需要实底圆点） */
+.bn-item.active .bn-icon,.bn-item.active .bn-label{color:var(--primary)}
+/* 消息红点（角标，参考图"小红点"）；2026-08-05 审美优先：红底白字（与功能色标签白字一致，WCAG 仅参考） */
+.bn-badge{position:absolute;top:0;right:-4px;min-width:16px;height:16px;padding:0 4px;border-radius:var(--radius-full);background:var(--err);color:var(--n1);font-size:9px;line-height:16px;text-align:center;font-family:var(--font-mono);}
+
+/* ============ 3. 按钮 Button（2026-08-04 按参考图重做：圆角=高度/2 胶囊逻辑，消除"便宜感"） ============ */
+/* 基础：胶囊圆角（大按钮 48/2=24；md 40/2=20；sm 32/2=16）；:active 按压态品牌色加深 */
+.mbtn{display:inline-flex;align-items:center;justify-content:center;border:none;font-family:var(--font-cn);font-weight:500;cursor:pointer;border-radius:var(--radius-full);transition:background var(--motion-duration-fast) var(--motion-ease-out),color var(--motion-duration-fast) var(--motion-ease-out);}
+/* 尺寸体系（参考图：大 48 / 次 36 / 小 24；保留旧 lg/md/sm 兼容，lg 升级 48 胶囊） */
+.mbtn-lg{height:48px;min-width:120px;padding:0 20px;font-size:16px;border-radius:var(--radius-full);}
+.mbtn-lg-ios{border-radius:var(--radius-full);}
+.mbtn-lg-android{border-radius:var(--radius-md);}
+.mbtn-md{height:40px;min-width:80px;padding:0 16px;font-size:14px;border-radius:var(--radius-full);}
+.mbtn-sm{height:32px;min-width:64px;padding:0 16px;font-size:12px;font-weight:400;border-radius:var(--radius-full);}
+.mbtn-xs{height:24px;min-width:48px;padding:0 12px;font-size:11px;font-weight:400;border-radius:var(--radius-full);}
+.mbtn-login{height:56px;min-width:300px;font-size:16px;font-weight:500;border-radius:var(--radius-full);}
+/* 语义变体（参考图：背景/次/链接；按压态品牌色加深） */
+.mbtn-primary{background:var(--primary);color:var(--n1)}
+.mbtn-primary:active{background:var(--primary-active)}
+.mbtn-secondary{background:var(--n1);color:var(--primary);border:1px solid var(--primary)}
+.mbtn-secondary:active{background:var(--primary-dis-bg);color:var(--primary-active)}
+.mbtn-text{background:none;color:var(--primary)}
+.mbtn-text:active{color:var(--primary-active);text-decoration:underline}
+/* WCAG 2.0 AA（08-05）：功能色底禁用白字（白 on suc 2.54 / err 3.76 / run 3.30 均不达标）→ 深字 n10
+   亮色 n10 #21253C 深；暗色模式 n10 反转成亮色，另在 dark 覆盖为 n1（dark n1 #1E293B 深） */
+.mbtn-danger{background:var(--err);color:var(--n1)}
+.mbtn-danger:active{background:var(--err-pressed)}
+.mbtn-success{background:var(--suc);color:var(--n1)}
+.mbtn-success:active{background:var(--suc-pressed)}
+.mbtn:disabled{background:var(--primary-dis-bg);color:var(--primary-dis-fg);cursor:not-allowed}
+/* 按压反馈：物理按压缩放（图2 参考："按压"状态） */
+.mbtn:not(:disabled):active{transform:scale(.97);}
+/* 图标按钮（按钮内图标统一 16-18px，stroke 继承当前文字色） */
+.mbtn .m-icon{width:16px;height:16px;margin-right:8px;}
+.ios .mbtn{border-radius:var(--radius-full)}
+
+/* ============ 3.5 平台差异化（2026-08-04 基准校准：iOS/Android 双端对照 RULES §5） ============ */
+/* iOS：PingFang 字体 + 全胶囊圆角 + 高亮变暗反馈（默认 :active 已做 scale） */
+.ios{font-family:"PingFang SC","Noto Sans SC",sans-serif;}
+.ios .mbtn:not(:disabled):active{transform:scale(.97);}
+/* Android：Noto Sans 字体 + Material 圆角 8 + Ripple 近似（:active 背景扩散模拟水波纹，M3 48dp 触达由 .mbtn 高度保证） */
+.android{font-family:"Noto Sans SC","Source Han Sans CN",sans-serif;}
+.android .mbtn{border-radius:var(--radius-md);}
+.android .mbtn:not(:disabled):active{background-image:radial-gradient(circle at center,rgba(255,255,255,.3) 0%,transparent 70%);transform:scale(.97);}
+.android .mcard-b,.android .mcard-c{border-radius:var(--radius-md);}
+.android .mtag{border-radius:var(--radius-md);}
+.android .m-capsule{border-radius:var(--radius-md);}
+
+/* ============ 4. 标签 Tag ============ */
+/* Tag（2026-08-04 按参考图升级：胶囊圆角 + 5 色语义变体 + 前后缀图标 slot；尺寸 大28/中24/小18。
+   2026-08-05 v2：去掉 min-width 固定宽，标签宽度随文字自适应（用户反馈「左右内边距太大且宽度固定」——
+   运行中/待机/故障等标签应贴合文字，padding 适中） */
+.mtag{display:inline-flex;align-items:center;justify-content:center;height:24px;padding:0 12px;border-radius:var(--radius-full);font-size:12px;font-weight:500;font-family:var(--font-cn);transition:background var(--motion-duration-fast) var(--motion-ease-out);}
+.mtag-lg{height:28px;font-size:14px;padding:0 12px}
+.mtag-md{font-size:12px}
+.mtag-sm{height:20px;font-size:11px;padding:0 8px}
+/* 5 色语义变体（2026-08-05 终态：审美优先，白字通透；WCAG 对比度仅参考——
+   用户反馈「标签深色字不通透，白色可以；无障碍规范作参考，最重要的是视觉美观」）
+   白字 on suc/warn/run/err 视觉更清爽通透，工业后台调性优先 */
+.mtag-default{background:var(--primary);color:var(--n1)}
+.mtag-suc{background:var(--suc);color:var(--n1)}
+.mtag-warn{background:var(--warn);color:var(--n1)}
+.mtag-err{background:var(--err);color:var(--n1)}
+.mtag-neutral{background:var(--n3);color:var(--n8);border:1px solid var(--n4)}
+.mtag-run{background:var(--run);color:var(--n1)}
+/* 暗色模式：功能色底变亮（suc #34D399 等），文字改 dark n1（#1E293B 深）保对比 */
+:root[data-theme="dark"] .mtag-suc,:root[data-theme="dark"] .mtag-warn,
+:root[data-theme="dark"] .mtag-err,:root[data-theme="dark"] .mtag-run,
+:root[data-theme="dark"] .mbtn-success,:root[data-theme="dark"] .mbtn-danger{color:var(--n1)}
+/* D04（08-05 对抗审查）：暗色 primary 底（#2563EB 调深后）文字用亮字 n11（白 on #2563EB=5.17 AA）——
+   dark 下 n1 是深色（#1E293B），primary 按钮必须显式切亮字，否则深字 on 暗蓝 3.98 不达标 */
+:root[data-theme="dark"] .mbtn-primary,:root[data-theme="dark"] .mtag-default,:root[data-theme="dark"] .mtag-filled{color:var(--n10)}
+/* 线框/实底变体（旧类兼容） */
+.mtag-linear{background:var(--n1);border:1px solid var(--primary);color:var(--primary)}
+.mtag-filled{background:var(--primary);color:var(--n1)}
+/* 前后缀图标 slot（参考图：含图标标签） */
+.mtag .mtag-icon{width:16px;height:16px;margin-right:4px;flex:none;}
+.mtag .mtag-suffix{width:16px;height:16px;margin-left:4px;flex:none;}
+/* 功能色交互态（NEW-005：hover 提亮 / active 按 pressed / disabled 降饱和。hover 与 run-dis 变量仅在暗色 :root 定义，故限定 :root[data-theme="dark"]；active/is-disabled 用亮暗两态均有的 pressed/dis 变量，保持通用） */
+:root[data-theme="dark"] .mtag-suc:hover{background:var(--suc-hover);} .mtag-suc:active{background:var(--suc-pressed);} .mtag-suc.is-disabled{background:var(--suc-dis);opacity:.6;}
+:root[data-theme="dark"] .mtag-warn:hover{background:var(--warn-hover);} .mtag-warn:active{background:var(--warn-pressed);} .mtag-warn.is-disabled{background:var(--warn-dis);opacity:.6;}
+:root[data-theme="dark"] .mtag-err:hover{background:var(--err-hover);} .mtag-err:active{background:var(--err-pressed);} .mtag-err.is-disabled{background:var(--err-dis);opacity:.6;}
+:root[data-theme="dark"] .mtag-run:hover{background:var(--run-hover);} .mtag-run:active{background:var(--run-pressed);} :root[data-theme="dark"] .mtag-run.is-disabled{background:var(--run-dis);opacity:.6;}
+
+/* ============ 5. 列表 List Item ============ */
+/* 单行列表项（2026-08-04 升级为卡片形态：圆角 + elevation；与 .mlist-double 一致） */
+.mlist{display:flex;align-items:center;height:56px;padding:0 16px;background:var(--n1);border-radius:var(--radius-md);box-shadow:var(--elev-raised-shadow);font-family:var(--font-cn);transition:background var(--motion-duration-fast) var(--motion-ease-out);}
+
+/* kv-row（2026-08-04 新增）：卡片脚注/数据指标行的分 cell 工具类，禁止 · 串文本。
+   用法：<div class="kv-row"><span class="kv-item"><b>12,480</b> 模</span><span class="kv-item"><b>78%</b> 负载</span></div>
+   视觉：每项独立 cell（flex 自动间隙），用细线分隔层级而非"·"连字符；key 字色 n7 / value 字色 n8。 */
+.kv-row{display:flex;flex-wrap:wrap;gap:0 16px;align-items:center;font-size:12px;color:var(--n7);line-height:16px;}
+.kv-row>.kv-item{display:inline-flex;align-items:baseline;gap:4px;color:var(--n7);}
+.kv-row>.kv-item b{color:var(--n8);font-weight:500;font-family:var(--font-mono);}
+.kv-row>.kv-item:not(:last-child)::after{content:"";display:inline-block;width:1px;height:12px;background:var(--n5);margin-left:12px;vertical-align:middle;}
+.mlist-icon{width:24px;height:24px;margin-right:8px;color:var(--n8)}
+.mlist-title{font-size:16px;line-height:24px;font-weight:500;color:var(--n8);flex:none}
+.mlist-right{margin-left:auto;font-size:12px;color:var(--n7)}
+/* 双行列表（2026-08-04 升级为「卡片形态」：圆角 + elevation + 列表间距分隔；不再用 border-bottom 堆叠；相邻卡片间距由容器 .anim-list-in 或 .screen gap 提供）
+   排版四原则（RULES §4.3 2026-08-05 v2）：条目间用 border-top 横线区分（对齐/重复），条目内部 foot 用 n2 浅灰底数据块（对比/亲密性——
+   不再用内部横线切断同一加工中心的信息；原「foot border-top」与条目间 border-top 双重横线导致区分混乱） */
+.mlist-double{min-height:92px;background:var(--n1);border-radius:var(--radius-md);box-shadow:var(--elev-raised-shadow);font-family:var(--font-cn);display:flex;flex-direction:column;padding:16px}
+/* 排版四原则（RULES §4.3 2026-08-05）：亲密性——text 内 4px / top→foot 12px；对比——title>sub>foot 三层递减；
+   对齐——内容自然高度堆叠（禁 space-between 拉伸 text 块），foot 用 margin-top 与 top 区分离 */
+/* 列表项嵌套降级（2026-08-05 用户反馈「双重卡片层级太多」）：.mlist* 嵌在卡片状容器（.mcard/.mcard-b 等）内部时
+   降级为扁平行——去阴影/去独立圆角/去卡片背景，相邻项用 border-top 分隔线；容器级列表保持卡片形态（见 RULES §4.3）
+   2026-08-06 对齐修正（视觉验证）：左右 padding 归零导致文字贴卡片左缘、与卡片标题/正文错位 → 补回 16px 与 mcard-head/body 对齐 */
+.mcard .mlist,.mcard .mlist-double,.mcard .mlist-triple,
+.mcard-b .mlist,.mcard-b .mlist-double,.mcard-b .mlist-triple{box-shadow:none;border-radius:0;background:transparent;}
+.mcard .mlist,.mcard .mlist-double,.mcard .mlist-triple,
+.mcard-b .mlist,.mcard-b .mlist-double,.mcard-b .mlist-triple{padding-left:16px;padding-right:16px;}
+.mcard .mlist-double + .mlist-double,
+.mcard-b .mlist-double + .mlist-double{border-top:1px solid var(--n4);}
+.mcard .mlist-double:first-child,.mcard-b .mlist-double:first-child{border-top:none;}
+.mlist-double-top{display:flex;align-items:center;gap:16px;min-height:52px}
+.mlist-thumb{width:52px;height:52px;border-radius:var(--radius-sm);background:var(--n2);flex:none}
+.mlist-double-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.mlist-double-head{display:flex;align-items:center;gap:8px;min-height:24px}
+.mlist-sub{font-size:13px;line-height:19px;color:var(--n7)}
+.mlist-more{width:24px;height:24px;color:var(--n7);flex:none;display:flex;align-items:center;justify-content:center;font-size:18px}
+.mlist-foot{font-size:12px;line-height:16px;color:var(--n7)}
+.mlist-double-foot{font-size:12px;line-height:16px;color:var(--n7);background:var(--n2);border-radius:var(--radius-sm);padding:8px 12px;margin-top:12px;}
+.mlist-triple{height:100px;background:var(--n1);border-radius:var(--radius-md);box-shadow:var(--elev-raised-shadow);font-family:var(--font-cn);display:flex;align-items:center;gap:16px;padding:16px}
+.mlist-slot{width:88px;height:68px;border-radius:var(--radius-sm);background:var(--n2);flex:none}
+.mlist-triple-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+
+/* ============ 6. 卡片 Card B / C ============ */
+.mcard-b{width:343px;background:var(--n1);border-radius:var(--radius-md);box-shadow:var(--shadow-m);overflow:hidden}
+.mcard-b-head{height:40px;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid var(--n4);font-size:16px;font-weight:500;color:var(--n9);font-family:var(--font-cn)}
+.mcard-c{width:343px;background:var(--n1);border-radius:var(--radius-md);box-shadow:var(--shadow-m);padding:8px 16px}
+.mcard-c-title{font-size:16px;font-weight:500;color:var(--n8);font-family:var(--font-cn)}
+.ios .mcard-b,.ios .mcard-c{border-radius:var(--radius-card-ios)}
+/* 2026-08-05 统一：.mcard/.m-hero/.m-kingkong 等卡片状容器 iOS 用卡片级 10px（默认 8px，见各定义处） */
+.ios .mcard,.ios .m-hero,.ios .m-kingkong{border-radius:var(--radius-card-ios)}
+
+/* ============ 7. 弹窗 Modal（2026-08-04 按参考图升级：ActionSheet 底部弹层 + .mdialog 居中弹窗双体系；2026-08-06 选项 iOS 官方 ActionSheet 化） ============ */
+/* 遮罩：默认隐藏，.show 显示；支持居中对齐（.mdialog）与底部对齐（ActionSheet） */
+.mmask{display:none;position:absolute;inset:0;background:rgba(0,0,0,0.45);align-items:flex-end;z-index:10}
+.mmask.show{display:flex}
+.mmask--center{align-items:center;justify-content:center;}
+/* 底部 ActionSheet（参考图"操作弹窗/多选顶弹窗"：标题 + 操作行 + 取消按钮 + home indicator）
+   2026-08-06 iOS 官方 ActionSheet 化（视觉迭代）：标题=13px 灰（secondary label）居中；选项=17px 品牌蓝居中、无分隔线；
+   取消=独立分区（8px 灰底间隔 + 600 加粗）。行高/圆角保持契约（title 46 / item 56 / radius 16） */
+.mmodal{width:343px;margin:0 auto 0;background:var(--n2);border-radius:var(--radius-lg) var(--radius-lg) 0 0;box-shadow:var(--shadow-l);overflow:hidden;}
+.mmodal-title{height:46px;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--n7);font-family:var(--font-cn);background:var(--n1);}
+.mmodal-item{height:56px;display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--primary);font-family:var(--font-cn);background:var(--n1);}
+.mmodal-item.on{color:var(--err);}
+.mmodal-item .m-icon{width:20px;height:20px;margin-right:12px;color:var(--n7);flex:none;}
+.mmodal-item.on .m-icon{color:var(--err);}
+/* ActionSheet 底部取消按钮：独立分区（8px 灰底间隔）+ home indicator */
+.mmodal-cancel{height:56px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:var(--n10);font-family:var(--font-cn);border-top:8px solid var(--n2);background:var(--n1);}
+.mmodal-cancel:active{background:var(--n3);}
+/* 居中弹窗 Dialog（参考图"长文本/筛选/单选/多项输入"：标题居中 + 内容区 + 底部取消/确认 + home indicator） */
+.mdialog{width:300px;margin:auto;background:var(--n1);border-radius:var(--radius-lg);box-shadow:var(--shadow-l);overflow:hidden;display:flex;flex-direction:column;}
+.mdialog-title{height:52px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:500;color:var(--n9);font-family:var(--font-cn);border-bottom:1px solid var(--n4);}
+.mdialog-body{padding:16px;font-size:14px;line-height:22px;color:var(--n7);font-family:var(--font-cn);max-height:360px;overflow-y:auto;}
+.mdialog-body .md-item{height:44px;display:flex;align-items:center;font-size:15px;color:var(--n8);border-bottom:1px solid var(--n4);}
+.mdialog-body .md-item:last-child{border-bottom:none;}
+.mdialog-body .md-item.on{color:var(--primary);}
+.mdialog-foot{display:flex;border-top:1px solid var(--n4);}
+.mdialog-foot .mbtn{flex:1;height:48px;border-radius:0;font-size:16px;}
+.mdialog-foot .mbtn + .mbtn{border-left:1px solid var(--n4);}
+.mdialog-foot .mbtn-cancel{color:var(--n8);background:var(--n1);}
+.mdialog-foot .mbtn-confirm{color:var(--primary);background:var(--n1);}
+/* 注：弹窗（mmask 模态层）内不挂 home indicator——iOS 真机弹窗覆盖全屏，不显示系统条；2026-08-04 用户确认删除 */
+
+/* ============ 7.2 Home Indicator（iOS 系统条；2026-08-04 默认隐藏，按需加 .m-home-indicator--show） ============ */
+/* 默认不渲染（避免弹窗/全屏页误显示）；底部导航/独立页加 .m-home-indicator--show 显式启用
+   2026-08-06 定位升级：absolute 底部（bottomnav 内贴底部安全区 / 独立页贴 .phone 底）——定位直接做在类自身，
+   禁挂 .bottomnav 前缀选择器（契约 bottomnav.height 会匹配后代规则误报 HIGH） */
+.m-home-indicator{display:none;height:21px;align-items:center;justify-content:center;background:var(--n1);flex:none;position:absolute;left:0;right:0;bottom:0;z-index:6;}
+.m-home-indicator--show{display:flex;}
+.m-home-indicator--show::after{content:"";display:block;width:120px;height:5px;border-radius:var(--radius-full);background:var(--n10);opacity:.9;}
+
+/* ============ 7.5 空态 Empty（2026-08-04 新增；动态列表数据为 0 时的占位原语） ============ */
+.m-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:48px 0;color:var(--n7);font-size:13px;font-family:var(--font-cn);}
+.m-empty .m-empty-icon{width:48px;height:48px;color:var(--n5);opacity:.6;}
+
+/* ============ 8. 搜索框 Search ============ */
+/* 基础规则：width:100% + max-width:343px 双场景自适应（2026-08-06 终态）——屏幕落位（.screen/.page-view 直接子级，容器宽 343）时正好 343；
+   嵌入卡片/表单（.mcard/.mcard-b/.mcard-c 及任何更窄容器）时自动收窄，防横向溢出。禁再写固定 343（嵌入场景会溢出） */
+.msearch{width:100%;max-width:343px;height:40px;display:flex;align-items:center;padding:0 12px;background:var(--n1);border:1px solid var(--n4);border-radius:var(--radius-lg);font-family:var(--font-cn);transition:border-color var(--motion-duration-fast) var(--motion-ease-out);}
+.msearch-icon{width:24px;height:24px;margin-right:8px;color:var(--n8)}
+.msearch input{flex:1;border:none;outline:none;background:transparent;font-size:14px;color:var(--n8)}
+.msearch input::placeholder{color:var(--n5)}
+/* 卡片内 msearch（2026-08-06 冗余消除）：基础规则已 width:100% 自适应，无需 .mcard 前缀降级规则（原 .mcard .msearch{width:100%} 已并入基础规则，且页面自造表单容器如 .form-card 无法被 .mcard 前缀覆盖） */
+
+/* ============ 4.5 组件间距视觉分组（§10.4 v4 补强，2026-08-04 用户反馈"v1-v3 都没起效"） ============ */
+/* v1-v3 根因：
+   - v1 精确类名 selector 漏页面级类
+   - v2 .screen > 直接子 漏"卡片状容器内子元素"
+   - v3 .kpi-grid > * / .anim-list-in > * 用 margin-top 被 grid/flex gap 覆盖
+   v4 真解法：**直接改"卡片状容器"的 gap 值**——grid/flex gap 比 margin-top 优先。 */
+/* ============ 4.5 组件间距视觉分组（§10.4 v8 终态，2026-08-04 用户"v7 又贴一起"反馈后定中间值） ============ */
+/* 审美三原则"克制"——工业后台紧凑档（2026-08-05 终态 v10）：间距纯由 flex gap 控制，禁 margin 叠加。
+   v9 误用「gap 12 + margin 4 = 16」，视觉实测 21px（gap+margin+box-shadow 外扩，把组件外框算进间距）——
+   用户反馈「间距改错方向，是否把组件外框算进去了」。终态：全部模块间距 = 单一 gap 12px，无 margin 叠加：
+   - 基础：.screen gap:12px / .page-view gap:12px（唯一间距来源）
+   - 线状组件（Tab/搜索/胶囊）与下一元素：gap 12px（去掉 margin-bottom:4px）
+   - 卡片状容器内子（KPI/列表）：gap:12px
+   - 卡片与卡片叠：gap 12px（去掉 margin-top:4px）
+   - 组件外框（box-shadow 外扩/边框）不计入间距 */
+.kpi-grid,.anim-list-in,.mtabs,.m-tabs-list{gap:12px !important;}
+.mtabs,.msearch,.m-capsule{margin-bottom:0 !important;}
+.screen > .mcard + .mcard,.page-view > .mcard + .mcard{margin-top:0 !important;}
+.mtabs{margin-top:0 !important;}
+/* 网格宫格型容器（金刚/瓷片）保持原紧凑间距——不需 20px（4-8 icon 紧密布局更合适） */
+/* .m-kingkong gap:14px / .m-porcelain gap:8px 保持不变 */
+/* 区域交界（Tab/搜索/胶囊/瓷片/Hero/金刚 与卡片状容器）：间距纯由 gap 12px 提供，margin 全部归零（2026-08-05 v10 终态）——
+   v8 30px → v9 20px（gap16+4）→ v10 12px 纯 gap；用户两次反馈「纵向间距太大」+「是否把组件外框算进去了」，
+   终态：间距 = 单一 gap，组件外框（box-shadow 外扩）不计入间距 */
+/* ⚠️ 2026-08-05 修复：选择器必须同时覆盖 .screen >（单屏模块直挂）与 .page-view >（多屏标准结构 .screen > .page-view > 模块）两种容器；
+   类名与真源一致（.m-hero/.m-kingkong，非 .mhero/.mkingkong）——此前仅写 .screen > 且拼错类名，多屏页全部落空导致模块 0px 贴死 */
+.screen > .mtabs + .kpi-grid,.page-view > .mtabs + .kpi-grid,
+.screen > .mtabs + .anim-list-in,.page-view > .mtabs + .anim-list-in,
+.screen > .mtabs + .mcard,.page-view > .mtabs + .mcard,
+.screen > .msearch + .kpi-grid,.page-view > .msearch + .kpi-grid,
+.screen > .msearch + .anim-list-in,.page-view > .msearch + .anim-list-in,
+.screen > .msearch + .mcard,.page-view > .msearch + .mcard,
+.screen > .m-hero + .kpi-grid,.page-view > .m-hero + .kpi-grid,
+.screen > .m-hero + .anim-list-in,.page-view > .m-hero + .anim-list-in,
+.screen > .m-hero + .mcard,.page-view > .m-hero + .mcard,
+.screen > .m-kingkong + .kpi-grid,.page-view > .m-kingkong + .kpi-grid,
+.screen > .m-kingkong + .anim-list-in,.page-view > .m-kingkong + .anim-list-in,
+.screen > .m-kingkong + .mcard,.page-view > .m-kingkong + .mcard,
+.screen > .m-capsule + .kpi-grid,.page-view > .m-capsule + .kpi-grid,
+.screen > .m-capsule + .anim-list-in,.page-view > .m-capsule + .anim-list-in,
+.screen > .m-capsule + .mcard,.page-view > .m-capsule + .mcard,
+.screen > .m-porcelain + .kpi-grid,.page-view > .m-porcelain + .kpi-grid,
+.screen > .m-porcelain + .anim-list-in,.page-view > .m-porcelain + .anim-list-in,
+.screen > .m-porcelain + .mcard,.page-view > .m-porcelain + .mcard{margin-top:0;}
+/* 2026-08-05 v10 终态：区域交界间距纯由 gap 12px 提供，margin 归零（v9 的 gap+margin=16 视觉 21px 偏大） */
+
+/* ============ 8.5 图表 Chart（2026-08-04 新增：移动端看板趋势图原语；2026-08-05 补 X 轴标签区边界） ============ */
+/* 容器：定高 + 防四周留白失控；SVG 撑满；色板用功能色语义（产量=primary / 良品率=run / 开机率=warn），不新增 8 色 chart token */
+/* 纵向三段式（见 RULES §9.7）：绘图区 + 标签保护区(≥8px) + 标签区(≥16px)——viewBoxH ≥ 最高数据元素高 + 8 + 16 + 8；
+   柱底/折线最低点 y ≤ viewBoxH − 23，X 轴标签基线 y = viewBoxH − 6，chart-box 高度 = viewBoxH；
+   禁柱体/网格线与标签文字重叠，禁标签触 viewBox 底 */
+.chart-box{position:relative;width:100%;height:180px;}
+.chart-box--sm{height:120px;} /* 移动小图表容器：高 = viewBoxH 120（CHART-SPEC 移动，340×120 柱状/折线） */
+.chart-svg{width:100%;height:100%;display:block;}
+.chart-svg--fill{width:100%;height:100%;display:block;vector-effect:non-scaling-stroke;}
+.chart-legend{display:flex;align-items:center;gap:16px;margin-top:var(--space-sm);font-size:11px;color:var(--n7);font-family:var(--font-cn);}
+.legend-item{display:inline-flex;align-items:center;gap:4px;}
+.legend-dot{width:8px;height:8px;border-radius:var(--radius-full);}
+.legend-line{width:16px;height:0;flex:none;border-top:2px solid;}
+.legend-line--dash{border-top-style:dashed;}
+
+/* 图表原子（CHART-SPEC §8 落地 2026-08-06：移动端定尺寸 1:1 + 文字 HTML 层 + 默认动画） */
+/* 文字层：SVG 内禁放文字（拉伸变形），轴标签/数值/图例一律 HTML 叠层——与 Web 同构，字号走 m-text 语义 */
+.chart-grid{stroke:var(--n4);stroke-width:1;}
+.chart-x-labels{display:flex;justify-content:space-between;margin-top:4px;color:var(--n7);font-size:12px;font-family:var(--font-cn);}
+.chart-x-labels span{flex:1;text-align:center;}
+.chart-v{position:absolute;transform:translate(-50%,-100%);color:var(--n9);font-family:var(--font-mono);font-size:12px;line-height:1.4;} /* 柱顶/点旁数值：底部对齐锚点（锚点=柱顶上方 gap 处），防数值压图形 */
+.chart-hl{position:absolute;left:0;transform:translateY(-50%);color:var(--n7);font-size:12px;font-family:var(--font-cn);}
+.chart-hr{position:absolute;transform:translateY(-50%);color:var(--n9);font-family:var(--font-mono);font-size:12px;line-height:1.4;}
+.chart-hr--onbar{color:var(--n1);} /* 横向柱状条内右端数值（深色条上白字） */
+.chart-ring-svg{display:block;margin:0 auto;}
+.chart-ring-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
+.chart-box--ring{display:flex;align-items:center;justify-content:center;height:200px;}
+.chart-ring-seg{cursor:pointer;}
+
+/* 默认动画（挂类即得；fill-mode backwards 防锁死 transform 挡住点按反馈；时长走 token） */
+.chart-bar{transform-box:fill-box;transform-origin:bottom;animation:chartBarGrow var(--motion-duration-normal) var(--motion-ease-out) backwards;}
+.chart-hbar{transform-box:fill-box;transform-origin:left;animation:chartHbarGrow var(--motion-duration-normal) var(--motion-ease-out) backwards;}
+.chart-line{stroke-dasharray:900;stroke-dashoffset:900;animation:chartLineGrow var(--motion-duration-slow) var(--motion-ease-out) forwards;}
+.chart-ring-anim{animation:chartRingIn var(--motion-duration-normal) var(--motion-ease-out) both;}
+.chart-dot{animation:chartDotIn var(--motion-duration-normal) var(--motion-ease-out) both;animation-delay:var(--motion-duration-slow);}
+@keyframes chartBarGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes chartHbarGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes chartLineGrow{to{stroke-dashoffset:0}}
+@keyframes chartRingIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+@keyframes chartDotIn{from{opacity:0}to{opacity:1}}
+
+/* 数据元素点按反馈（移动端无 hover → active 提亮/放大；阴影用 --shadow-data-hover 轻弥散） */
+.chart-bar:active,.chart-hbar:active{filter:brightness(1.12);}
+.chart-dot:active{transform:scale(1.7);transform-box:fill-box;transform-origin:center;}
+
+/* 点按选中态（tap 选中高亮 + 微动效；配合页面脚本切换，CHART-SPEC §6：移动端无 hover，点击即交互） */
+.chart-bar,.chart-hbar,.chart-dot{transition:filter var(--motion-duration-fast) var(--motion-ease-out),transform var(--motion-duration-fast) var(--motion-ease-out);}
+.chart-bar--active,.chart-hbar--active{filter:brightness(1.18);transform:translateY(-2px);box-shadow:var(--shadow-data-hover);}
+.chart-dot--active{transform:scale(1.7);transform-box:fill-box;transform-origin:center;filter:brightness(1.18);}
+.chart-tip{position:absolute;transform:translateX(-50%);background:var(--n10);color:var(--n1);font-size:12px;font-family:var(--font-mono);line-height:1.4;padding:4px 8px;border-radius:var(--radius-sm);white-space:nowrap;pointer-events:none;animation:chartTipIn var(--motion-duration-fast) var(--motion-ease-out) both;z-index:2;}
+@keyframes chartTipIn{from{opacity:0;transform:translate(-50%,4px)}to{opacity:1;transform:translate(-50%,0)}}
+
+/* ============ 9. 页签 Tabs ============ */
+/* Tabs（2026-08-04 形态升级：胶囊填充 → 下划线指示器，用户拍板方案 B） */
+/* .mtabs：横滑能力 + 下边框容器（选中项的下划线即容器底线上的品牌色短条）
+   2026-08-05 二次修正：position:sticky 固定（筛选组件滚动时保持可见，列表在下方变化，禁视觉漂移——
+   此前「切换后 scrollTop=0」反而跳顶；正确方案是组件本身固定不动）
+   2026-08-05 三次修正：gap 24→12（工业后台紧凑，选项多时可容纳更多）；右侧淡出渐变提示可横滑（::after mask） */
+.mtabs{display:flex;height:44px;align-items:flex-end;gap:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:0 16px;border-bottom:1px solid var(--n4);position:sticky;top:0;z-index:5;background:var(--n2);}
+.mtabs::-webkit-scrollbar{display:none}
+/* 右侧淡出遮罩：提示右侧还有更多选项可横向滑动（滑动后渐隐由 JS 控制或天然滚动覆盖） */
+.mtabs::after{content:"";position:sticky;right:0;top:0;bottom:0;width:28px;flex:none;pointer-events:none;background:linear-gradient(90deg,rgba(246,247,249,0),rgba(246,247,249,.92));}
+/* .mtab：直角 + 下边框透明（选中时品牌色 2.5px 指示线）；微信/淘宝/京东主流形态，垂直空间小、克制 */
+.mtab{height:44px;display:inline-flex;align-items:center;padding:0 4px;font-size:14px;font-weight:500;color:var(--n7);font-family:var(--font-cn);border-bottom:2.5px solid transparent;flex-shrink:0;white-space:nowrap;transition:color var(--motion-duration-fast) var(--motion-ease-out),border-color var(--motion-duration-fast) var(--motion-ease-out);}
+.mtab.active{color:var(--primary);border-bottom-color:var(--primary);}
+/* 消息红点（参考图"标签小红点"）：mtab 内 .m-tabdot 绝对定位右上 */
+.mtab{position:relative;}
+.m-tabdot{position:absolute;top:8px;right:-4px;width:8px;height:8px;border-radius:var(--radius-full);background:var(--err);}
+/* 可写 tab（+ 新增按钮，独立胶囊形态，不随 Tab 下划线） */
+.mtab-add{width:32px;height:32px;align-self:center;padding:0;justify-content:center;color:var(--n7);border:1px dashed var(--n5);background:var(--n1);border-radius:var(--radius-full);flex-shrink:0;cursor:pointer;}
+.mtab-add:active{color:var(--primary);border-color:var(--primary);}
+
+/* ============ 10. 状态点 StatusDot ============ */
+/* 语义（2026-08-05 拍板①）：机器状态用 run/中性/err 独立语义，功能状态才用 ok(suc)/warn——
+   运行中=run、待机=idle(n7 灰)、停机=off(n6 更灰)、故障=err；ok(suc)=操作成功、warn=功能预警 */
+.m-dot{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-family:var(--font-cn);color:var(--n8)}
+.m-dot i{width:10px;height:10px;border-radius:999px;display:inline-block}
+.m-dot.run i{background:var(--run)}
+.m-dot.ok i{background:var(--suc)}
+.m-dot.warn i{background:var(--warn)}
+.m-dot.err i{background:var(--err)}
+.m-dot.idle i{background:var(--n7)}
+.m-dot.off i{background:var(--n8)}
+.m-dot.offline i{background:var(--n9)}
+
+/* ============ 11. 图标 Icon ============ */
+.m-icon{display:inline-flex;align-items:center;justify-content:center;color:var(--n8)}
+.m-icon-24{width:24px;height:24px}
+.m-icon-20{width:20px;height:20px}
+.m-icon-12{width:12px;height:12px}
+.m-icon.active{color:var(--primary)}
+
+/* ============ 12. 单元格 Cell（2026-08-04 按参考图5：单行标题 7 变体） ============ */
+.m-cell{display:flex;align-items:center;min-height:48px;padding:12px 16px;background:var(--n1);border-bottom:1px solid var(--n4);gap:8px;font-family:var(--font-cn);}
+.m-cell:last-child{border-bottom:none;}
+.m-cell-title{font-size:15px;color:var(--n8);font-weight:400;flex:none;}
+.m-cell-value{margin-left:auto;font-size:15px;color:var(--n7);display:inline-flex;align-items:center;gap:8px;}
+.m-cell-chevron{width:16px;height:16px;color:var(--n6);flex:none;margin-left:4px;}
+.m-cell-icon{width:24px;height:24px;color:var(--n7);flex:none;}
+.m-cell-radio{width:20px;height:20px;border-radius:var(--radius-full);border:2px solid var(--n5);flex:none;position:relative;}
+.m-cell-radio.on{border-color:var(--primary);}
+.m-cell-radio.on::after{content:"";position:absolute;inset:3px;border-radius:var(--radius-full);background:var(--primary);}
+.m-cell-avatar{width:32px;height:32px;border-radius:var(--radius-full);background:var(--primary-dis-bg);flex:none;display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:13px;font-weight:500;}
+
+/* ============ 13. 头像 Avatar（2026-08-04 新增；圆形象征 + 两级/三级标题行） ============ */
+.m-avatar{display:inline-flex;align-items:center;justify-content:center;border-radius:var(--radius-full);background:var(--primary-dis-bg);color:var(--primary);font-weight:500;flex:none;overflow:hidden;}
+.m-avatar-sm{width:32px;height:32px;font-size:13px;}
+.m-avatar-md{width:40px;height:40px;font-size:15px;}
+.m-avatar-lg{width:56px;height:56px;font-size:20px;}
+.m-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--n1);border-bottom:1px solid var(--n4);}
+.m-item-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;}
+.m-item-title{font-size:15px;font-weight:500;color:var(--n8);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.m-item-desc{font-size:12px;color:var(--n7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.m-item-more{display:inline-flex;align-items:center;gap:8px;flex:none;font-size:12px;color:var(--n6);}
+
+/* ============ 14. 卡片 Card（2026-08-04 按参考图1+5：右上状态 Tag / 详情行 / chevron / 折叠） ============ */
+/* 圆角体系 2026-08-05 统一：卡片用 --radius-md(8px)，iOS 覆盖 --radius-card-ios(10px)——原误用 --radius-lg(16px 弹窗级) 圆角过大 */
+.mcard{background:var(--n1);border-radius:var(--radius-md);box-shadow:var(--elev-raised-shadow);overflow:hidden;}
+.mcard-head{display:flex;align-items:center;gap:8px;padding:16px;border-bottom:1px solid var(--n4);}
+/* mcard-head 居中变体（2026-08-04 补强）：状态突出卡（"生产工序"+"已完成"）—— 标题/Tag 堆叠水平居中 */
+.mcard-head--center{flex-direction:column;align-items:flex-start;gap:8px;}
+.mcard-head--center .mcard-tag{align-self:flex-start;}
+.mcard-title{flex:1;font-size:15px;font-weight:500;color:var(--n8);}
+.mcard-tag{flex:none;}
+.mcard-body{padding:16px;}
+.mcard-row{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--n7);padding:8px 0;}
+.mcard-row b{font-weight:500;color:var(--n8);}
+.mcard-foot{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:1px solid var(--n4);font-size:12px;color:var(--n7);}
+.mcard-chevron{width:16px;height:16px;color:var(--n6);flex:none;transition:transform var(--motion-duration-fast) var(--motion-ease-out);}
+.mcard.folded .mcard-chevron{transform:rotate(180deg);}
+.mcard-fold{display:none;padding:16px;border-top:1px solid var(--n4);}
+.mcard.folded .mcard-fold{display:block;}
+
+/* ============ 14.5 补全组件（2026-08-04 精细化：对齐 antd-mobile/WeUI 高频组件，全 token 化） ============ */
+/* --- Switch 开关（antd-mobile：胶囊轨道 44×26 + 白色圆钮滑动；选中轨道品牌色，禁用 n3 降级） --- */
+.m-switch{position:relative;display:inline-flex;width:44px;height:24px;flex:none;cursor:pointer;align-items:center;}
+.m-switch input{position:absolute;inset:0;opacity:0;margin:0;width:100%;height:100%;cursor:pointer;}
+.m-switch .sw-track{position:absolute;inset:0;border-radius:var(--radius-full);background:var(--n4);transition:background var(--motion-duration-fast) var(--motion-ease-out);}
+.m-switch .sw-thumb{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:var(--radius-full);background:var(--n1);box-shadow:0 1px 2px rgba(0,0,0,.15);transition:left var(--motion-duration-fast) var(--motion-ease-out);}
+.m-switch input:checked + .sw-track{background:var(--primary);}
+.m-switch input:checked ~ .sw-thumb{left:22px;}
+.m-switch input:disabled + .sw-track{background:var(--n3);}
+.m-switch input:disabled ~ .sw-thumb{background:var(--n2);box-shadow:none;}
+/* --- Stepper 步进器（antd-mobile：− 圆形按钮 / 数值 tabular-nums / + 圆形按钮；生产报工数量微调场景） --- */
+.m-stepper{display:inline-flex;align-items:center;flex:none;}
+.m-stepper .st-btn{width:28px;height:28px;border:none;border-radius:var(--radius-full);background:var(--n2);color:var(--n8);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:500;cursor:pointer;font-family:var(--font-cn);padding:0;line-height:1;transition:background var(--motion-duration-fast) var(--motion-ease-out);}
+.m-stepper .st-btn:active{background:var(--n3);}
+.m-stepper .st-btn:disabled{color:var(--n5);background:var(--n3);cursor:not-allowed;}
+.m-stepper .st-val{min-width:48px;text-align:center;font-size:15px;font-weight:500;color:var(--n9);font-variant-numeric:tabular-nums;font-family:var(--font-mono);}
+.m-stepper .st-step{min-width:16px;height:1px;background:var(--n6);margin:auto;}
+/* --- TextArea 多行输入（异常上报详情/备注场景；focus 品牌色边框，对齐 .msearch） --- */
+.m-textarea{width:100%;min-height:88px;padding:12px;background:var(--n1);border:1px solid var(--n4);border-radius:var(--radius-md);font-size:14px;line-height:20px;color:var(--n9);font-family:var(--font-cn);resize:none;box-sizing:border-box;transition:border-color var(--motion-duration-fast) var(--motion-ease-out);}
+.m-textarea::placeholder{color:var(--n5);}
+.m-textarea:focus{outline:none;border-color:var(--primary);}
+/* --- Notice 通知条（WeUI：浅底 + 左侧 3px 语义色条 + 图标 + 可关闭；4 态 info/suc/warn/err） --- */
+.m-notice{display:flex;align-items:center;gap:8px;min-height:36px;padding:8px 12px;border-radius:var(--radius-md);border-left:3px solid transparent;background:var(--n2);color:var(--n8);font-size:12px;line-height:18px;font-family:var(--font-cn);}
+.m-notice .m-notice-ico{width:16px;height:16px;flex:none;color:var(--n6);}
+.m-notice .m-notice-close{margin-left:auto;width:16px;height:16px;color:var(--n6);flex:none;cursor:pointer;}
+.m-notice-info{border-left-color:var(--primary);}
+.m-notice-info .m-notice-ico{color:var(--primary);}
+.m-notice-suc{border-left-color:var(--suc);}
+.m-notice-suc .m-notice-ico{color:var(--suc);}
+.m-notice-warn{border-left-color:var(--warn);}
+.m-notice-warn .m-notice-ico{color:var(--warn);}
+.m-notice-err{border-left-color:var(--err);}
+.m-notice-err .m-notice-ico{color:var(--err);}
+/* --- Skeleton 骨架屏（加载占位：文字行 w60/w80 + 圆形；shimmer 扫光用规范 keyframes + 动效 token） --- */
+.m-skeleton{display:flex;flex-direction:column;gap:12px;padding:16px;background:var(--n1);border-radius:var(--radius-md);}
+.m-skeleton .sk-row{display:flex;align-items:center;gap:12px;}
+.m-skeleton .sk-circle{width:44px;height:44px;border-radius:var(--radius-full);background:var(--n3);flex:none;}
+.m-skeleton .sk-line{height:16px;border-radius:4px;background:var(--n3);}
+.m-skeleton .sk-line.sk-w40{width:40%;}
+.m-skeleton .sk-line.sk-w60{width:60%;}
+.m-skeleton .sk-line.sk-w80{width:80%;}
+.m-skeleton .sk-line.sk-w100{width:100%;}
+.m-skeleton .sk-block{background:linear-gradient(90deg,var(--n3) 25%,var(--n2) 50%,var(--n3) 75%);background-size:200% 100%;animation:shimmer var(--motion-duration-slow) var(--motion-ease-out) infinite;}
+
+/* ============ 15. 上传 Upload（2026-08-04 新增：缩略图网格 + 添加按钮） ============ */
+.m-upload{display:flex;flex-wrap:wrap;gap:8px;}
+.m-upload-item{width:72px;height:72px;border-radius:var(--radius-md);background:var(--n3);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;}
+.m-upload-item img{width:100%;height:100%;object-fit:cover;}
+.m-upload-item .up-del{position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:var(--radius-full);background:rgba(0,0,0,.5);color:var(--n1);display:flex;align-items:center;justify-content:center;font-size:11px;}
+.m-upload-add{width:72px;height:72px;border-radius:var(--radius-md);border:1px dashed var(--n5);color:var(--n6);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;cursor:pointer;}
+.m-upload-add svg{width:20px;height:20px;}
+.m-upload-add:active{color:var(--primary);border-color:var(--primary);}
+
+/* ============ 16. 进度条 Progress（2026-08-04 新增：绿色运行态 + 数值文案） ============ */
+.m-progress{display:flex;align-items:center;gap:8px;font-family:var(--font-cn);}
+.m-progress-bar{flex:1;height:8px;border-radius:var(--radius-full);background:var(--n3);overflow:hidden;}
+.m-progress-inner{height:100%;border-radius:var(--radius-full);background:var(--primary);transition:width var(--motion-duration-normal) var(--motion-ease-out);}
+.m-progress--run .m-progress-inner{background:var(--run);}
+.m-progress--warn .m-progress-inner{background:var(--warn);}
+.m-progress--err .m-progress-inner{background:var(--err);}
+.m-progress-text{font-size:12px;color:var(--n7);flex:none;font-variant-numeric:tabular-nums;}
+
+/* ============ 17. 页面区域布局（2026-08-04 新增：App 首页区域划分概念） ============ */
+/* 区域顺序：状态栏（透明悬浮）→ 导航栏（品牌色）→ 首焦区 Hero → 金刚区 KingKong → 胶囊区 Capsule → 瓷片区 Porcelain → 列表区 → 标签栏 TabBar */
+/* 首焦区 Hero：品牌色主视觉横幅（运营焦点/banner），含背景色块 + 标题 + 副文 + CTA */
+.m-hero{position:relative;border-radius:var(--radius-md);background:var(--primary);color:var(--n1);padding:20px 16px;overflow:hidden;display:flex;flex-direction:column;gap:8px;}
+.m-hero::after{content:"";position:absolute;right:-24px;top:-24px;width:120px;height:120px;border-radius:var(--radius-full);background:rgba(255,255,255,.08);}
+.m-hero .mh-title{font-size:18px;font-weight:500;position:relative;z-index:1;}
+.m-hero .mh-desc{font-size:12px;opacity:.85;position:relative;z-index:1;}
+.m-hero .mh-num{font-size:26px;font-weight:600;font-variant-numeric:tabular-nums;font-family:var(--font-mono);position:relative;z-index:1;}
+/* Hero 数字单位（2026-08-04 精细化：mh-num 内 <span> 单位小号淡化，替代页面 inline font-size） */
+.m-hero .mh-num span{font-size:14px;font-weight:400;opacity:.85;font-family:var(--font-cn);}
+.m-hero .mh-cta{position:relative;z-index:1;display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:500;padding:8px 16px;background:var(--n1);color:var(--primary);border-radius:var(--radius-full);align-self:flex-start;border:none;}
+/* 金刚区 KingKong：常用功能宫格（4 列 × N 行），白卡 + 圆角 icon */
+.m-kingkong{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 8px;background:var(--n1);border-radius:var(--radius-lg);box-shadow:var(--elev-raised-shadow);padding:16px 12px;}
+.m-kk-item{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:12px;font-weight:500;color:var(--n9);cursor:pointer;}
+.m-kk-item:active{opacity:.7;}
+/* 金刚区精致化（2026-08-06 拍板：金刚区=流量分发视觉中心）：icon 底 48px 浅品牌渐变（primary-dis-bg→n2, 145deg）+ 大圆角 radius-lg + 轻投影 shadow-s；
+   icon 24px 品牌蓝；文字 500/n9。参考消费级「渐变底+大圆角+阴影」原则，色板收敛为工控品牌浅色系（禁 AI 粉紫糖果渐变，见 RULES §9.6） */
+.m-kk-ico{width:48px;height:48px;border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,var(--primary-dis-bg) 0%,var(--n2) 100%);box-shadow:var(--shadow-s);}
+.m-kk-ico svg{width:24px;height:24px;color:var(--primary);}
+/* 胶囊区 Capsule：公告/快捷操作条（圆角胶囊浅色底） */
+.m-capsule{display:flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:var(--radius-full);background:var(--primary-dis-bg);color:var(--primary-active);font-size:13px;}
+.m-capsule .m-capsule-ico{width:16px;height:16px;flex:none;}
+.m-capsule .m-capsule-arrow{margin-left:auto;width:16px;height:16px;color:var(--primary);flex:none;}
+/* 瓷片区 Porcelain：宫格磁贴内容块（4 列小瓷块；或 2 列大瓷块 .m-porcelain--lg） */
+.m-porcelain{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.m-porcelain--lg{grid-template-columns:repeat(2,1fr);gap:12px;}
+.m-po-item{background:var(--n1);border-radius:var(--radius-md);box-shadow:var(--elev-raised-shadow);padding:12px;display:flex;flex-direction:column;gap:8px;min-width:0;}
+.m-po-item .m-po-label{font-size:11px;color:var(--n7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.m-po-item .m-po-value{font-size:20px;font-weight:500;font-variant-numeric:tabular-nums;font-family:var(--font-mono);color:var(--n9);line-height:1.1;}
+/* 瓷片数值单位（2026-08-04 精细化：m-po-value 内 <small> 单位小号 n7，替代页面 inline font-size；数值不换行） */
+.m-po-item .m-po-value small{font-size:12px;font-weight:400;color:var(--n7);font-family:var(--font-cn);}
+.m-po-item .m-po-trend{font-size:11px;color:var(--n7);}
+.m-po-item.run .m-po-value{color:var(--run);}
+.m-po-item.warn .m-po-value{color:var(--warn);}
+.m-po-item.err .m-po-value{color:var(--err);}
+.m-po-item.suc .m-po-value{color:var(--suc);}
+/* 列表区 = .screen 内的 section-title + mlist/mcard 组（无独立容器类，遵循 §4.3 间距节奏） */
+
+/* ===== M3 无障碍：系统"减少动效"设置下全部动效归零（2026-08-02） ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,*::before,*::after{animation-duration:0s !important;animation-delay:0s !important;transition-duration:0s !important;transition-delay:0s !important;}
+}

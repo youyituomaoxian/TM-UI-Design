@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>弘讯B端 · 可克隆起始模板 (page-template)</title>
+<!--
+  ============================================================
+  弘讯B端 Web 可克隆起始模板（page-template.html）· 纯框架克隆源（2026-08-06）
+
+  角色：Agent 生成 B 端后台页面的**框架克隆源**（demo 展示内容已移除——
+       规范展示见弘讯web端design-system/web规范展示_框架版_*.html）。
+       克隆：<code>cp page-template.html &lt;用户项目&gt;/output/新页面.html</code> →
+       在 <main class="content"> 内按业务填内容（顶栏/侧栏/底栏零改动）。
+       产出落盘「用户项目」的 output/（设计系统仓库 output/ 仅历史归档，不随设计系统分享）。
+
+  框架外壳：顶栏72 / 侧栏240（折叠80）/ 内容区（唯一滚动区 G8）/ 底栏32（文字居中）/
+           作业树每个节点带 .tree-ico 图标 / :root token（内联副本，同步门禁管）。
+
+  规则：所有颜色走 :root 变量；组件用 template.css 预定 class（link 跟随真源）；
+       无硬编码 hex；Web 禁 #10B981。门禁：node validate-spec.js page-template.html → 0 HIGH。
+  ============================================================
+-->
+<link rel="stylesheet" href="template.css">
+<style>
+  /* 内联 :root 变量（2026-08-06 同步：= template.css 亮色 :root 全量副本，含 oklch 配色与 density 变体；
+     满足 validate-spec 对 page-template 的 :root 门禁。**同步规则：template.css :root 变更后须同步本块**） */
+  :root{
+  
+   --primary:oklch(48.19% 0.1478 252.82);
+   --primary-hover:oklch(56.25% 0.1643 253.76);
+   --primary-active:oklch(41.20% 0.1306 253.87);
+  --primary-dis-bg:#DAEAFA; --primary-dis-fg:#A0B4C0;
+   --brand-surface:oklch(48.19% 0.1478 252.82);
+  --secondary:#0A84FF; --secondary-hover:#3DA0FF; --secondary-active:#0066CC; --secondary-disabled-bg:#0A84FF; --secondary-disabled-fg:#FFFFFF;
+  --link:#1A75D2;
+  
+  --n1:#FFFFFF; --n2:#FAFAFA; --n3:#F6F9FC; --n4:#F5F7FB; --n5:#EAEAED; --n6:#DEE2E6;
+  --n7:#CED4DA; --n8:#ADB5BD; --n9:#6C757D; --n10:#334155; --n11:#212532;
+  
+  --suc:#389E0D; --suc-soft:#F6FFED; --suc-fg:#FFFFFF;
+  --warn:#FA8C16; --warn-soft:#FFF7E6; --warn-fg:#FFFFFF;
+  --err:#F5222D; --err-soft:#FFF1F0; --err-fg:#FFFFFF; --err-fg-deep:#101010;
+  --run:#16A34A; --run-soft:#ECFDF5; --run-fg:#FFFFFF;
+  
+  --suc-hover:#52C41A; --suc-active:#237804; --suc-disabled:#B7EB8F; --suc-soft-hover:#D9F7BE; --suc-soft-active:#D9F7BE; --suc-border-hover:#95DE64; --suc-border-active:#73D13D; --suc-dis-fg:#B8B8B8;
+  --warn-hover:#FFA940; --warn-active:#D46B08; --warn-disabled:#FFD591; --warn-soft-hover:#FFE7BA; --warn-soft-active:#FFE7BA; --warn-border-hover:#FFC069; --warn-border-active:#FF9C2A; --warn-dis-fg:#B8B8B8;
+  --err-hover:#FF4D4F; --err-active:#CF1322; --err-disabled:#FFC8C5; --err-soft-hover:#FFCCC7; --err-soft-active:#FFCCC7; --err-border-hover:#FF7875; --err-border-active:#FF4D4F; --err-dis-fg:#B8B8B8;
+  --run-hover:#22C55E; --run-active:#15803D; --run-disabled:#B8E3C9; --run-soft-hover:#D1FAE5; --run-soft-active:#D1FAE5; --run-border-hover:#86EFAC; --run-border-active:#4ADE80; --run-dis-fg:#B8B8B8;
+  
+  --chart-tech-blue:#0066CC; --chart-smart-cyan:#00A3E0; --chart-data-cyan:#00C7BE; --chart-fresh-green:#00D4A1; --chart-vivid-orange:#FF9500; --chart-alert-red:#FF4D4D; --chart-wisdom-purple:#8A5CF5; --chart-modern-pink:#FF66C2;
+  
+  --radius-sm:2px; --radius-base:4px; --radius-md:8px; --radius-lg:16px; --radius-round:999px; --radius-btn-ios:6px;
+  
+  --space-xs:4px; --space-sm:8px; --space-md:12px; --space-base:16px; --space-lg:24px; --space-xl:32px; --space-xxl:48px;
+  
+  --shadow-card:0 1px 2px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04);
+  --shadow-modal:0 6px 16px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
+  --shadow-float:0 4px 8px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04);
+  --shadow-row-hover:0 1px 2px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03);
+  --shadow-data-hover:0 1px 2px rgba(0,0,0,0.15);  /* 数据元素悬停（drop-shadow 单阴影格式；对应 card/row-hover 级轻弥散，禁 float/modal 级） */
+  
+  --elev-sunken-surface:#F5F7FB; --elev-sunken-shadow:none;
+  --elev-default-surface:#FFFFFF; --elev-default-shadow:none;
+  --elev-raised-surface:#FFFFFF; --elev-raised-shadow:0 1px 2px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04);
+  --elev-overlay-surface:#FFFFFF; --elev-overlay-shadow:0 6px 16px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
+  --elev-overflow-surface:#FFFFFF; --elev-overflow-shadow:0 0 8px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04);
+  
+  --motion-duration-instant:120ms; --motion-duration-fast:240ms; --motion-duration-normal:360ms; --motion-duration-slow:480ms;
+  --motion-ease-in-out:cubic-bezier(0.645, 0.045, 0.355, 1);
+  --motion-ease-out:cubic-bezier(0.215, 0.61, 0.355, 1);
+  --motion-ease-out-quint:cubic-bezier(0.23, 1, 0.32, 1);
+  --motion-ease-in-out-circ:cubic-bezier(0.78, 0.14, 0.15, 0.86);
+  --motion-ease-out-circ:cubic-bezier(0.08, 0.82, 0.17, 1);
+  
+  --font-cn:"Source Han Sans CN","思源黑体",sans-serif; --font-en:"Roboto",sans-serif;
+  --font-mono:'JetBrains Mono', 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+  
+  --font-display:500 32px/40px var(--font-cn);
+  --font-h1:500 28px/36px var(--font-cn);
+  --font-h2:500 24px/32px var(--font-cn);
+  --font-h3:500 20px/28px var(--font-cn);
+  --font-h4:500 18px/26px var(--font-cn);
+  --font-h5:500 16px/24px var(--font-cn);
+  --font-body1:400 14px/22px var(--font-cn);
+  --font-body2:400 13px/20px var(--font-cn);
+  --font-caption:400 12px/16px var(--font-cn);
+  --font-label:500 12px/16px var(--font-cn);
+  --font-overline:500 11px/16px var(--font-cn);
+  --font-link:400 14px/22px var(--font-cn);
+  
+  --density-row-height:44px; --density-content-padding:16px;
+  
+  --bg-page:#F5F7FB; --bg-surface:#FFFFFF; --bg-elevated:#FFFFFF;
+  --text-1:#212532; --text-2:#6C757D; --text-3:#ADB5BD; --border:#DEE2E6;
+  
+  --topbar-height:72px; --sidebar-width:240px;
+  --sidebar-collapsed-width:80px; --footer-height:32px;
+}
+
+:root[data-density="compact"],.density-compact{--density-row-height:36px;--density-content-padding:12px;}
+:root[data-density="comfortable"],.density-comfortable{--density-row-height:44px;--density-content-padding:16px;}
+:root[data-density="spacious"],.density-spacious{--density-row-height:52px;--density-content-padding:20px;}
+
+:root
+  :root[data-density="compact"]{--density-row-height:36px;--density-content-padding:12px;}
+  :root[data-density="comfortable"]{--density-row-height:44px;--density-content-padding:16px;}
+  :root[data-density="spacious"]{--density-row-height:52px;--density-content-padding:20px;}
+</style>
+<style>
+  /* 仅布局/容器助手，绝不含颜色裸值（颜色一律 var(--*) 或参考网格 hex）。
+     区块间距语义（RULES §4.1）：本展示页用 XXL 48 = 页面级分隔；业务页面克隆后
+     请降为 XL 32px（区块分割），勿沿用 48（页面内业务模块间过宽）。 */
+  .sec{margin-bottom:48px;scroll-margin-top:16px;}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--n6);}
+  .sec-desc{color:var(--n9);font-size:13px;line-height:20px;margin:0 0 16px;}
+  .sub{margin:20px 0 10px;color:var(--n10);}
+  .grid{display:grid;gap:12px;}
+  .swatch-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));}
+  .sw{border-radius:var(--radius-base);overflow:hidden;border:1px solid var(--n6);background:var(--n1);}
+  .sw-chip{height:56px;}
+  .sw-meta{padding:8px 10px;}
+  .sw-name{font-size:13px;font-weight:500;color:var(--n10);}
+  .sw-hex{font-size:11px;color:var(--n9);font-family:var(--font-mono);text-transform:uppercase;margin-top:2px;}
+  .sw-note{font-size:11px;color:var(--n8);margin-top:2px;}
+  .sp-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+  .sp-label{width:130px;flex-shrink:0;font-size:12px;color:var(--n9);font-family:var(--font-mono);}
+  .sp-bar{height:18px;background:var(--primary);border-radius:var(--radius-base);}
+  .sp-track{flex:1;background:var(--n3);border-radius:var(--radius-base);}
+  /* M1 动画演示（2026-08-02）：原语工具类实演；演示类仅用于舞台/触发按钮，动画一律走 .anim-*（token） */
+  .motion-stage{display:flex;align-items:center;justify-content:center;height:150px;background:var(--n3);border-radius:var(--radius-md);border:1px dashed var(--n6);margin:12px 0;}
+  .motion-target{width:96px;height:64px;background:var(--primary);color:var(--text-on-brand);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;}
+  .motion-triggers{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+  .shape{width:72px;height:72px;background:var(--primary);flex-shrink:0;}
+  .shape-row{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-end;}
+  .shape-cap{font-size:11px;color:var(--n9);font-family:var(--font-mono);text-align:center;margin-top:6px;}
+  .shape-box{width:96px;}
+  .demo-surface{padding:24px;background:var(--n1);border-radius:var(--radius-md);border:1px solid var(--n6);}
+  .demo-label{font-size:12px;color:var(--n9);margin-top:8px;font-family:var(--font-mono);}
+  .type-row{display:flex;align-items:baseline;gap:16px;padding:10px 0;border-bottom:1px solid var(--n6);}
+  .type-label{width:96px;flex-shrink:0;font-family:var(--font-mono);font-size:12px;color:var(--n9);}
+  .type-meta{width:150px;flex-shrink:0;font-size:11px;color:var(--n8);font-family:var(--font-mono);}
+  .type-sample{flex:1;min-width:0;}
+  .callout{background:var(--n3);border-left:3px solid var(--primary);padding:12px 16px;border-radius:var(--radius-base);font-size:13px;color:var(--n10);margin:14px 0;line-height:20px;}
+  .callout b{color:var(--primary-active);}
+  .demo-sidebar{background:var(--primary);border-radius:var(--radius-md);padding:8px;width:260px;max-width:100%;}
+  .modal-preview{position:relative;min-height:300px;background:var(--n4);border-radius:var(--radius-md);overflow:hidden;border:1px solid var(--n6);}
+  .avatar{width:32px;height:32px;border-radius:999px;background:var(--n1);color:var(--primary);display:inline-flex;align-items:center;justify-content:center;font-weight:500;font-size:14px;}
+  .kv{font-family:var(--font-mono);font-size:12px;color:var(--n9);}
+  .mono{font-family:var(--font-mono);}
+  .flex{display:flex;gap:16px;flex-wrap:wrap;}
+  .flex-col{flex-direction:column;}
+  .comp-card{background:var(--n1);border:1px solid var(--n6);border-radius:var(--radius-md);padding:16px;margin-bottom:16px;
+    transition:transform var(--motion-duration-fast) var(--motion-ease-out), box-shadow var(--motion-duration-fast) var(--motion-ease-out);}
+  .comp-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-card), 0 6px 16px rgba(0,0,0,0.08);}
+  .comp-title{font-size:14px;font-weight:500;color:var(--n11);margin-bottom:4px;}
+  .comp-tokens{font-size:11px;color:var(--n8);font-family:var(--font-mono);margin-bottom:12px;}
+  /* 7A（2026-08-03）：内联裸 px 尺寸合规化——尺寸进页面自身 <style>，inline style 禁裸 px（门禁 layout.inline.dimension） */
+  .topbar-logo .ico{width:32px;height:32px;}
+  .dp-panel .row{margin-bottom:8px;}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- ===== 顶栏（布局骨架 · G8 固定滚动区之一） ===== -->
+  <!-- 结构（左→右）：logo + 平台名 + 副标题 | spacer | 首页 / 用户名 / 修改密码 / 退出登录 / 全屏 -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <span class="topbar-logo">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
+        </svg>
+      </span>
+      <div class="topbar-titles">
+        <span class="topbar-title">弘讯设计系统</span>
+        <span class="topbar-subtitle">弘讯科技智能工厂管理系统</span>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="topbar-right">
+      <span class="topbar-item">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>首页
+      </span>
+      <span class="topbar-sep"></span>
+      <span class="topbar-item">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>管理员
+      </span>
+      <span class="topbar-sep"></span>
+      <button class="topbar-item" title="修改密码">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </button>
+      <button class="topbar-item" title="退出登录">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+      <button class="topbar-item" title="全屏">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M16 21h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="body">
+    <!-- ===== 侧栏（G9 可折叠；主侧栏 = 真实作业树 · 方案 A 拍板 2026-08-04） =====
+         结构：并列 group-title（生产监控/运营管理）全部收进【单一 .tree 滚动区】作段落标题，
+         各自内部用真实实体层级嵌套 tree-group（注塑车间 → 产线/设备）。禁止多个 .tree 并列
+         （.tree flex-grow 会把并列 group-title 间距撑大）。 -->
+    <aside class="sidebar">
+      <div class="tree">
+        <div class="group-title">生产监控</div>
+        <div class="tree-node on" data-expand><span class="tree-sw">▾</span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></span><span class="tree-text">注塑车间</span></div>
+        <div class="tree-group">
+          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/></svg></span><span class="tree-text">A线 · 注塑机 A-01</span></div>
+          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/></svg></span><span class="tree-text">B线 · 机械手 C-07</span></div>
+          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M2 12h20"/></svg></span><span class="tree-text">干燥机 D-03</span></div>
+        </div>
+        <div class="tree-node" data-expand><span class="tree-sw">▾</span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></span><span class="tree-text">设备中心</span></div>
+        <div class="tree-group">
+          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/></svg></span><span class="tree-text">待机设备</span></div>
+          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span><span class="tree-text">故障设备</span></div>
+        </div>
+        <div class="group-title">运营管理</div>
+        <div class="tree-node" data-expand><span class="tree-sw">▾</span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg></span><span class="tree-text">运营中心</span></div>
+        <div class="tree-group">
+          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/></svg></span><span class="tree-text">运营总览</span></div>
+          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span><span class="tree-text">实时监控</span></div>
+        </div>
+        <div class="tree-node" data-expand><span class="tree-sw">▾</span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span><span class="tree-text">生产管理</span></div>
+        <div class="tree-group">
+          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/></svg></span><span class="tree-text">工单列表</span></div>
+          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><span class="tree-text">排产计划</span></div>
+        </div>
+      </div>
+      <div class="sidebar-foot">
+        <button class="collapse-btn" onclick="toggleSidebar()" title="收起/展开侧栏" aria-label="收起侧栏">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ===== 右侧主区域：内容区 + 底栏（与 Ardot 画板右侧 1680px 对齐） ===== -->
+    <div class="main">
+
+    <!-- ===== 内容区（唯一可滚动区 · G8） ===== -->
+    <main class="content">
+      <!-- 页面内容在此填充（Agent 克隆后按业务在 .content 内填写；框架顶栏/侧栏/底栏零改动） -->
+    </main>
+
+    <!-- ===== 底栏（G8 固定滚动区之一，位于 .main 内 → 宽 1680px） ===== -->
+    <footer class="footer">弘讯B端视觉规范 · page-template.html · 所有视觉特征取自 template.css / tokens.json 真源</footer>
+  </div>
+</div>
+</div>
+
+<script>
+  // 侧栏折叠（G9）
+  function toggleSidebar(){
+    var sb = document.querySelector('.sidebar');
+    var collapsed = sb.classList.toggle('collapsed');
+    var btn = sb.querySelector('.collapse-btn');
+    if (btn){
+      btn.setAttribute('title', collapsed ? '展开侧栏' : '收起侧栏');
+      btn.setAttribute('aria-expanded', String(!collapsed));
+    }
+  }
+
+  // M1 动画演示：点击触发 .anim-* 工具类（先移除再重放，force reflow）
+  document.querySelectorAll('[data-anim]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var target = document.getElementById('motion-target');
+      var anim = btn.getAttribute('data-anim');
+      target.classList.remove('anim-fade-in','anim-float-up','anim-scale-in','anim-slide-in-right','anim-spin');
+      void target.offsetWidth; // 强制 reflow 保证动画重放
+      target.classList.add(anim);
+    });
+  });
+
+  // 锚点平滑滚动
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      var id = a.getAttribute('href');
+      if(id.length < 2) return;
+      var t = document.querySelector(id);
+      if(t){ e.preventDefault(); t.scrollIntoView({behavior:'smooth', block:'start'}); }
+    });
+  });
+
+  // 侧栏作业树交互：父节点展开/折叠 + 单选高亮 + 叶子滚动到对应章节
+  (function(){
+    var tree = document.querySelector('.sidebar .tree');
+    if(!tree) return;
+    tree.querySelectorAll('.tree-node').forEach(function(node){
+      node.addEventListener('click', function(){
+        if(node.hasAttribute('data-expand')){
+          var group = node.nextElementSibling;
+          if(group && group.classList.contains('tree-group')){
+            var collapsed = group.classList.toggle('is-collapsed');
+            var sw = node.querySelector('.tree-sw');
+            if(sw) sw.textContent = collapsed ? '▸' : '▾';
+          }
+        }
+        tree.querySelectorAll('.tree-node.on').forEach(function(n){ n.classList.remove('on'); });
+        node.classList.add('on');
+        var anchor = node.getAttribute('data-anchor');
+        if(anchor){
+          var target = document.getElementById(anchor);
+          if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+        }
+      });
+    });
+  })();
+
+  // 组件展示交互：Select / DatePicker / Tabs / Pager / Modal / TreeCard
+  (function(){
+    // Select
+    document.querySelectorAll('[data-sel]').forEach(function(sel){
+      var trigger = sel.querySelector('.sel-trigger');
+      var panel = sel.querySelector('.sel-panel');
+      if(trigger){
+        trigger.addEventListener('click', function(e){ e.stopPropagation(); sel.classList.toggle('open'); });
+      }
+      if(panel){
+        panel.addEventListener('click', function(e){
+          var opt = e.target.closest('.sel-opt');
+          if(!opt) return;
+          sel.querySelectorAll('.sel-opt').forEach(function(o){ o.classList.remove('on'); });
+          opt.classList.add('on');
+          trigger.firstChild.textContent = opt.textContent + ' ';
+          sel.classList.remove('open');
+        });
+      }
+    });
+    // DatePicker
+    document.querySelectorAll('[data-dp]').forEach(function(dp){
+      var trigger = dp.querySelector('.dp-trigger');
+      if(trigger){
+        trigger.addEventListener('click', function(e){ e.stopPropagation(); dp.classList.toggle('open'); });
+      }
+    });
+    // Tabs
+    document.querySelectorAll('[data-tabs]').forEach(function(tabs){
+      tabs.querySelectorAll('.tab').forEach(function(tab){
+        tab.addEventListener('click', function(){
+          tabs.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+          tab.classList.add('active');
+        });
+      });
+    });
+    // Pager
+    document.querySelectorAll('[data-pager]').forEach(function(pager){
+      pager.querySelectorAll('.pg').forEach(function(pg){
+        pg.addEventListener('click', function(){
+          if(pg.classList.contains('pg-tot')) return;
+          pager.querySelectorAll('.pg').forEach(function(p){ p.classList.remove('active'); });
+          pg.classList.add('active');
+        });
+      });
+    });
+    // Modal
+    document.querySelectorAll('[data-open-modal]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var m = document.querySelector(btn.getAttribute('data-open-modal'));
+        if(m) m.classList.add('show');
+      });
+    });
+    document.querySelectorAll('[data-close-modal]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var m = document.querySelector(btn.getAttribute('data-close-modal'));
+        if(m) m.classList.remove('show');
+      });
+    });
+    document.querySelectorAll('.modal-mask').forEach(function(mask){
+      mask.addEventListener('click', function(e){
+        if(e.target === mask) mask.classList.remove('show');
+      });
+    });
+    // Tree card
+    document.querySelectorAll('[data-tree]').forEach(function(tree){
+      tree.querySelectorAll('.tree-node').forEach(function(node){
+        node.addEventListener('click', function(){
+          if(node.hasAttribute('data-expand')){
+            var group = node.nextElementSibling;
+            if(group && group.classList.contains('tree-group')){
+              var collapsed = group.classList.toggle('is-collapsed');
+              var sw = node.querySelector('.tree-sw');
+              if(sw) sw.textContent = collapsed ? '▸' : '▾';
+            }
+          }
+          tree.querySelectorAll('.tree-node.on').forEach(function(n){ n.classList.remove('on'); });
+          node.classList.add('on');
+        });
+      });
+    });
+    // 点击外部关闭浮层
+    document.addEventListener('click', function(){
+      document.querySelectorAll('[data-sel].open, [data-dp].open').forEach(function(el){ el.classList.remove('open'); });
+    });
+  })();
+</script>
+</body>
+</html>

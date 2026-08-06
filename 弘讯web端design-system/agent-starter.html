@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>弘讯B端 · 页面起始模板</title>
+<!--
+  ============================================================
+  弘讯B端 Agent 起始模板（agent-starter.html）
+  
+  角色：Agent 生成页面的纯净起点。
+  用法：本文件只有 CSS 骨架，无任何 Demo 内容。
+        直接在这个文件的 <main> 里写你的页面内容即可。
+        
+  流程：按需求写 HTML → 跑 `node validate-spec.js agent-starter.html` → 0 HIGH 交付。
+  
+  适用场景与分工（2026-08-06 明确）：
+    · 本文件 = 纯净注释模板（无实际 .app 骨架，仅 link template.css）：适合自由布局 / 快速原型 / 单组件预览。
+      若从本文件起步，须自行拼出固定框架外壳（.app > .topbar + .body > .sidebar + .main > .content + .footer）。
+    · 标准 B 端后台页面 → 一律用 page-template.html 克隆起步：
+      `cp page-template.html <用户项目>/output/<页面语义名>_<YYYYMMDD>_<HHmm>.html` → 按 RULES §1.1b 填内容（2026-08-06：产出落用户项目 output/）。
+      page-template 为纯框架（无 demo 组件）+ 内联 :root（受 template.root.sync 门禁监管，保证与 template.css 同步）。
+  
+  关键规则：
+    1. 所有颜色用 :root 变量（--primary / --n1..n11 / --suc / --run 等）
+    2. 组件用预定 class 名（.btn .input .table .tag .tabs .pager .status-dot 等）
+    3. 禁止硬编码 hex 颜色值；Web 端禁止 #10B981
+    4. 布局用 .app > .topbar + .body(>.sidebar+.main(>.content+.footer))
+  ============================================================
+-->
+<link rel="stylesheet" href="template.css">
+</head>
+<body>
+
+<!--
+  页面结构：
+  <div class="app">
+    <header class="topbar">
+      <!-- 顶栏结构（左→右）：logo + 平台名 + 副标题 | spacer | 首页 / 用户名 / 修改密码 / 退出登录 / 全屏 -->
+      ...
+    </header>
+    <div class="body">
+      <!-- 侧栏作业树：最多 3 层，最少 1 层；第 1、2 层节点必须带 .tree-ico 图标；收起后只显示图标 -->
+      <aside class="sidebar">
+        ...
+        <div class="sidebar-foot">
+          <button class="collapse-btn" onclick="document.querySelector('.sidebar').classList.toggle('collapsed')">⟨/⟩</button>
+        </div>
+      </aside>
+      <div class="main">
+        <main class="content">
+          你的内容写在这里
+        </main>
+        <footer class="footer">...</footer>
+      </div>
+    </div>
+  </div>
+  
+  可用组件 class：
+  按钮：  .btn .btn-primary / .btn-secondary / .btn-text / .btn-lg / .btn-sm / :disabled
+  输入：  .input (高32 / 宽220 / 半径4)
+  下拉：  .sel > .sel-trigger + .sel-panel > .sel-opt / .sel-opt.on
+  日期：  .dp > .dp-trigger
+  树：    .tree > .tree-node(.on,.tree-node--child) > .tree-sw + .tree-ico > .ico + .tree-label（第 1、2 层必带 .tree-ico；收起侧栏只显示图标）
+  标签：  .tag .tag-suc / .tag-warn / .tag-err / .tag-run / .tag-def
+  表格：  table.table > thead > tr > th + tbody > tr > td
+  页签：  .tabs > .tab(.active)
+  分页：  .pager > .pg(.active) + .pg-tot
+  状态点：.status-dot > i.dot-run / .dot-ok / .dot-warn / .dot-err / .dot-off
+  弹窗：  .modal-mask(.show) > .modal > .modal-head + .modal-body + .modal-foot
+  卡片：  .card > .card-head + .card-body
+  
+  字体层级：.t-display / .t-h1..t-h5 / .t-body1 / .t-body2 / .t-caption / .t-label / .t-overline / .t-link / .t-mono
+  
+  暗色模式：<html data-theme="dark">
+  密度：    <html data-density="compact|comfortable|spacious">
+  
+  栅格与留白系统（全部用 --space-* 族变量，禁止硬编码 px）：
+    --space-xs:4px   --space-sm:8px   --space-md:12px   --space-base:16px   --space-lg:24px   --space-xl:32px   --space-xxl:48px
+    页面 padding（.content）   = 24px（var(--space-lg)）
+    卡片间距（.card）          = 16px（var(--space-base)）
+    行栅栏 gap（.row / .col）  = 12px（var(--space-md)）
+    网格 gap（.grid12 / .stat-grid） = 16px（var(--space-base)）
+    
+    24 列栅格：.grid12（12 列 / gap 16）> [class*="col-"]（col-1..col-12）
+    响应式：≤768px  .grid12 > [class*="col-"] 单列堆叠（span 12）
+    统计卡片：.stat-grid（4 列 / gap 16 / 响应式 2 列 ≤768px）
+    行工具：  .row（flex 水平）/ .row-tight（gap 8px）/ .row-between（左右分布）/ .col（flex 竖排）
+    4px 网格铁律：所有 padding / gap / margin 必须是 4 的倍数，禁止出现奇数 px。
+    留白节奏：小间距 8-16px（元素内距）· 中间距 16-24px（组件间距）· 大间距 32-48px（区块间距）。
+  
+  暗色模式：仅当用户明确要求时启用（<html data-theme="dark">）；默认只交付亮色，不内置切换按钮。
+--> 
+
+</body>
+</html>

@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>弘讯设计系统 · 三角色使用说明</title>
+<!--
+  ============================================================
+  弘讯设计系统 · 使用说明页（USAGE.html）
+
+  起手：cp 弘讯web端design-system/page-template.html USAGE.html
+  端：  Web 端规范（桌面浏览器阅读的文档页）· 默认亮色，不带暗色开关
+  内容源：USAGE-GUIDE.md（主）+ GENERATION-SOP.md（补充）
+  门禁：cd 弘讯web端design-system && node validate-spec.js ../USAGE.html → 0 HIGH
+
+  规则：
+    1. 组件用真源 class（.card .table .tag .btn .status-dot .t-* …），不重新定义
+    2. 文档排版类一律 doc- 前缀，不与 contract 选择器重名
+    3. 色 / 尺寸 / 字重走 var(--*)；hex 只出现在 :root 变量定义里
+    4. 正文里的色值是纯文本，不进 style / 标签属性
+  ============================================================
+-->
+<link rel="stylesheet" href="弘讯web端design-system/template.css">
+<style>
+/* ===== 文档页排版（doc- 前缀，与组件 contract 选择器互不重叠） ===== */
+html{scroll-behavior:smooth;}
+.content{padding:0;}
+.doc-wrap{max-width:1060px;margin:0 auto;padding:40px 48px 84px;}
+
+/* 标题区（轻量品牌感 · V=2 克制） */
+.doc-hero{padding:28px 32px;border:1px solid var(--n6);border-left:4px solid var(--primary);
+  border-radius:var(--radius-lg);background:var(--n2);margin-bottom:44px;box-shadow:var(--shadow-card);}
+.doc-hero h1{margin:0 0 12px;font:var(--font-display);color:var(--n11);letter-spacing:-.2px;}
+.doc-lead{margin:0;max-width:780px;font-size:16px;line-height:26px;color:var(--n9);}
+.doc-lead b{color:var(--n11);font-weight:500;}
+.doc-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;}
+.doc-pill{display:inline-flex;align-items:center;height:26px;padding:0 12px;border-radius:var(--radius-round);
+  background:var(--primary-dis-bg);color:var(--primary-active);font-size:12px;line-height:16px;}
+.doc-pill-mute{background:var(--n3);color:var(--n9);}
+.doc-jump{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;}
+.doc-jump a{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 14px;
+  border-radius:var(--radius-base);background:var(--n1);border:1px solid var(--n6);
+  color:var(--primary-active);text-decoration:none;font-size:13px;line-height:20px;
+  transition:border-color var(--motion-duration-fast) var(--motion-ease-out),
+             box-shadow var(--motion-duration-fast) var(--motion-ease-out);}
+.doc-jump a:hover{border-color:var(--primary);box-shadow:var(--shadow-row-hover);}
+
+/* 分节 */
+.doc-sec{margin-bottom:48px;scroll-margin-top:90px;}
+.doc-sec-h{display:flex;align-items:baseline;gap:12px;margin:0 0 8px;padding-bottom:10px;
+  border-bottom:1px solid var(--n5);}
+.doc-num{flex-shrink:0;min-width:28px;height:28px;padding:0 8px;border-radius:var(--radius-base);
+  background:var(--primary);color:var(--n1);font-size:13px;line-height:28px;text-align:center;}
+.doc-sec-h h2{margin:0;font:var(--font-h2);color:var(--n11);}
+.doc-sec-sub{margin:0 0 18px 40px;font-size:13px;line-height:20px;color:var(--n9);}
+.doc-sec p{font-size:14px;line-height:22px;color:var(--n10);}
+.doc-sec:target .doc-num{background:var(--primary-active);}
+
+/* 链路图 */
+.doc-flow{padding:24px;background:var(--n3);border:1px solid var(--n6);border-radius:var(--radius-md);}
+.doc-src{max-width:560px;margin:0 auto 8px;padding:14px 18px;text-align:center;
+  background:var(--n1);border:2px solid var(--primary);border-radius:var(--radius-md);
+  font-size:14px;line-height:22px;color:var(--n11);font-weight:500;}
+.doc-src em{display:block;font-style:normal;font-size:12px;line-height:16px;color:var(--n9);margin-top:4px;font-weight:400;}
+.doc-stem{height:20px;width:1px;margin:0 auto;background:var(--n7);}
+.doc-lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.doc-lane{background:var(--n1);border:1px solid var(--n6);border-radius:var(--radius-md);
+  box-shadow:var(--shadow-card);overflow:hidden;
+  transition:box-shadow var(--motion-duration-fast) var(--motion-ease-out),
+             transform var(--motion-duration-fast) var(--motion-ease-out);}
+.doc-lane:hover{box-shadow:var(--shadow-float);transform:translateY(-2px);}
+.doc-lane-h{padding:12px 16px;background:var(--primary);color:var(--n1);font-size:14px;line-height:22px;font-weight:500;}
+.doc-lane-b{padding:14px 16px;}
+.doc-lane-b div{font-size:13px;line-height:20px;color:var(--n10);}
+.doc-lane-b .doc-ar{color:var(--n8);margin:4px 0;}
+.doc-lane-out{margin-top:10px;padding-top:10px;border-top:1px dashed var(--n6);
+  font-size:13px;line-height:20px;color:var(--primary-active);font-weight:500;}
+.doc-flow-note{margin:16px 0 0;padding-top:14px;border-top:1px solid var(--n6);font-size:13px;line-height:20px;color:var(--n9);}
+.doc-flow-note b{color:var(--n11);font-weight:500;}
+
+/* 键值块 */
+.doc-kv{display:grid;grid-template-columns:120px 1fr;gap:1px;background:var(--n6);
+  border:1px solid var(--n6);border-radius:var(--radius-base);overflow:hidden;}
+.doc-kv dt{padding:12px 16px;background:var(--n2);font-size:13px;line-height:20px;color:var(--n11);font-weight:500;}
+.doc-kv dd{margin:0;padding:12px 16px;background:var(--n1);font-size:13px;line-height:20px;color:var(--n10);}
+
+/* 角色四块（整卡化） */
+.doc-role{margin-bottom:18px;border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-card);}
+.doc-role-hd{display:flex;align-items:center;gap:12px;padding:16px 22px;
+  background:var(--primary);color:var(--n1);}
+.doc-role-hd b{font:var(--font-h4);font-weight:500;}
+.doc-role-hd span{font-size:13px;line-height:20px;opacity:.9;}
+.doc-role-bd{padding:24px;background:var(--n1);border:0;}
+.doc-blk{margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--n5);}
+.doc-blk:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none;}
+.doc-blk-h{display:flex;align-items:center;gap:8px;margin-bottom:12px;
+  font:var(--font-h5);font-weight:500;color:var(--n11);}
+.doc-idx{width:22px;height:22px;flex-shrink:0;border-radius:var(--radius-round);
+  background:var(--primary-dis-bg);color:var(--primary-active);
+  font-size:12px;line-height:22px;text-align:center;font-weight:500;}
+
+/* 话术框 */
+.doc-say{background:var(--n3);border-left:3px solid var(--primary);border-radius:0 var(--radius-base) var(--radius-base) 0;
+  padding:14px 16px;margin:0 0 10px;}
+.doc-say pre{margin:0;font-family:var(--font-mono);font-size:13px;line-height:22px;color:var(--n11);
+  white-space:pre-wrap;word-break:break-word;}
+.doc-say-tri{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.doc-tri{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:var(--radius-base);
+  background:var(--n1);border:1px solid var(--n6);font-size:12px;line-height:16px;color:var(--n9);}
+.doc-tri b{color:var(--primary-active);font-weight:500;}
+
+/* 代码块 */
+.doc-code{margin:0 0 10px;padding:14px 16px;background:var(--n11);border-radius:var(--radius-base);
+  overflow-x:auto;white-space:pre;font-family:var(--font-mono);font-size:13px;line-height:22px;color:var(--n1);}
+.doc-code i{font-style:normal;color:var(--n8);}
+/* 表格列宽（避免内联 style） */
+.doc-w-xs{width:64px;}
+.doc-w-md{width:200px;}
+code{font-family:var(--font-mono);font-size:12px;padding:1px 5px;border-radius:var(--radius-sm);
+  background:var(--n3);color:var(--primary-active);}
+
+/* 步骤 */
+.doc-steps{margin:0;padding-left:20px;}
+.doc-steps li{margin-bottom:8px;font-size:14px;line-height:22px;color:var(--n10);}
+.doc-steps li:last-child{margin-bottom:0;}
+.doc-steps b{color:var(--n11);font-weight:500;}
+.doc-list{margin:0;padding-left:20px;}
+.doc-list li{margin-bottom:6px;font-size:14px;line-height:22px;color:var(--n10);}
+
+/* 提示条 */
+.doc-hint{display:flex;gap:10px;padding:12px 16px;border-radius:var(--radius-base);
+  font-size:13px;line-height:20px;margin:14px 0 0;}
+.doc-hint-ok{background:var(--suc-soft);color:var(--n10);border:1px solid var(--suc);}
+.doc-hint-no{background:var(--err-soft);color:var(--n10);border:1px solid var(--err);}
+.doc-hint-tip{background:var(--warn-soft);color:var(--n10);border:1px solid var(--warn);}
+.doc-hint b{flex-shrink:0;color:var(--n11);font-weight:500;}
+
+/* 侧栏导航（粘性 · M=1 仅微动效） */
+.doc-nav{position:sticky;top:88px;}
+.doc-nav a{display:flex;align-items:center;height:34px;padding:0 12px;border-radius:var(--radius-base);
+  color:var(--n1);text-decoration:none;font-size:13px;line-height:20px;opacity:.88;
+  transition:background var(--motion-duration-fast) var(--motion-ease-out),opacity var(--motion-duration-fast) var(--motion-ease-out);}
+.doc-nav a:hover{background:rgba(255,255,255,.14);opacity:1;}
+.doc-nav .doc-nav-sub{padding-left:22px;font-size:12px;opacity:.72;}
+.doc-nav-t{padding:16px 12px 6px;font-size:12px;line-height:16px;color:var(--n1);opacity:.6;}
+
+/* 两栏（代码/映射面板化） */
+.doc-two{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.doc-two > div{padding:18px;background:var(--n2);border:1px solid var(--n6);border-radius:var(--radius-md);}
+@media (max-width:1180px){
+  .doc-lanes{grid-template-columns:1fr;}
+  .doc-two{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">弘讯设计系统 · 使用说明</div>
+    <div class="spacer"></div>
+    <span class="tag tag-def">Web 端规范</span>
+    <span class="tag tag-def">品牌色 #005EAE</span>
+    <span class="tag tag-def">默认亮色</span>
+  </header>
+
+  <div class="body">
+
+    <aside class="sidebar">
+      <nav class="doc-nav">
+        <div class="doc-nav-t">开始之前</div>
+        <a href="#s1">1 · 一页看懂</a>
+        <a href="#s2">2 · 共同前提</a>
+        <div class="doc-nav-t">三条并行链路</div>
+        <a href="#s3">3 · UI 设计师 → 设计稿</a>
+        <a href="#s4">4 · 产品经理 → HTML</a>
+        <a href="#s5">5 · 前端工程师 → React</a>
+        <div class="doc-nav-t">维护</div>
+        <a href="#s6">6 · 改规范的唯一姿势</a>
+        <a href="#s7">7 · 常见问题</a>
+      </nav>
+    </aside>
+
+    <main class="content">
+    <div class="doc-wrap">
+
+      <!-- ===== 标题区 ===== -->
+      <div class="doc-hero">
+        <h1>三个角色，三条链路，一份真源</h1>
+        <p class="doc-lead">
+          规范和组件库已经完工。这一页只回答一件事：<b>你这个角色，怎么让 Agent 替你产出符合弘讯设计系统的东西。</b>
+          你说自然语言，Agent 读真源，产出视觉产物 —— 设计师拿设计稿，产品拿 HTML，前端拿 React。
+        </p>
+        <div class="doc-meta">
+          <span class="doc-pill">工业控制 · 注塑机领域</span>
+          <span class="doc-pill">覆盖 Web 后台 + 移动端</span>
+          <span class="doc-pill doc-pill-mute">内容源：USAGE-GUIDE.md / GENERATION-SOP.md</span>
+        </div>
+        <nav class="doc-jump">
+          <a href="#s3">→ UI 设计师</a>
+          <a href="#s4">→ 产品经理</a>
+          <a href="#s5">→ 前端工程师</a>
+          <a href="#s6">改规范姿势</a>
+        </nav>
+      </div>
+
+      <!-- ===== 1 一页看懂 ===== -->
+      <section class="doc-sec" id="s1">
+        <div class="doc-sec-h"><span class="doc-num">1</span><h2>一页看懂</h2></div>
+        <p class="doc-sec-sub">三条链路并行，没有接力、没有上下游。</p>
+
+        <div class="doc-flow">
+          <div class="doc-src">
+            tokens.json + components.json
+            <em>唯一真源 · 冻结只读</em>
+          </div>
+          <div class="doc-stem"></div>
+
+          <div class="doc-lanes">
+            <div class="doc-lane">
+              <div class="doc-lane-h">UI 设计师</div>
+              <div class="doc-lane-b">
+                <div>Agent + UI 设计工具</div>
+                <div class="doc-ar">Ardot / Figma / 即时设计…</div>
+                <div class="doc-lane-out">产出：设计稿</div>
+              </div>
+            </div>
+            <div class="doc-lane">
+              <div class="doc-lane-h">产品经理</div>
+              <div class="doc-lane-b">
+                <div>Agent + HTML 模板</div>
+                <div class="doc-ar">page-template.html（Web）<br>agent-starter.html（自由布局）</div>
+                <div class="doc-lane-out">产出：HTML 生产代码</div>
+              </div>
+            </div>
+            <div class="doc-lane">
+              <div class="doc-lane-h">前端工程师</div>
+              <div class="doc-lane-b">
+                <div>Agent + 组件库</div>
+                <div class="doc-ar">web-ui / mobile-ui</div>
+                <div class="doc-lane-out">产出：React 生产代码</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="doc-flow-note">
+            <b>并行</b>：三条链路互不依赖，各自从真源出发直接产出，谁也不给谁供输入。<br>
+            <b>视觉一致</b>是真源保证的（同一份 tokens + 契约 + 门禁），不是流程保证的。
+          </p>
+        </div>
+      </section>
+
+      <!-- ===== 2 共同前提 ===== -->
+      <section class="doc-sec" id="s2">
+        <div class="doc-sec-h"><span class="doc-num">2</span><h2>共同前提</h2></div>
+        <p class="doc-sec-sub">三个角色都绕不开的四条。</p>
+
+        <dl class="doc-kv">
+          <dt>真源</dt>
+          <dd>
+            <code>弘讯web端design-system/</code> 和 <code>弘讯移动端design-system/</code> 下的
+            <code>tokens.json</code>（值）+ <code>components.json</code>（契约）。<b>冻结只读</b>。
+          </dd>
+
+          <dt>铁律</dt>
+          <dd>
+            不硬编码色值；不自造规范；组件词汇与代码库同源（Web 33 件 / 移动端 NutUI）。
+          </dd>
+
+          <dt>质量闸</dt>
+          <dd>
+            HTML 产物 → <code>validate-spec.js</code> <b>0 HIGH</b>；
+            React 产物 → <code>validate-static.js</code> <b>5 门禁全绿</b>。
+          </dd>
+
+          <dt>禁区</dt>
+          <dd>
+            不改真源 / 门禁 / 引擎。Web 端成功绿一律 <code>#389E0D</code>，
+            <b>禁用移动端那支成功绿</b>；运行/在线绿 <code>#16A34A</code> 两端共用（≠ 成功绿）。
+          </dd>
+        </dl>
+
+        <div class="doc-hint doc-hint-no">
+          <b>不合格：</b>
+          <span>改门禁放松判定、内联 <code>style</code> 或 <code>!important</code> 绕过组件规则、
+          从产物（设计稿 / HTML / 代码）倒推 spec。发现规范本身有 bug —— 写 BLOCKED.md，不要顺手改。</span>
+        </div>
+      </section>
+
+      <!-- ===== 3 UI 设计师 ===== -->
+      <section class="doc-sec" id="s3">
+        <div class="doc-sec-h"><span class="doc-num">3</span><h2>UI 设计师 → 设计稿</h2></div>
+        <p class="doc-sec-sub">工具中立：Ardot、Figma、即时设计、MasterGo、Pixso 均可 —— 只要 Agent 能读规范、能操作画布。</p>
+
+        <div class="doc-role">
+          <div class="doc-role-hd">
+            <b>UI 设计师</b><span>Agent + UI 设计工具 → 设计稿</span>
+          </div>
+          <div class="doc-role-bd">
+
+            <div class="doc-blk">
+              <div class="doc-blk-h"><span class="doc-idx">1</span>怎么对 Agent 说</div>
+              <div class="doc-say">
+<pre>按弘讯设计系统规范，在 &lt;设计工具名&gt; 里搭建 &lt;页面描述&gt;。
+规范读 弘讯web端design-system/ 的 tokens.json、components.json、MASTER.md。
+颜色必须绑变量或严格等于 tokens.json 的值，禁止裸 HEX；
+组件结构与命名对齐代码组件库。</pre>
+              </div>
+              <div class="doc-say-tri">
+                <span class="doc-tri"><b>选端</b>Web 写 弘讯web端design-system/，移动端换 弘讯移动端design-system/</span>
+                <span class="doc-tri"><b>起手</b>先读规范再开画布</span>
+                <span class="doc-tri"><b>门禁</b>0 裸 HEX + 词汇同源</span>
+              </div>
+            </div>
+
+            <div class="doc-blk">
+              <div class="doc-blk-h"><span class="doc-idx">2</span>Agent 读什么（按顺序）</div>
+              <table class="table">
+                <thead><tr><th class="doc-w-xs">顺序</th><th class="doc-w-md">文件</th><th>取什么</th></tr></thead>
+                <tbody>
+                  <tr><td>1</td><td><code>tokens.json</code></td><td>色板 / 字阶 / 间距 / 圆角 / 阴影的值</td></tr>
+                  <tr><td>2</td><td><code>components.json</code></td><td>组件结构化规格（尺寸 / 状态 / 变体）</td></tr>
+                  <tr><td>3</td><td><code>MASTER.md</code></td><td>布局规则（Web 顶栏 72 / 侧栏 240；移动端 375 宽 / 落位 343）</td></tr>
+                  <tr><td>4</td><td><code>RULES.md</code>（含 §1.1b 页面类型规格）</td><td>组件选型 + 页面覆写规则</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="doc-blk">
+              <div class="doc-blk-h"><span class="doc-idx">3</span>怎么起手</div>
+              <p>读完上面四份，再在设计工具里搭画布。搭的时候守四条铁律：</p>
+              <ol class="doc-steps">
+                <li><b>0 裸 HEX</b>：颜色绑变量或严格等于 tokens.json；白色也是 token（<code>neutral/N1</code>）。</li>
+                <li><b>词汇同源</b>：组件名 = 代码库组件名（<code>packages/web-ui</code> 33 件 / <code>packages/mobile-ui</code> NutUI），不造野组件。</li>
+                <li><b>字阶照 spec</b>：Web 12 级 / 移动端 android + ios 双套 9 级；字体 Source Han Sans CN。</li>
+                <li><b>文本必绑 neutral 色</b>，禁默认黑。</li>
+              </ol>
+
+              <div class="doc-hint doc-hint-tip">
+                <b>Ardot 用户：</b>
+                <span>Web 文件 <code>709697838782860</code>（83 变量双模式 + 33 组件 + 12 级字阶）；
+                移动端文件 <code>709734372369429</code>（60 变量双模式 + 37 组件 cell + 双套字阶）。
+                旧文件 <code>701545559030003</code> / <code>701218509066139</code> 弃用只读。
+                MCP 做不到、需人工收尾的：合并变体、发布 Text Style。</span>
+              </div>
+            </div>
+
+            <div class="doc-blk">
+              <div class="doc-blk-h"><span class="doc-idx">4</span>产出与验收</div>
+              <p><b>设计稿 = 视觉交付物。</b>验收靠截图自查三条：</p>
+              <ul class="doc-list">
+                <li>0 裸 HEX（颜色都绑到变量上）</li>
+                <li>字阶正确</li>
+                <li>组件名与代码一致</li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 4 产品经理 ===== -->
+      <section class="doc-sec" id="s4">
+        <div class="doc-sec-h"><span class="doc-num">4</span><h2>产品经理 → HTML 生产代码</h2></div>
+        <p class="doc-sec-sub">详细 SOP 见 <code>GENERATION-SOP.md</code>（含非默认品牌色 / 暗色的引擎映射段）。</p>
+
+        <div class="doc-role">
+          <div class="doc-role-hd">
+            <b>产品经理</b><span>Agent + HTML 模板 → HTML 生产代码</span>
+          </div>
+          <div class="doc-role-bd">
+
+            <div class="doc-blk">
+              <div class="doc-blk-h"><span class="doc-idx">1</span>怎么对 Agent 说</div>
+              <div class="doc-say">
+<pre>按弘讯设计系统 GENERATION-SOP 生成移动端（或 Web）页面：&lt;需求描述&gt;。
+用 page-template.html 起手，颜色走 var(--*)，跑 validate-spec.js 0 HIGH 交付。</pre>
+              </div>
+              <div class="doc-say-tri">
+                <span class="doc-tri"><b>选端</b>说清「移动端」还是「Web」</span>
+                <span class="doc-tri"><b>起手</b>page-template.html</span>
+                <span class="doc-tri"><b>门禁</b>validate-spec.js 0 HIGH</span>
+              </div>
+            </div>
+
+            <div class="doc-blk">
+              <div class="doc-blk-h"><span class="doc-idx">2</span>Agent 读什么</div>
+              <ol class="doc-steps">
+                <li><code>MASTER.md</code> <b>§7.3 页面搭建步骤</b> —— 最小可执行步骤。</li>
+                <li><code>RULES.md</code> 布局黄金法则：<b>Web §6 / 移动端 §8</b>（铁律 G1–G7 + 防溢出清单，必读）。</li>
+                <li><code>RULES.md §1</code> 组件选择决策树（页面级 + 组件粒度）。</li>
+                <li><code>RULES.md §1.1b</code> 页面类型规格（登录/列表/详情/弹窗/看板）——2026-08-06 Web pages/*.md 已并入；未列出的 token 回退 <code>MASTER.md</code>。</li>
+              </ol>
+            </div>
+
+            <div class="doc-blk">
+              <div class="doc-blk-h"><span class="doc-idx">3</span>怎么起手（4 步）</div>
+              <ol class="doc-steps">
+                <li><b>选端</b>：出现「后台 / 管理 / 表格 / 筛选 / 侧边栏 / 顶栏」→ Web 端；出现「小程序 / 手机 / 登录页 / 底部导航 / 列表卡片 / 375」→ 移动端。</li>
+                <li><b>起手</b>：复制纯净起始模板 —— 禁裸写空文件、禁复制 Demo 页。</li>
+                <li><b>写内容</b>：保留组件 class（<code>.btn</code>/<code>.mbtn</code>、<code>.input</code>、<code>.table</code>/<code>.mcard-c</code>、<code>.tag</code>/<code>.mtag</code> …），色 / 尺寸 / 字重全走 <code>var(--*)</code>，禁硬编码 hex。</li>
+                <li><b>门禁</b>：跑扫描，<b>0 HIGH 才交付</b>。</li>
+              </ol>
+              <pre class="doc-code">
+<i># 起手（Web）</i>
+cp 弘讯web端design-system/page-template.html 我的页面.html
+<i># 起手（移动端）</i>
+cp 弘讯移动端design-system/page-template.html 我的页面.html
+<i># 门禁</i>
+cd &lt;端目录&gt; &amp;&amp; node validate-spec.js 我的页面.html</pre>
+              <div class="doc-hint doc-hint-tip">
+                <b>注意：</b>
+                <span><code>page-template.html</code> 是<b>纯框架克隆源</b>（content 空壳，按 <code>RULES.md §1.1b</code> 自建内容）；
+                <code>agent-starter.html</code> 仅自由布局场景用。CSS 由 <code>template.css</code> 统一提供，不要复制 CSS。</span>
+              </div>
+            </div>
+
+            <div class="doc-blk">
+              <div class="doc-blk-h"><span class="doc-idx">4</span>产出与验收</div>
+              <p><b>HTML 生产代码</b>，可直接交付 / 部署。适合看板、报表、监控、工具页等场景。</p>
+              <div class="doc-hint doc-hint-ok">
+                <b>验收：</b>
+                <span><code>node validate-spec.js 我的页面.html</code> → <b>0 HIGH（exit 0）</b>。
+                任何 HIGH 禁止交付；仅 MEDIUM 不阻断（exit 0），但建议清零。</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 5 前端工程师 ===== -->
+      <section class="doc-sec" id="s5">
+        <div class="doc-sec-h"><span class="doc-num">5</span><h2>前端工程师 → React 生产代码</h2></div>
+        <p class="doc-sec-sub">核心：<b>不手写样式</b>。组件库已消费 tokens.json，样式与规范天然一致。</p>
+
+        <div class="doc-role">
+          <div class="doc-role-hd">
+            <b>前端工程师</b><span>Agent + 组件库 → React 生产代码</span>
+          </div>
+          <div class="doc-role-bd">
+
+            <div class="doc-blk">
+              <div class="doc-blk-h"><span class="doc-idx">1</span>怎么对 Agent 说</div>
+              <div class="doc-say">
+<pre>用 packages/web-ui（或 mobile-ui）组件库实现 &lt;需求描述&gt;。
+引入 globals.css + components.css，只用库内组件拼装，不写自定义样式。</pre>
+              </div>
+              <div class="doc-say-tri">
+                <span class="doc-tri"><b>选端</b>web-ui 还是 mobile-ui</span>
+                <span class="doc-tri"><b>起手</b>import 组件库 + 两份 css</span>
+                <span class="doc-tri"><b>门禁</b>validate-static.js 5 门禁全绿</span>
+              </div>
+            </div>
+
+            <div class="doc-blk">
+              <div class="doc-blk-h"><span class="doc-idx">2</span>Agent 读什么</div>
+              <ul class="doc-list">
+                <li><code>components.json</code> —— 组件词汇（叫什么名、有哪些变体），保证和设计端同源。</li>
+                <li><code>packages/web-ui</code>（33 件）或 <code>packages/mobile-ui</code>（Taro + NutUI）—— 库里已有什么就用什么。</li>
+                <li><b>不需要</b>去 tokens.json 抄色值：组件库已经消费过 tokens，色值由 <code>globals.css</code> 提供。</li>
+              </ul>
+            </div>
+
+            <div class="doc-blk">
+              <div class="doc-blk-h"><span class="doc-idx">3</span>怎么起手</div>
+              <div class="doc-two">
+                <div>
+                  <p><b>Web（packages/web-ui，33 件）</b></p>
+                  <pre class="doc-code">
+import '@techmation/web-ui/src/styles/globals.css';    <i>// token 变量（亮+暗）</i>
+import '@techmation/web-ui/src/styles/components.css'; <i>// 组件样式</i>
+import { Button, Input, Table, Tag, StatusDot, Dialog } from '@techmation/web-ui';</pre>
+                  <ul class="doc-list">
+                    <li>暗色：<code>&lt;html data-theme="dark"&gt;</code>（禁 shadcn 原生 <code>.dark</code> 类）</li>
+                    <li>密度：<code>data-density="compact" / comfortable / spacious</code></li>
+                    <li>预览：<code>cd packages/web-ui &amp;&amp; npm install &amp;&amp; npm run dev</code></li>
+                  </ul>
+                </div>
+                <div>
+                  <p><b>移动端（packages/mobile-ui，Taro + NutUI）</b></p>
+                  <pre class="doc-code">
+cd packages/mobile-ui &amp;&amp; npm install
+npx taro build --type weapp   <i># 产物 dist/ 导入微信开发者工具</i></pre>
+                  <p><b>结构映射（页面 → 组件树）</b></p>
+                  <table class="table">
+                    <thead><tr><th>页面结构</th><th>组件</th></tr></thead>
+                    <tbody>
+                      <tr><td>按钮</td><td><code>&lt;Button&gt;</code> / NutUI <code>&lt;Button&gt;</code></td></tr>
+                      <tr><td>输入</td><td><code>&lt;Input&gt;</code> / <code>&lt;Textarea&gt;</code></td></tr>
+                      <tr><td>表格</td><td><code>&lt;Table&gt;</code></td></tr>
+                      <tr><td>标签</td><td><code>&lt;Tag&gt;</code> / <code>&lt;Badge&gt;</code></td></tr>
+                      <tr><td>页签</td><td><code>&lt;Tabs&gt;</code></td></tr>
+                      <tr><td>分页</td><td><code>&lt;Pagination&gt;</code></td></tr>
+                      <tr><td>状态点</td><td><code>&lt;StatusDot&gt;</code></td></tr>
+                      <tr><td>弹窗</td><td><code>&lt;Dialog&gt;</code> / <code>&lt;AlertDialog&gt;</code></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="doc-blk">
+              <div class="doc-blk-h"><span class="doc-idx">4</span>产出与验收</div>
+              <p><b>React 生产代码。</b></p>
+              <div class="doc-hint doc-hint-ok">
+                <b>验收：</b>
+                <span><code>cd packages/web-ui &amp;&amp; node scripts/validate-static.js</code> → <b>5 门禁全绿</b>。</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 6 改规范 ===== -->
+      <section class="doc-sec" id="s6">
+        <div class="doc-sec-h"><span class="doc-num">6</span><h2>改规范的唯一正确姿势</h2></div>
+        <p class="doc-sec-sub">改真源 → 各链路重新生成 → 总门禁。顺序反了就是漂移。</p>
+
+        <ol class="doc-steps">
+          <li><b>改真源</b>：<code>tokens.json</code>（值）或 <code>components.json</code>（契约）。</li>
+          <li><b>Web 代码端</b>：<code>cd packages/web-ui</code> → <code>node scripts/map-tokens.js --brand '#新色'</code> → <code>export-static.js</code> → <code>validate-static.js</code>。</li>
+          <li><b>设计端</b>：同步变量值（任何工具同理：先改 token 定义，产物自动跟随）。</li>
+          <li><b>总门禁</b>：<code>node ci-local.js</code> → 期望 <b>81 pass / 0 fail</b>。</li>
+        </ol>
+
+        <div class="doc-hint doc-hint-no">
+          <b>禁止：</b>
+          <span>从任何产物（设计稿 / HTML / 代码）倒推 spec。三条链路各自重新生成，真源只有一份。</span>
+        </div>
+      </section>
+
+      <!-- ===== 7 FAQ ===== -->
+      <section class="doc-sec" id="s7">
+        <div class="doc-sec-h"><span class="doc-num">7</span><h2>常见问题</h2></div>
+        <p class="doc-sec-sub">三条封顶。</p>
+
+        <div class="card">
+          <div class="card-head">Q1 · 换品牌色怎么办？</div>
+          <div class="card-body">
+            <p>改 <code>tokens.json</code> 的 <code>colors.primary.default</code> →
+            <code>packages/web-ui/scripts/map-tokens.js --brand '#新色'</code> →
+            <code>export-static.js</code> 重新生成。</p>
+            <p><b>功能色（成功 / 警告 / 错误 / 运行）固定不随品牌变。</b></p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">Q2 · 加新组件怎么办？</div>
+          <div class="card-body">
+            <p>token 需求写入 <code>tokens.json</code> →
+            <code>packages/web-ui/src/components/ui/</code> 加 <code>.tsx</code> →
+            <code>components.css</code> 加样式 → <code>export-static.js</code> →
+            <code>validate-static.js</code> 全绿 → 设计端同步加同名组件。</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">Q3 · 怎么确认没改坏？</div>
+          <div class="card-body">
+            <p>跑总门禁 <code>node ci-local.js</code>，期望 <b>81 pass / 0 fail</b>。</p>
+            <p>单个 HTML 产物另跑 <code>validate-spec.js</code>（0 HIGH）；React 产物另跑
+            <code>validate-static.js</code>（5 门禁全绿）。</p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+    </main>
+
+  </div>
+
+  <footer class="footer">
+    弘讯设计系统 · 三角色使用说明 · 品牌色 #005EAE · 内容源 USAGE-GUIDE.md + GENERATION-SOP.md
+  </footer>
+
+</div>
+
+</body>
+</html>

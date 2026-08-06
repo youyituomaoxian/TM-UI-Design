@@ -1,0 +1,28 @@
+/* BizMobilePage.scss — 模板页面样式（克隆源，生成页随 tsx 一并克隆为 <dirName>/index.scss）
+ * 全部 var(--*) token，禁裸 hex。布局契约：100vh flex column + 内容区滚动 + footer 吸底
+ * （与生产页 device-list/device-detail 模式一致，t2 对齐修复）。 */
+.page-page {
+  background: var(--bg-page);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.page-navbar {
+  flex: 0 0 auto;
+  background: var(--primary);
+  color: var(--n1);
+}
+
+.page-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: var(--space-16);
+  box-sizing: border-box;
+}
+
+.page-footer {
+  flex-shrink: 0;
+  padding: var(--space-16);
+}
