@@ -40,7 +40,15 @@
 └── README.md                        # 本文件
 ```
 
-## 快速开始
+## 快速开始（git clone）
+
+```bash
+git clone https://github.com/youyituomaoxian/TM-UI-Design.git
+cd TM-UI-Design
+```
+
+> 仓库为**私有**——成员需被加入（GitHub → Settings → Collaborators）后才能 clone；非成员无法访问。
+> clone 后：**codex/Claude Code** 自动读 `AGENTS.md` 零配置；**workbuddy** 自动加载 `.workbuddy/skills/`；其他 Agent 设 `TM_DESIGN_REPO=<路径>`；规范更新 `git pull`。
 
 ### 查看展示页（推荐入口）
 
