@@ -12,7 +12,7 @@ git clone https://github.com/youyituomaoxian/TM-UI-Design.git
 cd TM-UI-Design
 ```
 
-> 仓库为**私有**——成员需被加入（GitHub → Settings → Collaborators → 添加成员的 GitHub 账号）后才能 clone；非成员无法访问。
+> 仓库为**公开**——任何人可直接 clone（无需加成员）；如需限制访问可改回私有并加 Collaborators。
 > clone 后即插即用：
 > - **codex / Claude Code**：仓库根 `AGENTS.md` 自动加载，零配置。
 > - **workbuddy**：项目级 skill 自动生效（`.workbuddy/skills/tm-design-system/`）。
@@ -227,7 +227,7 @@ npx taro build --type weapp   # 产物 dist/ 导入微信开发者工具
 ## 常见问题
 
 **Q: 非成员能 clone 吗？**
-A: 不能——仓库私有，需维护者在 GitHub → Settings → Collaborators 添加成员（成员用自己 GitHub 账号认证 clone）。
+A: 能——仓库为公开，任何人 `git clone https://github.com/youyituomaoxian/TM-UI-Design.git` 即可；如需限制访问可改回私有并加 Collaborators。
 
 **Q: 换品牌色？**
 A: `node brand-color-engine/generate.js <brand> <light|dark> <web|mobile>` → 按 GENERATION-SOP §② 映射进模板短名 `:root`。功能色（成功/警告/错误/运行）固定不随品牌变。
