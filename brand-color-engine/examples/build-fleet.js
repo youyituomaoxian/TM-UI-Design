@@ -285,7 +285,7 @@ ${css}
       </div>
 
       <footer class="footer">
-        <span>© 2026 宁波弘讯软件 · 橡塑机械行业后台控制系统</span>
+        <span>© 2026 · 橡塑机械行业后台控制系统</span>
         <span class="ok"><i></i> 实时数据同步正常 · 品牌色 ${pal.brand}</span>
       </footer>
     </div>

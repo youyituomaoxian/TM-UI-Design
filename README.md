@@ -109,4 +109,4 @@
 
 ## 版权
 
-© 2013-2026 [宁波弘讯软件开发有限公司](https://www.techmation.com.cn) · MIT License
+© 2013-2026 · MIT License
