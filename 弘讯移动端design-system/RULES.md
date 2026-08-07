@@ -639,6 +639,7 @@ KPI（关键指标）
 - [ ] 横向行（筛选/统计/区块头）总宽 ≤ 343，对齐 `SPACE_BETWEEN`
 - [ ] 列表项 / 卡片为 `FIXED` 343，非自适应撑大
 - [ ] 无元素 x+width > 375（右侧留白 ≤ 16）
+- [ ] **滚动列表容器（页面自造类 `overflow-y:auto/scroll`）带显式 `height` 或固定 `max-height`**（2026-08-07 与 Web §4.4b 对称：不定高会被外层弹性容器拉伸成空洞；门禁 `scroll.container.height` MED）
 
 ### [硬] 8.4 关键认知（写进 Agent 记忆）
 

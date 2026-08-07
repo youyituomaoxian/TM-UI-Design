@@ -600,6 +600,33 @@ function checkCustomProps(selfCss, canonicalCss) {
   return violations;
 }
 
+// ===== 滚动容器定高门禁（2026-08-07，与 Web §4.4b 对称）：滚动容器不定高 → 被容器弹性拉伸成空洞 =====
+// 移动端 375 固定画布无 grid 行等高，但滚动列表卡（mlist/mcard 内）仍需显式定高，防止被外层弹性容器拉伸。
+// 判定与 Web 同：selfCss 中 overflow-y:auto|scroll 的自造类无 height/固定 max-height → MED。
+function checkScrollHeight(selfCss) {
+  const violations = [];
+  const selfRules = parseRules('<style>' + selfCss + '</style>');
+  const fixedHRe = /(?:^|;)\s*(?:height|max-height)\s*:\s*([^;]+)/gi;
+  for (const r of selfRules) {
+    if (r.selectors.some(s => s.includes(':root'))) continue;
+    if (!/overflow(-y)?\s*:\s*(auto|scroll)/i.test(r.decl)) continue;
+    let hasFixed = false;
+    let m;
+    while ((m = fixedHRe.exec(r.decl))) {
+      const v = m[1].trim();
+      if (v && !/^(100%|auto)/i.test(v)) { hasFixed = true; break; }
+    }
+    if (!hasFixed) {
+      violations.push({
+        line: r.line, severity: 'MEDIUM', contract: 'scroll.container.height',
+        sel: r.selectors.join(','),
+        msg: `滚动容器 ${r.selectors.join(',')} 未显式定高（height/固定 max-height）——会被外层弹性容器拉伸成空洞。列表/日志等滚动卡请显式定高（页面级自造类须带 height 或固定 max-height）`
+      });
+    }
+  }
+  return violations;
+}
+
 // ===== RED-018 上报侧（2026-08-01，与 Web 端同步）：引用未定义 CSS 变量 =====
 // 这是确凿的真实缺陷（该声明在浏览器/小程序中直接失效），此前是门禁的完全盲区：
 //   resolve 把它悄悄变成残缺串，expectToken 分支更是遇 var( 就 continue 放行。
@@ -1142,6 +1169,8 @@ function run(specPath, targetPath) {
   const overrideV = inlineClone ? [] : checkOverride(selfCss, canonicalCss);
   const gridV = inlineClone ? [] : checkGrid4px(selfCss);
   const customV = inlineClone ? [] : checkCustomProps(selfCss, canonicalCss);
+  // 滚动容器定高门禁（2026-08-07，与 Web §4.4b 对称）：滚动卡不定高 → 被弹性拉伸成空洞（MED）
+  const scrollV = inlineClone ? [] : checkScrollHeight(selfCss);
   // 图表门禁（CHART-SPEC §7，2026-08-06）：容器缺失 / 移动端禁 none 拉伸 / 内容贴 viewBox 右缘
   const chartV = checkChartBox(html);
   const chartStretchV = checkChartSvgStretch(html);
@@ -1152,7 +1181,7 @@ function run(specPath, targetPath) {
   const templateSyncV = checkTemplateRootSync(html, canonicalCss);
   // HTML 结构配对门禁（2026-08-06）：div 开闭配对 + bottomnav 父链必须是 .phone
   const structV = checkHtmlStructure(html);
-  return violations.concat(chartSeriesV, rootV, tokenV, motionV, whitelistV, svgV, wcagV, gridV, overrideV, customV, chartV, chartStretchV, chartEdgeV, chartLayoutV, templateSyncV, structV);
+  return violations.concat(chartSeriesV, rootV, tokenV, motionV, whitelistV, svgV, wcagV, gridV, overrideV, customV, chartV, chartStretchV, chartEdgeV, chartLayoutV, templateSyncV, structV, scrollV);
 }
 
 // ===== HTML 结构配对门禁（2026-08-06：展示页测试多 1 个 </div> 把 .phone 提前闭合 → bottomnav 被挤出手机壳，门禁此前未拦截）=====

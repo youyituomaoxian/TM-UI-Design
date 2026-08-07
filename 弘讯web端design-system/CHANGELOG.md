@@ -2,6 +2,19 @@
 
 ---
 
+## [1.9.11] — 2026-08-07 · 卡片高度诉求：定高卡 vs 弹性卡（§4.4b + scroll-fixed + 门禁）
+
+> 事故：注塑机实时监控看板——趋势大图卡（弹性）与报警列表卡（仅 max-height）并排，`col-* > .card{flex:1}` 行等高把滚动卡拉伸成空洞。归因：执行层空间预判盲区（LLM 无法预渲染），规范未表达「卡片高度诉求」维度。
+
+### Changed
+- **RULES §4.4b（新）**：卡片按内容确定方式分「定高卡 / 弹性卡」；同行组合铁律（定高配定高、弹性配弹性；混排 → 定高卡套 `.scroll-fixed`；禁仅 `max-height:100%` 对抗行高）。
+- **真源 utilities.css**：新增 `.scroll-fixed{height:320px;overflow-y:auto}` 定高滚动容器（build:template 后入 template.css）。
+- **门禁 `scroll.container.height`（MEDIUM）**：页面自造滚动类（overflow-y:auto/scroll）无 height/固定 max-height 即报；inlineClone 豁免。
+- **流程**：GENERATION-SOP 布局决策 5 问→6 问（追加「高度」）+ 软规则自查表「空间预判四查」；CHART-SPEC §3 补弹性/定高卡条款；移动端对称（RULES §8.3 + validate 同构门禁）。
+- **验证**：正例（.scroll-fixed 写法）门禁 0 误报；负例（旧写法不定高）被 `scroll.container.height` 精确拦截；看板页已按 §4.4b 修复（报警卡 scroll-fixed + 列表充实），截图确认空洞消失；ci-local 86 pass。
+
+---
+
 ## [1.9.10] — 2026-08-07 · 阅读策略改造：RULES 事故记录迁移（只迁事故，保留现役约束）
 
 > 本次把 `RULES.md` 中的「事故记录」（何时发生/症状/根因）迁移至此，RULES 只保留规则正文 + 门禁名 + 设计理由。事故对应的现役约束位置见各条末尾。

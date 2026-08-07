@@ -85,6 +85,7 @@
 - **最下网格线（基线）与 x 轴标签纵向间距 ≥20px**（标签独立行时 = 标签行高度）。
 - **禁衬线字体**：中文一律 `--font-cn`（黑体系）——**中文禁挂 `--font-mono`**（等宽无中文字形回退宋体衬线）；数字/百分比可用 `--font-mono`。
 - **图表卡不强制加摘要行**（拍板）；卡片拉伸空白由图表区弹性吸收（`.card:has(.chart-box) .chart-box{flex:1;min-height:320px}` 保留作弹性兜底）。
+- **弹性卡 vs 定高卡（2026-08-07，与 Web RULES §4.4b 联动）**：图表卡是**弹性卡**（图表区 `flex:1` 吸收行高）；与图表卡同排的列表/日志卡是**定高卡**——定高卡须显式定高（真源 `.scroll-fixed` 或 height/固定 max-height），禁仅 `max-height:100%`（在 `card--fill` 下等于行高，无效）。门禁 `scroll.container.height`（MED）兜底。
 
 ---
 

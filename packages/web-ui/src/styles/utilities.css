@@ -220,3 +220,8 @@
 .anim-list-in.mounted>*:nth-child(7){animation-delay:300ms}
 .anim-list-in.mounted>*:nth-child(8){animation-delay:350ms}
 .anim-list-in.mounted>*:nth-child(n+9){animation-delay:0ms}
+
+/* 定高滚动容器（RULES §4.4b，2026-08-07）：内容超出滚动、高度恒定。
+   防 grid 行等高把滚动卡弹性拉伸成空洞（报警卡拉伸事故根因）。
+   列表/日志/参数行等「定高卡」与弹性图表卡混排时，定高卡须用本类或显式定高。 */
+.scroll-fixed{height:320px;overflow-y:auto;}

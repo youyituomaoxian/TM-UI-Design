@@ -1612,6 +1612,35 @@ function checkInlineDimensions(html) {
   return violations;
 }
 
+// ===== 滚动容器定高门禁（2026-08-07，RULES §4.4b）：滚动容器不定高 → 被行等高拉伸成空洞 =====
+// 扫页面 selfCss 中声明 overflow-y:auto|scroll 的自造类；无 height / 固定 max-height → MED。
+// 设计：真源 .card-body--scroll{overflow:auto;max-height:100%} 是「弹性滚动」语义（配 card--fill 弹性吸收），
+//       不在检查范围（其在 canonical，不在页面 selfCss）；新页面列表/日志卡须真源 .scroll-fixed 或显式定高。
+// 豁免：:root 规则；height:100%/auto 不认定为定高；height/max-height 为 px/rem/em/var(--*) 认定为定高。
+function checkScrollHeight(selfCss) {
+  const violations = [];
+  const selfRules = parseRules('<style>' + selfCss + '</style>');
+  const fixedHRe = /(?:^|;)\s*(?:height|max-height)\s*:\s*([^;]+)/gi;
+  for (const r of selfRules) {
+    if (r.selectors.some(s => s.includes(':root'))) continue;
+    if (!/overflow(-y)?\s*:\s*(auto|scroll)/i.test(r.decl)) continue;
+    let hasFixed = false;
+    let m;
+    while ((m = fixedHRe.exec(r.decl))) {
+      const v = m[1].trim();
+      if (v && !/^(100%|auto)/i.test(v)) { hasFixed = true; break; }
+    }
+    if (!hasFixed) {
+      violations.push({
+        line: r.line, severity: 'MEDIUM', contract: 'scroll.container.height',
+        sel: r.selectors.join(','),
+        msg: `滚动容器 ${r.selectors.join(',')} 未显式定高（height/固定 max-height）——grid 行等高会把滚动卡弹性拉伸成空洞（2026-08-07 报警卡事故根因）。列表/日志/参数等「定高卡」请用真源 .scroll-fixed（定高滚动）或显式 height/max-height；max-height:100% 弹性语义仅限真源 .card-body--scroll`
+      });
+    }
+  }
+  return violations;
+}
+
 // ===== SVG 绘制属性门禁（任务书 S，2026-08-03）：stroke=/fill=/stop-color= 裸 hex 必须走 token =====
 // 分级与 forbidNonTokenHex 语义一致（领导拍板）：
 //   非调色板色（自造色）→ HIGH 阻断；调色板内色值（值对但没走 var）→ MEDIUM 提示。
@@ -1897,9 +1926,11 @@ function run(specPath, targetPath) {
   const overrideV = inlineClone ? [] : checkOverride(selfCss, canonicalCss);
   const gridV = inlineClone ? [] : checkGrid4px(selfCss);
   const customV = inlineClone ? [] : checkCustomProps(selfCss, canonicalCss);
+  // 滚动容器定高门禁（2026-08-07，RULES §4.4b）：滚动卡不定高 → 行等高拉伸成空洞（MED）
+  const scrollV = inlineClone ? [] : checkScrollHeight(selfCss);
   // KPI 仅两版门禁（2026-08-06 定稿）：简约版（stat-num/stat-sub 独立卡、无 kpi-ico / stat-card--icon / stat-card--ring）已删除，Agent 生成简约版即 HIGH 拦截
   const kpiV = checkKpiSimple(html);
-  return violations.concat(chartSeriesV, rootV, surfaceV, iconV, whitelistV, tokenV, motionV, chartV, svgV, topbarV, dimV, btnLabelV, statGridV, chartFillV, chartLayoutV, chartValueV, chartBaselineV, templateSyncV, moduleSpacingV, tableMinRowV, tableAlignV, tablePagerV, cardFillV, mobileV, webAesV, wcagV, gridV, overrideV, customV, kpiV, svgVarV);
+  return violations.concat(chartSeriesV, rootV, surfaceV, iconV, whitelistV, tokenV, motionV, chartV, svgV, topbarV, dimV, btnLabelV, statGridV, chartFillV, chartLayoutV, chartValueV, chartBaselineV, templateSyncV, moduleSpacingV, tableMinRowV, tableAlignV, tablePagerV, cardFillV, mobileV, webAesV, wcagV, gridV, overrideV, customV, kpiV, svgVarV, scrollV);
 }
 
 // ===== 柱状图柱顶数值门禁（2026-08-06：示例页柱状图缺 .chart-v → 柱子无数据标签，门禁此前未查）=====
