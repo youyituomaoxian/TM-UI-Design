@@ -360,7 +360,7 @@ START: 我要做什么类型的页面？
 
 ### [硬] 3.5 组件 DOM 契约（移动端版，2026-08-04 补强）⚠️ 必读
 
-**背景**：设备台帐多轮复盘，执行级缺陷（Tag 尺寸 / 卡片间距 / 文本层级 / Tab 竖排 / 卡片无圆角）根因全是「组件真源已就位、HTML 没按契约组 DOM」——与 Web 端 §3.7 同源。以下为**机器可校验的 DOM 契约**，validate-spec 已落地同名门禁（仅页面含 m 前缀组件类时触发，不误伤 Web 页），违反即报：
+以下为**机器可校验的 DOM 契约**，validate-spec 已落地同名门禁（仅页面含 m 前缀组件类时触发，不误伤 Web 页），违反即报：
 
 | 契约 ID（门禁） | 适用组件 | 违规形态（❌） | 正确写法（✅） |
 |---|---|---|---|
@@ -399,7 +399,7 @@ START: 我要做什么类型的页面？
 <span class="m-dot run"><i></i>运行中</span>
 ```
 
-**实证**（2026-08-06 展示页测试）：`mlist-row/label/value`、`mlist-double-row/main/sub`、`msearch-placeholder`、`m-dot-run/warn/err` 共 9 个类名全部 HIGH `class.undefined`——真源子类结构如上表。**写组件 DOM 前先查本速查或 template.css，勿凭记忆造类名。**
+**写组件 DOM 前先查本速查或 template.css，勿凭记忆造类名。**
 
 **配套约定**
 1. 移动端门禁**仅在页面含 m 前缀组件类**（`mbtn/mlist/mtag/mtabs/m-dot/mcard/msearch` 任一）时触发，避免误伤 Web 页。
@@ -446,19 +446,19 @@ START: 我要做什么类型的页面？
 |---|---|
 | 手机壳 | `body` 深色底居中 `.phone-stage`（375 手机壳）> `.phone`（**固定 375×812**，禁长页向下追加） |
 | 屏内滚动 | 所有内容在 `.screen-scroll`（`flex:1;overflow-y:auto`，**滚动条已隐藏**——webkit + firefox 都做）内滚动，`.screen`（343 列，gap:16px）为内容容器；navbar/bottomnav 固定不动；`padding-bottom:24px` 让最后项与 BottomNav 有呼吸 |
-| 间距节奏 | **双容器机制（2026-08-05 v10 终态，必读）**：`.screen` 与 `.page-view` **均为 `flex column` + `gap:12px`**——间距**纯由 gap 提供，禁 margin 叠加**（v9 的 gap12+margin4=16 视觉实测 21px：box-shadow 外框被误算进间距，用户反馈「间距改错方向」）。**禁止把模块直接挂 `.screen` 下当子级**（`.screen > .mcard` 结构）——标准结构是 `.screen > .page-view > 模块`。`.section-title{margin:0 0 8px}`（上间距由容器 gap 12 提供；下 8 + 下方模块 gap 12 = 下方卡片 20px 间距——section-title 与卡片间距允许 20px，标题分组语义）；相邻 `.mlist-double` 由 `.anim-list-in gap:12px`（`!important` 兜底）提供（**禁止自造间距类**——用容器 gap + 模板类） |
+| 间距节奏 | **双容器机制（2026-08-05 v10 终态，必读）**：`.screen` 与 `.page-view` **均为 `flex column` + `gap:12px`**——间距**纯由 gap 提供，禁 margin 叠加**。**禁止把模块直接挂 `.screen` 下当子级**（`.screen > .mcard` 结构）——标准结构是 `.screen > .page-view > 模块`。`.section-title{margin:0 0 8px}`（上间距由容器 gap 12 提供；下 8 + 下方模块 gap 12 = 下方卡片 20px 间距——section-title 与卡片间距允许 20px，标题分组语义）；相邻 `.mlist-double` 由 `.anim-list-in gap:12px`（`!important` 兜底）提供（**禁止自造间距类**——用容器 gap + 模板类） |
 | 列表项卡片形态 | `.mlist` / `.mlist-double` / `.mlist-triple` 一律 `border-radius:var(--radius-md) + box-shadow:var(--elev-raised-shadow)`（圆角 + 浅 elevation），**去 border-bottom**——相邻卡片由容器 gap 分隔，不再用分隔线堆叠 |
-| **列表项嵌套降级（2026-08-05 新增，必读）** | `.mlist*` 直接嵌在**卡片状容器**（`.mcard` / `.mcard-b` 等）内部时，**必须降级为扁平行**：去 `box-shadow` / 去独立 `border-radius` / 去卡片背景（`background:transparent`），相邻项改用 `border-top:1px solid var(--n4)` 分隔线——**禁止卡片套卡片 / 双层阴影**（违反克制三原则；反例：`.mcard` 内 `.mlist-double` 双层白底+阴影，用户 2026-08-05 反馈「双重卡片层级太多」）。容器级列表（`.screen`/`.page-view` 直接子级）保持卡片形态不变；**降级后左右 padding 保持 16px 与卡片标题/正文对齐**（2026-08-06 视觉验证：padding 归零会文字贴卡片左缘、与 mcard-head 错位） |
-| 卡片内搜索框（2026-08-06 终态，必读） | `.msearch` 是**双场景组件**：① 屏幕落位（`.screen`/`.page-view` 直接子级）→ `width:100%` + `max-width:343px`，容器恰 343；② 嵌入卡片/表单（`.mcard`/`.mcard-b`/`.mcard-c`/`.form-card` 及任何更窄容器）→ 自动收窄自适应。**基础规则已统一自适应，禁再写固定 343**（反例：form-card 内容区 311px，msearch 固定 343px 超卡片 32px 顶出屏幕） |
+| **列表项嵌套降级（2026-08-05 新增，必读）** | `.mlist*` 直接嵌在**卡片状容器**（`.mcard` / `.mcard-b` 等）内部时，**必须降级为扁平行**：去 `box-shadow` / 去独立 `border-radius` / 去卡片背景（`background:transparent`），相邻项改用 `border-top:1px solid var(--n4)` 分隔线——**禁止卡片套卡片 / 双层阴影**。容器级列表（`.screen`/`.page-view` 直接子级）保持卡片形态不变；**降级后左右 padding 保持 16px 与卡片标题/正文对齐** |
+| 卡片内搜索框（2026-08-06 终态，必读） | `.msearch` 是**双场景组件**：① 屏幕落位（`.screen`/`.page-view` 直接子级）→ `width:100%` + `max-width:343px`，容器恰 343；② 嵌入卡片/表单（`.mcard`/`.mcard-b`/`.mcard-c`/`.form-card` 及任何更窄容器）→ 自动收窄自适应。**基础规则已统一自适应，禁再写固定 343** |
 | 双行列表结构 | 必须用模板标准结构：`.mlist-double > (.mlist-double-top > .mlist-thumb + .mlist-double-text > (.mlist-double-head + .mlist-sub) + .mlist-more) + .mlist-double-foot`；自造 `.list-line/.list-sub/.nm` 等会触发 `class.self-defined` MED |
-| **双行列表排版（2026-08-05 v2，Robin Williams 四原则：亲密性/对齐/重复/对比）⚠️ 必读** | ①**对比**：`.mlist-title`(16px/500/n8) > `.mlist-sub`(13px/400/n7) > `.mlist-double-foot`(12px/n7)——三层字号/字重/色阶逐级递减；②**亲密性**：同组信息靠近——`.mlist-double-head` 与 `.mlist-sub` 间距 4px；**条目内部不再用横线切断同一加工中心的信息**，数据区 `.mlist-double-foot` 用 `background:var(--n2)` 浅灰底 + `radius-sm` 圆角微块（对比+亲密性，一眼可扫）；③**对齐**：条目之间用一条 `border-top:1px solid var(--n4)` 横线区分（`.mlist-double + .mlist-double`），thumb(52px) 与文字块高度匹配禁撑高；④**重复**：同屏列表项统一字号/间距/灰底/横线，禁个别项特殊处理。**反例**：foot border-top 与条目间 border-top 双重横线导致区分混乱（2026-08-05 复盘）|
+| **双行列表排版（2026-08-05 v2，Robin Williams 四原则：亲密性/对齐/重复/对比）⚠️ 必读** | ①**对比**：`.mlist-title`(16px/500/n8) > `.mlist-sub`(13px/400/n7) > `.mlist-double-foot`(12px/n7)——三层字号/字重/色阶逐级递减；②**亲密性**：同组信息靠近——`.mlist-double-head` 与 `.mlist-sub` 间距 4px；**条目内部不再用横线切断同一加工中心的信息**，数据区 `.mlist-double-foot` 用 `background:var(--n2)` 浅灰底 + `radius-sm` 圆角微块（对比+亲密性，一眼可扫）；③**对齐**：条目之间用一条 `border-top:1px solid var(--n4)` 横线区分（`.mlist-double + .mlist-double`），thumb(52px) 与文字块高度匹配禁撑高；④**重复**：同屏列表项统一字号/间距/灰底/横线，禁个别项特殊处理。|
 | 数据指标行（kv-row） | 卡片底部 / 数据指标行用 `.kv-row` 分 cell（flex + gap + 细线分隔）；**禁止"·"串文本**（如 `12,480 模 · 78% 负载`）——每项独立 cell、`<b>` value 用等宽字体、key 字色 n7 |
 | Tag 尺寸推荐 | 卡片内 Tag 推荐 `.mtag-md` 或 `.mtag-lg`（24-28px 高，醒目）；`.mtag-sm`（20px 高）仅用于标签云/密集列表等次要场景 |
 | Tabs 下划线指示器 | `.mtabs{overflow-x:auto;gap:24px;border-bottom:1px n4}`（支持 5+ Tab 横滑，滚动条隐藏；**5+ Tab 必须支持横滑**——模板已具备）；`.mtab{white-space:nowrap;flex-shrink:0;height:44px;border-bottom:2.5px transparent}`（不 flex:1 强等分，文字不被挤断）；`.mtab.active{color:var(--primary);border-bottom-color:var(--primary)}`（**下划线指示器选中态**——2026-08-04 用户拍板方案 B，替代胶囊实底）；`.mtab-add`（+ 新增）保持独立胶囊形态 |
 | 多屏跳转 | 每屏一个 `<section class="page-view" data-route="…">`；hash 路由控制 `.on` 显隐（`go('#/route')`），返回用 `back()` |
 | 弹窗 | `.mmask`（默认隐藏）+ `.mmodal`；`openModal('id')` / `closeModal()` 切换 `.show` |
 | BottomNav 浮起 | `--shadow-bottom-nav` token（向上 6px + 12px rgba .08 + 1px 发丝线）；BottomNav 加 `position:relative;z-index:5` 浮在内容之上 |
-| **BottomNav 结构（2026-08-06 修复后固化，必读）** | `.bottomnav` 必须是 **`.phone` 的直接子项**（`.phone-stage > .phone > (statusbar + navbar + screen-scroll + bottomnav)`），在 flex column 底部固定；**菜单 3–5 项**（图标 24 + 标签 12，`flex:1` 均分），iOS 版 `.bottomnav-ios` 高 83（含 home indicator 挂最后一项后）。**禁止**：把 bottomnav 移出 `.phone` / 插屏时破坏 div 闭合（多/少 `</div>` 会把 bottomnav 挤出手机壳——2026-08-06 实测 bottomnav 渲染到页面顶部）。门禁 `html.structure.pairing`（div 配对）+ `html.structure.bottomnav`（父链必须 `.phone`）+ `html.structure.body`（body/html 闭合完整）已落地 validate-spec.js，违反即 HIGH 拦截 |
+| **BottomNav 结构（2026-08-06 修复后固化，必读）** | `.bottomnav` 必须是 **`.phone` 的直接子项**（`.phone-stage > .phone > (statusbar + navbar + screen-scroll + bottomnav)`），在 flex column 底部固定；**菜单 3–5 项**（图标 24 + 标签 12，`flex:1` 均分），iOS 版 `.bottomnav-ios` 高 83（含 home indicator 挂最后一项后）。**禁止**：把 bottomnav 移出 `.phone` / 插屏时破坏 div 闭合。门禁 `html.structure.pairing`（div 配对）+ `html.structure.bottomnav`（父链必须 `.phone`）+ `html.structure.body`（body/html 闭合完整）已落地 validate-spec.js，违反即 HIGH 拦截 |
 | 长页 PNG | URL 加 `?export=1`（`<html data-export="long">` 按内容**完整高度**展开，不足 812 保持手机比例）→ DevTools「Capture full size screenshot」或 headless 截图 |
 | 类名 | 一律 `m` 前缀组件类（白名单门禁），禁止自造布局类（页面级业务组件可接受 MED 提醒） |
 
@@ -471,7 +471,7 @@ START: 我要做什么类型的页面？
 | 列表项按压反馈 | `.anim-press`（active 时 scale(0.98)，100ms 极短反馈） |
 | 列表进场动画 | `.anim-list-in`（容器类，nth-child 自动阶梯延迟 50ms，第 8 项后保持 0） |
 | Tab 切换 | `.mtab.active` 视觉态 + hash 路由切屏演示 |
-| **筛选滚动锚定（2026-08-05 终态，必读）** | 筛选组件（`.mtabs`）必须 `position:sticky;top:0;z-index:5;background:var(--n2)` 固定——**Tab 筛选/搜索过滤时组件本身固定不动，列表在下方变化，禁任何 scrollTop 重置**（v1 方案 `scrollTop=0` 会跳顶、v2 方案内容收缩致漂移均失败；正确做法见反例复盘：全部→针车群筛选后筛选条仍在视口顶部、列表在下方更新）。**切换 Tab 时不得调用 scrollTo/scrollTop 修改滚动位置** |
+| **筛选滚动锚定（2026-08-05 终态，必读）** | 筛选组件（`.mtabs`）必须 `position:sticky;top:0;z-index:5;background:var(--n2)` 固定——**Tab 筛选/搜索过滤时组件本身固定不动，列表在下方变化，禁任何 scrollTop 重置**。**切换 Tab 时不得调用 scrollTo/scrollTop 修改滚动位置** |
 | 弹窗演示 | `.mmask.show` + ActionSheet（`.mmodal-item` 点击关闭） |
 | 返回栈 | `back()` history.back；navbar 返回键随屏显隐 |
 | Toast 反馈 | `.toast.show/.hide`（顶部滑入+停留+滑出，操作后反馈） |
@@ -600,9 +600,7 @@ KPI（关键指标）
 
 ## [硬] 8. 屏幕自动布局黄金法则（防溢出必读）
 
-> **血泪教训**：在 Ardot 中实测搭建设备群览页时，Content（407px）、FilterRow（354px）、Nav（360px）连续溢出画板。
-> 根因 = **组件库默认宽 375px（全框宽），而屏幕内容列实际宽 343px（375−16×2 gutter）**，插入实例不会自动适配父容器；父框架未锁 FIXED 宽也未 clipsContent。
-> 以下法则为**强制规则**，生成任何页面前先应用，可 100% 避免再溢出。
+> 以下法则为**强制规则**，生成任何页面前先应用，可 100% 避免溢出。
 
 ### [硬] 8.1 屏幕搭建骨架（Screen Assembly Skeleton）
 
@@ -748,8 +746,6 @@ KPI（关键指标）
 
 > **完整真源 = 仓库根 CHART-SPEC.md**（2026-08-06 建立 · 2026-08-07 重构）。本节约为移动端布局摘要，冲突以 CHART-SPEC 为准。
 
-> **血泪教训（保留）**：设备群览页产能趋势柱状图曾出现 X 轴标签与柱体底部重叠——根因 = 标签作为 SVG 内元素/柱子子级定位，无纵向边界约束。**修复方向 = 标签一律 HTML 层 + 结果约束（不叠柱、不溢出）**。
-
 **① 实现放开（2026-08-07，替代旧 SVG 纵向三段式公式）**
 
 - 柱状/横向柱：HTML flex（高度/宽度百分比）或 SVG 百分比；折线：SVG polyline（viewBox="0 0 100 100" + preserveAspectRatio="xMidYMid meet"，**禁 none 拉伸变形**）+ HTML 点（同一百分比坐标系）；环形：**定尺寸方形 SVG（禁 none，圆变椭圆）** + HTML 中心文字。
@@ -791,7 +787,6 @@ KPI（关键指标）
 | **对比 Contrast** | 不同层级必须有明显差异 | 文字三档递减（标题>副文>元信息，字号+字重+色阶）；状态色只点状态；**禁两层相似难辨**（如 14px vs 16px 同色）|
 
 **四原则应用顺序**：先分组（亲密性）→ 再对齐 → 统一重复 → 最后用对比突出层级。
-**反例**（设备群览页复盘 2026-08-05）：①双行列表 sub 14px 与 title 16px 同色 → 对比不足；②条目内 3px 与条目间 44px 失衡 → 亲密性错误；③foot border-top 与条目间 border-top 双重横线 → 信息区分混乱（修复：条目内数据区用 n2 浅灰底、条目间一条横线）。
 
 ### [软] 10.1 审美总则（工控美学三原则）
 
@@ -872,12 +867,10 @@ KPI（关键指标）
 | 相邻触达元素间距 | **≥8px**（按钮组 gap）|
 | 基础区域间距 | 12px（`.screen gap` + `.page-view gap` 双容器，见 §4.3；2026-08-05 终态）|
 | **投影卡片叠** | **12px**（`.mcard`/`.mlist`/`.mlist-double`/`.mlist-triple` 相邻——**纯 gap，无 margin 叠加**）|
-| **区域交界间距** | **12px**（Tab/搜索/胶囊/Hero/瓷片/金刚 与后续卡片——**纯 gap 12px，margin 全部归零**；2026-08-05 v10 终态：v9 的 gap12+margin4=16 视觉实测 21px（把 box-shadow 外框算进间距），用户反馈「间距改错方向，是否把组件外框算进去了」）|
+| **区域交界间距** | **12px**（Tab/搜索/胶囊/Hero/瓷片/金刚 与后续卡片——**纯 gap 12px，margin 全部归零**）|
 | **卡片叠** | **12px**（卡片与卡片：纯 gap）|
 | 卡片内 padding | 14-16px |
 | 卡片信息密度 | ≤3 行核心信息；foot 数据指标用 `.kv-row`（禁 · 串）|
-
-**§10.4 间距终态（2026-08-05 v10，用户拍板）**：工业后台紧凑档——**间距纯由 flex gap 控制（12px），禁任何 margin 叠加**。组件外框（box-shadow 外扩、border）不计入间距；v9「gap12+margin4=16」视觉实测 21px 的根因 = box-shadow 外扩被误当作间距（用户：「间距改错方向，是否把组件的外框算进去了」）。
 
 **克制间距体系（v10 终态，单一 gap 12px）**：
 | 层级 | 间距 | 实现 |
@@ -889,7 +882,7 @@ KPI（关键指标）
 | 区域交界（Tab/搜索/胶囊/Hero/瓷片/金刚 → 卡片状容器）| 12px | `.screen > X + Y, .page-view > X + Y{margin-top:0}`（纯 gap）|
 | 网格宫格（金刚/瓷片）| 12px / 8px | `.m-kingkong gap:12px 8px` / `.m-porcelain gap:8px` 保持紧凑（2026-08-06 4px 网格归位，14→12） |
 
-> ⚠️ **2026-08-05 复盘沉淀**：此前 §4.5 间距补丁全部写死 `.screen > X + Y` 且 `.page-view` 为 `display:block`，而标准结构是 `.screen > .page-view > 模块`——**gap 只作用于多屏之间、屏内模块间距全部落空，Hero→瓷片→产能卡→胶囊之间 0px 贴死**。修复：① `.page-view` 改为 flex gap:16px；② 所有间距补丁选择器**必须同时覆盖 `.screen >` 与 `.page-view >`**；③ 类名必须与真源一致。**生成页面时若模块间贴一起，先查这两点，禁止用页面级 margin 硬顶（规范级间距一律 `!important` 兜底页面级覆盖，页面级禁止覆盖规范 token）。**
+> ⚠️ **间距排查守则**：生成页面时若模块间贴一起，先查① `.screen >` 与 `.page-view >` 是否都覆盖 ② 类名与真源一致；**禁止用页面级 margin 硬顶**（规范级间距一律 `!important` 兜底页面级覆盖，页面级禁止覆盖规范 token）。
 | 留白呼吸 | 内容块之间必有 gap；禁"贴一起"（§4.3 间距节奏）|
 
 ### [软] 10.5 色彩克制
@@ -1137,9 +1130,9 @@ KPI（关键指标）
 | 离线 | `.offline`（n9）| `.dot-offline`（n11=#212532）| 无连接 | 11.42 ✅ |
 | 故障 | `.err`（--err 红）| `.dot-err` | 异常/报警 | 3.76 ✅ |
 
-> **D02 修正（08-05 对抗审查）**：状态点灰阶初版用 n5/n6（亮色 1.2~2.1 / 暗色坍塌 1.0~1.4 不可见）→ 改为 **n7/n8/n9（移动）/ n9/n10/n11（Web）** 深灰递进，亮暗双模式达标。注意两端 n 编号不同：移动 n7=#6C757D=Web n9；移动 n8=#334155=Web n10；移动 n9=#343A46≈Web n11=#212532。
+> 注意两端 n 编号不同：移动 n7=#6C757D=Web n9；移动 n8=#334155=Web n10；移动 n9=#343A46≈Web n11=#212532。
 
-> **功能状态**（操作/校验反馈）才用：`.ok`（--suc 成功）/ `.warn`（--warn 预警）。**纯颜色不得单独传达信息**（WCAG）——状态点须配文字（`.m-dot` 天然带 label）。反例：设备列表"待机"用 `.warn`（黄）= 语义混淆（08-05 已修正为 `.idle`）。
+> **功能状态**（操作/校验反馈）才用：`.ok`（--suc 成功）/ `.warn`（--warn 预警）。**纯颜色不得单独传达信息**（WCAG）——状态点须配文字（`.m-dot` 天然带 label）。
 
 ---
 

@@ -44,7 +44,7 @@
 4. **底栏文字居中**：`弘讯B端视觉规范 · page-template.html · 所有视觉特征取自 template.css / tokens.json 真源` 必须居中，不要左对齐或右对齐。
 5. 顶栏 72 / 侧栏 240（折叠 80）/ 底栏 32 的尺寸与品牌蓝底白字不可改。
 6. **折叠按钮固定右下角 + 滚动条隐藏**（2026-08-03 裁定）：
-   - 折叠按钮（`.sidebar-foot > .collapse-btn`）**固定在侧栏右下角**，`flex-shrink:0` + 高 44px + `z-index:2`（始终在作业树之上），**不随作业菜单多少改变位置**（旧版 `position:sticky` 会漂在内容流末尾，已废弃）。
+   - 折叠按钮（`.sidebar-foot > .collapse-btn`）**固定在侧栏右下角**，`flex-shrink:0` + 高 44px + `z-index:2`（始终在作业树之上），**不随作业菜单多少改变位置**。
    - 作业树（`.sidebar .tree`）单独占 `flex:1 1 auto; min-height:0; overflow-y:auto` 滚动区，**菜单再多只在侧栏高度内截断/滚动，红线下方不显示**。
    - 滚动条**视觉隐藏**但保留滚动行为：`.sidebar .tree{scrollbar-width:none;-ms-overflow-style:none}` + `.sidebar .tree::-webkit-scrollbar{width:0;height:0;display:none}`（兼容 Chrome/Safari/FF/Edge）。
    - 折叠态（`.sidebar.collapsed`）按钮 44×44 与 `.tree-node` 同高（44px）→ **与作业树图标自然垂直居中**；`.tree` 底部 padding 归零紧贴按钮。
@@ -86,7 +86,7 @@
 > - 栅格：`.grid12` + `.col-3/4/5/6/7/8/9/12`（≤1200px 自动堆叠为 12 列满宽）
 > - 标题：`.page-title` `.section-title`
 > - 指标卡：`.stat-grid`（容器）+ **KPI 两版（2026-08-06 用户拍板：标准版 = 图标卡，环形版保留需时使用）**：标准版 `.stat-card--icon`（KPI 图标卡——左浅底高圆角图标块 kpi-ico--lg 48×48 · radius-lg 16 + 右上大数字 stat-num + 底部行 stat-foot（标题左 stat-sub / 变化量右 stat-delta，贴图标底部对齐；变化量 12px 500 ↑=run 绿 ↓=err 红）——布局基准 = 回滚点 20260806_Web完成态 展示页）；环形版 `.stat-card--ring`（左环 64 + ring-info label/num/trend，需时使用）。**禁简约 stat-num+stat-sub 独立卡**（门禁 kpi.simple.forbidden HIGH 拦截）
-> - KPI 图标：`.kpi-ico`（+ `--lg` 尺寸，+ `--primary/--run/--warn/--neutral` 语义底色）。SVG 走 `currentColor`，**禁止在 `<svg>` 上写颜色**（黑图标 bug 根因）
+> - KPI 图标：`.kpi-ico`（+ `--lg` 尺寸，+ `--primary/--run/--warn/--neutral` 语义底色）。SVG 走 `currentColor`，**禁止在 `<svg>` 上写颜色**
 > - KPI 环（环形版需时使用）：`.ring`（64 svg 圆环，dashoffset = 163.4 × (1−%)）+ `.ring-val` + `.ring-fg--primary/run/warn/err/secondary`
 > - 图表：`.chart-wrap` `.chart-svg` `.chart-grid` `.chart-axis` `.chart-value` `.chart-caption` `.chart-legend`（+ `--list`）`.legend-item` `.legend-dot` `.legend-line`（+ `--dash`）`.legend-val`
 > - 指标行：`.metric-row` `.metric-label` `.metric-val` `.metric-unit`
@@ -352,9 +352,9 @@ START: 我要做什么类型的页面？
 
 **门禁双向校验**：① 任一数据单元格 `td.num` → 对应列表头必须 `th.num`；② 表头 `th.num` → 该列所有数据 `td` 必须带 `num`。违反即 HIGH（表头与数据错位）。数值列数字用 `tabular-nums` 等宽对齐（千分位对齐）。
 
-**⚠️ 特异性陷阱（2026-08-06 实测）**：`.table th` 的 `text-align:left` 特异性（0-1-1）**高于** `.num` 的 `right`（0-1-0）——仅给 th 加 `num` 类不会右对齐（仍被 left 覆盖）。必须由真源 `.table th.num{text-align:right}` 显式覆盖（契约 `table.head.num-align` HIGH 锁定该规则值）。
+**⚠️ 特异性陷阱**：`.table th` 的 `text-align:left` 特异性高于 `.num` 的 `right`——仅给 th 加 `num` 类不会右对齐。**必须由真源 `.table th.num{text-align:right}` 显式覆盖**（契约 `table.head.num-align` HIGH 锁定该规则值）。
 
-**⚠️ 字体回退陷阱（2026-08-06 用户实测）**：`.num` 的 `font-variant-numeric:tabular-nums` **只用于数据单元格**——表头 `th.num` 必须 `font-variant-numeric:normal`（真源已写死，契约锁定）。原因：tabular-nums 数字特性在真实浏览器（系统装有宋体等衬线字体）会触发字体特性回退——中文表头「计划数/完成数」被浏览器回退到宋体（衬线），与其余表头黑体不统一（headless 无衬线字体时无法复现，computed style 全一致——须以用户系统实测为准）。
+**⚠️ 字体回退陷阱**：`.num` 的 `font-variant-numeric:tabular-nums` **只用于数据单元格**——表头 `th.num` 必须 `font-variant-numeric:normal`（真源已写死，契约锁定；中文表头遇衬线字体系统会回退宋体，事故细节见 CHANGELOG）。
 
 **表头/数据字体规范（2026-08-06 定稿）**：**表头与数据必须区分**（不得统一字号）——`.table th`：`font-family:var(--font-cn)` 显式 + `font-size:13px` + `font-weight:500`（全表头内部统一黑体）；`.table td`：`font-family:var(--font-cn)` 显式 + `font-size:14px`（数据统一，与表头区分）。th/td **显式 font-family 锁定黑体家族**，字体特性回退只能在黑体家族内发生、绝不落宋体。契约 `table.head.font` 校验 th 的 font-family 为 var(--font-cn)。
 
@@ -405,7 +405,7 @@ START: 我要做什么类型的页面？
 
 ### [硬] 3.7 组件 DOM 契约（2026-08-04 补强）⚠️ 必读
 
-**背景**：机器群览页实测 3 类执行级视觉缺陷（按钮文字竖排截断 / 5 张 KPI 第 5 张掉行 / 折线图未撑开），根因全是「CSS 真源已就位、HTML 没按契约组 DOM」。以下三条为**机器可校验的 DOM 契约**，validate-spec 已落地同名门禁（`validate-spec.js` 2026-08-04 新增），违反即报：
+以下三条为**机器可校验的 DOM 契约**，validate-spec 已落地同名门禁，违反即报：
 
 | 契约 ID（门禁） | 适用组件 | 违规形态（❌） | 正确写法（✅） |
 |---|---|---|---|
@@ -418,7 +418,7 @@ START: 我要做什么类型的页面？
 2. `.stat-grid` 基础类默认 4 列；卡数 ≠ 4 必须显式 `--N` 后缀（N=实际卡数）。门禁按「直接子元素计数」比对。
 3. 图表 SVG 优先 `.chart-svg--fill`（`width/height:100%` + `vector-effect:non-scaling-stroke`，stroke 不随拉伸变形）；如需保持纵横比，viewBox 纵横比须与容器一致，不得用 `meet` 硬塞。
 4. 三条门禁均先 `stripScriptTags` 再扫（JS 模板字符串里的 `<button>`/`<svg>` 不参与判定），行号统一 0。
-5. **`.chart-svg--fill` 的 viewBox 末端边距（2026-08-04 补强）**：`preserveAspectRatio="none"` 强制拉伸时，viewBox 右侧须留 **16-20px 内部边距**——即所有元素（polyline/path 末端、X 轴标签居中锚点 `x`、圆点 `cx`、网格线 `x2`）的 x 坐标 ≤ `viewBox 宽度 - 20`。实测 viewBox `0 0 400` + 末端 `x=400` → 拉伸后被 card-body padding 16px 裁切（X 轴 `21:00` 变 `21`）。正确写法：`viewBox="0 0 420 160"` + 数据元素末端 `x=400`（视觉上折线仍撑满，文字留 16px 余量）。门禁 `chart.svg.viewbox-edge`（MEDIUM）自动核对。
+5. **`.chart-svg--fill` 的 viewBox 末端边距**：`preserveAspectRatio="none"` 强制拉伸时，viewBox 右侧须留 **16-20px 内部边距**——即所有元素（polyline/path 末端、X 轴标签居中锚点 `x`、圆点 `cx`、网格线 `x2`）的 x 坐标 ≤ `viewBox 宽度 - 20`。正确写法：`viewBox="0 0 420 160"` + 数据元素末端 `x=400`（视觉上折线仍撑满，文字留 16px 余量）。门禁 `chart.svg.viewbox-edge`（MEDIUM）自动核对。
 
 ---
 
@@ -455,11 +455,7 @@ START: 我要做什么类型的页面？
 
 ### [硬] 4.3 跨模块间距（2026-08-04 补强）⚠️ 必读
 
-**问题背景**：KPI 区（`.stat-grid`）与图表区（`.grid12`）、图表区与表格区之间出现"紧贴 / 空白失控"两类异常，根因有二：
-1. `.stat-grid` 无底部间距，紧接 `.grid12` → 0 间距（KPI 卡与图表卡贴在一起）；
-2. `template.css` 旧 `.grid12>.card{margin-bottom:0}` 只匹配 **直接子**，实际页面是 `.grid12 > .col-* > .card` 两层嵌套 → 归零失效，`.card` 全局 `margin-bottom:16px` 全部生效 → 卡片间距失控。
-
-**规则**（已落真源 utilities.css 2026-08-04）：
+**规则**（已落真源 utilities.css）：
 
 | 相邻模块 | 间距 | 由谁保证 |
 |---|---|---|
@@ -475,9 +471,7 @@ START: 我要做什么类型的页面？
 
 ### [硬] 4.4 Grid 列内卡片高度对齐 + 表格空数据占位（2026-08-04 补强）⚠️ 必读
 
-**问题背景**：同一 `.grid12` 行内多列卡片高度不一致——表格数据不足（过滤后 2 行）卡片缩到 240px、环形图卡片比折线图卡片矮、告警/换模卡片与机器列表底部不齐，各列底部随机留白。用户裁定：**col-* 内所有卡片先撑起来与其他卡片对齐（表格空数据用占位行，不缩短卡片），同类问题一次修**。
-
-**规则**（已落真源 utilities.css 2026-08-04）：
+**规则**（已落真源 utilities.css）：
 
 1. **`col-*` 是弹性容器**：`.col-3/4/5/6/7/8/9/12` 一律 `display:flex;flex-direction:column;gap:var(--space-base)`（grid item 身份不变，内部转 flex column，col 内多卡片间距 16px 由 col 自身 gap 接管）。
 2. **col 内卡片一律 `flex:1` 平分 col 高度**（模板 `.col-* > .card{flex:1;min-height:0}`）：单卡片 = 撑满 col 高度；多卡片 = 平分。内容超高的卡片由 `min-height:auto` 保底不被压缩（高卡片决定 col 高度，矮卡片 stretch 对齐底部）。
@@ -783,7 +777,7 @@ TopBar         height=72   FIXED   主色底 白字
 **② 结果约束清单（8 条，缺一不可）**
 
 1. **柱底对齐基线**：任何柱数/容器宽度下柱底贴基线（flex 容器 + 基线元素）。
-2. **x 轴标签不重叠、不叠柱**：标签独立行（flex 与柱同列宽对齐）——禁止标签作为柱子子级定位（实测叠柱底）；柱多自动跳显。
+2. **x 轴标签不重叠、不叠柱**：标签独立行（flex 与柱同列宽对齐）——禁止标签作为柱子子级定位；柱多自动跳显。
 3. **标签不溢出容器**：图表底部为 x 轴标签留白区（基线下方 ≥20px），x 标签与柱顶数值均不得负定位溢出容器。
 4. **折线数据点严格落线**：polyline 与 HTML 点共用同一百分比坐标系（points 坐标 ÷100 = dot left/top）；点固定尺寸正圆（non-scaling-stroke 线宽恒定）。
 5. **环形图中心文字不变形**：HTML 绝对定位居中，SVG 只画环。
