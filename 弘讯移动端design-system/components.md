@@ -75,7 +75,7 @@
 | modal.title | 弹窗 | 标题栏高 46 | HIGH |
 | modal.item | 弹窗 | 选项行高 56 | HIGH |
 | modal.radius | 弹窗 | 半径 16 | HIGH |
-| search.height | 搜索 | 高 36 | HIGH |
+| search.height | 搜索 | 高 40 | HIGH |
 | search.radius | 搜索 | 半径 16 | HIGH |
 | search.width | 搜索 | 落位宽 343 | MED |
 | tabs.font | 页签 | 字 14 | MED |

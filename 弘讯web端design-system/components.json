@@ -1162,7 +1162,7 @@
       "id": "chart-box",
       "name": "图表容器（canvas 挂载点）",
       "category": "数据可视化",
-      "summary": "canvas 图表库（ECharts 等）定高容器：position relative + width 100% + height 320px（4px 网格），防图表四周留白失控。业务页可覆盖高度。",
+      "summary": "canvas 图表库（ECharts 等）定高容器：position relative + width 100% + height 320px（4px 网格，默认兜底，2026-08-07 起高度自定——内容撑开或固定均可，Agent 按容器调整），防图表四周留白失控。业务页可覆盖高度。",
       "anatomy": {
         "box": "定高容器(默认320px，业务页可覆盖)",
         "canvas": "canvas 本体(.chart-canvas 占满)"
@@ -1305,6 +1305,7 @@
       "name": "KPI 图标卡（标准版 · 2026-08-06 用户拍板：KPI 标准版 = 图标卡，回滚点布局）",
       "category": "数据展示",
       "summary": "KPI 标准版（回滚点 20260806_Web完成态 布局）：左浅底高圆角图标块 48×48（kpi-ico--lg · radius-lg）+ 右上大数字 + 底部行（标题左 stat-sub / 变化量右 stat-delta，贴图标底部对齐）。变化量 12px 500，↑=run 绿 / ↓=err 红。",
+      "note": "KPI 图标卡唯一排列（2026-08-07 用户拍板）：数值大字在上（stat-num）+ 底部行（stat-sub 标题左 + stat-delta 趋势右）；禁止「标题在上/数值居中」排列（stat-label 首行 + stat-num 居中）——门禁 kpi.label.top.forbidden HIGH 拦截；stat-label 仅限环形卡 ring-info 使用（真源已删通用 .stat-label）",
       "dom": "<div class=\"card\"><div class=\"card-body stat-card--icon\"><span class=\"kpi-ico kpi-ico--lg kpi-ico--primary\">svg</span><div class=\"stat-body\"><div class=\"stat-num\">142</div><div class=\"stat-foot\"><div class=\"stat-sub\">设备总数</div><span class=\"stat-delta stat-delta--up\">↑2.4%</span></div></div></div></div>"
     }
   ],
@@ -1965,7 +1966,7 @@
             "var(--primary)"
           ],
           "severity": "HIGH",
-          "note": "输入控件背景语义白名单（2026-08-06）：n1 基础态 / n4 禁用 / primary 选中——禁其他（含旧 n5 灰底）；边框 --n6；focus 边框 --primary + 2px --primary-dis-bg 描边；例外：进度轨道 .progress 用 --n5 是轨道语义非输入"
+          "note": "输入控件背景语义白名单（2026-08-06）：n1 基础态 / n4 禁用 / primary 选中——禁其他（含旧 n5 灰底）；边框 --n6；focus 边框 --primary + 2px --focus-ring 描边（2026-08-07 token 化，值 = color-mix(primary 20%)）；例外：进度轨道 .progress 用 --n5 是轨道语义非输入"
         }
       ]
     },

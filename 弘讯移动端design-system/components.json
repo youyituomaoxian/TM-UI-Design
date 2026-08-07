@@ -658,7 +658,7 @@
         "背景色输入框",
         "聚焦态"
       ],
-      "referenceCss": ".msearch{width:343px;height:40px;display:flex;align-items:center;padding:0 8px;background:var(--n1);border:1px solid var(--n4);border-radius:var(--radius-lg);font-family:var(--font-cn)}.msearch-icon{width:24px;height:24px;margin-right:9px;color:var(--n8)}.msearch input{flex:1;border:none;outline:none;background:transparent;font-size:14px;color:var(--n8)}.msearch input::placeholder{color:var(--n5)}",
+      "referenceCss": ".msearch{width:100%;max-width:343px;height:40px;display:flex;align-items:center;padding:0 12px;background:var(--n1);border:1px solid var(--n4);border-radius:var(--radius-lg);font-family:var(--font-cn)}.msearch-icon{width:24px;height:24px;margin-right:8px;color:var(--n8)}.msearch input{flex:1;border:none;outline:none;background:transparent;font-size:14px;color:var(--n8)}.msearch input::placeholder{color:var(--n5)}",
       "referenceHtml": "<div class=\"msearch\"><span class=\"msearch-icon\">🔍</span><input placeholder=\"搜索设备 / 工单…\"></div>",
       "ardot": {
         "libraryComponent": "查询搜索（Ardot 移动端组件库）",
@@ -666,7 +666,7 @@
         "notes": "高40、宽343、半径16(pill)、N1底。搜索图标 24、占位符 14 N5。落位宽 343。"
       },
       "do": [
-        "高36 / 宽343 / 半径16",
+        "高40 / 宽343 / 半径16",
         "N1 底 + N5 占位符",
         "落位宽 343"
       ],
@@ -1263,7 +1263,7 @@
       ],
       "rules": [
         {
-          "prop": "width",
+          "prop": "max-width",
           "expect": 343,
           "severity": "MEDIUM",
           "note": "落位宽343"

@@ -3,7 +3,7 @@
 > ⚠️ **本文件由 `scripts/generate-design-tokens-md.js` 自动生成，请勿手改。** 改 token 请编辑 `tokens.json`（值真源）或脚本内的命名映射后重跑。
 > **命名规范**：全文使用「短名」CSS 变量（`--primary` / `--n5` / `--suc` / `--run` / `--radius-base` …），与 `components.json` referenceCss 及 `page-template.html :root` **1:1 对齐**。旧版 `--color-*` 全名已废弃。
 > **平台**: Web / B端 / 后台管理系统（Ant Design 风格）
-> **生成日期**: 2026-08-05
+> **生成日期**: 2026-08-06
 
 ---
 
@@ -101,8 +101,8 @@
   --suc-border-hover: #95DE64; /* 成功 Success borderHover */
   --suc-border-active: #73D13D; /* 成功 Success borderActive */
   --suc-fg: #FFFFFF; /* 成功 Success fg */
-  --suc: #D9F7BE; /* 成功 Success softActive */
-  --suc: #B8B8B8; /* 成功 Success disabledFg */
+  --suc-soft-active: #D9F7BE; /* 成功 Success softActive */
+  --suc-dis-fg: #B8B8B8; /* 成功 Success disabledFg */
   --warn: #FA8C16; /* 警告 Warning bg */
   --warn-hover: #FFA940; /* 警告 Warning bgHover */
   --warn-active: #D46B08; /* 警告 Warning bgActive */
@@ -113,8 +113,8 @@
   --warn-border-hover: #FFC069; /* 警告 Warning borderHover */
   --warn-border-active: #FF9C2A; /* 警告 Warning borderActive */
   --warn-fg: #FFFFFF; /* 警告 Warning fg */
-  --warn: #FFE7BA; /* 警告 Warning softActive */
-  --warn: #B8B8B8; /* 警告 Warning disabledFg */
+  --warn-soft-active: #FFE7BA; /* 警告 Warning softActive */
+  --warn-dis-fg: #B8B8B8; /* 警告 Warning disabledFg */
   --err: #F5222D; /* 错误 Error bg */
   --err-hover: #FF4D4F; /* 错误 Error bgHover */
   --err-active: #CF1322; /* 错误 Error bgActive */
@@ -125,8 +125,8 @@
   --err-border-hover: #FF7875; /* 错误 Error borderHover */
   --err-border-active: #FF4D4F; /* 错误 Error borderActive */
   --err-fg: #FFFFFF; /* 错误 Error fg */
-  --err: #FFCCC7; /* 错误 Error softActive */
-  --err: #B8B8B8; /* 错误 Error disabledFg */
+  --err-soft-active: #FFCCC7; /* 错误 Error softActive */
+  --err-dis-fg: #B8B8B8; /* 错误 Error disabledFg */
   --err: #101010; /* 错误 Error fgDeep */
   --run: #16A34A; /* 运行/在线 Running bg */
   --run-hover: #22C55E; /* 运行/在线 Running bgHover */
@@ -138,8 +138,8 @@
   --run-fg: #FFFFFF; /* 运行/在线 Running fg */
   --run-dis: #B8E3C9; /* 运行/在线 Running bgDisabled */
   --run-border-active: #4ADE80; /* 运行/在线 Running borderActive */
-  --run: #D1FAE5; /* 运行/在线 Running softActive */
-  --run: #B8B8B8; /* 运行/在线 Running disabledFg */
+  --run-soft-active: #D1FAE5; /* 运行/在线 Running softActive */
+  --run-dis-fg: #B8B8B8; /* 运行/在线 Running disabledFg */
 }
 ```
 
@@ -220,7 +220,7 @@
 
 ```css
 :root {
-  --shadow-card: 0 1px 2px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04); /* 卡片（双层复合） */
+  --shadow-card: 0 1px 2px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04);   --shadow-data-hover: 0 1px 2px rgba(0,0,0,0.15); /* 图表数据元素悬停阴影（NEW-3 修复 2026-08-07） */ /* 卡片（双层复合） */
   --shadow-modal: 0 6px 16px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04); /* 弹窗（双层复合） */
   --shadow-float: 0 4px 8px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04); /* 悬浮块 / 按钮（双层复合） */
   --shadow-row-hover: 0 1px 2px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03); /* 表格行悬停（双层复合） */

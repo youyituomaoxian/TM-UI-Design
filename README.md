@@ -26,9 +26,9 @@
 │   ├── RULES.md / CHANGELOG.md / README.md
 │   ├── （页面类型规格已并入 RULES.md §1.1b，2026-08-06；pages/ 目录已空）
 │   ├── web规范展示_框架版_*.html   # Web 规范活体展示页（人读入口）
-│   └── design-system-showcase.html
 │   （Web 端另有 CROSS-PLATFORM-COLORS.md 跨端功能色契约）
 │
+├── CHART-SPEC.md                   # 图表规范（样式 + 结果约束，Agent 自建图表，色走 --chart-*）
 ├── output/                          # 历史示例/产物归档（不随设计系统分享）；新生成页落「用户项目」的 output/
 ├── AGENTS.md                        # codex / 通用 Agent 入口（标准生成流程）
 ├── .workbuddy/skills/tm-design-system/SKILL.md  # workbuddy 项目级 skill（可移植定位）

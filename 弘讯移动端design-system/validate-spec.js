@@ -715,6 +715,24 @@ function stripScriptTags(html) {
   // RED-06 修复：等宽空格替换（保留换行与字符偏移），而非删除 —— 否则 <script> 之后的行号全数漂移
   return html.replace(/<script[\s\S]*?<\/script>/gi, m => m.replace(/[^\n]/g, ' '));
 }
+function checkChartSeriesColor(html) {
+  const violations = [];
+  const noScript = stripScriptTags(html);
+  // 2026-08-07：系列元素 stroke/fill 用通用语义色 → 建议改 --chart-*（信息化图表系列色专用 token）
+  const re = /<(rect|circle|polyline|path|line|ellipse|polygon)[^>]*style="[^"]*(?:stroke|fill):var\(--(primary|suc|warn|err)\)/g;
+  let m;
+  while ((m = re.exec(noScript))) {
+    const tag = m[1]; const color = m[2];
+    const el = m[0];
+    if (tag === 'polyline' && /stroke-dasharray/.test(el)) continue; // 目标线豁免
+    violations.push({
+      line: 0, severity: 'MEDIUM', contract: 'chart.series.color', sel: tag,
+      msg: 'SVG 系列元素 <' + tag + '> 用通用语义色 var(--' + color + ') 作绘制色——信息化图表系列色（柱/条/线/环段/点）只能用 --chart-* token（Web 8 色 / 移动 13 色）；目标线等辅助线例外（polyline+stroke-dasharray）'
+    });
+  }
+  return violations;
+}
+
 function checkSvgPaint(html) {
   const violations = [];
   const noScript = stripScriptTags(html);
@@ -1120,6 +1138,7 @@ function run(specPath, targetPath) {
     }
     return n >= 40;
   })();
+  const chartSeriesV = checkChartSeriesColor(html);
   const overrideV = inlineClone ? [] : checkOverride(selfCss, canonicalCss);
   const gridV = inlineClone ? [] : checkGrid4px(selfCss);
   const customV = inlineClone ? [] : checkCustomProps(selfCss, canonicalCss);
@@ -1133,7 +1152,7 @@ function run(specPath, targetPath) {
   const templateSyncV = checkTemplateRootSync(html, canonicalCss);
   // HTML 结构配对门禁（2026-08-06）：div 开闭配对 + bottomnav 父链必须是 .phone
   const structV = checkHtmlStructure(html);
-  return violations.concat(rootV, tokenV, motionV, whitelistV, svgV, wcagV, gridV, overrideV, customV, chartV, chartStretchV, chartEdgeV, chartLayoutV, templateSyncV, structV);
+  return violations.concat(chartSeriesV, rootV, tokenV, motionV, whitelistV, svgV, wcagV, gridV, overrideV, customV, chartV, chartStretchV, chartEdgeV, chartLayoutV, templateSyncV, structV);
 }
 
 // ===== HTML 结构配对门禁（2026-08-06：展示页测试多 1 个 </div> 把 .phone 提前闭合 → bottomnav 被挤出手机壳，门禁此前未拦截）=====

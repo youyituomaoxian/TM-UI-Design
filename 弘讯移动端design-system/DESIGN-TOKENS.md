@@ -248,7 +248,6 @@
   --shadow-m: 0 2px 8px rgba(0,94,174,0.10), 0 0 0 1px rgba(0,94,174,0.08); /* 卡片、输入框（双层复合） */
   --shadow-l: 0 8px 24px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,94,174,0.10); /* 弹窗、悬浮层（双层复合） */
   --shadow-bottom-nav: 0 -4px 4px rgba(0,0,0,0.25), 0 0 0 1px rgba(0,94,174,0.08); /* 底部导航投影（双层复合） */
-  --shadow-data-hover: 0 1px 2px rgba(0,0,0,0.15); /* 图表数据元素悬停/点按（单阴影格式，card/row-hover 级轻弥散，禁 float/modal 级；CHART-SPEC §5） */
 }
 ```
 
@@ -260,9 +259,9 @@
 :root {
   --elev-sunken: #F5F7FB / none; /* 凹槽/分组容器底（看板列、筛选区）— 仅在 default 层使用 */
   --elev-default: #FFFFFF / none; /* 基线平面（页面、flat card 配 border） */
-  --elev-raised: #FFFFFF / 0 1px 2px rgba(0,94,174,0.10), 0 0 0 1px rgba(0,94,174,0.08); /* 可移动卡片/强调卡片（Jira 卡、hover 提升）— resting 态 */
-  --elev-overlay: #FFFFFF / 0 6px 16px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,94,174,0.10); /* 浮层（modal/dialog/dropdown/popover/tooltip）— 交互态最高层 */
-  --elev-overflow: #FFFFFF / 0 0 8px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,94,174,0.08); /* 滚动溢出（表格横向滚动、长列表边界）— border 不够明显时用 */
+  --elev-raised: #FFFFFF / 0 2px 8px rgba(0,94,174,0.10), 0 0 0 1px rgba(0,94,174,0.08); /* 可移动卡片/强调卡片（Jira 卡、hover 提升）— resting 态 */
+  --elev-overlay: #FFFFFF / 0 8px 24px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,94,174,0.10); /* 浮层（modal/dialog/dropdown/popover/tooltip）— 交互态最高层 */
+  --elev-overflow: #FFFFFF / 0 12px 32px rgba(0,0,0,0.16), 0 0 0 1px rgba(0,94,174,0.08); /* 滚动溢出（表格横向滚动、长列表边界）— border 不够明显时用 */
 }
 ```
 
@@ -432,7 +431,7 @@
 ### 7.5 搜索 Search Bar
 
 :root {
-  --search-height:      36px;
+  --search-height:      40px;
   --search-width:       343px;
   --search-inner-w:     315px;
   --search-radius:      16px; /* ⚠️ 实测 16px，pill 形 */

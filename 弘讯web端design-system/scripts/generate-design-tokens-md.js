@@ -36,10 +36,10 @@ const mot = tokens.motion;
 /** 功能色 key → 短名后缀映射（成功/警告/错误/运行 共用） */
 const FMAP = {
   bg: '', bgHover: '-hover', bgActive: '-active', bgDisabled: '-dis',
-  soft: '-soft', softHover: '-soft-hover',
+  soft: '-soft', softHover: '-soft-hover', softActive: '-soft-active',
   border: '-border', borderHover: '-border-hover', borderActive: '-border-active',
-  fg: '-fg'
-};
+  fg: '-fg',
+  disabledFg: '-dis-fg' };
 function funcGroup(label, short, obj) {
   return Object.entries(obj).map(([k, v]) => [`--${short}${FMAP[k] !== undefined ? FMAP[k] : ''}`, v, `${label} ${k}`]);
 }

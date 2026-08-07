@@ -133,7 +133,7 @@
   --shadow-l:0 0 12px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.10);
   --shadow-bottom-nav:0 -4px 4px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.08);
   /* Elevation 层级（暗态） */
-  --elev-sunken-surface:#0F172A; --elev-sunken-shadow:none;
+  --shadow-data-hover:0 1px 2px rgba(0,0,0,0.30), 0 0 0 1px rgba(255,255,255,0.06); /* 暗色补全（GAP-03/NEW-4 修复 2026-08-07）：对齐暗色 row-hover 口径（深底白丝线提升可见度） */ --elev-sunken-surface:#0F172A; --elev-sunken-shadow:none;
   --elev-default-surface:#1E293B; --elev-default-shadow:none;
   --elev-raised-surface:#243044; --elev-raised-shadow:0 1px 2px rgba(0,0,0,0.40), 0 0 0 1px rgba(255,255,255,0.04);
   --elev-overlay-surface:#1E293B; --elev-overlay-shadow:0 6px 16px rgba(0,0,0,0.50), 0 0 0 1px rgba(255,255,255,0.06);
@@ -532,7 +532,7 @@ body{background:#1b1f26;min-height:100vh;margin:0;padding:24px 0;box-sizing:bord
 .mtabs{display:flex;height:44px;align-items:flex-end;gap:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:0 16px;border-bottom:1px solid var(--n4);position:sticky;top:0;z-index:5;background:var(--n2);}
 .mtabs::-webkit-scrollbar{display:none}
 /* 右侧淡出遮罩：提示右侧还有更多选项可横向滑动（滑动后渐隐由 JS 控制或天然滚动覆盖） */
-.mtabs::after{content:"";position:sticky;right:0;top:0;bottom:0;width:28px;flex:none;pointer-events:none;background:linear-gradient(90deg,rgba(246,247,249,0),rgba(246,247,249,.92));}
+.mtabs::after{content:"";position:sticky;right:0;top:0;bottom:0;width:28px;flex:none;pointer-events:none;background:linear-gradient(90deg,rgba(246,247,249,0),rgba(246,247,249,.92));} [data-theme="dark"] .mtabs::after{background:linear-gradient(90deg,rgba(36,48,68,0),rgba(36,48,68,.92));}
 /* .mtab：直角 + 下边框透明（选中时品牌色 2.5px 指示线）；微信/淘宝/京东主流形态，垂直空间小、克制 */
 .mtab{height:44px;display:inline-flex;align-items:center;padding:0 4px;font-size:14px;font-weight:500;color:var(--n7);font-family:var(--font-cn);border-bottom:2.5px solid transparent;flex-shrink:0;white-space:nowrap;transition:color var(--motion-duration-fast) var(--motion-ease-out),border-color var(--motion-duration-fast) var(--motion-ease-out);}
 .mtab.active{color:var(--primary);border-bottom-color:var(--primary);}
@@ -670,6 +670,9 @@ body{background:#1b1f26;min-height:100vh;margin:0;padding:24px 0;box-sizing:bord
 /* 区域顺序：状态栏（透明悬浮）→ 导航栏（品牌色）→ 首焦区 Hero → 金刚区 KingKong → 胶囊区 Capsule → 瓷片区 Porcelain → 列表区 → 标签栏 TabBar */
 /* 首焦区 Hero：品牌色主视觉横幅（运营焦点/banner），含背景色块 + 标题 + 副文 + CTA */
 .m-hero{position:relative;border-radius:var(--radius-md);background:var(--primary);color:var(--n1);padding:20px 16px;overflow:hidden;display:flex;flex-direction:column;gap:8px;}
+/* 2026-08-07 暗色无障碍微调：暗色 --primary 提亮为 #3B82F6 + --n1 变深 #1E293B → 原 color:var(--n1) 仅 3.98:1（desc 小字不足）→ 文字加深 #0F172A（4.85:1 PASS）+ desc 去 opacity（12px 小字需 4.5:1） */
+[data-theme="dark"] .m-hero{color:#0F172A;}
+[data-theme="dark"] .m-hero .mh-desc{opacity:1;}
 .m-hero::after{content:"";position:absolute;right:-24px;top:-24px;width:120px;height:120px;border-radius:var(--radius-full);background:rgba(255,255,255,.08);}
 .m-hero .mh-title{font-size:18px;font-weight:500;position:relative;z-index:1;}
 .m-hero .mh-desc{font-size:12px;opacity:.85;position:relative;z-index:1;}

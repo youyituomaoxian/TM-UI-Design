@@ -41,6 +41,7 @@
    --primary-hover:oklch(56.25% 0.1643 253.76);
    --primary-active:oklch(41.20% 0.1306 253.87);
   --primary-dis-bg:#DAEAFA; --primary-dis-fg:#A0B4C0;
+  --focus-ring:color-mix(in srgb, var(--primary) 20%, transparent); /* 聚焦光环（GAP-02/08 修复 2026-08-07）：跟随品牌/暗色，统一 .input/.sel-trigger/.dp-trigger/.textarea focus 描边 */
    --brand-surface:oklch(48.19% 0.1478 252.82);
   --secondary:#0A84FF; --secondary-hover:#3DA0FF; --secondary-active:#0066CC; --secondary-disabled-bg:#0A84FF; --secondary-disabled-fg:#FFFFFF;
   --link:#1A75D2;
@@ -68,7 +69,7 @@
   --shadow-modal:0 6px 16px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
   --shadow-float:0 4px 8px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04);
   --shadow-row-hover:0 1px 2px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03);
-  --shadow-data-hover:0 1px 2px rgba(0,0,0,0.15);  /* 数据元素悬停（drop-shadow 单阴影格式；对应 card/row-hover 级轻弥散，禁 float/modal 级） */
+  --shadow-data-hover:0 1px 2px rgba(0,0,0,0.15);  
   
   --elev-sunken-surface:#F5F7FB; --elev-sunken-shadow:none;
   --elev-default-surface:#FFFFFF; --elev-default-shadow:none;
@@ -140,7 +141,7 @@
   --secondary:#38BDF8; --secondary-hover:#7DD3FC; --secondary-active:#0284C7; --secondary-disabled-bg:#3B82F6; --secondary-disabled-fg:#1E293B;
   --link:#60A5FA;
   --chart-tech-blue:#0066CC; --chart-smart-cyan:#00A3E0; --chart-data-cyan:#00C7BE; --chart-fresh-green:#00D4A1; --chart-vivid-orange:#FF9500; --chart-alert-red:#FF4D4D; --chart-wisdom-purple:#8A5CF5; --chart-modern-pink:#FF66C2;
-  --elev-sunken-surface:#0F172A; --elev-sunken-shadow:none;
+  --shadow-data-hover:0 1px 2px rgba(0,0,0,0.30), 0 0 0 1px rgba(255,255,255,0.03); /* 暗色补全（GAP-03/NEW-4 修复 2026-08-07）：对齐暗色 row-hover 口径（深底白丝线提升可见度） */ --elev-sunken-surface:#0F172A; --elev-sunken-shadow:none;
   --elev-default-surface:#1E293B; --elev-default-shadow:none;
   --elev-raised-surface:#243044; --elev-raised-shadow:0 1px 2px rgba(0,0,0,0.40), 0 0 0 1px rgba(255,255,255,0.04);
   --elev-overlay-surface:#1E293B; --elev-overlay-shadow:0 6px 16px rgba(0,0,0,0.50), 0 0 0 1px rgba(255,255,255,0.06);
@@ -171,7 +172,6 @@
 .t-link{font-family:var(--font-cn);font-size:14px;line-height:22px;font-weight:400;color:var(--primary-hover);}
 .t-mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums;}
 
-
 .btn{height:32px;padding:0 16px;border-radius:var(--radius-md);border:none;font-size:14px;font-weight:400;
   font-family:var(--font-cn);cursor:pointer;
   display:inline-flex;align-items:center;justify-content:center;gap:6px;
@@ -196,8 +196,7 @@
 .input{height:32px;width:220px;padding:0 12px;background:var(--n1);border:1px solid var(--n6);
   border-radius:var(--radius-base);font-size:14px;color:var(--n10);font-family:var(--font-cn);
   transition:border-color var(--motion-duration-fast) var(--motion-ease-out),box-shadow var(--motion-duration-fast) var(--motion-ease-out);}
-.input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-dis-bg);}
-.input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(0,94,174,.2);}
+.input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px var(--focus-ring);}
 .input:disabled{background:var(--n4);color:var(--n8);}
 .input::placeholder{color:var(--n8);}
 
@@ -207,7 +206,7 @@
   background:var(--n1);border:1px solid var(--n6);border-radius:var(--radius-base);font-size:14px;
   font-weight:400;color:var(--n10);font-family:var(--font-cn);cursor:pointer;}
 .sel-trigger:hover{border-color:var(--n7);}
-.sel-trigger:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-dis-bg);}
+.sel-trigger:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px var(--focus-ring);}
 .sel-trigger[data-disabled="true"]{background:var(--n4);color:var(--n8);cursor:not-allowed;border-color:var(--n6);}
 .sel-panel{position:absolute;top:calc(100% + 4px);left:0;min-width:100%;max-height:240px;overflow:auto;
   background:var(--elev-overlay-surface);border:1px solid var(--n6);border-radius:var(--radius-md);box-shadow:var(--elev-overlay-shadow);
@@ -225,7 +224,7 @@
 .dp-trigger{height:32px;min-width:160px;padding:0 12px;display:flex;align-items:center;justify-content:space-between;
   background:var(--n5);border:1px solid var(--n6);border-radius:var(--radius-base);font-size:14px;
   color:var(--n10);font-family:var(--font-cn);cursor:pointer;}
-.dp-trigger:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(0,94,174,.2);}
+.dp-trigger:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px var(--focus-ring);}
 .dp-panel{position:absolute;top:calc(100% + 4px);left:0;width:290px;background:var(--elev-overlay-surface);border:1px solid var(--n6);border-radius:var(--radius-md);box-shadow:var(--elev-overlay-shadow);padding:12px;z-index:50;display:none;}
 .dp.open .dp-panel{display:block;}
 
@@ -255,16 +254,16 @@
 .tag-run:hover{background:var(--run-soft-hover);} .tag-run.is-disabled{background:var(--run-disabled);color:var(--run-fg);opacity:.6;}
 
 
-.table{width:100%;border-collapse:collapse;font-size:13px;} /* 表头基准字号 13（数据 14——表头与数据区分，见 .table td） */
-.table th{height:48px;background:var(--n2);text-align:left;padding:0 16px;color:var(--n10);font-weight:500;font-family:var(--font-cn);} /* th 显式字体：全表头统一黑体 13px/500（防 font-variant 特性回退落宋体；表头与数据字号区分） */
-.table th.num{text-align:right;font-variant-numeric:normal;} /* 数值列表头右对齐（特异性覆盖 .table th 的 left）；表头为中文标题无数字，禁 tabular-nums 数字特性——否则浏览器为满足特性会回退到宋体等衬线字体（2026-08-06 用户实测：计划数/完成数标题衬线） */
-.table td{height:var(--density-row-height);padding:0 16px;border-bottom:1px solid var(--n6);color:var(--n10);font-family:var(--font-cn);font-size:14px;} /* td 显式字体：数据统一黑体 14px（与表头 13 区分；含 .num 数字防 tabular-nums 回退衬线数字） */
-.num{text-align:right;font-variant-numeric:tabular-nums;} /* 数值列对齐类（th 与 td 通用）：表格数值列右对齐 + 等宽数字，表头 th.num 与数据 td.num 必须同用（门禁 table.align） */
+.table{width:100%;border-collapse:collapse;font-size:13px;} 
+.table th{height:48px;background:var(--n2);text-align:left;padding:0 16px;color:var(--n10);font-weight:500;font-family:var(--font-cn);} 
+.table th.num{text-align:right;font-variant-numeric:normal;} 
+.table td{height:var(--density-row-height);padding:0 16px;border-bottom:1px solid var(--n6);color:var(--n10);font-family:var(--font-cn);font-size:14px;} 
+.num{text-align:right;font-variant-numeric:tabular-nums;} 
 .table tbody tr:hover{background:var(--n3);}
 
 .table-wrap{width:100%;overflow:auto;}
-.card-body.table-wrap{padding-top:var(--space-lg);} /* 表格卡：顶部留白 24 与 card-head 拉开 */
-.card-body.table-wrap:has(.pager){padding-bottom:0;} /* 有分页条：底部由 .pager margin 提供（保证分页条上下对称居中） */
+.card-body.table-wrap{padding-top:var(--space-lg);} 
+.card-body.table-wrap:has(.pager){padding-bottom:0;} 
 
 
 .tabs{display:flex;gap:4px;border-bottom:1px solid var(--n6);height:32px;align-items:flex-end;}
@@ -318,8 +317,7 @@
 .textarea{min-height:80px;width:100%;padding:12px;background:var(--n1);border:1px solid var(--n6);
   border-radius:var(--radius-base);font-size:14px;color:var(--n10);font-family:var(--font-cn);resize:vertical;
   transition:border-color var(--motion-duration-fast) var(--motion-ease-out),box-shadow var(--motion-duration-fast) var(--motion-ease-out);}
-.textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-dis-bg);}
-.textarea:focus{outline:none;border-color:var(--primary);}
+.textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px var(--focus-ring);}
 .textarea:disabled{background:var(--n4);color:var(--n8);cursor:not-allowed;}
 .textarea::placeholder{color:var(--n8);}
 
@@ -521,7 +519,6 @@
 html{height:100%;overflow:hidden;}
 body{margin:0;height:100%;overflow:hidden;font-family:var(--font-cn);font-size:14px;color:var(--n10);background:var(--n4);}
 
-
 .app{display:flex;flex-direction:column;height:100%;overflow:hidden;}
 .body{display:flex;flex:1;min-height:0;overflow:hidden;height:calc(100vh - var(--topbar-height));}
 
@@ -620,7 +617,7 @@ body{margin:0;height:100%;overflow:hidden;font-family:var(--font-cn);font-size:1
 .sidebar.collapsed{width:var(--sidebar-collapsed-width);}
 .sidebar.collapsed .group-title{display:none;}
 
-.sidebar.collapsed .tree-label{display:none;} /* 折叠态隐藏菜单文字（原 display:contents 会把文字内容提升渲染、折叠后文字仍可见——2026-08-06 修复） */
+.sidebar.collapsed .tree-label{display:none;} 
 .sidebar.collapsed .tree-text,
 .sidebar.collapsed .tree-sw{display:none;}
 .sidebar.collapsed .tree-node{justify-content:center;padding:0 !important;height:44px;}
@@ -663,7 +660,6 @@ body{margin:0;height:100%;overflow:hidden;font-family:var(--font-cn);font-size:1
 .page-title{margin:0;font-size:18px;font-weight:500;color:var(--n11);}
 .section-title{font-size:16px;font-weight:500;color:var(--n11);margin:0 0 12px;}
 
-
 .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-base);margin-bottom:var(--space-lg);}
 
 .stat-grid--5{grid-template-columns:repeat(5,1fr);}
@@ -672,11 +668,10 @@ body{margin:0;height:100%;overflow:hidden;font-family:var(--font-cn);font-size:1
 
 .grid12 .card,.stat-grid .card,.stat-grid--5 .card,.stat-grid--6 .card,.stat-grid--8 .card{margin-bottom:0;}
 
-/* 栅格卡悬停交互（2026-08-06 §8：KPI 卡/卡片 hover 浮起 2px + 阴影提升 float，动效走 token） */
+
 .stat-grid .card,.stat-grid--5 .card,.stat-grid--6 .card,.stat-grid--8 .card{transition:transform var(--motion-duration-fast) var(--motion-ease-out),box-shadow var(--motion-duration-fast) var(--motion-ease-out);}
 .stat-grid .card:hover,.stat-grid--5 .card:hover,.stat-grid--6 .card:hover,.stat-grid--8 .card:hover{transform:translateY(-2px);box-shadow:var(--shadow-float);}
 .stat-card{background:var(--bg-surface);border-radius:var(--radius-md);box-shadow:var(--shadow-card);padding:16px;}
-.stat-label{color:var(--n10);font-size:13px;margin-bottom:4px;}
 .stat-num{font-size:24px;font-weight:500;color:var(--n11);line-height:1.2;font-family:var(--font-cn);}
 .stat-sub{color:var(--n9);font-size:12px;}
 
@@ -700,6 +695,19 @@ body{margin:0;height:100%;overflow:hidden;font-family:var(--font-cn);font-size:1
 .stat-num small{font-size:14px;color:var(--n9);font-weight:400;}
 
 
+.stat-card--icon{display:flex;gap:var(--space-base);align-items:stretch;}
+
+.stat-card--icon .kpi-ico--lg{flex:none;border-radius:var(--radius-lg);}
+
+.stat-card--icon .stat-body{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:space-between;}
+
+.stat-card--icon .stat-num{line-height:1.15;}
+
+.stat-card--icon .stat-foot{display:flex;align-items:center;justify-content:space-between;gap:var(--space-sm);}
+
+.stat-card--icon .stat-foot .stat-sub{line-height:1.2;}
+
+.stat-card--icon .stat-delta{font-size:12px;font-weight:500;line-height:1.2;white-space:nowrap;}
 .stat-card--ring{display:flex;gap:16px;align-items:center;}
 .stat-card--ring .ring{position:relative;width:64px;height:64px;flex:none;}
 .stat-card--ring .ring svg{width:64px;height:64px;display:block;transform:rotate(-90deg);}
@@ -718,24 +726,16 @@ body{margin:0;height:100%;overflow:hidden;font-family:var(--font-cn);font-size:1
 .ring-fg--secondary{stroke:var(--secondary);}
 
 
-/* KPI 图标卡变体（2026-08-06 登记：左浅底图标 + 右上大数字 + 底部行[标题左/变化量右]贴图标底部；图标复用 kpi-ico--lg 体系，高圆角 16 方） */
-.stat-card--icon{display:flex;gap:var(--space-base);align-items:stretch;}
-.stat-card--icon .kpi-ico--lg{flex:none;border-radius:var(--radius-lg);}
-.stat-card--icon .stat-body{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:space-between;}
-.stat-card--icon .stat-num{line-height:1.15;}
-.stat-card--icon .stat-foot{display:flex;align-items:center;justify-content:space-between;gap:var(--space-sm);}
-.stat-card--icon .stat-foot .stat-sub{line-height:1.2;}
-.stat-card--icon .stat-delta{font-size:12px;font-weight:500;line-height:1.2;white-space:nowrap;}
+
+
 .stat-delta--up{color:var(--run);}
 .stat-delta--down{color:var(--err);}
-/* 悬停交互（2026-08-06：交互系统 hover 反馈——卡片浮起 2px + 阴影提升至 float 层；动效走 token） */
-.card:has(.stat-card--icon),
+
 .card:has(.stat-card--ring){transition:transform var(--motion-duration-fast) var(--motion-ease-out), box-shadow var(--motion-duration-fast) var(--motion-ease-out);}
-.card:has(.stat-card--icon):hover,
 .card:has(.stat-card--ring):hover{transform:translateY(-2px);box-shadow:var(--shadow-float);}
-/* 表单行布局（2026-08-06 沉淀：页面级覆写升级为真源组件；label 自造放页面） */
+
 .form-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
-.form-actions{display:flex;justify-content:flex-end;gap:var(--space-sm);margin-top:var(--space-base);} /* 表单按钮组容器（2026-08-06 真源化，替代页面自造） */
+.form-actions{display:flex;justify-content:flex-end;gap:var(--space-sm);margin-top:var(--space-base);} 
 .form-row .input,.form-row .sel{flex:1;}
 
 
@@ -776,7 +776,7 @@ body{margin:0;height:100%;overflow:hidden;font-family:var(--font-cn);font-size:1
 
 .chart-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;}
 
-/* §9 图表文字 HTML 层（SVG none 拉伸区禁放文字——会变形；轴标签/数值/图例全 HTML + .t-* 语义类） */
+
 .chart-x-labels{display:flex;justify-content:space-between;margin-top:4px;color:var(--n8);}
 .chart-x-labels span{flex:1;text-align:center;}
 .chart-v{position:absolute;transform:translateX(-50%);color:var(--n11);font-family:var(--font-mono);}
@@ -785,7 +785,7 @@ body{margin:0;height:100%;overflow:hidden;font-family:var(--font-cn);font-size:1
 .chart-ring-svg{display:block;margin:0 auto;}
 .chart-ring-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
 
-/* §9 环状图：环居中；中心常显主段数值（70% 设备利用率），悬停环段时切换为对应段数值（运行→70% / 待机→30%），离开恢复常显 */
+
 .chart-box--ring{display:flex;align-items:center;justify-content:center;}
 .ring-seg--a,.ring-seg--b{cursor:pointer;}
 .chart-ring-default{opacity:1;transition:opacity var(--motion-duration-fast) var(--motion-ease-out);}
@@ -794,7 +794,7 @@ body{margin:0;height:100%;overflow:hidden;font-family:var(--font-cn);font-size:1
 .chart-box:has(.ring-seg--b:hover) .chart-ring-tip--b{opacity:1;}
 .chart-box:has(.ring-seg--a:hover) .chart-ring-default,
 .chart-box:has(.ring-seg--b:hover) .chart-ring-default{opacity:0;}
-/* §9 图表卡禁拉伸空白（2026-08-06 拍板）：card--fill 列拉伸时由图表区弹性吸收——chart-box flex 增长（保底 320），不允许底部留白 */
+
 .card:has(.chart-box) .card-body{display:flex;flex-direction:column;}
 .card:has(.chart-box) .chart-box{flex:1;min-height:320px;height:auto;}
 .chart-legend--list{flex-direction:column;gap:12px;width:100%;}
@@ -804,7 +804,7 @@ body{margin:0;height:100%;overflow:hidden;font-family:var(--font-cn);font-size:1
 .legend-line--dash{border-top-style:dashed;}
 .legend-val{margin-left:auto;font-family:var(--font-mono);font-weight:500;color:var(--n11);}
 
-/* §9 图表默认交互（2026-08-06：图形进入动画 + 图表卡悬停浮起——Agent 生成图表时给图形元素挂对应类） */
+
 .chart-bar{transform-box:fill-box;transform-origin:bottom;animation:chartBarGrow var(--motion-duration-normal) var(--motion-ease-out) backwards;}
 .chart-hbar{transform-box:fill-box;transform-origin:left;animation:chartHbarGrow var(--motion-duration-normal) var(--motion-ease-out) backwards;}
 .chart-line{stroke-dasharray:2000;stroke-dashoffset:2000;animation:chartLineGrow var(--motion-duration-slow) var(--motion-ease-out) forwards;}
@@ -813,7 +813,7 @@ body{margin:0;height:100%;overflow:hidden;font-family:var(--font-cn);font-size:1
 @keyframes chartHbarGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 @keyframes chartLineGrow{to{stroke-dashoffset:0}}
 @keyframes chartRingIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
-/* §9 图形元素悬停反馈（2026-08-06 拍板：数据 hover = 阴影 + 微动画 + 颜色强调 三合一；无整卡 hover） */
+
 .chart-dot{transform-box:fill-box;transform-origin:center;opacity:0;animation:chartDotIn var(--motion-duration-fast) var(--motion-ease-out) forwards;animation-delay:var(--motion-duration-slow);transition:transform var(--motion-duration-fast) var(--motion-ease-out),filter var(--motion-duration-fast) var(--motion-ease-out);}
 .chart-dot:hover{transform:scale(1.7);filter:brightness(1.4) saturate(1.3) drop-shadow(var(--shadow-data-hover));cursor:pointer;}
 @keyframes chartDotIn{to{opacity:1}}

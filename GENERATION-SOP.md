@@ -128,20 +128,18 @@ cd packages/mobile-ui && npm run build:weapp   # 验证编译 exit 0
 
 > **图表规范唯一真源 = 仓库根 `CHART-SPEC.md`**（Web RULES §9 / 移动 RULES §9.7 为其内联入口）。本节约为执行要点，细节冲突以 CHART-SPEC 为准。
 
-**主路线（方案 C 拍板）**：信息化图表**不设组件**，容器原语 + 原子自建（SVG）。**canvas 图表库（ECharts 等）仅限库级复杂图表**（3D/地图/海量点），且仍须挂容器原语。
+**主路线（方案 C 拍板 + 2026-08-07 重构）**：信息化图表**不设组件、不锁实现**——尺寸/数据量/坐标 Agent 按容器自适应自选（HTML flex 柱 / SVG polyline+HTML 点 / 定尺寸方形 SVG 环）。**canvas 图表库（ECharts 等）仅限库级复杂图表**（3D/地图/海量点），且仍须挂容器原语。
 
-- **容器原语（必须用，防留白失控）**：外层 `.chart-box`（Web 默认 `height:320px`、4px 网格可覆盖；移动 `height=viewBoxH`，1:1 定尺寸）；canvas 本体加 `.chart-canvas`（`absolute inset:0` 占满）
+- **容器原语（必须用，防留白失控）**：外层 `.chart-box`（**高度自定**——内容撑开或固定均可，不再锁 320px；弹性吸收用 `.card:has(.chart-box) .chart-box{flex:1;min-height:320px}`）；canvas 本体加 `.chart-canvas`（`absolute inset:0` 占满）
   ```html
   <div class="chart-box"><canvas class="chart-canvas" id="myChart"></canvas></div>
   ```
-- **Web viewBox**：折线/柱状/横向柱状 `0 0 400 160`（2.5:1）+ `preserveAspectRatio="none"` + `.chart-svg--fill`（`width/height:100%` + `vector-effect:non-scaling-stroke`，stroke 不随拉伸变形），**禁 `meet`**（等比缩放撑不满容器，门禁 `chart.svg.fill` MEDIUM）
-- **Web 末端边距（门禁 `chart.svg.viewbox-edge` MEDIUM）**：fill+none 拉伸态下，所有元素（polyline/path 末端、X 轴标签锚点 x、圆点 cx、网格线 x2）**x ≤ viewBox 宽 − 20**，网格线同步收窄；**数据区左右对称（间距系统铁律）**——左右边距一致，禁一侧贴边一侧留大。见 CHART-SPEC §3
-- **移动 viewBox**：**禁 `preserveAspectRatio="none"`**（定尺寸 1:1，门禁 `chart.svg.stretch` MEDIUM）；宽 = 容器内容宽、高 = `viewBoxH ≥ 最高数据元素高 + 8 + 16 + 8`（纵向三段式：绘图区 + 标签保护区 ≥8px + 标签区 ≥16px）；柱底/折线最低点 `y+height ≤ viewBoxH − 23`；X 轴标签基线 `y = viewBoxH − 6`；**chart-box 高度 = viewBoxH**。见 CHART-SPEC §6 / RULES §9.7
-- **文字层铁律**：SVG 内禁放文字（none 拉伸变形）——轴标签/数值/图例一律 HTML 叠层：`.chart-x-labels`（x 轴标签行）、`.chart-v`（柱顶/点旁数值）、`.chart-hl/.chart-hr`（横向柱状左右文字）、`.chart-ring-center`（环中心）；字号走 `.t-caption/.t-overline`（Web）/ `.m-text-*`（移动）
+- **实现放开（2026-08-07）**：柱状/横向柱用 HTML flex（高度/宽度百分比）或 SVG 百分比；折线用 SVG `<polyline>`（`viewBox="0 0 100 100"` + `preserveAspectRatio="none"` + `non-scaling-stroke`）+ HTML 点（同一百分比坐标系）；环形/圆**定尺寸方形 SVG（禁 none，圆变椭圆）**。**SVG 拉伸区禁放文字**——轴标签/数值/图例一律 HTML 叠层（`.chart-x-labels` / `.chart-v` / `.chart-hl/.chart-hr` / `.chart-ring-center`）
+- **结果约束（必达，见 CHART-SPEC §2）**：柱底对齐基线；x 轴标签独立行不叠柱（柱多跳显）；标签不溢出容器（底部留白 ≥20px）；折线点严格落线；环形中心文字不变形；多系列配图例；**颜色只用 `--chart-*`**；图表不溢出卡片。示范 = `docs/examples/web-图表自适应测试.html`
 - **交互与动画（默认即带）**：图形挂动画类 `.chart-bar`（柱升起）/`.chart-hbar`（条生长）/`.chart-line`（描边生长）/`.chart-ring-anim`（环放大）/`.chart-dot`（点延迟淡入）；Web hover 数据元素本身（三合一，阴影 `--shadow-data-hover` 轻弥散）；移动点按反馈（active 提亮）；时长全走 `--motion-duration-*`
 - **图例**：`.chart-legend` / `.legend-item` / `.legend-dot`（圆点）/ `.legend-line`（线段，可 `--dash`）
 - **卡片内图表**：卡片一律 `.card--fill`（等高收底）；图表/表格容器（`.donut-wrap` / `.chart-box` / `.table-wrap`）`flex:1` 弹性吸收拉伸空白（Web，禁图例下方留白）
-- **禁止**：自造 chart 类；canvas 挂裸 `<div>`（门禁 MEDIUM）；移动端 none 拉伸；SVG 裸 hex
+- **禁止**：自造 chart 类；canvas 挂裸 `<div>`（门禁 MEDIUM）；环形图 none 拉伸；SVG 裸 hex；**系列色用通用语义色（--primary/--suc/--warn/--err，门禁 `chart.series.color` MED）**
 
 #### 图表色板契约（两端 token，CHART-SPEC §4）
 
@@ -176,10 +174,10 @@ cd <端目录> && "$NODE" validate-spec.js <用户项目路径>/output/<产出�
 - [ ] 顶栏只含品牌区/工具区（首页/管理员/修改密码/退出登录/全屏），无模块菜单/tab
 - [ ] 模块导航只出现在左侧 `.tree`，无平级模块被挂成某中心子项
 - [ ] 无 `.topbar-link` 类（已废弃，门禁 HIGH）
-- [ ] 无 inline `style="height:..px / margin-top:..px / width:..px"` 裸尺寸（chart-box 统一 320px）
+- [ ] 无 inline `style="height:..px / margin-top:..px / width:..px"` 裸尺寸（图表容器高度自定，禁内联裸尺寸）
 - [ ] 带 `.btn-ico` 的按钮文字一律 `.btn-label` 包裹（门禁 `btn.label.required` HIGH，RULES §3.7）
 - [ ] KPI 卡数 ≠ 4 时 `.stat-grid--N`（N=实际卡数；门禁 `stat-grid.count.match` HIGH，RULES §3.7）
-- [ ] 图表按 CHART-SPEC：Web `.chart-svg--fill` + 禁 `meet`（门禁 `chart.svg.fill`）+ 内容 x ≤ 宽−20（门禁 `chart.svg.viewbox-edge`）+ 数据区左右对称；移动端禁 `none`（门禁 `chart.svg.stretch`）+ 纵向三段式（§9.7）；文字全 HTML 层、动画类挂图形、SVG 禁裸 hex
+- [ ] 图表按 CHART-SPEC §2 结果约束：柱底对齐基线 + x 标签独立行不叠柱（柱多跳显）+ 标签不溢出容器 + 折线点严格落线 + 环形中心文字不变形 + 多系列配图例 + **颜色只用 `--chart-*`（禁通用语义色，门禁 `chart.series.color`）** + 不溢出卡片；环形禁 none；文字全 HTML 层、动画类挂图形、SVG 禁裸 hex（示范 `docs/examples/web-图表自适应测试.html`）
 - [ ] 栅格 `.grid12 > .col-N` 内卡片一律 `.card--fill`（门禁 `card.fill-in-grid` MEDIUM，RULES §4.4）；col-N 弹性容器自动分配高度
 - [ ] 动态渲染表格声明 `minRow` 占位（数据不足补空行撑高，门禁 `layout.table-minrow` MEDIUM，RULES §4.4）
 - [ ] **动效与交互已自动添加**（RULES §8 / 移动 §10.6）：按钮 hover/按压、卡片浮起、行高亮、弹窗/Toast 过渡、区块进入动画——时长全走 `var(--motion-duration-*)`（checkMotion 门禁），交互 JS 随页生成（toast/折叠/Tab/弹窗/返回栈）

@@ -1619,6 +1619,24 @@ function checkInlineDimensions(html) {
 // 的合法 hex 展示，如 page-template 色板卡）。先剥 <script> 块（防 ECharts 配置串误报）。
 // 3 位 hex 经 toPaletteKey 扩成 6 位（#0AF→#00AAFF）后判 PALETTE.has()；
 // currentColor/none/transparent/url(#...) 天然豁免（非 hex 不匹配）。
+function checkChartSeriesColor(html) {
+  const violations = [];
+  const noScript = stripScriptTags(html);
+  // 2026-08-07：系列元素 stroke/fill 用通用语义色 → 建议改 --chart-*（信息化图表系列色专用 token）
+  const re = /<(rect|circle|polyline|path|line|ellipse|polygon)[^>]*style="[^"]*(?:stroke|fill):var\(--(primary|suc|warn|err)\)/g;
+  let m;
+  while ((m = re.exec(noScript))) {
+    const tag = m[1]; const color = m[2];
+    const el = m[0];
+    if (tag === 'polyline' && /stroke-dasharray/.test(el)) continue; // 目标线豁免
+    violations.push({
+      line: 0, severity: 'MEDIUM', contract: 'chart.series.color', sel: tag,
+      msg: 'SVG 系列元素 <' + tag + '> 用通用语义色 var(--' + color + ') 作绘制色——信息化图表系列色（柱/条/线/环段/点）只能用 --chart-* token（Web 8 色 / 移动 13 色）；目标线等辅助线例外（polyline+stroke-dasharray）'
+    });
+  }
+  return violations;
+}
+
 function checkSvgPaint(html) {
   const violations = [];
   const noScript = stripScriptTags(html);
@@ -1663,6 +1681,22 @@ function checkKpiSimple(html) {
           line: 0, src: 'html', severity: 'HIGH', contract: 'kpi.simple.forbidden', sel: 'stat-grid',
           msg: '简约版 KPI 卡（stat-num/stat-sub 独立卡，无 kpi-ico 图标块且无 ring 圆环）——2026-08-06 用户拍板 KPI 两版：标准版 stat-card--icon（kpi-ico + stat-num + stat-foot(stat-sub + stat-delta)）+ 环形版 stat-card--ring（需时使用），简约版已删除'
         });
+      }
+      // 2026-08-07 用户拍板：KPI 图标卡「标题在上/数值居中」排列（stat-label 首行 + stat-num 居中）永远禁止
+      const isIconCard = cardSeg.includes('stat-card--icon') || cardSeg.includes('kpi-ico');
+      if (isIconCard) {
+        const labelI = cardSeg.indexOf('stat-label');
+        const numI = cardSeg.indexOf('stat-num');
+        if (labelI > -1 && numI > -1 && labelI < numI) {
+          // 排除环形卡 ring-info 内合法 stat-label（cardSeg 可能延伸到相邻 ring 卡）：label 前 300 字符含 ring-info/stat-card--ring 则忽略
+          const before = cardSeg.slice(Math.max(0, labelI - 300), labelI);
+          if (!before.includes('ring-info') && !before.includes('stat-card--ring')) {
+            violations.push({
+              line: 0, src: 'html', severity: 'HIGH', contract: 'kpi.label.top.forbidden', sel: 'stat-grid',
+              msg: 'KPI 图标卡禁止「标题在上/数值居中」排列（stat-label 出现在 stat-num 之前）——2026-08-07 用户拍板：图标卡唯一排列 = 数值大字在上（stat-num）+ 底部行（stat-sub 标题左 + stat-delta 趋势右）；stat-label 仅限环形卡 ring-info 使用'
+            });
+          }
+        }
       }
     }
   }
@@ -1859,12 +1893,13 @@ function run(specPath, targetPath) {
     }
     return n >= 40;
   })();
+  const chartSeriesV = checkChartSeriesColor(html);
   const overrideV = inlineClone ? [] : checkOverride(selfCss, canonicalCss);
   const gridV = inlineClone ? [] : checkGrid4px(selfCss);
   const customV = inlineClone ? [] : checkCustomProps(selfCss, canonicalCss);
   // KPI 仅两版门禁（2026-08-06 定稿）：简约版（stat-num/stat-sub 独立卡、无 kpi-ico / stat-card--icon / stat-card--ring）已删除，Agent 生成简约版即 HIGH 拦截
   const kpiV = checkKpiSimple(html);
-  return violations.concat(rootV, surfaceV, iconV, whitelistV, tokenV, motionV, chartV, svgV, topbarV, dimV, btnLabelV, statGridV, chartFillV, chartLayoutV, chartValueV, chartBaselineV, templateSyncV, moduleSpacingV, tableMinRowV, tableAlignV, tablePagerV, cardFillV, mobileV, webAesV, wcagV, gridV, overrideV, customV, kpiV, svgVarV);
+  return violations.concat(chartSeriesV, rootV, surfaceV, iconV, whitelistV, tokenV, motionV, chartV, svgV, topbarV, dimV, btnLabelV, statGridV, chartFillV, chartLayoutV, chartValueV, chartBaselineV, templateSyncV, moduleSpacingV, tableMinRowV, tableAlignV, tablePagerV, cardFillV, mobileV, webAesV, wcagV, gridV, overrideV, customV, kpiV, svgVarV);
 }
 
 // ===== 柱状图柱顶数值门禁（2026-08-06：示例页柱状图缺 .chart-v → 柱子无数据标签，门禁此前未查）=====

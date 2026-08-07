@@ -143,7 +143,7 @@ START: 我要做什么类型的页面？
 - 禁在 Modal 内用移动端组件；所有尺寸 / 颜色走 Web Token。
 
 #### 看板 / 数据大屏
-- KPI 卡用 `components.json` 登记的两版：标准版 `stat-card--icon`（图标卡 · 回滚点布局）+ 环形版 `stat-card--ring`（需时使用）；禁自造其他版本（简约 stat-num+stat-sub 独立卡被门禁 kpi.simple.forbidden HIGH 拦截）
+- KPI 卡用 `components.json` 登记的两版：标准版 `stat-card--icon`（图标卡 · 回滚点布局）+ 环形版 `stat-card--ring`（需时使用）；禁自造其他版本（简约 stat-num+stat-sub 独立卡被门禁 kpi.simple.forbidden HIGH 拦截）；KPI 图标卡唯一排列 = 数值大字在上 + 底部行(标题左/趋势右)，**禁止「标题在上/数值居中」排列**（stat-label 首行 + stat-num 居中——门禁 kpi.label.top.forbidden HIGH 拦截，stat-label 仅限环形卡 ring-info）
 - 图表按 §9 自建范式 + CHART-SPEC（原子 SVG，色走 `--chart-*` token，禁裸 hex）。
 
 ### 1.2 组件粒度选型
@@ -399,7 +399,7 @@ START: 我要做什么类型的页面？
 |---|---|---|---|
 | `btn.label.required`（HIGH） | 带图标的按钮 | `<button class="btn btn-secondary"><svg class="btn-ico">…</svg>刷新数据</button>` —— 文字裸放、无 `.btn-label`，容器收窄时中文逐字断行（"刷/新/数/据"竖排截断） | `<button class="btn btn-secondary"><svg class="btn-ico">…</svg><span class="btn-label">刷新数据</span></button>` |
 | `stat-grid.count.match`（HIGH） | 栅格卡片容器 | `<div class="stat-grid">` 内放 5 张卡 —— 默认 4 列，第 5 张掉第 2 行只占 1/4 宽 | 卡数=4 → `class="stat-grid"`；卡数=5/6/8 → `class="stat-grid stat-grid--5/6/8"`；卡数≠N 直接违规 |
-| `chart.svg.fill`（MEDIUM） | 图表 SVG | `<svg class="chart-svg" viewBox="0 0 400 160" preserveAspectRatio="xMidYMid meet">` —— 等比缩放撑不满容器，上下/左右留白 | `<svg class="chart-svg--fill" viewBox="…" preserveAspectRatio="none">`（或按容器比例设 viewBox）；polyline/path 坐标须拉满 viewBox 边界 |
+| `chart.svg.fill`（MEDIUM） | 图表 SVG | `<svg class="chart-svg" viewBox="…" preserveAspectRatio="xMidYMid meet">` —— 等比缩放撑不满容器，上下/左右留白 | `<svg class="chart-svg--fill" viewBox="…" preserveAspectRatio="none">`（或按容器比例设 viewBox）；polyline/path 坐标须拉满 viewBox 边界 |
 
 **配套约定**
 1. 按钮内图标一律用 `.btn-ico`（规范 16×16），文本一律 `.btn-label` 包裹（`white-space:nowrap` 兜底）；**禁止**页面 `<style>` 自造 `.btn-ico svg{width:14px}` 覆盖规范尺寸。
@@ -757,67 +757,45 @@ TopBar         height=72   FIXED   主色底 白字
 
 ---
 
-## 9. 图表自建范式（2026-08-06 方案 C 拍板：信息化图表不设组件，Agent 按原子自建）⚠️ 必读
+## 9. 图表自建范式（2026-08-07 重构：「样式 + 结果约束」——实现放开，结果锁死）⚠️ 必读
 
-> **完整真源 = 仓库根 `CHART-SPEC.md`**（含通用决策流程 / 两端差异 / 门禁口径 / 扩展类型指引）。本节约为 Web 端内联摘要，冲突以 CHART-SPEC 为准。
+> **完整真源 = 仓库根 CHART-SPEC.md**（含通用决策流程 / 结果约束清单 / 两端差异 / 门禁口径 / 扩展类型指引 / 附录 A 点按脚本）。本节约为 Web 端内联摘要，冲突以 CHART-SPEC 为准。
+> **实物示范 = 展示页 #chart-demo section + docs/examples/web-图表自适应测试.html（2026-08-07 多类型×多尺寸自适应，识图全过）**
 
-> **背景**：折线图组件化后 Agent 反复出现拉伸/压缩/文字不全/文字折叠/撑不满/变形——SVG 复杂度在坐标系与文字布局，组件封装不了（结构性必然）。拍板**方案 C**：**保留容器原语，图表内部 Agent 按原子自建**。示范即规范：4 种范式见展示页 `#chart-demo` section。
+**① 实现放开（2026-08-07 拍板，替代固定 viewBox/尺寸/数据量）**
 
-**① 容器原语（必须用，防跳动 + 门禁）**
+- 图表**不设组件、不锁实现**：尺寸、数据量、坐标方式（HTML flex 柱 / SVG polyline + HTML 点 / 定尺寸方形 SVG 环）**Agent 按容器自适应自选**——不再固定 viewBox 400×160、chart-box 320px、折线 ≥8 点、柱状 12 根等实现级断言。
+- 环形/圆形图**禁 preserveAspectRatio="none"**（圆变椭圆）——定尺寸方形 SVG 居中，中心文字 HTML 绝对定位。
+- SVG 拉伸区**禁放文字**——轴标签 / 数值 / 图例一律 HTML 叠层；SVG 属性 stroke/fill 一律 style="var(--chart-*)"（禁裸 hex：svg.paint.non-palette HIGH；禁未定义 var：token.svg-var HIGH）。
 
-- 图表 SVG 外层挂 `.chart-box`（`position:relative;height:320px`）——门禁 `chart.container.missing` / `checkChartBox`
-- 折线/柱状/横向柱状 SVG 加 `class="chart-svg--fill"`（100% 填充 + `vector-effect:non-scaling-stroke` 防线条拉伸变形）
+**② 结果约束清单（8 条，缺一不可）**
 
-**② 四种范式（viewBox + preserveAspectRatio）**
+1. **柱底对齐基线**：任何柱数/容器宽度下柱底贴基线（flex 容器 + 基线元素）。
+2. **x 轴标签不重叠、不叠柱**：标签独立行（flex 与柱同列宽对齐）——禁止标签作为柱子子级定位（实测叠柱底）；柱多自动跳显。
+3. **标签不溢出容器**：图表底部为 x 轴标签留白区（基线下方 ≥20px），x 标签与柱顶数值均不得负定位溢出容器。
+4. **折线数据点严格落线**：polyline 与 HTML 点共用同一百分比坐标系（points 坐标 ÷100 = dot left/top）；点固定尺寸正圆（non-scaling-stroke 线宽恒定）。
+5. **环形图中心文字不变形**：HTML 绝对定位居中，SVG 只画环。
+6. **多系列必配图例**：双系列柱/折线/多段环均有图例；单系列可省。
+7. **颜色只用信息化图表色 --chart-***（见 ③）。
+8. **图表不溢出卡片**：图表容器高度自定，禁止内容溢出卡片。
 
-| 图型 | viewBox | preserveAspectRatio | 防变形要点 |
-|---|---|---|---|
-| 折线图 | `0 0 400 160`（2.5:1）| `none` + `.chart-svg--fill` | 比例接近内容区（约 800×320）拉伸幅度极小；non-scaling-stroke 保线条 |
-| 柱状图 | `0 0 400 160` | `none` + `.chart-svg--fill` | 同上；柱顶数值留 ≥6px |
-| 横向柱状图 | `0 0 400 160` | `none` + `.chart-svg--fill` | 文字横向空间足，条高 ≥12px |
-| 环状图 | `0 0 260 260` | **不设**（定尺寸 svg 260×260 居中）| **禁用 none**（圆会变椭圆）；正方形容器或定尺寸居中 |
+**③ 色彩契约（2026-08-07 强化：系列色只能用 --chart-*）**
 
-**③ 防变形/防裁切铁律**
+- **系列数据色（柱/条/线/环段/点）一律 --chart-* token**（Web 8 色：tech-blue/data-cyan/smart-cyan/fresh-green/vivid-orange/alert-red/wisdom-purple/modern-pink）——**禁通用语义色（--primary/--suc/--warn/--err）做系列色**（门禁 chart.series.color MED 建议）；**禁裸 hex**（HIGH）。
+- **辅助线例外**：网格线用中性 --n4 级、目标线可用 --warn（虚线辅助语义）——仅限非数据系列元素。
+- 同页 ≤5 个系列色；**同系列数据色统一**（禁最高值强调色）；分组柱状图两系列用两色区分（如 tech-blue + data-cyan）。
+- 图例用 .chart-legend / .legend-item + .legend-dot（圆点）/ .legend-line（线段，可 --dash）。
 
-- **SVG none 拉伸区禁放文字**（2026-08-06 修正：SVG 内 `<text>` 在 `preserveAspectRatio="none"` 下会被横向/纵向拉伸变形，non-scaling-stroke 只保线条保不住文字）——**轴标签 / 数值 / 图例一律 HTML 叠层**：`.chart-x-labels`（x 轴标签行）+ `.chart-v`（柱顶数值，left/top 百分比绝对定位）+ `.chart-hl/.chart-hr`（横向柱状图左右文字），字号走 `.t-caption / .t-overline` 语义类
-- **内容 x ≤ viewBox 宽 − 20**（门禁 `chart.svg.viewbox-edge`：fill+none 拉伸态内部元素 x 贴边会被 padding 裁切）——网格线也收至宽−20
-- 文字坐标留边：右/下边界 ≥20px；轴标签距底边 ≥8px；**最下网格线与轴标签纵向间距 ≥20px（防文字压坐标线，实测 6px 会重叠）**
-- 环状图**禁用 preserveAspectRatio="none"**（圆变椭圆）——用定尺寸 svg（width/height=viewBox 值）居中，中心数值 HTML 绝对定位（`.chart-ring-center`）
-- 横向柱状图**标签贴条**：条起点 x=40（viewBox 宽 10%），左侧标签左对齐容器、与条起点间距 ≤8px，禁止大块标签区留白（实测 22.5% 标签区过宽）
-- **禁衬线字体**：中文文字一律 `--font-cn`（黑体系）——**中文禁挂 `--font-mono`**（等宽字体无中文字形，会回退到宋体衬线，实测横向柱状图标签）；数字/百分比可用 `--font-mono`
-- **数据标注跟随图形**：横向柱状图数值 `left = (条起点+条宽)/viewBox宽 × 100% + 2%`（贴各自柱末端），不固定右缘
-- **折线图数据密度**：≥8 个数据点（演示 12 个月），网格横线 ≥4 条（演示 5 条）——数据稀疏/网格过疏视为不达标
-- **柱底对齐基线**：柱状图柱底必须落在最下网格线（基线）上（演示 y=145），底部留空 ≤15px——柱底悬空无基线 = 漂移（实测 30px 底部空白出现视觉漂移）
-- **折线图网格占满**：最下网格线 y=150（viewBox 160，底部留 10 单位）——135 会留下 50px 屏幕空白，卡片显得空
-- **图表左右对称（间距系统铁律）**：数据区左右边距必须一致——数据 x 起点/终点对称（演示左 25 右 25）、网格线 x1/x2 对称（演示左 20 右 20，x2 ≤ 宽−20 门禁内）；**禁一侧贴边一侧留大**（实测 x 30-360 → 左 30 右 40 不对称）
-- **纵向占满**：数据 y 范围中心对齐网格中心（网格 20-150 中心 85 → 数据 30-140 中心 85，上下留白对称各 10 单位）；数据集中中间一条带 = 不达标
-- **禁图表卡拉伸空白**：card--fill 列拉伸时（同行卡更高）由图表区**弹性吸收**（真源：`.card:has(.chart-box) .chart-box{flex:1;min-height:320px}`）——不允许图例下方出现空白，也**不加摘要行填充**（2026-08-06 拍板：图表卡不强制加摘要）
-- 数值/轴标签/网格用原子类 `.chart-axis` / `.chart-value` / `.chart-grid` / `.chart-caption`（字号/色走 token），禁裸字号与裸 hex
+**④ 默认交互与动画（2026-08-06，所有信息化图表默认即带）**
 
-**④ 色彩**
+- 图形动画类（真源默认，Agent 给图形元素挂类即得）：柱 .chart-bar（底部升起）、横向条 .chart-hbar（左侧生长）、折线 .chart-line（描边生长）、环 .chart-ring-anim（放大淡入）——时长全走 motion token。
+- **数据点 .chart-dot 延迟出现**（animation-delay: var(--motion-duration-slow)，线画完才淡入）——防「点漂移」错位。
+- **图形元素悬停（hover 目标是数据元素本身，非整卡；表现 = 阴影 + 微动画 + 颜色强调 三合一）**：柱/条上浮 2px + brightness(1.12) + drop-shadow；圆点放大 1.7×；折线加粗 3.5；环段微膨胀 1.04×——均走 fast token。**禁整卡 hover 浮起**；柱/条进入动画 fill-mode 须用 backwards（both 会锁死 transform 挡住 hover 上浮）。
+- **数据悬停阴影层级**：一律 drop-shadow(var(--shadow-data-hover))（单阴影 token，card/row-hover 级轻弥散）——**禁 float/modal 级**。暗色 --shadow-data-hover 已补（2026-08-07）。
+- 环状图分段数据：中心常显主段数值，悬停环段切换对应段数值（Web）；移动端点按段（附录 A 脚本）。
 
-- 图表色一律 `--chart-*` token（8 色：tech-blue/data-cyan/smart-cyan/fresh-green/vivid-orange/alert-red/wisdom-purple/modern-pink）；功能强调用 primary/warn/err；**禁裸 hex**（门禁 `svg.paint.non-palette` HIGH）
-- SVG 内 `stroke=`/`fill=`/`stop-color=` 一律写 `style="stroke:var(--chart-*)"`（SVG 属性支持 var()，比裸属性稳）
+**⑤ 门禁口径**
 
-**⑤ 图例与标注**
+- 容器缺失（chart.container.missing）→ HIGH；SVG 裸 hex（svg.paint.non-palette）→ HIGH；未定义 var（token.svg-var）→ HIGH；**系列色用通用语义色（chart.series.color）→ MED**（建议 --chart-*，目标线 polyline+dasharray 豁免）；meet 撑不满（chart.svg.fill）→ MED；内容贴边（chart.svg.viewbox-edge）→ MED；SVG 内文字（chart.text.inline）→ MED；数据区左右对称（chart.symmetry）→ MED；柱底对齐基线（chart.baseline）→ MED。
 
-- 图例用 `.chart-legend` / `.legend-item` + `.legend-dot`（圆点）/ `.legend-line`（线段，可 `--dash`）
-- 环状图中心数值用 `.stat-num`（真源 24px）绝对定位
 
-**⑥ 默认交互与动画（2026-08-06，所有信息化图表默认即带）**
-
-- 图形动画类（真源默认，Agent 给图形元素挂类即得）：柱 `.chart-bar`（底部升起）、横向条 `.chart-hbar`（左侧生长）、折线 `.chart-line`（描边生长）、环 `.chart-ring-anim`（放大淡入）——时长全走 motion token
-- **数据点 `.chart-dot` 延迟出现**（`animation-delay: var(--motion-duration-slow)`，线画完才淡入）——防「点漂移」：圆点坐标 = 折线顶点，若与线同时出现会在描边动画中呈现「点不在线上」的错位
-- **图形元素悬停（hover 目标是数据元素本身，非整卡；表现 = 阴影 + 微动画 + 颜色强调 三合一）**：柱/条 `.chart-bar:hover/.chart-hbar:hover` 上浮 2px + `brightness(1.12)` 提亮 + drop-shadow；圆点 `.chart-dot:hover` 放大 1.7× + 提亮 + drop-shadow；折线 `.chart-line:hover` 加粗 3.5 + 提亮 + drop-shadow；环 `.chart-ring-anim circle:hover` 微膨胀 1.04× + 提亮 + drop-shadow——均走 fast token 过渡。**禁整卡 hover 浮起**（2026-08-06 拍板：图表卡不再悬浮）；注：柱/条进入动画 fill-mode 须用 `backwards`（`both` 会锁死 transform 挡住 hover 上浮）
-- **数据悬停阴影层级**：一律 `drop-shadow(var(--shadow-data-hover))`（`0 1px 2px rgba(0,0,0,.15)` 单阴影 token，对应 **card/row-hover 级轻弥散**）——**禁 float/modal 级**（4px 6px/6px 16px 弥散过大，实测不贴合数据小元素）
-- **同系列数据色统一**：同一数据系列柱/条/线一律同色（禁最高值强调色，演示统一 `--chart-tech-blue`）；分组柱状图两系列用两色区分
-- **柱顶数值必标**：柱状图与分组柱状图每根柱顶部必须有数值标注（`.chart-v`），「柱子上方无数值」视为不达标
-- **分组柱状图变体（Grouped Bar）**：每组 N 根柱（演示 6 组 × 2 柱）双色区分数据系列（`--chart-tech-blue` + `--chart-data-cyan`），柱底对齐基线、组内 gap 6px / 组间 gap ≥14px、图例注明系列名
-
-**⑦ 门禁口径**
-
-- 容器缺失（`chart.container.missing`）→ HIGH；SVG 裸 hex（`svg.paint.non-palette`）→ HIGH；meet 撑不满（`chart.svg.fill`）→ MED（环状图定尺寸不受限）；内容贴边（`chart.svg.viewbox-edge`）→ MED
-
----
-
-> 最后更新: 2026-08-06 | §9 图表自建范式（方案 C：容器原语 + 原子自建）

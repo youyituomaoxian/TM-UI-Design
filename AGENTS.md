@@ -18,6 +18,7 @@
    - 页面类型规格：各端 `RULES.md §1.1b`（登录/列表/详情/弹窗/看板等）
    - 组件规格（尺寸/色值/状态）：各端 `components.json`（机器契约）+ `template.css`（类真源）
    - 图表：`CHART-SPEC.md`（原子 SVG 自建，色走 `--chart-*`）
+   - 跨端中性色契约：`CROSS-PLATFORM-COLORS.md`（N1-N10 两端对照 + 语义守则）
    - 非默认品牌色/暗色：`brand-color-engine/`（一键生成整套配色）
 4. 产出落盘：**「用户项目」的 `output/`**（不是本仓库；CSS link 指向本仓库对应端 `template.css`）。
 5. 门禁（风格合规才交付）：
@@ -32,5 +33,5 @@
 
 ## 改视觉样式（维护者）
 
-- Web：改 `packages/web-ui/src/styles/` 四件 CSS → `node packages/web-ui/scripts/build-template-css.js` 重新生成 `template.css`（**不要直接手改 template.css**，它是构建产物）。
-- 移动端：移动端规范为冻结资产（见其 `RULES.md` 锁定声明），改动须用户拍板。
+- Web：改 `packages/web-ui/src/styles/` 四件 CSS → `node packages/web-ui/scripts/build-template-css.js` 重新生成 `template.css`。若直接手改 `template.css`，必须同步 `packages/web-ui/src/styles/` 对应文件（build 会覆盖，两处须一致）。
+- 移动端：移动端冻结已于 2026-08-06 解除，可修改（`弘讯移动端design-system/template.css` 为真源）；改动仍须用户拍板。
