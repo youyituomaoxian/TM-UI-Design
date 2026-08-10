@@ -59,6 +59,26 @@ cd TM-UI-Design
 | Web 规范活体展示 | `弘讯web端design-system/web规范展示_框架版_*.html`（同名 `_分享版.html` 零外链） |
 | 移动端规范活体展示 | `弘讯移动端design-system/移动端规范展示_*.html`（同名 `_分享版.html`） |
 
+### 使用 USAGE.html · 按需求选模板（最省事）
+
+仓库根 `USAGE.html` 是互动式使用指南（浏览器打开即用）——**不用读规范也能生成合规页面**：
+
+1. 双击打开 `USAGE.html`
+2. **按需求选模板**：页面中部 7 张需求卡（Web B 端页面 / 移动端页面 / 看板大屏 / 品牌换肤 / 存量迁移 / 审计修复 / 批量派发），顶部搜索框支持**实时过滤**（输「看板 / 移动 / 换肤」即滤）
+3. 点卡片代码块（📋 图标）**一键复制**——自动复制该需求的完整提示词模板（含脚手架命令 + 规范入口 + 0 HIGH 门禁）
+4. 粘贴给任意 AI Agent（codex / Claude / 其他），替换 `<占位符>`（页面描述 / 语义名 / 品牌色）即可
+
+**示例 · 生成「注塑机实时监控看板」**：
+
+```
+打开 USAGE.html → 搜索「看板」→ 点「看板 / 数据大屏」卡片 → 复制 →
+按弘讯设计系统生成 <看板描述>（实时数据 2 秒刷新 + 暂停开关）：脚手架起步
+node <仓库根>/scripts/new-page-web.js <语义名>，遵循 GENERATION-SOP.md +
+RULES.md + CHART-SPEC.md；报警/日志列表定高滚动（.scroll-fixed），门禁 0 HIGH。
+```
+
+把 `<看板描述>` 换成你的需求、`<语义名>` 换成英文名（如 `injection-board`）、`<仓库根>` 换成仓库路径，发给 AI 即按规范生成（框架 / 图标 / 图表 / 门禁全自动）。
+
 ### Agent / 开发者使用
 
 1. **起手铁律**：Web B 端一律 `node scripts/new-page-web.js <语义名>`；移动端一律 `node scripts/new-page-mobile.js <语义名>`（脚手架自动克隆 page-template 框架 + 注入克隆凭证 meta + 修正 CSS link，落 `./output/`；自由布局用 `agent-starter.html`）——模板已含正确 token + 框架外壳
