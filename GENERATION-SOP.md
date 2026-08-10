@@ -64,19 +64,25 @@
 ### 步骤 4：克隆 page-template 框架外壳（Web B 端）——克隆源统一
 
 > ✅ **V3.0（2026-08-03 拍板）**：HTML 原型一律克隆 **`page-template.html`**（含固定框架外壳），不再用 agent-starter 起步。
+> ✅ **V4.0（2026-08-07 拍板）**：**脚手架优先**——`scripts/new-page-web.js`（Web）/ `new-page-mobile.js`（移动）自动完成克隆 + CSS link 修正 + **注入克隆凭证 `<meta name="x-template-clone">`**（P1 门禁 `template.clone.missing` 检查它；缺 meta 的 B 端页面 HIGH 拦截）。**禁止从空白 HTML / 自搭框架起步**（P0 门禁 `framework.fingerprint` 拦截结构不完整）。
 
 ```bash
-# Web（B 端后台框架）→ 落盘「用户项目」的 output/（无则建，**不是设计系统仓库的 output/**），文件名自动拼 <页面语义名>_<YYYYMMDD>_<HHmm>.html
+# 首选：脚手架（自动注入克隆凭证 + 修正 link + 防覆盖命名）
+node <仓库根>/scripts/new-page-web.js <页面语义名>          # 默认落 cwd/output/
+node <仓库根>/scripts/new-page-mobile.js <页面语义名> [目标目录]
+# 备选：手动克隆（须手动注入 meta，见下方第 3 件事）
 mkdir -p <用户项目>/output
 cp 弘讯web端design-system/page-template.html "<用户项目>/output/机器群览_$(date +%Y%m%d_%H%M).html"
-# 移动端（预览 / HTML 原型）→ 同样落盘 <用户项目>/output/，link 指向 ../弘讯移动端design-system/template.css
-cp 弘讯移动端design-system/agent-starter.html "<用户项目>/output/设备台帐_$(date +%Y%m%d_%H%M).html"
+cp 弘讯移动端design-system/page-template.html "<用户项目>/output/设备台帐_$(date +%Y%m%d_%H%M).html"
 ```
 
-**克隆后必须做的两件事：**
+**克隆后必须做的三件事：**
 
 1. **删 demo（可执行边界）**：Web page-template 已在 `<main class="content">` 内用 `<!-- DEMO 展示段开始 -->` / `<!-- DEMO 展示段结束 -->` 明确标记全部 demo section。删除两标记之间的全部内容（stat-grid KPI 演示 / callout / swatch / 字阶 / 色板 / 组件演示等），保留 `.app` 框架外壳。**KPI 统计卡**按业务需要**重建为 `stat-card--icon` 标准版**（components.json 已登记）；禁止保留 demo 简约卡或自造 KPI 样式。
-2. **改 CSS link 为指向仓库的相对路径**（克隆自 page-template 后必须改；移动端同理）。
+2. **改 CSS link 为指向仓库的相对路径**（克隆自 page-template 后必须改；移动端同理；脚手架自动处理）。
+3. **注入克隆凭证 meta**（P1 门禁）：`<head>` 内加 `<meta name="x-template-clone" content="弘讯web端design-system/page-template.html">`（移动端 content 换 `弘讯移动端design-system/page-template.html`）——**脚手架已自动注入，手动克隆必须自己加**；B 端/手机壳页面缺此 meta → 门禁 `template.clone.missing` HIGH。
+4. **定制作业树 + 图标从库取（2026-08-07 拍板）**：作业树**结构零改动**（层级/图标/折叠/选中/group-title 契约，RULES §0.2），**节点文本/分组/选中态按当前系统业务定制**（禁保留制造业示例树）；页面图标一律从 `<对应端>/icons/` 取（`icons/icons.md` 索引，path 内联进 `.ico/.tree-ico/.kpi-ico` 等尺寸类，规格 viewBox 24/stroke 1.8），库缺才手写并上报（RULES §7.9③）。
+5. **移动端底部导航（2026-08-07 收编）**：`.bottomnav` 内 `.bn-item` **3-5 个**，按业务需求增减（最少 3、最多 5，不是定死 3 个）；无 BottomNav 的页面（登录/详情等）合法不挂；home indicator 挂最后一项后。门禁 `bottomnav.count` MED 兜底（移动 RULES §1.1b）。
 
 **⚠️ 禁参照既有页面 DOM（2026-08-06 用户拍板）**：克隆后页面结构一律按 `RULES.md §1.1b` + `components.json` + `CHART-SPEC.md` **从零填充**。**禁止**参照 output/、packages/ 或任何既有页面的 DOM 拼新页（既有页面可能含历史漂移，参照它会把漂移复制进新页）。**唯一可复制的结构 = 克隆源 page-template 的框架外壳本身**。
 
@@ -110,7 +116,7 @@ cd <端目录> && "$NODE" validate-spec.js <用户项目路径>/output/<产出�
 
 - 期望：**0 HIGH（exit 0）**。任何 HIGH 禁止交付。仅 MEDIUM 不阻断（exit 0），但建议清零。
 - 门禁检查：组件尺寸 / 字重 / 半径 / 色值（`components.json` contract）；非 token 硬编码色（MEDIUM）；`checkMotion`（transition 裸值 HIGH / animation 裸值 MEDIUM，`0s/0ms` 合法）。
-- **自造优先级（2026-08-06 拍板 v2）**：组合 → 变体 → 页面级自造（值必须落现有 token）→（禁）产生新裸值。自造底线：颜色 `var(--*)` / 文字 `.m-text-*`（Web `.t-*`）/ 动效 `var(--motion-duration-*)` / 4px 网格 / 禁覆写真源组件类。详见移动端 RULES §10.10 [软] / Web RULES §7.9 [软]。
+- **自造优先级（2026-08-06 拍板 v2）**：组合 → 变体 → 页面级自造（值必须落现有 token）→（禁）产生新裸值。自造底线：颜色 `var(--*)` / 文字 `.m-text-*`（Web `.t-*`）/ 动效 `var(--motion-duration-*)` / **字体 `var(--font-cn)` / `var(--font-mono)`（禁具体字体名，门禁 font.family MED）** / 4px 网格 / 禁覆写真源组件类。详见移动端 RULES §10.10 [软] / Web RULES §7.9 [软]。
 
 **软规则自查表（生成后逐项打勾，缺项即回改；[软] 规则无门禁兜底，这是唯一交付前自查钩子）**：
 

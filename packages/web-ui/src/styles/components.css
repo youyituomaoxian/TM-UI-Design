@@ -343,5 +343,8 @@
 *{box-sizing:border-box;}
 
 
-html{height:100%;overflow:hidden;}
-body{margin:0;height:100%;overflow:hidden;font-family:var(--font-cn);font-size:14px;color:var(--n10);background:var(--n4);}
+html{height:100%;}
+/* 滚动锁作用域化（2026-08-07）：overflow:hidden 只属于 .app 框架（内容区内部滚动，framework.css .app{height:100vh}）；
+   非 B 端页面（文档/营销/门户）link template.css 时 body 必须可自然滚动，全局锁会误伤（USAGE.html 事故根因）。
+   故 html/body 不再全局 overflow:hidden；.app 框架页自锚定 100vh 不受影响。 */
+body{margin:0;font-family:var(--font-cn);font-size:14px;color:var(--n10);background:var(--n4);}

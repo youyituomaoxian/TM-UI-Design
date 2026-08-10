@@ -61,7 +61,7 @@ cd TM-UI-Design
 
 ### Agent / 开发者使用
 
-1. **起手铁律**：Web B 端一律 `cp 弘讯web端design-system/page-template.html`；移动端一律 `cp 弘讯移动端design-system/page-template.html`（自由布局用 `agent-starter.html`）——模板已含正确 token + 框架外壳
+1. **起手铁律**：Web B 端一律 `node scripts/new-page-web.js <语义名>`；移动端一律 `node scripts/new-page-mobile.js <语义名>`（脚手架自动克隆 page-template 框架 + 注入克隆凭证 meta + 修正 CSS link，落 `./output/`；自由布局用 `agent-starter.html`）——模板已含正确 token + 框架外壳
 2. **产出落盘**：生成页一律落「**用户项目**」的 `output/`（自动命名 `<语义名>_<YYYYMMDD>_<HHmm>.html`，禁写入设计系统仓库）；**转发/交付前**把 `<link …template.css>` 替换为内联 `<style>`（template.css 全量）生成 `_分享版.html`（零外链）
 3. 组件尺寸/状态/色值查 `components.json`（机器 SSoT）或 `components.md`（人读）；移动端组件体系规格读移动端 `RULES.md §9`，组件级样例/色彩应用理念读 `§11`（§11.8 色彩应用理念 / §11.9 新增组件 / §11.10 对齐铁律），**前景/背景对比度规则读 §10.3b（功能色底禁白字，用深字 n10）**
 4. 决策规则读 `RULES.md`（Web §3.7 组件 DOM 契约 + §7 布局美学 / 移动端 §3.5 DOM 契约 + §4 间距布局 + §9 组件体系 + §10 布局美学）；背景规范读 `MASTER.md`

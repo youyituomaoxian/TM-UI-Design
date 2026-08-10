@@ -490,6 +490,8 @@ START: 我要做什么类型的页面？
 |------|-----|---------|---------|
 | 字体-中文 | PingFang SC | Noto Sans SC | `.ios` / `.android` 类字体族 |
 | 字体-英文/数字 | SF Pro | Roboto | 数字用 Roboto（等宽感更好）+ `.m-num` tabular-nums |
+
+**字体守则（2026-08-07 同步 Web，防衬线回退）**：字体只用 `var(--font-cn)`（栈已补微软雅黑兜底）/ `var(--font-mono)` 或平台类（.ios/.android）——**禁页面自造 CSS 写具体字体名**（宋体/SimSun 等直接进 font-family 即违规，门禁 `font.family` MED）；`tabular-nums` 仅限**纯数字**（.m-num），中文/混合内容一律 normal（数字特性会触发中文字体回退宋体）；**headless computed font-family 会误判"已改"**（无用户系统中文字体）——字体改动须真实浏览器渲染核对，报告附真实浏览器截图。
 | 导航返回箭头 | `<` 符号风格 | ← 箭头图标 | 由「顶部导航」组件变体控制 |
 | 按钮圆角 | 胶囊（=高/2） | 8px（radius-md） | `.android .mbtn` 覆盖 |
 | 卡片圆角 | 10px（radius-lg） | 8px（radius-md） | `.android .mcard-b/.mcard-c` 覆盖 |
@@ -763,13 +765,14 @@ KPI（关键指标）
 6. **多系列必配图例**（`.chart-legend`）。
 7. **颜色只用信息化图表色 --chart-***：移动 13 色（chart-blue/green/orange/red/blue-aux/green-g/yellow/red-neg/purple-a/purple-b/cyan/rose/gray）——**禁通用语义色（--primary/--suc/--warn/--err）做系列色**（门禁 chart.series.color MED）；目标线等辅助线例外（polyline+dasharray 可用 --warn）；禁裸 hex（HIGH）。
 8. **图表不溢出卡片**：`.chart-box` 高度自定（不再锁 130px/320px），内容不溢出。
+9. **网格线水平范围限于绘图区**：网格线两侧为 y 轴刻度标签留白（≥20），不贯穿标签区；y 轴刻度与网格线同高对齐但水平错开（刻度在留白区、网格线在绘图区）——**禁网格线贯穿到图表左右边缘贴卡边**（2026-08-07 执行上报补齐）。
 
 **③ 交互（移动端差异）**
 
 - 无 hover → 数据元素**点按**反馈（active 提亮 + 数值浮层 `.chart-tip`）；环状分段点按切换数值、再点取消、点空白恢复（CHART-SPEC 附录 A 脚本）。
 - 动画类同 Web（`.chart-bar/.chart-hbar/.chart-line/.chart-ring-anim/.chart-dot`），时长走 token；进入动画可省略（弱网），点按反馈保留。
 
-**自检**：生成图表后逐项过——①柱底对齐基线 ②x 标签 HTML 层不叠柱（与柱底间距 ≥8px）③标签不溢出 ④折线点落线 ⑤环中心文字不变形 ⑥多系列配图例 ⑦颜色全 --chart-*（无通用语义色/裸 hex）⑧不溢出卡片。
+**自检**：生成图表后逐项过——①柱底对齐基线 ②x 标签 HTML 层不叠柱（与柱底间距 ≥8px）③标签不溢出 ④折线点落线 ⑤环中心文字不变形 ⑥多系列配图例 ⑦颜色全 --chart-*（无通用语义色/裸 hex）⑧不溢出卡片 ⑨网格线水平限于绘图区（两侧 y 轴刻度留白 ≥20、不贯穿贴边）。
 ## [软] 10. 布局美学规范（2026-08-04 新增 · 本地化改写自 ui-ux-pro-max 审美规则）⚠️ 必读
 
 > **来源**：抽取 ui-ux-pro-max（57 风格/99 UX 规则库）中适用于工控移动端的审美规则，改写进弘讯语境。
@@ -1011,6 +1014,15 @@ KPI（关键指标）
 - 自造类**非 4px 布局值（含 calc 内）→ MED `grid.4px`**（checkGrid4px）
 - 自造类**裸 font-size → MED `text.layer-custom`**（checkCustomProps）
 - 裸 hex / 裸动效秒 = 既有门禁 HIGH/MED，必须修
+
+**④ 图标来源守则（2026-08-07 拍板，与 Web §7.9③ 对称）⚠️ 必读**
+
+> 图标库：`弘讯移动端design-system/icons/`（与 Web 同源 70 个通用，索引见 `icons/icons.md`）。
+> 统一规格：viewBox 24×24 · stroke-width 1.8 · round · currentColor。
+
+1. **页面图标一律从 `icons/` 取**：`icons/icons.md` 索引找语义图标，path 内联进尺寸类（`.m-icon` 16 / `.bn-icon` 24 / `.mbtn-ico` 16 等）。
+2. **禁止手写库内已有的图标**；**库缺才手写**且符合统一规格，新增图标上报维护者补进 `icons/`。
+3. **状态栏系统图形**（信号/wifi/电池）不在库语义内，保留原样。
 
 ---
 

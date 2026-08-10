@@ -48,7 +48,7 @@
   --motion-ease-in-out-circ:cubic-bezier(0.78, 0.14, 0.15, 0.86);
   --motion-ease-out-circ:cubic-bezier(0.08, 0.82, 0.17, 1);
   
-  --font-cn:"Source Han Sans CN","思源黑体",sans-serif; --font-en:"Roboto",sans-serif;
+  --font-cn:"Source Han Sans CN","思源黑体","Microsoft YaHei","微软雅黑",sans-serif; --font-en:"Roboto",sans-serif;
   --font-mono:'JetBrains Mono', 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
   
   --font-display:500 32px/40px var(--font-cn);

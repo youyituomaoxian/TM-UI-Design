@@ -2,6 +2,33 @@
 
 ---
 
+## [1.9.13] — 2026-08-07 · 图标库收编三阶段 + Web 图标重画替换（144 全量）
+
+### Changed
+- **三阶段收编（2026-08-07 拍板）**：① page-template 图标全部来自 `icons/` 库（克隆源根治，stroke 1.8 统一）② RULES §0.2 作业树业务化（结构零改动、节点文本/分组/选中态随业务）+ §7.9 图标守则（图标一律从 `icons/` 取，库缺才手写并上报）+ SOP/AGENTS/标准提示词模板入口 ③ validate `icon.source` 门禁（MEDIUM：内联 SVG path 未命中库即报，page-template/USAGE/规范展示页豁免）。
+- **图标重画替换**：用户 Figma 重画 144 个（线性 stroke 1.8 / viewBox 24 / currentColor），`icons/` 全量更新；page-template 重跑换库（19 svg 43 path 全命中）。
+- **icons.md 索引对齐**：头部 84→144（129 与移动端同源 + 15 Web 特有），批 3 补全 71 个缺失登记（144/144）。
+- **USAGE.html v3 活泼版**：品牌渐变 Hero + sticky 锚点导航 + 需求卡搜索/一键复制（线性图标 + 已复制反馈）+ 批量派发卡 + FAQ 折叠 + 资产地图徽章。
+- **图表规范补齐（执行 Agent 上报）**：结果约束新增第 9 条「网格线水平范围限于绘图区」（两侧 y 轴刻度标签留白 ≥20、不贯穿贴边；y 轴刻度与网格线同高对齐但水平错开）——CHART-SPEC §2/§3 + Web RULES §9 + 移动 RULES §9.7 + 移动自检同步；顺带清 `docs/examples/web-图表自适应测试.html` 死引用（文件已不在工作区）。
+- **字体守则（用户实测：衬线回退 + Agent 改字体"验证已改事实没改"）**：① 双端 `--font-cn` 栈补 `"Microsoft YaHei","微软雅黑"`（Windows 兜底，根治宋体衬线回退；Web 真源 globals.css rebuild）② validate 双端新增 `font.family` 门禁（MED：页面自造 CSS 写具体字体名即报）③ RULES 双端「字体守则」：字体只用 token 栈、tabular-nums 仅限纯数字、**headless computed font-family 会误判"已改"（无用户系统中文字体）——字体改动须真实浏览器渲染核对** ④ SOP/AGENTS 执行路径同步。
+- **验证**：page-template 0 HIGH、ci-local 86 pass、截图图标纤细 1.8 无异常。
+
+---
+
+## [1.9.12] — 2026-08-07 · 克隆框架三层机制（P1+P2+P0）：跳过克隆从提示变为门禁拦截
+
+> 事故：外部 Agent 多次跳过克隆 page-template.html 框架直接自搭 HTML（SOP 已写但不执行）。按用户拍板（P1+P2+P0 全上、P0 报 HIGH、存量不管、`.topbar+.sidebar` 即视为 B 端需框架）落地。
+
+### Changed
+- **P2 脚手架**：`scripts/new-page-web.js` / `new-page-mobile.js`——克隆 page-template → 目标 output/（命名防覆盖）+ CSS link 修正（同盘相对/跨盘警告）+ 注入克隆凭证 `<meta name="x-template-clone">`。
+- **P1 门禁** `template.clone.missing`（HIGH）：B 端框架页（`.app+.topbar+.sidebar`）/ 手机壳页（`.phone`）缺克隆 meta → 拦截。
+- **P0 门禁** `framework.fingerprint`（HIGH）：Web 框架 8 件套（app/topbar/sidebar/tree/collapse-btn/main/content/footer + 顺序）、移动 7 件套（phone-stage/phone/m-statusbar/navbar/screen-scroll/page-view/bottomnav + 顺序），缺件/错序 → 拦截。
+- **豁免**：page-template.html、USAGE.html（文档页）、规范展示页（`*规范展示*`/`*_框架版*`/`*展示页测试*`）。
+- **流程**：标准提示词模板第零步改脚手架命令；GENERATION-SOP 步骤 4 升级 V4.0（脚手架优先 + 克隆三件事）。
+- **验证**：ci-local 86 pass；正例（脚手架）双端 0 HIGH；负例（删 meta / 删 footer）双双 HIGH 拦截；展示页/agent-starter/USAGE 零误报。
+
+---
+
 ## [1.9.11] — 2026-08-07 · 卡片高度诉求：定高卡 vs 弹性卡（§4.4b + scroll-fixed + 门禁）
 
 > 事故：注塑机实时监控看板——趋势大图卡（弹性）与报警列表卡（仅 max-height）并排，`col-* > .card{flex:1}` 行等高把滚动卡拉伸成空洞。归因：执行层空间预判盲区（LLM 无法预渲染），规范未表达「卡片高度诉求」维度。

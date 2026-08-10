@@ -2,7 +2,7 @@
 
 > 注塑机 / 工业控制 / 智能控制系统 · 统一描边风格（stroke-width 1.8 · linecap/linejoin round · fill none · currentColor）
 > viewBox 24×24，主体绘制安全区 2–22。语义色联动：状态图标用 `var(--run/--err/--warn/--n7)` 等（同 `.m-dot`/`.mtag`）。
-> 尺寸类：`.m-icon-24 / .m-icon-20 / .m-icon-16`（4px 网格）。P0 39 + P1/P2 30 + 点击手势 = 70 个。
+> 尺寸类：`.m-icon-24 / .m-icon-20 / .m-icon-16`（4px 网格）。**共 129 个**（2026-08-07 索引对齐；123 个与 Web 端新图标同源同步 + 6 个移动端独有语义已重画入库：report_work 报工 / production 产量统计 / schedule 排产任务 / temp_zone 温度区段 / load_param 工艺调取 / meter 电表）。
 
 | 文件名 | 图标 | 用途 | 类目 |
 |---|---|---|---|

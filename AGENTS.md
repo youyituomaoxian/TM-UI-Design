@@ -11,12 +11,16 @@
 ## 生成 HTML 页面（视觉预览）的标准流程
 
 1. 读 `GENERATION-SOP.md`（生成总纲：选端 → 框架判定 → 页面选型 → 克隆模板 → 产出落盘 → 门禁）。
-2. 克隆模板（框架来源，**唯一可复制的结构**）：
-   - Web B 端后台：`弘讯web端design-system/page-template.html`
-   - 移动端：`弘讯移动端design-system/page-template.html`（或 `agent-starter.html`）
+2. 克隆模板（框架来源，**唯一可复制的结构**）：优先用脚手架（自动克隆 + 注入克隆凭证 meta + 修正 CSS link）：
+   - Web B 端后台：`node scripts/new-page-web.js <语义名>`（克隆 `弘讯web端design-system/page-template.html`）
+   - 移动端：`node scripts/new-page-mobile.js <语义名>`（克隆 `弘讯移动端design-system/page-template.html`；自由布局用 `agent-starter.html`）
+   - 克隆后**按业务定制作业树**：结构零改动（层级/图标/折叠/选中/group-title），**节点文本、分组、选中态随当前系统定制**（禁保留示例树，RULES §0.2 第 9 条）
+   - 移动端**底部导航 3-5 项随需求增减**（最少 3、最多 5；登录/详情等无 BottomNav 合法，RULES §1.1b，门禁 bottomnav.count）
 3. 页面内容**从零自建**（禁参照 output/、packages/ 或任何既有页面 DOM，防风格漂移）：
    - 页面类型规格：各端 `RULES.md §1.1b`（登录/列表/详情/弹窗/看板等）
    - 组件规格（尺寸/色值/状态）：各端 `components.json`（机器契约）+ `template.css`（类真源）
+   - **图标：一律从各端 `icons/` 取**（`icons/icons.md` 索引 → path 内联进 `.ico/.tree-ico/.kpi-ico` 等尺寸类；库缺才手写且符合统一规格并上报，RULES §7.9③）
+   - **字体：只用 `var(--font-cn)` / `var(--font-mono)` 栈**，禁具体字体名（宋体/微软雅黑等字符串，门禁 font.family MED；tabular-nums 仅限纯数字，中文内容会回退宋体；headless 验证字体会误判，须真实浏览器核对，RULES 字体守则）
    - 图表：`CHART-SPEC.md`（原子 SVG 自建，色走 `--chart-*`）
    - 跨端中性色契约：`CROSS-PLATFORM-COLORS.md`（N1-N10 两端对照 + 语义守则）
    - 非默认品牌色/暗色：`brand-color-engine/`（一键生成整套配色）

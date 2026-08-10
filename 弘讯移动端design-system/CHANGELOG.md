@@ -4,6 +4,26 @@
 
 ---
 
+## [1.14.6] — 2026-08-07 · 底部导航 3-5 项收编 + 图标同步 Web 新库（129）
+
+### Changed
+- **bottomnav.count 门禁**（MEDIUM）：`.bottomnav` 内 `.bn-item` 3-5 个（最少 3、最多 5，按业务需求增减）；无 BottomNav 的页面（登录/详情等）不查；RULES §1.1b + SOP/AGENTS/标准提示词模板同步补指令。
+- **图标同步**：123 个与 Web 端新图标同源替换（双端 icons.md 语义对照，命名差异但语义一致均同步）；6 个移动端独有语义重画入库（report_work 报工 / production 产量统计 / schedule 排产任务 / temp_zone 温度区段 / load_param 工艺调取 / meter 电表）；page-template 换库（4 svg 命中）；icons.md 头部对齐 129。
+- **验证**：page-template 0 HIGH、ci-local 86 pass、截图图标纤细 1.8 无异常。
+
+---
+
+## [1.14.5] — 2026-08-07 · 克隆框架三层机制（P1+P2+P0，与 Web 对称）
+
+### Changed
+- **P2 脚手架**：`scripts/new-page-mobile.js`——克隆移动 page-template（375×812 手机壳）+ link 修正 + 注入克隆凭证 meta。
+- **P1 门禁** `template.clone.missing`（HIGH）：含 `.phone-stage/.phone` 的页面缺克隆 meta → 拦截。
+- **P0 门禁** `framework.fingerprint`（HIGH）：手机壳 7 件套（phone-stage/phone/m-statusbar/navbar/screen-scroll/page-view/bottomnav + 顺序）。
+- **豁免**：page-template.html、USAGE.html、规范展示页、展示页测试。
+- **验证**：移动端展示页/agent-starter 零误报；正例 0 HIGH。
+
+---
+
 ## [1.14.4] — 2026-08-07 · 滚动容器显式定高守则（与 Web §4.4b 对称）
 
 > 移动端 375 固定画布无 Web 的 grid 行等高机制，但滚动列表容器（页面自造 overflow-y:auto/scroll 类）仍须显式定高，防止被外层弹性容器拉伸成空洞。

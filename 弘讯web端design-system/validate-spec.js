@@ -775,6 +775,21 @@ function checkGrid4px(selfCss) {
 }
 
 // H1 边线补强：自造类禁裸 font-size（text.layer 只查 inline，这里补 <style> 内）→ MED
+// ===== 字体守则门禁（2026-08-07，RULES 字体守则）：页面自造 CSS 禁写具体字体名（防宋体衬线回退）=====
+function checkFontFamily(selfCss) {
+  const violations = [];
+  const selfRules = parseRules('<style>' + selfCss + '</style>');
+  for (const r of selfRules) {
+    const m = r.decl.match(/font-family\s*:\s*([^;]+)/i);
+    if (!m) continue;
+    const v = m[1].trim();
+    if (/^var\(--font-(cn|mono)\)/.test(v) || v === 'inherit') continue;
+    violations.push({ line: r.line, severity: 'MEDIUM', contract: 'font.family', sel: r.selectors.join(','),
+      msg: '页面自造 CSS 写了具体字体名「' + v + '」——字体必须走 var(--font-cn)/var(--font-mono) token 栈（黑体家族），禁具体字体名（防宋体衬线回退）。见 RULES 字体守则' });
+  }
+  return violations;
+}
+
 function checkCustomProps(selfCss, canonicalCss) {
   const canonical = buildDefinedClasses(canonicalCss);
   const selfRules = parseRules('<style>' + selfCss + '</style>');
@@ -1641,6 +1656,127 @@ function checkScrollHeight(selfCss) {
   return violations;
 }
 
+// ===== P1 克隆来源标记门禁（2026-08-07，P1）：B 端框架页必须带 x-template-clone meta =====
+// 判定：含 .app + .topbar + .sidebar（B 端框架语义）→ 必须 <meta name="x-template-clone">
+// 豁免：page-template.html（克隆源自身）+ 规范展示页（*规范展示* / *_框架版* / 展示页测试）
+// 缺 meta → HIGH template.clone.missing（自搭框架 / 未走克隆流程的产出）
+function isFrameworkExempt(targetPath) {
+  const base = path.basename(targetPath);
+  return /^(page-template\.html|USAGE\.html|.*规范展示.*|.*_框架版.*|.*展示页测试.*)$/.test(base);
+}
+function checkTemplateCloneMeta(html, targetPath) {
+  const violations = [];
+  if (isFrameworkExempt(targetPath)) return violations;
+  const noScript = stripScriptTags(html);
+  const isBiz = noScript.includes('class="app"') && noScript.includes('class="topbar"') && noScript.includes('class="sidebar"');
+  if (!isBiz) return violations;
+  if (!/name\s*=\s*["']x-template-clone["']/.test(noScript)) {
+    violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'template.clone.missing', sel: 'html',
+      msg: 'B 端框架页缺 <meta name="x-template-clone"> 克隆来源标记——必须从 page-template.html 克隆框架起步（脚手架 scripts/new-page-web.js 自动注入）；自搭框架或未走克隆流程的产出会被拦截。见标准提示词模板.md 第零步' });
+  }
+  return violations;
+}
+
+// ===== P0 框架指纹门禁（2026-08-07，P0）：B 端框架结构完整性（HIGH）=====
+function checkFrameworkFingerprint(html, targetPath) {
+  const violations = [];
+  if (isFrameworkExempt(targetPath)) return violations;
+  const noScript = stripScriptTags(html);
+  const isBiz = noScript.includes('class="app"') && noScript.includes('class="topbar"') && noScript.includes('class="sidebar"');
+  if (!isBiz) return violations;
+  const parts = [
+    ['app 容器', 'class="app"'],
+    ['顶栏 topbar', 'class="topbar"'],
+    ['侧栏 sidebar', 'class="sidebar"'],
+    ['作业树 .tree', 'class="tree"'],
+    ['折叠按钮 .collapse-btn', 'class="collapse-btn"'],
+    ['主区 .main', 'class="main"'],
+    ['内容区 .content', 'class="content"'],
+    ['底栏 .footer', 'class="footer"']
+  ];
+  for (const [label, token] of parts) {
+    if (!noScript.includes(token)) {
+      violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'framework.fingerprint', sel: label,
+        msg: 'B 端框架缺「' + label + '」（' + token + '）——框架结构不完整。框架外壳唯一来源 = page-template.html（脚手架 scripts/new-page-web.js 克隆），禁止自搭。见 RULES §0 固定框架' });
+    }
+  }
+  // 结构顺序：topbar < sidebar < content < footer（.app > .topbar + .body(>.sidebar + .main > .content) + .footer）
+  const seq = ['class="topbar"', 'class="sidebar"', 'class="content"', 'class="footer"'].map(s => noScript.indexOf(s));
+  if (seq.every(i => i >= 0) && !(seq[0] < seq[1] && seq[1] < seq[2] && seq[2] < seq[3])) {
+    violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'framework.fingerprint', sel: 'structure',
+      msg: 'B 端框架结构顺序异常——应为 .app > .topbar + .body(>.sidebar + .main > .content) + .footer。自搭框架层级错位（如顶栏在侧栏后 / 内容区不在 main 内）会被拦截。见 RULES §0.1' });
+  }
+  return violations;
+}
+
+// ===== 滚动锁作用域化门禁（2026-08-07，B 配套）：非 B 端页面 link template.css 须解除 body 全局滚动锁 =====
+// template.css 的 html/body overflow:hidden 已作用域化到 .app（框架页 content 内部滚动）。
+// 但分享版/旧行为下：非 .app 页面（文档/营销/门户）link template.css 时，若页面自身未覆盖 body
+// overflow → 页面会锁死不能滚（USAGE.html 事故根因）。MED 提示引导覆盖。
+function checkScrollGlobalBody(html, selfCss) {
+  const violations = [];
+  const noScript = stripScriptTags(html);
+  if (noScript.includes('class="app"')) return violations; // B 端框架页：滚动由 .app 内部承载，不查
+  if (!/href=["'][^"']*template\.css["']/.test(noScript)) return violations; // 未 link template.css，无全局锁来源
+  const selfRules = parseRules('<style>' + selfCss + '</style>');
+  const bodyCovered = selfRules.some(r =>
+    r.selectors.some(s => /(^|[, >])body\b/.test(s)) &&
+    /overflow(-y)?\s*:\s*(visible|auto|scroll)/i.test(r.decl)
+  );
+  if (!bodyCovered) {
+    violations.push({ line: 0, src: 'html', severity: 'MEDIUM', contract: 'scroll.global.body', sel: 'html',
+      msg: '非 B 端页面（无 .app 框架）link 了 template.css，但页面 <style> 未解除 body 滚动锁——页面会被锁死不能滚（template.css 的 html/body overflow:hidden 只该作用于 .app 框架）。请在页面 <style> 加 html{height:auto;overflow:visible} body{overflow:visible}（见 USAGE.html 注释与 RULES §0.3）' });
+  }
+  return violations;
+}
+
+// ===== 图标来源门禁（2026-08-07，阶段 3）：页面内联 SVG path 未命中 icons/ 库 → MED =====
+// 豁免：展示页（*规范展示* / *_框架版*）、USAGE.html（文档资产）、展示页测试——存量手写 demo 图标
+// 豁免类：.topbar-logo（品牌 logo）、.sb-icons（移动状态栏系统图形）
+let ICON_D_SET = null;
+function getIconDSet() {
+  if (ICON_D_SET) return ICON_D_SET;
+  const dir = path.join(__dirname, 'icons');
+  const set = new Set();
+  try {
+    for (const f of fs.readdirSync(dir).filter(f => f.endsWith('.svg'))) {
+      const svg = fs.readFileSync(path.join(dir, f), 'utf8');
+      const m = svg.match(/<path[^>]*d="([^"]+)"/g) || [];
+      for (const x of m) set.add(x.match(/d="([^"]+)"/)[1]);
+    }
+  } catch (e) { /* icons 目录缺失时不报 */ }
+  ICON_D_SET = set;
+  return set;
+}
+function checkIconSource(html, targetPath) {
+  const violations = [];
+  const base = path.basename(targetPath);
+  if (/(规范展示|_框架版|展示页测试|^USAGE\.html$)/.test(base)) return violations;
+  const set = getIconDSet();
+  const noScript = stripScriptTags(html);
+  const exemptCls = ['topbar-logo', 'sb-icons'];
+  // 状态栏系统图形（信号/wifi/电池）不在库语义内，RULES §7.9③ 声明保留原样 → path 前缀豁免
+  const exemptPath = ['M2 17h2v3H2z', 'M12 6a9 9 0 0 1 6.36', 'M4.5 9V6.5a3.5', 'M20.5 12.5v4'];
+  const re = /<svg[^>]*class="([^"]*)"[^>]*>([\s\S]*?)<\/svg>|<svg(?![^>]*class=")[^>]*>([\s\S]*?)<\/svg>/g;
+  let m, missCount = 0;
+  const missSamples = [];
+  while ((m = re.exec(noScript))) {
+    const cls = m[1] || '';
+    if (exemptCls.some(c => cls.includes(c))) continue;
+    const inner = m[2] || m[3];
+    const ds = [...inner.matchAll(/<path[^>]*d="([^"]+)"/g)].map(x => x[1]);
+    for (const d of ds) {
+      if (exemptPath.some(p => d.startsWith(p))) continue;
+      if (!set.has(d)) { missCount++; if (missSamples.length < 3) missSamples.push(d.slice(0, 40)); }
+    }
+  }
+  if (missCount > 0) {
+    violations.push({ line: 0, src: 'html', severity: 'MEDIUM', contract: 'icon.source', sel: 'html',
+      msg: `页面有 ${missCount} 个图标 path 未命中 icons/ 库（如 ${missSamples.join(' / ')}...）——页面图标一律从 <对应端>/icons/ 取（icons.md 索引，path 内联进 .ico/.tree-ico/.kpi-ico 等尺寸类，规格 viewBox 24 / stroke 1.8）。库缺才手写并上报维护者。见 RULES §7.9③` });
+  }
+  return violations;
+}
+
 // ===== SVG 绘制属性门禁（任务书 S，2026-08-03）：stroke=/fill=/stop-color= 裸 hex 必须走 token =====
 // 分级与 forbidNonTokenHex 语义一致（领导拍板）：
 //   非调色板色（自造色）→ HIGH 阻断；调色板内色值（值对但没走 var）→ MEDIUM 提示。
@@ -1928,9 +2064,17 @@ function run(specPath, targetPath) {
   const customV = inlineClone ? [] : checkCustomProps(selfCss, canonicalCss);
   // 滚动容器定高门禁（2026-08-07，RULES §4.4b）：滚动卡不定高 → 行等高拉伸成空洞（MED）
   const scrollV = inlineClone ? [] : checkScrollHeight(selfCss);
+  const fontV = inlineClone ? [] : checkFontFamily(selfCss);
+  // P1/P0 克隆来源与框架指纹门禁（2026-08-07）：B 端页面必须带克隆 meta + 框架结构完整（HIGH）
+  const cloneV = checkTemplateCloneMeta(html, targetPath);
+  const fpV = checkFrameworkFingerprint(html, targetPath);
+  // 滚动锁作用域化门禁（2026-08-07，B）：非 B 端页 link template.css 未解除 body 锁 → 页面锁死（MED）
+  const scrollBodyV = inlineClone ? [] : checkScrollGlobalBody(html, selfCss);
+  // 图标来源门禁（2026-08-07，阶段 3）：内联 SVG path 未命中 icons/ 库 → MED（展示页/USAGE 豁免）
+  const iconSrcV = checkIconSource(html, targetPath);
   // KPI 仅两版门禁（2026-08-06 定稿）：简约版（stat-num/stat-sub 独立卡、无 kpi-ico / stat-card--icon / stat-card--ring）已删除，Agent 生成简约版即 HIGH 拦截
   const kpiV = checkKpiSimple(html);
-  return violations.concat(chartSeriesV, rootV, surfaceV, iconV, whitelistV, tokenV, motionV, chartV, svgV, topbarV, dimV, btnLabelV, statGridV, chartFillV, chartLayoutV, chartValueV, chartBaselineV, templateSyncV, moduleSpacingV, tableMinRowV, tableAlignV, tablePagerV, cardFillV, mobileV, webAesV, wcagV, gridV, overrideV, customV, kpiV, svgVarV, scrollV);
+  return violations.concat(chartSeriesV, rootV, surfaceV, iconV, whitelistV, tokenV, motionV, chartV, svgV, topbarV, dimV, btnLabelV, statGridV, chartFillV, chartLayoutV, chartValueV, chartBaselineV, templateSyncV, moduleSpacingV, tableMinRowV, tableAlignV, tablePagerV, cardFillV, mobileV, webAesV, wcagV, gridV, overrideV, customV, kpiV, svgVarV, scrollV, cloneV, fpV, scrollBodyV, iconSrcV, fontV);
 }
 
 // ===== 柱状图柱顶数值门禁（2026-08-06：示例页柱状图缺 .chart-v → 柱子无数据标签，门禁此前未查）=====

@@ -52,6 +52,7 @@
 8. **侧栏信息架构（2026-08-03 拍板）**：平级一级模块必须**并列 group-title**（如 运营中心 / 生产管理 / 设备中心 各自独立 group），**禁止把平级模块嵌套成某中心的 `tree-node` 子项**（层级错误 + 双导航根源）。
    - **并列 group-title 结构契约（2026-08-04 补强）**：并列 group-title **必须全部收进【单一 `.tree` 滚动区】**作段落标题（`<div class="tree">` 内直接放 `<div class="group-title">`），**禁止多个 `.tree` 并列**——`.sidebar .tree` 是 `flex:1 1 auto`（flex-grow），多个 `.tree` 会平分剩余空间，把并列 group-title 之间的间距撑得过大（optA 演示页 2026-08-03 实测间距失控）。
    - **段落间距**：CSS 真源 `framework.css` 已定 `.sidebar .tree .group-title{margin-top:12px}`，首个 `:first-child` 归零贴树顶。HTML 预览与参考实现页统一此结构，不得另写间距。
+9. **作业树业务定制（2026-08-07 拍板）**：作业树**结构**是框架契约（层级≤3 / 一二级带图标 / 折叠 / 选中态 / group-title 并列 / DOM 契约零改动）；**节点文本、分组、选中态是业务内容**——克隆 page-template 后按当前系统的模块结构定制（增删分组/节点、改文本、把 `.on` 选中态移到当前页所在节点），**禁止保留示例树**（示例树是制造业演示，不是通用骨架）。节点图标从 `icons/` 取（见 §7.9 图标守则）。
 
 ### [软] 0.3 Agent 判定流程
 
@@ -357,6 +358,11 @@ START: 我要做什么类型的页面？
 **⚠️ 字体回退陷阱**：`.num` 的 `font-variant-numeric:tabular-nums` **只用于数据单元格**——表头 `th.num` 必须 `font-variant-numeric:normal`（真源已写死，契约锁定；中文表头遇衬线字体系统会回退宋体，事故细节见 CHANGELOG）。
 
 **表头/数据字体规范（2026-08-06 定稿）**：**表头与数据必须区分**（不得统一字号）——`.table th`：`font-family:var(--font-cn)` 显式 + `font-size:13px` + `font-weight:500`（全表头内部统一黑体）；`.table td`：`font-family:var(--font-cn)` 显式 + `font-size:14px`（数据统一，与表头区分）。th/td **显式 font-family 锁定黑体家族**，字体特性回退只能在黑体家族内发生、绝不落宋体。契约 `table.head.font` 校验 th 的 font-family 为 var(--font-cn)。
+
+**字体守则（2026-08-07 扩充，防衬线回退）**：
+- **字体只用 token 栈**：`var(--font-cn)`（黑体：思源黑体 → 微软雅黑，Windows 兜底已补）/ `var(--font-mono)`。页面自造 CSS **禁写具体字体名**（`宋体`/`SimSun`/`微软雅黑`/`Microsoft YaHei`/`Helvetica` 等字符串直接进 font-family 即违规）——门禁 `font.family` MED 兜底。
+- **tabular-nums 仅限纯数字单元格**：`font-variant-numeric:tabular-nums` 只用于**无中文混排**的数据（纯数字/纯数值列）；中文表头与中英混合内容一律 `normal`（数字特性会触发浏览器找支持等宽数字的字体 → 中文环境回退宋体衬线）。
+- **字体验证须知（headless 误判陷阱）**：headless Chrome **无用户系统中文字体**，`computed font-family` 与 CSS 文本检查都会**误判「字体已改/已生效」**——字体改动必须用**真实浏览器（用户系统）渲染**核对；Agent 报告「字体已修」须附真实浏览器截图，不以 computed style / CSS 文本为准（th.num 衬线事故同源，2026-08-06 CHANGELOG）。
 
 ### [硬] 3.4 Tag 状态
 
@@ -745,6 +751,16 @@ TopBar         height=72   FIXED   主色底 白字
 - 自造类**裸 font-size → MED `text.layer-custom`**（checkCustomProps）
 - 裸 hex / 裸动效秒 = 既有门禁 HIGH/MED，必须修
 
+**③ 图标来源守则（2026-08-07 拍板）⚠️ 必读**
+
+> 图标库：`弘讯web端design-system/icons/`（84 个：B 端特有 14 + 通用 70，索引见 `icons/icons.md`）；移动端同源（`弘讯移动端design-system/icons/`）。
+> 统一规格：viewBox 24×24 · stroke-width 1.8 · linecap/linejoin round · fill none · currentColor。
+
+1. **页面图标一律从 `icons/` 取**：打开 `icons/icons.md` 索引表找到语义图标，把对应 `.svg` 的 **path 内联**进尺寸类（`.ico` 16 / `.btn-ico` 16 / `.tree-ico` 16 / `.kpi-ico` 20 / `.kpi-ico--lg` 24）。
+2. **禁止手写库内已有的图标**（如首页/用户/退出/全屏/返回/警告/温度——库都有）；禁止照抄 page-template 之外页面（克隆页框架图标已来自库）。
+3. **库缺才手写**：库内无对应语义时允许手写，但必须符合统一规格（viewBox 24 / stroke 1.8 / round / currentColor），且作为**新增图标上报维护者**补进 `icons/`（走 components.json 通道）。
+4. **状态栏/品牌 logo 类系统图形**（移动端信号/wifi/电池、Web 顶栏 logo）不在库语义内，保留原样即可。
+
 ---
 
 ## [硬] 8. 动效与交互自动添加（2026-08-06 拍板：页面生成即携带交互）⚠️ 必读
@@ -786,7 +802,7 @@ TopBar         height=72   FIXED   主色底 白字
 ## [软] 9. 图表自建范式（2026-08-07 重构：「样式 + 结果约束」——实现放开，结果锁死）⚠️ 必读
 
 > **完整真源 = 仓库根 CHART-SPEC.md**（含通用决策流程 / 结果约束清单 / 两端差异 / 门禁口径 / 扩展类型指引 / 附录 A 点按脚本）。本节约为 Web 端内联摘要，冲突以 CHART-SPEC 为准。
-> **实物示范 = 展示页 #chart-demo section + docs/examples/web-图表自适应测试.html（2026-08-07 多类型×多尺寸自适应，识图全过）**
+> **实物示范 = 展示页 #chart-demo section**（2026-08-07 多类型×多尺寸自适应，识图全过）
 
 **① 实现放开（2026-08-07 拍板，替代固定 viewBox/尺寸/数据量）**
 
@@ -804,6 +820,7 @@ TopBar         height=72   FIXED   主色底 白字
 6. **多系列必配图例**：双系列柱/折线/多段环均有图例；单系列可省。
 7. **颜色只用信息化图表色 --chart-***（见 ③）。
 8. **图表不溢出卡片**：图表容器高度自定，禁止内容溢出卡片。
+9. **网格线水平范围限于绘图区**：网格线两侧为 y 轴刻度标签留白（≥20），不贯穿标签区；y 轴刻度与网格线同高对齐但水平错开（刻度在留白区、网格线在绘图区）——**禁网格线贯穿到图表左右边缘贴卡边**（2026-08-07 执行上报补齐）。
 
 **③ 色彩契约（2026-08-07 强化：系列色只能用 --chart-*）**
 

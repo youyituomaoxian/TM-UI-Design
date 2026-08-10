@@ -4,8 +4,8 @@
   "files": {
     "弘讯web端design-system/tokens.json": "46ec0b17a53837fb599903649f281279fcf51878b08e79b414ea85a0d90b9f4d",
     "弘讯web端design-system/components.json": "23862ccfe4b170bbd2598afe8c46b444ccfc866e3a86097c29f41938e0b83c12",
-    "弘讯web端design-system/validate-spec.js": "78ad107ca15c284b1fd4619a9355ca3dbd34418dcaa6ec65e319329caf8a6fb8",
-    "弘讯web端design-system/page-template.html": "721a48807a3f7a3aa1addeed8828d32537754e8d943af9530c6b4743e961ff71",
+    "弘讯web端design-system/validate-spec.js": "150f97be400bec34de18db7ca0dcb42247f8476e8d08e44db16ed47778371620",
+    "弘讯web端design-system/page-template.html": "0e6ae540a079838e989637d0d2f5c7f0b906bca04a666524b7de7fb5a3254d90",
     "弘讯web端design-system/scripts/generate-design-tokens-md.js": "750be505da06b82e38376089df74a53dfb81a0db1961c7be0e4649eafee1130b"
   }
 }

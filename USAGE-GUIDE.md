@@ -116,7 +116,7 @@ cd TM-UI-Design
 ### 流程 4 步
 
 1. **选端**：「后台 / 表格 / 侧边栏」→ Web；「小程序 / 手机 / 卡片」→ 移动端。
-2. **起手**：克隆模板落「**用户项目**」`output/<语义名>_<时间戳>.html`（禁裸写空文件、禁参照既有页面 DOM；产出一律落用户项目 output/，见 GENERATION-SOP 步骤4 产出落盘规则）。Web 用 `page-template.html`（纯框架：顶栏 72 + 侧栏 240 + content 空壳 + 底栏 32）；移动端用 `page-template.html`（手机壳 + 导航 + 屏内滚动 + 底部导航；自由布局用 `agent-starter.html`）。
+2. **起手**：跑脚手架 `node <仓库根>/scripts/new-page-web.js <语义名>`（移动端换 `new-page-mobile.js`）落「**用户项目**」`output/`——自动克隆 page-template 框架 + 注入克隆凭证 meta + 修正 CSS link（禁裸写空文件、禁参照既有页面 DOM；产出一律落用户项目 output/，见 GENERATION-SOP 步骤4 产出落盘规则）。Web 用 `page-template.html`（纯框架：顶栏 72 + 侧栏 240 + content 空壳 + 底栏 32）；移动端用 `page-template.html`（手机壳 + 导航 + 屏内滚动 + 底部导航；自由布局用 `agent-starter.html`）。
 3. **写内容**：按 `RULES.md §1.1b` 页面类型规格**从零自建**（登录/列表/详情/弹窗/看板等）；组件用规范 class（Web `.btn`/`.input`/`.table`；移动端 `.mbtn`/`.mtag`/`.mlist-double`/`.mcard`…），色 / 尺寸 / 字重全走 `var(--*)`，禁硬编码 hex；图表按 `CHART-SPEC.md` 原子 SVG 自建（色走 `--chart-*`）。**移动端组件体系规格读移动端 RULES §9；审美规范读 §10**；文字用 `.m-text-*` 语义类（禁裸 font-size）。
 4. **门禁**：`cd <端目录> && node validate-spec.js <用户项目路径>/output/<文件>.html` → **0 HIGH 才交付**。
 

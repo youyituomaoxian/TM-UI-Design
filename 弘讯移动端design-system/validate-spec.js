@@ -580,6 +580,21 @@ function checkGrid4px(selfCss) {
 }
 
 // H1 边线补强：自造类禁裸 font-size（text.layer 只查 inline，这里补 <style> 内）→ MED
+// ===== 字体守则门禁（2026-08-07，RULES 字体守则）：页面自造 CSS 禁写具体字体名（防宋体衬线回退）=====
+function checkFontFamily(selfCss) {
+  const violations = [];
+  const selfRules = parseRules('<style>' + selfCss + '</style>');
+  for (const r of selfRules) {
+    const m = r.decl.match(/font-family\s*:\s*([^;]+)/i);
+    if (!m) continue;
+    const v = m[1].trim();
+    if (/^var\(--font-(cn|mono)\)/.test(v) || v === 'inherit') continue;
+    violations.push({ line: r.line, severity: 'MEDIUM', contract: 'font.family', sel: r.selectors.join(','),
+      msg: '页面自造 CSS 写了具体字体名「' + v + '」——字体必须走 var(--font-cn)/var(--font-mono) token 栈（黑体家族），禁具体字体名（防宋体衬线回退）。见 RULES 字体守则' });
+  }
+  return violations;
+}
+
 function checkCustomProps(selfCss, canonicalCss) {
   const canonical = buildDefinedClasses(canonicalCss);
   const selfRules = parseRules('<style>' + selfCss + '</style>');
@@ -623,6 +638,122 @@ function checkScrollHeight(selfCss) {
         msg: `滚动容器 ${r.selectors.join(',')} 未显式定高（height/固定 max-height）——会被外层弹性容器拉伸成空洞。列表/日志等滚动卡请显式定高（页面级自造类须带 height 或固定 max-height）`
       });
     }
+  }
+  return violations;
+}
+
+// ===== P1/P0 克隆来源与框架指纹门禁（2026-08-07，与 Web 端对称）=====
+// P1：含手机壳语义（.phone-stage/.phone）的页面必须带 <meta name="x-template-clone">
+// P0：手机壳框架结构完整性（m-statusbar/navbar/screen-scroll/page-view/bottomnav）
+// 豁免：page-template.html（克隆源）+ 规范展示页（*规范展示* / *_框架版* / 展示页测试）
+function isFrameworkExempt(targetPath) {
+  const base = path.basename(targetPath);
+  return /^(page-template\.html|USAGE\.html|.*规范展示.*|.*_框架版.*|.*展示页测试.*)$/.test(base);
+}
+function checkTemplateCloneMeta(html, targetPath) {
+  const violations = [];
+  if (isFrameworkExempt(targetPath)) return violations;
+  const noScript = stripScriptTags(html);
+  const isPhone = noScript.includes('class="phone-stage"') || noScript.includes('class="phone"');
+  if (!isPhone) return violations;
+  if (!/name\s*=\s*["']x-template-clone["']/.test(noScript)) {
+    violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'template.clone.missing', sel: 'html',
+      msg: '移动端页面缺 <meta name="x-template-clone"> 克隆来源标记——必须从 page-template.html 克隆手机壳框架起步（脚手架 scripts/new-page-mobile.js 自动注入）；自搭框架或未走克隆流程的产出会被拦截。见标准提示词模板.md 第零步' });
+  }
+  return violations;
+}
+function checkFrameworkFingerprint(html, targetPath) {
+  const violations = [];
+  if (isFrameworkExempt(targetPath)) return violations;
+  const noScript = stripScriptTags(html);
+  const isPhone = noScript.includes('class="phone-stage"') || noScript.includes('class="phone"');
+  if (!isPhone) return violations;
+  const parts = [
+    ['手机壳容器 .phone-stage', 'class="phone-stage"'],
+    ['手机壳 .phone', 'class="phone"'],
+    ['状态栏 .m-statusbar', 'class="m-statusbar'],
+    ['导航栏 .navbar', 'class="navbar'],
+    ['滚动区 .screen-scroll', 'class="screen-scroll"'],
+    ['内容页 .page-view', 'class="page-view'],
+    ['底部导航 .bottomnav', 'class="bottomnav']
+  ];
+  for (const [label, token] of parts) {
+    if (!noScript.includes(token)) {
+      violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'framework.fingerprint', sel: label,
+        msg: '移动端手机壳框架缺「' + label + '」（' + token + '）——框架结构不完整。框架外壳唯一来源 = page-template.html（脚手架 scripts/new-page-mobile.js 克隆），禁止自搭。见移动 RULES §8 屏幕布局黄金法则' });
+    }
+  }
+  // 结构顺序：m-statusbar < navbar < page-view < bottomnav（状态栏→导航→内容→底部导航）
+  const seq = ['class="m-statusbar', 'class="navbar', 'class="page-view', 'class="bottomnav'].map(s => noScript.indexOf(s));
+  if (seq.every(i => i >= 0) && !(seq[0] < seq[1] && seq[1] < seq[2] && seq[2] < seq[3])) {
+    violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'framework.fingerprint', sel: 'structure',
+      msg: '移动端手机壳框架结构顺序异常——应为 .phone > .m-statusbar + .navbar + .screen-scroll(>.page-view) + .bottomnav。自搭框架层级错位会被拦截。见移动 RULES §8.1' });
+  }
+  return violations;
+}
+
+// ===== 图标来源门禁（2026-08-07，阶段 3，与 Web 对称）：页面内联 SVG path 未命中 icons/ 库 → MED =====
+// 豁免：展示页（*规范展示* / *_框架版*）、USAGE.html、展示页测试——存量手写 demo 图标
+// 豁免类：.sb-icons（状态栏系统图形）
+let ICON_D_SET = null;
+function getIconDSet() {
+  if (ICON_D_SET) return ICON_D_SET;
+  const dir = path.join(__dirname, 'icons');
+  const set = new Set();
+  try {
+    for (const f of fs.readdirSync(dir).filter(f => f.endsWith('.svg'))) {
+      const svg = fs.readFileSync(path.join(dir, f), 'utf8');
+      const m = svg.match(/<path[^>]*d="([^"]+)"/g) || [];
+      for (const x of m) set.add(x.match(/d="([^"]+)"/)[1]);
+    }
+  } catch (e) { /* icons 目录缺失时不报 */ }
+  ICON_D_SET = set;
+  return set;
+}
+function checkIconSource(html, targetPath) {
+  const violations = [];
+  const base = path.basename(targetPath);
+  if (/(规范展示|_框架版|展示页测试|^USAGE\.html$)/.test(base)) return violations;
+  const set = getIconDSet();
+  const noScript = stripScriptTags(html);
+  const exemptCls = ['sb-icons'];
+  // 状态栏系统图形（信号/wifi/电池）不在库语义内，RULES §10.10④ 声明保留原样 → path 前缀豁免
+  const exemptPath = ['M2 17h2v3H2z', 'M12 6a9 9 0 0 1 6.36', 'M4.5 9V6.5a3.5', 'M20.5 12.5v4'];
+  const re = /<svg[^>]*class="([^"]*)"[^>]*>([\s\S]*?)<\/svg>|<svg(?![^>]*class=")[^>]*>([\s\S]*?)<\/svg>/g;
+  let m, missCount = 0;
+  const missSamples = [];
+  while ((m = re.exec(noScript))) {
+    const cls = m[1] || '';
+    if (exemptCls.some(c => cls.includes(c))) continue;
+    const inner = m[2] || m[3];
+    const ds = [...inner.matchAll(/<path[^>]*d="([^"]+)"/g)].map(x => x[1]);
+    for (const d of ds) {
+      if (exemptPath.some(p => d.startsWith(p))) continue;
+      if (!set.has(d)) { missCount++; if (missSamples.length < 3) missSamples.push(d.slice(0, 40)); }
+    }
+  }
+  if (missCount > 0) {
+    violations.push({ line: 0, src: 'html', severity: 'MEDIUM', contract: 'icon.source', sel: 'html',
+      msg: `页面有 ${missCount} 个图标 path 未命中 icons/ 库（如 ${missSamples.join(' / ')}...）——页面图标一律从 <对应端>/icons/ 取（icons.md 索引，path 内联进 .m-icon/.bn-icon 等尺寸类，规格 viewBox 24 / stroke 1.8）。库缺才手写并上报维护者。见移动 RULES §10.10④` });
+  }
+  return violations;
+}
+
+// ===== 底部导航项数门禁（2026-08-07，RULES §1.1b 底部导航节）：.bottomnav 内 .bn-item 须 3-5 个 =====
+// 只查"带底部导航的页面"；无 bottomnav 的页面（登录/详情等，RULES 允许）不查。
+function checkBottomnavCount(html, targetPath) {
+  const violations = [];
+  const base = path.basename(targetPath);
+  if (/(规范展示|_框架版|展示页测试|^USAGE\.html$)/.test(base)) return violations;
+  const noScript = stripScriptTags(html);
+  // bottomnav 在框架末尾（结构顺序：状态栏→导航→内容→底部导航），tail 内 bn-item 均属它
+  const open = noScript.indexOf('class="bottomnav');
+  if (open < 0) return violations;
+  const tail = noScript.slice(open);
+  const count = (tail.match(/class="bn-item/g) || []).length;
+  if (count < 3 || count > 5) {
+    violations.push({ line: 0, src: 'html', severity: 'MEDIUM', contract: 'bottomnav.count', sel: 'bottomnav',
+      msg: `底部导航有 ${count} 个菜单项——须 3-5 个（最少 3、最多 5），按业务需求增减（首页 Tab 容器才挂 BottomNav；无 BottomNav 的页面不查）。见移动 RULES §1.1b 底部导航节` });
   }
   return violations;
 }
@@ -1171,6 +1302,14 @@ function run(specPath, targetPath) {
   const customV = inlineClone ? [] : checkCustomProps(selfCss, canonicalCss);
   // 滚动容器定高门禁（2026-08-07，与 Web §4.4b 对称）：滚动卡不定高 → 被弹性拉伸成空洞（MED）
   const scrollV = inlineClone ? [] : checkScrollHeight(selfCss);
+  const fontV = inlineClone ? [] : checkFontFamily(selfCss);
+  // P1/P0 克隆来源与框架指纹门禁（2026-08-07，与 Web 对称）：手机壳页面必须带克隆 meta + 框架完整（HIGH）
+  const cloneV = checkTemplateCloneMeta(html, targetPath);
+  const fpV = checkFrameworkFingerprint(html, targetPath);
+  // 图标来源门禁（2026-08-07，阶段 3，与 Web 对称）：内联 SVG path 未命中 icons/ 库 → MED
+  const iconSrcV = checkIconSource(html, targetPath);
+  // 底部导航项数门禁（2026-08-07，RULES §1.1b）：.bn-item 须 3-5 个（MED）
+  const bnCountV = checkBottomnavCount(html, targetPath);
   // 图表门禁（CHART-SPEC §7，2026-08-06）：容器缺失 / 移动端禁 none 拉伸 / 内容贴 viewBox 右缘
   const chartV = checkChartBox(html);
   const chartStretchV = checkChartSvgStretch(html);
@@ -1181,7 +1320,7 @@ function run(specPath, targetPath) {
   const templateSyncV = checkTemplateRootSync(html, canonicalCss);
   // HTML 结构配对门禁（2026-08-06）：div 开闭配对 + bottomnav 父链必须是 .phone
   const structV = checkHtmlStructure(html);
-  return violations.concat(chartSeriesV, rootV, tokenV, motionV, whitelistV, svgV, wcagV, gridV, overrideV, customV, chartV, chartStretchV, chartEdgeV, chartLayoutV, templateSyncV, structV, scrollV);
+  return violations.concat(chartSeriesV, rootV, tokenV, motionV, whitelistV, svgV, wcagV, gridV, overrideV, customV, chartV, chartStretchV, chartEdgeV, chartLayoutV, templateSyncV, structV, scrollV, cloneV, fpV, iconSrcV, bnCountV, fontV);
 }
 
 // ===== HTML 结构配对门禁（2026-08-06：展示页测试多 1 个 </div> 把 .phone 提前闭合 → bottomnav 被挤出手机壳，门禁此前未拦截）=====

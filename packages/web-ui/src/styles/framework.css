@@ -1,5 +1,5 @@
 /* framework.css — 框架层（.app/.topbar/.sidebar/.content/.footer 固定外壳；2026-08-06 以 template.css 为真源重建）。 */
-.app{display:flex;flex-direction:column;height:100%;overflow:hidden;}
+.app{display:flex;flex-direction:column;height:100vh;overflow:hidden;}
 .body{display:flex;flex:1;min-height:0;overflow:hidden;height:calc(100vh - var(--topbar-height));}
 
 

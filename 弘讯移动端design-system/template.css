@@ -43,7 +43,7 @@
   --motion-ease-out-quint:cubic-bezier(0.23,1,0.32,1); --motion-ease-in-out-circ:cubic-bezier(0.78,0.14,0.15,0.86);
   --motion-ease-out-circ:cubic-bezier(0.08,0.82,0.17,1);
   /* 字体（跨平台通用族，Ardot 内再按 Android/iOS 替换） */
-  --font-cn:"PingFang SC","Noto Sans SC",sans-serif;
+  --font-cn:"PingFang SC","Noto Sans SC","Microsoft YaHei","微软雅黑",sans-serif;
   /* 等宽字体（B 包新增；工控数据/代码） */
   --font-mono:"JetBrains Mono","SF Mono",Consolas,"Liberation Mono",Menlo,monospace;
   /* 密度模式（B 包新增；移动端只 comfortable 基准，compact/spacious 不启用） */
