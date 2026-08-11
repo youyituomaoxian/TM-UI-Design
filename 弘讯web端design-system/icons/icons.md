@@ -4,7 +4,7 @@
 > 统一规格：viewBox 24×24 · stroke-width 1.8 · linecap/linejoin round · fill none · currentColor
 > 尺寸类（template.css 已落地）：`.ico` 16px（表格/菜单操作）· `.btn-ico` 16px（按钮内）· `.tree-ico` 16px（侧栏树节点）· `.kpi-ico` 20px / `.kpi-ico--lg` 24px（指标卡）
 > 语义色联动：状态图标用功能色 token（`var(--suc/--warn/--err/--run)` 等）
-> 通用 70 个与移动端共用（icons/ 同源），B 端特有 14 个，共 84 个。
+> 通用 70 个与移动端共用（icons/ 同源），B 端特有 14 个，共 196 个。
 
 ## B 端特有（14）
 
@@ -96,3 +96,61 @@
 | `capacity.svg` | 设备产能监控 | 产能（机器+柱） | 设备 |
 | `device_manage.svg` | 设备管理 | 设备管理（机器+齿轮） | 设备 |
 | `device_open.svg` | 设备开通 | 设备开通（机器+勾） | 设备 |
+
+## 新增（2026-08-10 业务扩展，双端）
+
+| 文件名 | 图标 | 用途 | 类目 |
+|---|---|---|---|
+| `add_item.svg` | 新增条目 | 新增条目（2026-08-10 业务扩展新画） | 业务扩展 |
+| `base_data.svg` | 基础数据 | 基础数据（2026-08-10 业务扩展新画） | 业务扩展 |
+| `big_screen.svg` | 大屏 | 大屏（2026-08-10 业务扩展新画） | 业务扩展 |
+| `billing_manage.svg` | 计费管理 | 计费管理（2026-08-10 业务扩展新画） | 业务扩展 |
+| `board_manage.svg` | 看板管理 | 看板管理（2026-08-10 业务扩展新画） | 业务扩展 |
+| `cancel_archive.svg` | 取消归档 | 取消归档（2026-08-10 业务扩展新画） | 业务扩展 |
+| `cancel_review.svg` | 取消审核 | 取消审核（2026-08-10 业务扩展新画） | 业务扩展 |
+| `chart.svg` | 图表 | 图表（2026-08-10 业务扩展新画） | 业务扩展 |
+| `customer_manage.svg` | 客户管理 | 客户管理（2026-08-10 业务扩展新画） | 业务扩展 |
+| `custom_report.svg` | 自定义报表 | 自定义报表（2026-08-10 业务扩展新画） | 业务扩展 |
+| `data_analysis.svg` | 数据分析 | 数据分析（2026-08-10 业务扩展新画） | 业务扩展 |
+| `device_activate.svg` | 设备激活 | 设备激活（2026-08-10 业务扩展新画） | 业务扩展 |
+| `device_activate_alt.svg` | 设备激活(备) | 设备激活(备)（2026-08-10 业务扩展新画） | 业务扩展 |
+| `device_alarm_monitor.svg` | 设备报警监控 | 设备报警监控（2026-08-10 业务扩展新画） | 业务扩展 |
+| `device_authorize.svg` | 设备授权 | 设备授权（2026-08-10 业务扩展新画） | 业务扩展 |
+| `device_capacity_board.svg` | 设备产能看板 | 设备产能看板（2026-08-10 业务扩展新画） | 业务扩展 |
+| `device_capacity_monitor.svg` | 设备产能监控 | 设备产能监控（2026-08-10 业务扩展新画） | 业务扩展 |
+| `device_downtime_monitor.svg` | 设备停机监控 | 设备停机监控（2026-08-10 业务扩展新画） | 业务扩展 |
+| `device_inactive.svg` | 设备停用 | 设备停用（2026-08-10 业务扩展新画） | 业务扩展 |
+| `device_maintenance.svg` | 设备维护 | 设备维护（2026-08-10 业务扩展新画） | 业务扩展 |
+| `device_oee_monitor.svg` | 设备OEE监控 | 设备OEE监控（2026-08-10 业务扩展新画） | 业务扩展 |
+| `device_status_board.svg` | 设备状态看板 | 设备状态看板（2026-08-10 业务扩展新画） | 业务扩展 |
+| `device_status_monitor.svg` | 设备状态监控 | 设备状态监控（2026-08-10 业务扩展新画） | 业务扩展 |
+| `dispatch_alt.svg` | 派工(备) | 派工(备)（2026-08-10 业务扩展新画） | 业务扩展 |
+| `energy_manage.svg` | 能耗管理 | 能耗管理（2026-08-10 业务扩展新画） | 业务扩展 |
+| `exit_fullscreen.svg` | 退出全屏 | 退出全屏（2026-08-10 业务扩展新画） | 业务扩展 |
+| `export_alt.svg` | 导出(备) | 导出(备)（2026-08-10 业务扩展新画） | 业务扩展 |
+| `machine_overview.svg` | 设备总览 | 设备总览（2026-08-10 业务扩展新画） | 业务扩展 |
+| `material_order.svg` | 物料订单 | 物料订单（2026-08-10 业务扩展新画） | 业务扩展 |
+| `mold_maintenance.svg` | 模具维护 | 模具维护（2026-08-10 业务扩展新画） | 业务扩展 |
+| `monitor.svg` | 监控 | 监控（2026-08-10 业务扩展新画） | 业务扩展 |
+| `monitor_overview.svg` | 监控总览 | 监控总览（2026-08-10 业务扩展新画） | 业务扩展 |
+| `param_change_board.svg` | 参数变更看板 | 参数变更看板（2026-08-10 业务扩展新画） | 业务扩展 |
+| `param_change_monitor.svg` | 参数变更监控 | 参数变更监控（2026-08-10 业务扩展新画） | 业务扩展 |
+| `production_overview_board.svg` | 生产总览看板 | 生产总览看板（2026-08-10 业务扩展新画） | 业务扩展 |
+| `production_progress_board.svg` | 生产进度看板 | 生产进度看板（2026-08-10 业务扩展新画） | 业务扩展 |
+| `production_unit.svg` | 生产单元 | 生产单元（2026-08-10 业务扩展新画） | 业务扩展 |
+| `production_unit_manage.svg` | 生产单元管理 | 生产单元管理（2026-08-10 业务扩展新画） | 业务扩展 |
+| `quality_analysis.svg` | 质量分析 | 质量分析（2026-08-10 业务扩展新画） | 业务扩展 |
+| `quality_overview_board.svg` | 质量总览看板 | 质量总览看板（2026-08-10 业务扩展新画） | 业务扩展 |
+| `realtime_monitor.svg` | 实时监控 | 实时监控（2026-08-10 业务扩展新画） | 业务扩展 |
+| `repair_maintenance.svg` | 维修保养 | 维修保养（2026-08-10 业务扩展新画） | 业务扩展 |
+| `repair_manage.svg` | 维修管理 | 维修管理（2026-08-10 业务扩展新画） | 业务扩展 |
+| `report_export.svg` | 报表导出 | 报表导出（2026-08-10 业务扩展新画） | 业务扩展 |
+| `report_preview.svg` | 报表预览 | 报表预览（2026-08-10 业务扩展新画） | 业务扩展 |
+| `review.svg` | 审核 | 审核（2026-08-10 业务扩展新画） | 业务扩展 |
+| `smart_mfg_board.svg` | 智能制造看板 | 智能制造看板（2026-08-10 业务扩展新画） | 业务扩展 |
+| `standard_lib_map.svg` | 标准库映射 | 标准库映射（2026-08-10 业务扩展新画） | 业务扩展 |
+| `stats_report.svg` | 统计报表 | 统计报表（2026-08-10 业务扩展新画） | 业务扩展 |
+| `system_design.svg` | 系统设计 | 系统设计（2026-08-10 业务扩展新画） | 业务扩展 |
+| `task_release.svg` | 任务下发 | 任务下发（2026-08-10 业务扩展新画） | 业务扩展 |
+| `workshop_board.svg` | 车间看板 | 车间看板（2026-08-10 业务扩展新画） | 业务扩展 |
+| `workshop_info.svg` | 车间信息 | 车间信息（2026-08-10 业务扩展新画） | 业务扩展 |

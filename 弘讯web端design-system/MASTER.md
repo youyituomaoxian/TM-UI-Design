@@ -330,7 +330,7 @@
 | 25 | **滚动条** | 单实例 | 自定义滚动条 |
 | 26 | **更多 / 关闭 / 选择器开** | 多状态 | 图标按钮 |
 | 27 | **底部信息** | 单实例 | Footer 条（高 32，主色底） |
-| 28 | **图标集 Icon** | 84 个（2026-08-06） | `icons/` 目录 SVG；通用 70 个与移动端同源 + B 端特有 14（menu/chevron/sort/filter/upload/import/user-group/log/dashboard/columns/eye-off/fullscreen）；规格 stroke 1.8/round/currentColor；尺寸类 `.ico`16 `.btn-ico`16 `.tree-ico`16 `.kpi-ico`20 `.kpi-ico--lg`24（见 icons/icons.md） |
+| 28 | **图标集 Icon** | 196 个（2026-08-10） | `icons/` 目录 SVG；通用 70 个与移动端同源 + B 端特有扩展（menu/chevron/sort/filter/upload/import/user-group/log/dashboard/columns/eye-off/fullscreen + 2026-08-10 业务扩展 53 个看板/监控/管理类）；规格 stroke 1.8/round/currentColor；尺寸类 `.ico`16 `.btn-ico`16 `.tree-ico`16 `.kpi-ico`20 `.kpi-ico--lg`24（见 icons/icons.md） |
 | 29 | **KPI 环形卡（StatCard Ring）** | 5 色环（primary/run/warn/err/secondary） | `.stat-card--ring` 变体：左环 64 + 右 label/num/trend；环周长 163.4（2π×26）、stroke 6、linecap round、svg rotate(-90deg)；环心 14px mono 500、右侧数值 22px（2026-08-06 登记，见 components.json `stat-card--ring`；CSS 沉淀 template.css L664-679） |
 | 30 | **KPI 图标卡（StatCard Icon）** | 5 色图标块（primary/run/warn/err/neutral） | `.stat-card--icon` 变体：左浅底高圆角图标块（48×48、radius-lg 16、低饱和底+高饱和图标，复用 kpi-ico--lg）+ 右上大数字 + 底部行（标题左/变化量右贴图标底）；变化量 12px 500 ↑run 绿 ↓err 红；同批沉淀 `.kpi-ico--err` 与 `.stat-card--mini` 迷你统计卡（2026-08-06 登记，见 components.json `stat-card--icon`） |
 
