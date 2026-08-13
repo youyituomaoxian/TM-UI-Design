@@ -48,7 +48,7 @@
   --font-mono:"JetBrains Mono","SF Mono",Consolas,"Liberation Mono",Menlo,monospace;
   /* 密度模式（B 包新增；移动端只 comfortable 基准，compact/spacious 不启用） */
   --density-row-height:52px; --density-content-padding:16px;
-  /* 间距 token（8 档，2026-08-06 落地；命名对齐 Web --space-*，值含移动 §10.4 克制体系核心 gap 12） */
+  /* 间距 token（8 档，2026-08-06 落地；命名部分对齐 Web --space-*，移动独有 --space-huge:56 档；值含移动 §10.4 克制体系核心 gap 12） */
   --space-xs:4px; --space-sm:8px; --space-md:12px; --space-base:16px;
   --space-lg:24px; --space-xl:32px; --space-xxl:48px; --space-huge:56px;
 }
@@ -147,6 +147,11 @@
 body{background:#1b1f26;min-height:100vh;margin:0;padding:24px 0;box-sizing:border-box;overflow-x:auto} /* 预览壳水平居中用 .phone-stage{margin:0 auto}（block 中 margin auto 溢出左对齐不裁左；flex justify-content:center 窄窗口溢出裁左，2026-08-06 用户反馈卡片左边距过大） */ /* 预览壳垂直+水平居中用 .phone-stage{margin:auto}（flex justify-content:center 在窄窗口溢出会裁左，2026-08-06 用户反馈卡片左边距过大） */
 /* 375 手机壳：固定 375×812（iPhone X 逻辑尺寸）+ 圆角 + 投影，overflow:hidden 保证圆角裁切、屏外内容不溢出视口 */
 .phone-stage{width:375px;height:812px;position:relative;margin:0 auto;border-radius:24px;box-shadow:0 0 32px rgba(0,0,0,.5);overflow:hidden}
+/* 预览壳包裹层：顶部留空放亮暗切换按钮（2026-08-12 拍板：按钮在手机框外，非页面内容） */
+.stage-wrap{position:relative;width:375px;margin:0 auto;padding-top:44px}
+.theme-toggle{position:absolute;top:0;right:0;height:32px;padding:0 12px;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.24);border-radius:var(--radius-full);color:#FFFFFF;cursor:pointer;font-size:13px;font-family:var(--font-cn);}
+.theme-toggle:hover{background:rgba(255,255,255,.22);}
+.theme-toggle .ico{width:16px;height:16px;}
 .phone{position:relative;width:375px;height:812px;background:var(--n2);font-family:var(--font-cn);color:var(--n8);display:flex;flex-direction:column;overflow:hidden}
 /* 屏内滚动区：flex:1 撑满 navbar/bottomnav 之间的空间，内容在此滚动，nav/底栏固定不动；滚动条隐藏（移动端手势滚动，滚动条漏出会破坏沉浸感）；padding-bottom 让最后一项与 BottomNav 有呼吸 */
 .screen-scroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:24px;scrollbar-width:none;-ms-overflow-style:none}

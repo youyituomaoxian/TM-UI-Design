@@ -1096,6 +1096,36 @@
       "note": "2026-07-31 弃用：新页面改用 packages/web-ui 真实组件「pagination」（shadcn）。本条目仅作 HTML 原型对照与门禁来源。"
     },
     {
+      "id": "breadcrumb",
+      "name": "面包屑 Breadcrumb",
+      "category": "导航",
+      "summary": "32px 高、N5 底条带、› 分隔；item N9/当前 N11；下方间距 16（页头组内 BASE 档，2026-08-12 由 LG 24 降档）。",
+      "anatomy": {
+        "bar": "面包屑条",
+        "item": "层级项",
+        "sep": "› 分隔符",
+        "current": "当前页"
+      },
+      "tokens": ["--n5", "--n8", "--n9", "--n11", "--radius-base", "--space-base"],
+      "sizing": {
+        "height": 32,
+        "fontSize": 14,
+        "paddingH": 12,
+        "marginBottom": 16,
+        "radius": "base"
+      },
+      "states": {
+        "item.default": { "text": "N9" },
+        "item.current": { "text": "N11" },
+        "sep": { "text": "N8" }
+      },
+      "variants": ["基础（N5 底条带）"],
+      "referenceCss": ".breadcrumb{display:flex;align-items:center;gap:8px;height:32px;padding:0 12px;background:var(--n5);border-radius:var(--radius-base);font-size:14px;font-family:var(--font-cn);margin-bottom:var(--space-base)}.breadcrumb-item{color:var(--n9);cursor:pointer}.breadcrumb-item[aria-current=\"page\"]{color:var(--n11);cursor:default}.breadcrumb-sep{color:var(--n8)}",
+      "referenceHtml": "<nav class=\"breadcrumb\"><span class=\"breadcrumb-item\">生产监控</span><span class=\"breadcrumb-sep\">›</span><span class=\"breadcrumb-item\" aria-current=\"page\">设备台账</span></nav>",
+      "do": ["32 高 / N5 底 / › 分隔", "当前页 aria-current=page", "下方间距 --space-base 16（页头组内档）"],
+      "dont": ["无底色纯文本导航", "margin 用 --space-lg（模块间档，页头组内应 --space-base）"]
+    },
+    {
       "id": "status-dot",
       "name": "状态指示灯 / 状态点",
       "category": "数据展示",
@@ -1265,7 +1295,7 @@
     },
     {
       "id": "stat-card--ring",
-      "name": "KPI 标准卡（环形布局 · 2026-08-06 用户拍板：KPI 仅此一版，stat-card--icon 已删除）",
+      "name": "KPI 环形卡（环形布局 · 2026-08-06 定义：KPI 第二版，与标准版 stat-card--icon 并存）",
       "category": "数据展示",
       "summary": "KPI 环形卡（KPI 环形版，2026-08-06 定义）：SVG 圆环 + stat-label/num/trend，环色 5 语义变体",
       "anatomy": {

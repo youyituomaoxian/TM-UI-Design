@@ -18,7 +18,9 @@
 .topbar .user{display:flex;align-items:center;gap:8px;}
 
 .topbar-brand{display:flex;align-items:center;gap:12px;}
-.topbar-logo{display:inline-flex;color:var(--text-on-brand);}
+.topbar-logo{display:inline-flex;align-items:center;height:32px;color:var(--text-on-brand);}
+/* logo 高度固定 32、宽度自适应（2026-08-12：占位符，后期替换项目 logo）；与标题间距由 .topbar-brand gap:12 固定 */
+.topbar-logo .ico{width:auto;height:32px;}
 .topbar-titles{display:flex;flex-direction:column;gap:2px;}
 .topbar-title{font-size:18px;font-weight:500;color:var(--text-on-brand);line-height:1.2;white-space:nowrap;}
 .topbar-subtitle{font-size:12px;color:var(--topbar-subtitle-fg);line-height:1.2;white-space:nowrap;}
@@ -29,17 +31,24 @@
   cursor:pointer;white-space:nowrap;background:transparent;border:none;padding:0;}
 .topbar-item:hover{opacity:.85;}
 .topbar-item .ico{color:currentColor;}
+/* 顶栏多语言下拉（2026-08-12：框架级双语，半透明胶囊同 theme-btn 视觉） */
+.lang-sel{position:relative;display:inline-block;}
+.lang-trigger{height:30px;padding:0 var(--space-md);display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.16);border:none;border-radius:var(--radius-round);color:var(--text-on-brand);cursor:pointer;font-size:13px;font-family:var(--font-cn);white-space:nowrap;}
+.lang-trigger:hover{background:rgba(255,255,255,.30);}
+.lang-trigger .ico{width:16px;height:16px;}
+.lang-panel{position:absolute;top:calc(100% + 6px);right:0;min-width:150px;background:var(--elev-overlay-surface);border:1px solid var(--n6);border-radius:var(--radius-md);box-shadow:var(--elev-overlay-shadow);padding:4px;display:none;z-index:50;}
+.lang-sel.open .lang-panel{display:block;}
+.lang-opt{height:32px;display:flex;align-items:center;gap:8px;padding:0 12px;font-size:14px;color:var(--n10);cursor:pointer;border-radius:var(--radius-base);font-family:var(--font-cn);}
+.lang-opt:hover{background:var(--n3);}
+.lang-opt.on{background:var(--primary-dis-bg);color:var(--primary-active);font-weight:500;}
+.lang-opt.is-disabled{opacity:.45;cursor:not-allowed;color:var(--n8);}
+.lang-opt.is-disabled:hover{background:transparent;}
 .topbar-sep{width:1px;height:16px;background:var(--topbar-sep-bg);}
 
 
 .sidebar{width:var(--sidebar-width);height:100%;background:var(--primary);color:var(--text-on-brand);padding:var(--space-base) var(--space-sm);flex-shrink:0;
   display:flex;flex-direction:column;overflow:hidden;
   transition:width var(--motion-duration-normal) var(--motion-ease-out);}
-.sidebar .group-title{font-size:12px;opacity:.7;padding:0 8px 8px;color:var(--text-on-brand);}
-
-.sidebar .tree .group-title{margin-top:12px;}
-.sidebar .tree .group-title:first-child{margin-top:0;}
-
 .sidebar .tree{flex:1 1 auto;min-height:0;overflow-y:auto;
   scrollbar-width:none;-ms-overflow-style:none;}
 .sidebar .tree::-webkit-scrollbar{width:0;height:0;display:none;}
@@ -95,8 +104,6 @@
 
 
 .sidebar.collapsed{width:var(--sidebar-collapsed-width);}
-.sidebar.collapsed .group-title{display:none;}
-
 .sidebar.collapsed .tree-label{display:none;} /* 折叠态隐藏菜单文字（原 display:contents 会把文字内容提升渲染、折叠后文字仍可见——2026-08-06 修复） */
 .sidebar.collapsed .tree-text,
 .sidebar.collapsed .tree-sw{display:none;}
@@ -119,7 +126,7 @@
 
 
 .page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px;}
-.page-actions{display:inline-flex;gap:8px;flex-wrap:wrap;}
+.page-actions{display:inline-flex;gap:8px;flex-wrap:wrap;margin-top:var(--space-base);}
 
 
 :root[data-theme="dark"]{--text-on-brand:var(--n11);}

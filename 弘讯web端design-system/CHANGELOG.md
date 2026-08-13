@@ -2,6 +2,24 @@
 
 ---
 
+## [1.9.14] — 2026-08-12 · 内容布局多样化（布局模式库）+ 分页器/面包屑修复 + 顶栏暗色切换
+
+### Changed
+- **顶栏多语言切换（框架级双语，2026-08-12 拍板）**：framework.css 新增 `.lang-sel` 系列（半透明胶囊下拉，同 theme-btn 视觉）；page-template 顶栏末位（暗色后）加语言下拉——简体中文（默认）/ English 可切换，日本語/한국어/Deutsch/Français/Русский/Español 置灰待支持；**框架级双语字典**（`data-i18n`/`data-i18n-title` 顶栏/底栏文案 + localStorage `hx-lang` 记忆，业务文案后续扩展）；`icons/language.svg` 手绘入库（B 端特有 16→17，共 199）；生成器 webPage 同步 + 7 测试页注入。RULES §0.1/§0.2 顶栏顺序加「语言」。
+- **顶栏 logo 占位符 + 亮暗按钮去胶囊（2026-08-12 拍板）**：framework.css `.topbar-logo` 高度固定 32（`.topbar-logo .ico{width:auto;height:32px}` 宽度自适应）+ page-template logo 加占位注释（后期替换项目 logo）；删 `.theme-btn` 胶囊背景（半透明圆角），亮暗按钮回退 `.topbar-item` 默认（纯图标、hover 降透明，与全屏/退出一致），HTML 同步删 `theme-btn` 类。
+- **作业树去菜单分类（2026-08-12 拍板）**：page-template 侧栏删 group-title 分类标题（生产监控/运营管理），顶级 tree-node（注塑车间/设备中心/运营中心/生产管理）直接并列；RULES §0.1 侧边栏 + §0.2 规则 8/9（并列 group-title → 顶级节点并列）同步；AGENTS/SOP 同步；7 测试页清理。
+- **布局模式库（用户拍板：框架/组件锁死、内容区构图开放）**：RULES §1.1b 重构为「必含区块 + 布局变体 A/B/C」（列表/详情/看板）+ 构图开放性总则 + 面包屑铁律（有父级路径必带）；SOP 步骤 5 新增「布局模式库」章节（Web 7 区块 + 移动 5 区块模式 + 选择路由表 + 论证式自造出口 + 示范页）；6 个同框架多样化示范页（`output/布局多样化测试/`：顶筛全宽表 / KPI 2×2+图告 / 图表主导+侧摘要 / 左右分栏 / 页签表单 / 左筛右表）。
+- **分页器**：门禁 `table.pager.required` 2500 字符窗口缺陷修复（列多/行多表格误报缺 pager，实测工单列表 pager 距表格 2876 字符）→ 改「本表格后至下一表格前」区间；RULES §1.1b 分页器规则（>5 行完整 `.pager` / ≤5 行尾部统一「共 N 条」复用 `.pg-tot` / 明细表豁免）。
+- **面包屑**：真源 `.breadcrumb` 改 **32px 高 + N5 底条带**（兑现 RULES §1.1b/§6.1「Breadcrumb 条 32 N5 底」规格）；margin `--space-lg` 24 → `--space-base` 16（页头组内档，§4.3 补录）。
+- **纵向溢出根治**：utilities.css `.col-* > .card` min-height:0 → **auto**（兑现 §4.4 文档承诺，表格/时间轴等定高内容不再溢出卡片）。
+- **顶栏暗色切换按钮（2026-08-12 拍板，推翻 2026-07-31「模板不内置切换」）**：framework.css 新增 `.theme-btn` 半透明胶囊；page-template 顶栏「全屏」后加「暗色模式」按钮（moon/sun svg + `data-theme` 切换 + localStorage 记忆）；RULES §0.1/§0.2 顶栏顺序加「暗色模式」。
+- **附录 B 双模式**：亮暗双映射（2a 亮色 `:root` + 2b 暗色 `:root[data-theme="dark"]` 块，palLight/palDark 各调一次）；C 段改「暗色骨架深色（framework.css 已兑现 `.topbar/.sidebar/.footer → var(--brand-surface)`）」。
+- **克隆流程**：SOP 克隆清单 3→6 件（补删 head 展示样式 `<style>` 块 + link 相对路径层级）；两端 RULES 视觉自检截图 `--virtual-time-budget` → `--timeout`（不驱动 CSS 动画）。
+- **5问/6问统一**：两端 RULES 软规则清单「布局决策 5 问」→「6 问」（与 SOP 一致）。
+- **验证**：ci-local 86 pass；6 测试页 + page-template 门禁 0 HIGH；森绿 #2E7D5B 双模式页实测（亮色森绿 / 暗色深绿黑 #020604）。
+
+---
+
 ## [1.9.13] — 2026-08-07 · 图标库收编三阶段 + Web 图标重画替换（144 全量）
 
 ### Changed

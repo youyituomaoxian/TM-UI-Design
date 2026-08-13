@@ -93,7 +93,7 @@
 | ⚠️ 仅大文本 | `n1 on danger` 4.08 / `n1 on success` 3.46 / `n1 on warning` 2.38 | — | 白 on 功能色不达正文线 |
 | ⛔ 禁止 | `n8 on n1` 2.07 / `n6 on n1` | — | 禁作正文 |
 
-**组件文字色现状**：`.tag-*`/`.badge-*`/`.alert-*` 已用 `-soft 浅底 + 深字档`（suc 5.44 / err 5.07 / run 4.76 / warn n11 深字）；`.btn-primary` 白字；功能色按钮深字 n11。**禁止页面覆盖回白 on 功能色**（门禁 `wcag.contrast.banned` 两端拦截，含 hex `#fff`）。
+**组件文字色现状（两端策略不同，08-05 拍板移动白字首选）**：Web 端 `.tag-*`/`.badge-*`/`.alert-*` 用 `-soft 浅底 + 深字档`（suc 5.44 / err 5.07 / run 4.76）；**移动端功能色标签/按钮白字首选（实底 + 白字，视觉通透，深字方案已废弃，见移动 RULES §10.3b）**。门禁 `wcag.contrast.banned` 仅拦 hex `#fff`/`white` 硬编码白字（白字须走 `var(--n1)`），**不拦移动白字首选组合**。
 
 ---
 

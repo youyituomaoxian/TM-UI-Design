@@ -4,6 +4,20 @@
 
 ---
 
+## [1.14.7] — 2026-08-12 · 内容区构图开放（与 Web 对称）+ 流程修正
+
+### Changed
+- **§1.1b 开放总则（用户拍板：框架/组件锁死、内容区构图开放）**：与 Web 对称，区块排列/顺序/取舍按「布局决策 6 问 + 布局模式库」（GENERATION-SOP 步骤 5）自由选择，受 343 列宽 + gap 12 间距体系约束。
+- **§9.6 首页区域顺序可调**：固定顺序 → 可选区域 + 顺序按业务可调（告警优先页 = 列表提前 / 工具页 = 金刚区置顶）；铁律保留（首屏 ≥3 区域、透明 StatusBar、区域间距 16px）。
+- **§10.9 视觉自检截图**：`--virtual-time-budget` → `--timeout`（不驱动 CSS 动画，图表空白）。
+- **5问/6问统一**：软规则清单「布局决策 5 问」→「6 问」。
+- **预览壳亮暗切换（2026-08-12 拍板：按钮在手机框外，非页面内容）**：template.css 新增 `.stage-wrap`（预览壳包裹层，顶部 44px 按钮区）+ `.theme-toggle`（半透明胶囊，absolute 顶部右缘对齐手机框）；page-template 加框外 moon/sun 切换按钮 + JS（`data-theme` + localStorage `hx-theme` 记忆）；agent-starter / 展示页测试 / docs/examples 全部移动 HTML 同步注入；**真实移动端页面内容无切换按钮**（预览壳层自带）。RULES §1.1b 补「预览壳亮暗切换」说明（克隆勿删）。
+- **图标 sun/moon 入库**：`icons/sun.svg` + `moon.svg`（stroke 1.8 规格），icons.md 登记（共 184→186）。
+- **gen-examples.js**：mobilePage 加预览壳按钮（与 page-template 同构）+ brandCover 双模式（上轮）。
+- **验证**：ci-local 86 pass。
+
+---
+
 ## [1.14.6] — 2026-08-07 · 底部导航 3-5 项收编 + 图标同步 Web 新库（129）
 
 ### Changed

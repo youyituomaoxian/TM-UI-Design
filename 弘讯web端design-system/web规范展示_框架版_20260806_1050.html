@@ -16,7 +16,7 @@
 
   覆盖范围：布局骨架(G8/G9) · 品牌/中性/功能/图表色 · 12 级字阶 ·
             间距/圆角/投影/Elevation/动效/密度 · 核心 11 组件(含状态) ·
-            暗色模式(仅色板参考，不内置切换开关，严守 17:05 决策)。
+            暗色模式（2026-08-12 拍板：模板内置切换按钮，默认品牌双模式）。
             生产组件库为 packages/web-ui（shadcn/ui，33 件）。
 
   规则：所有颜色走 :root 变量；组件用预定 class；无硬编码 hex；
@@ -174,7 +174,6 @@
       <!-- ===== 侧栏（章节导航 · G9 可折叠） ===== -->
   <aside class="sidebar">
     <div class="tree">
-      <div class="group-title">规范导航</div>
       <div class="tree-node tree-node--child" data-leaf onclick="scrollToSec('overview')"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/></svg></span><span class="tree-text">总览</span></div>
       <div class="tree-node tree-node--child" data-leaf onclick="scrollToSec('brand')"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/></svg></span><span class="tree-text">品牌色</span></div>
       <div class="tree-node tree-node--child" data-leaf onclick="scrollToSec('functional')"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3.5 22 20H2z"/></svg></span><span class="tree-text">功能色 / 图表色</span></div>

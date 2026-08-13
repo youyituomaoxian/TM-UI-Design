@@ -1127,12 +1127,11 @@ function checkTemplateRootSync(html, canonicalCss) {
   return violations;
 }
 
-// ===== WCAG 2.0 前景/背景对比度门禁（2026-08-05 对抗审查 DEFECT-07：与 Web 端同款，防深字方案回归）=====
+// ===== WCAG 2.0 前景/背景对比度门禁（2026-08-05 对抗审查 DEFECT-07；2026-08-13 对齐白字首选拍板：功能色标签白字合法，仅拦 hex 硬编码白字与浅灰底白字）=====
 // 亮色作用域（:root 默认）已知禁止组合：白 on 功能色 / 浅底+同系色字 / 白 on 浅灰。
 // 暗色 dark n1 是深色（合法），不适用白字判定；hex 前景（#fff/white）也拦截。
 function checkWcagContrast(rules, varsByTheme) {
   const BANNED = [
-    { bg: '--suc', fg: '--n1' }, { bg: '--warn', fg: '--n1' }, { bg: '--run', fg: '--n1' }, { bg: '--err', fg: '--n1' },
     { bg: '--suc-text', fg: '--suc' }, { bg: '--warn-text', fg: '--warn' }, { bg: '--err-text', fg: '--err' },
     { bg: '--n5', fg: '--n1' }, { bg: '--n4', fg: '--n1' },
   ];
@@ -1149,7 +1148,7 @@ function checkWcagContrast(rules, varsByTheme) {
       violations.push({
         line: r.line, src: r.src, severity: 'MEDIUM', contract: 'wcag.contrast.banned',
         sel: r.selectors.join(','),
-        msg: '已知 WCAG 禁止组合：hex 白字（#fff/white）on 彩色底（RULES §10.3b）——功能色底用深字 n10，白字仅允许 on primary'
+        msg: '已知 WCAG 禁止组合：hex 白字（#fff/white）on 彩色底（RULES §10.3b）——白字用 var(--n1)，禁 hex/white 硬编码'
       });
       continue;
     }
@@ -1162,7 +1161,7 @@ function checkWcagContrast(rules, varsByTheme) {
         violations.push({
           line: r.line, src: r.src, severity: 'MEDIUM', contract: 'wcag.contrast.banned',
           sel: r.selectors.join(','),
-          msg: `已知 WCAG 2.0 禁止组合：${b.fg}（白）on ${b.bg}（功能色/浅底）对比度 <4.5:1（RULES §10.3b）——组件模板已改深字方案，页面请勿覆盖回白字`
+          msg: `已知 WCAG 2.0 禁止组合：${b.fg} on ${b.bg}（浅底深字/浅灰底白字）对比度 <4.5:1（RULES §10.3b）——功能色标签白字首选（08-05 拍板），浅底深字组合已废弃`
         });
       }
     }

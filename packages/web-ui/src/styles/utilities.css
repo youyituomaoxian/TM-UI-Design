@@ -79,7 +79,7 @@
 
 
 .col-3,.col-4,.col-5,.col-6,.col-7,.col-8,.col-9,.col-12{display:flex;flex-direction:column;gap:var(--space-base);}
-.col-3 > .card,.col-4 > .card,.col-5 > .card,.col-6 > .card,.col-7 > .card,.col-8 > .card,.col-9 > .card,.col-12 > .card{flex:1;min-height:0;}
+.col-3 > .card,.col-4 > .card,.col-5 > .card,.col-6 > .card,.col-7 > .card,.col-8 > .card,.col-9 > .card,.col-12 > .card{flex:1;min-height:auto;}
 .col-3{grid-column:span 3;}
 .col-4{grid-column:span 4;}
 .col-5{grid-column:span 5;}
@@ -167,11 +167,11 @@
 .metric-unit{font-size:12px;color:var(--n8);font-weight:400;}
 
 
-.bars{display:flex;align-items:flex-end;gap:10px;height:88px;margin-top:12px;}
+.bars{display:flex;align-items:flex-end;gap:var(--space-md);height:88px;margin-top:12px;}
 .bar-col{flex:1;background:var(--secondary);border-radius:var(--radius-base) var(--radius-base) 0 0;position:relative;}
 .bar-col--muted{background:var(--n7);}
 .bar-cap{position:absolute;top:-16px;left:0;right:0;text-align:center;font-size:11px;color:var(--n8);font-family:var(--font-mono);}
-.bars-axis{display:flex;gap:10px;margin-top:6px;}
+.bars-axis{display:flex;gap:var(--space-md);margin-top:6px;}
 .bars-axis span{flex:1;text-align:center;font-size:11px;color:var(--n8);}
 
 
@@ -184,6 +184,8 @@
 
 
 .card-head-actions{margin-left:auto;display:inline-flex;align-items:center;gap:8px;}
+/* 右侧状态标签/元信息区（2026-08-13 治本：与 actions 同右对齐，语义区分——meta=状态标签/计数，actions=操作按钮） */
+.card-head-meta{margin-left:auto;display:inline-flex;align-items:center;gap:8px;}
 
 
 .c-tech-blue{color:var(--chart-tech-blue);}

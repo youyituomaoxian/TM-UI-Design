@@ -2,7 +2,7 @@
 
 > 注塑机 / 工业控制 / 智能控制系统 · 统一描边风格（stroke-width 1.8 · linecap/linejoin round · fill none · currentColor）
 > viewBox 24×24，主体绘制安全区 2–22。语义色联动：状态图标用 `var(--run/--err/--warn/--n7)` 等（同 `.m-dot`/`.mtag`）。
-> 尺寸类：`.m-icon-24 / .m-icon-20 / .m-icon-16`（4px 网格）。**共 184 个**（2026-08-07 索引对齐；123 个与 Web 端新图标同源同步 + 6 个移动端独有语义已重画入库：report_work 报工 / production 产量统计 / schedule 排产任务 / temp_zone 温度区段 / load_param 工艺调取 / meter 电表）。
+> 尺寸类：`.m-icon-24 / .m-icon-20 / .m-icon-16`（4px 网格）。**共 186 个**（2026-08-07 索引对齐；123 个与 Web 端新图标同源同步 + 6 个移动端独有语义已重画入库：report_work 报工 / production 产量统计 / schedule 排产任务 / temp_zone 温度区段 / load_param 工艺调取 / meter 电表；2026-08-12 新增 sun/moon 亮暗切换）。
 
 | 文件名 | 图标 | 用途 | 类目 |
 |---|---|---|---|
@@ -18,6 +18,8 @@
 | `trash.svg` | 删除 | 删除操作 | 通用导航 |
 | `edit.svg` | 编辑 | 编辑/修改 | 通用导航 |
 | `refresh.svg` | 刷新 | 数据刷新 | 通用导航 |
+| `sun.svg` | 日（亮色） | 预览壳亮/暗切换（亮态图标） | 通用导航 |
+| `moon.svg` | 月（暗色） | 预览壳亮/暗切换（暗态图标） | 通用导航 |
 | `injection_machine.svg` | 注塑机 | 注塑机本体（简化符号：底座+机筒+料斗） | 设备 |
 | `robot_arm.svg` | 机械臂 | 取件机械手、自动化产线 | 设备 |
 | `mold_temp.svg` | 模温机 | 模温机/温控设备 | 设备 |

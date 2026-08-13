@@ -14,7 +14,8 @@ cd TM-UI-Design
 
 > 仓库为**公开**——任何人可直接 clone（无需加成员）；如需限制访问可改回私有并加 Collaborators。
 > clone 后即插即用：
-> - **codex / Claude Code**：仓库根 `AGENTS.md` 自动加载，零配置。
+> - **codex / Reasonix / Cursor / 通用 Agent**：仓库根 `AGENTS.md` 自动加载，零配置。
+> - **Claude Code**：读 `CLAUDE.md`（`@AGENTS.md` 导入，与通用入口同源）。
 > - **workbuddy**：项目级 skill 自动生效（`.workbuddy/skills/tm-design-system/`）。
 > - **其他 Agent**：设环境变量 `TM_DESIGN_REPO=<clone 路径>`。
 > - **规范更新**：`git pull`（维护者 push 后）。

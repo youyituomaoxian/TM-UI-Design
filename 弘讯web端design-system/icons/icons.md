@@ -4,7 +4,7 @@
 > 统一规格：viewBox 24×24 · stroke-width 1.8 · linecap/linejoin round · fill none · currentColor
 > 尺寸类（template.css 已落地）：`.ico` 16px（表格/菜单操作）· `.btn-ico` 16px（按钮内）· `.tree-ico` 16px（侧栏树节点）· `.kpi-ico` 20px / `.kpi-ico--lg` 24px（指标卡）
 > 语义色联动：状态图标用功能色 token（`var(--suc/--warn/--err/--run)` 等）
-> 通用 70 个与移动端共用（icons/ 同源），B 端特有 14 个，共 196 个。
+> 通用 70 个与移动端共用（icons/ 同源），B 端特有 17 个，共 199 个。
 
 ## B 端特有（14）
 
@@ -24,6 +24,9 @@
 | `columns.svg` | 列设置 | 表格列显隐 | B端表格 |
 | `eye_off.svg` | 隐藏 | 密码/内容隐藏 | B端操作 |
 | `fullscreen.svg` | 全屏 | 全屏展开 | B端操作 |
+| `sun.svg` | 日（亮色） | 顶栏亮/暗模式切换（亮态图标） | B端操作 |
+| `moon.svg` | 月（暗色） | 顶栏亮/暗模式切换（暗态图标） | B端操作 |
+| `language.svg` | 语言 | 顶栏多语言切换（地球） | B端操作 |
 
 > 通用 70 个索引见移动端 `icons/icons.md`（跨端共用同一份 SVG）。
 

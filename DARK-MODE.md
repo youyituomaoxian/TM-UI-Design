@@ -3,6 +3,7 @@
 > 2026-07-30 · C 包产物
 > 真源：`tokens.json` 顶层 `dark` 节（值来自 brand-color-engine `generatePalette('#005EAE',{mode:'dark'})` 快照，引擎为唯一真源，勿手改）
 > 切换：`page-template.html` 的 `:root[data-theme="dark"]` 属性选择器
+> **内置切换（2026-08-12 拍板）**：`page-template.html` 顶栏已内置「暗色模式」按钮（`.topbar-item.theme-btn`，位于 首页|用户名|改密|退出|全屏|暗色 顺序末位，RULES §0.1）——点击切换 `<html data-theme>` + localStorage（`hx-theme`）记忆选择；**每次 Web 端生成（克隆 page-template）即默认带亮/暗双模式自由切换**。
 > 国际对标：见 `TOKENS-EVIDENCE.md` 第八节（引证 16–20：Material / AntD / Apple HIG / Atlassian / Polaris）
 > 适用：Web 后台（Ant Design 风）+ 移动端（微信小程序 / Android / iOS 跨端）
 
@@ -179,7 +180,7 @@ Agent 克隆模板时自动继承此规则，无需逐页手写。
 1. **功能色暗色值分平台**：Web 成功绿 `#52C41A` / 移动端 `#34D399`（均来自 `darkDefaults.functional`）。Web 错误 `#FF4D4F` / 移动端 `#F87171`；警告 Web `#FFA940` / 移动端 `#FBBF24`；运行两平台同 `#22C55E`。**不可混用**。
 2. **中性色阶级数**：Web 11 级（N1–N11），移动端 10 级（N1–N10）。
 3. **主色按下态键名**：Web `click`，移动端 `pressed`。
-4. **移动端特有变量**：`--suc-pressed/--suc-dis/--suc-text`、`--run-pressed/--run-bg/--run-border`、`--link` 暗色 `#60A5FA`，均见 `tokens.json` `dark.colors`。
+4. **移动端特有变量**：`--suc-pressed/--suc-dis/--suc-text`、`--run-pressed/--run-bg/--run-border`、`--link` 暗色 `#60A5FA`，均见 `tokens.json` `dark.colors`（`--link` 已于 2026-08-13 回填 tokens；**图表色 `--chart-*` 暗色沿用亮色、不在 dark 节**，见 §三「暗色不重定义 --chart-*」）。**键名映射**（tokens 引擎输出键 → CSS 变量键）：`active`→`--*-pressed`、`disabled`→`--*-dis`、`text`→`--*-text`（引擎等式约束，勿改 tokens 键名）。
 
 ---
 

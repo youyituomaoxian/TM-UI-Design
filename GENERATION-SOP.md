@@ -76,13 +76,14 @@ cp 弘讯web端design-system/page-template.html "<用户项目>/output/机器群
 cp 弘讯移动端design-system/page-template.html "<用户项目>/output/设备台帐_$(date +%Y%m%d_%H%M).html"
 ```
 
-**克隆后必须做的三件事：**
+**克隆后必须做的事（2026-08-12 更新：6 件）：**
 
 1. **删 demo（可执行边界）**：Web page-template 已在 `<main class="content">` 内用 `<!-- DEMO 展示段开始 -->` / `<!-- DEMO 展示段结束 -->` 明确标记全部 demo section。删除两标记之间的全部内容（stat-grid KPI 演示 / callout / swatch / 字阶 / 色板 / 组件演示等），保留 `.app` 框架外壳。**KPI 统计卡**按业务需要**重建为 `stat-card--icon` 标准版**（components.json 已登记）；禁止保留 demo 简约卡或自造 KPI 样式。
-2. **改 CSS link 为指向仓库的相对路径**（克隆自 page-template 后必须改；移动端同理；脚手架自动处理）。
+2. **改 CSS link 为指向仓库的相对路径**（克隆自 page-template 后必须改；移动端同理；脚手架自动处理）。**相对层级按落盘目录计算**：output/ 直下层 = `../弘讯web端design-system/template.css`；output/ 子目录（如 `output/某测试/`）= `../../弘讯web端design-system/template.css`——层级写错 → CSS 加载失败（token.undefined HIGH + 表格无样式）。
 3. **注入克隆凭证 meta**（P1 门禁）：`<head>` 内加 `<meta name="x-template-clone" content="弘讯web端design-system/page-template.html">`（移动端 content 换 `弘讯移动端design-system/page-template.html`）——**脚手架已自动注入，手动克隆必须自己加**；B 端/手机壳页面缺此 meta → 门禁 `template.clone.missing` HIGH。
-4. **定制作业树 + 图标从库取（2026-08-07 拍板）**：作业树**结构零改动**（层级/图标/折叠/选中/group-title 契约，RULES §0.2），**节点文本/分组/选中态按当前系统业务定制**（禁保留制造业示例树）；页面图标一律从 `<对应端>/icons/` 取（`icons/icons.md` 索引，path 内联进 `.ico/.tree-ico/.kpi-ico` 等尺寸类，规格 viewBox 24/stroke 1.8），库缺才手写并上报（RULES §7.9③）。
+4. **定制作业树 + 图标从库取（2026-08-07 拍板；2026-08-12 去菜单分类）**：作业树**结构零改动**（层级/图标/折叠/选中/**无 group-title 分类、顶级节点并列**契约，RULES §0.2），**节点文本/分组/选中态按当前系统业务定制**（禁保留制造业示例树）；页面图标一律从 `<对应端>/icons/` 取（`icons/icons.md` 索引，path 内联进 `.ico/.tree-ico/.kpi-ico` 等尺寸类，规格 viewBox 24/stroke 1.8），库缺才手写并上报（RULES §7.9③）。
 5. **移动端底部导航（2026-08-07 收编）**：`.bottomnav` 内 `.bn-item` **3-5 个**，按业务需求增减（最少 3、最多 5，不是定死 3 个）；无 BottomNav 的页面（登录/详情等）合法不挂；home indicator 挂最后一项后。门禁 `bottomnav.count` MED 兜底（移动 RULES §1.1b）。
+6. **删 head 展示样式 `<style>` 块（2026-08-12 补）**：page-template 自带展示页专用 `<style>`（`.sec/.swatch/.motion-*/.type-*/.callout/.kv/.comp-*` 等约 52 行）——业务页克隆后**删除该 `<style>` 块**（保留其后的内联 `:root` 同步副本，同步规则不变）。残留它会带来每页 27-34 条 MED 噪音（裸 font-size / grid.4px / token.undefined 隐患）。删除边界：以 `/* 仅布局/容器助手` 注释开头的 `<style>` 块。
 
 **⚠️ 禁参照既有页面 DOM（2026-08-06 用户拍板）**：克隆后页面结构一律按 `RULES.md §1.1b` + `components.json` + `CHART-SPEC.md` **从零填充**。**禁止**参照 output/、packages/ 或任何既有页面的 DOM 拼新页（既有页面可能含历史漂移，参照它会把漂移复制进新页）。**唯一可复制的结构 = 克隆源 page-template 的框架外壳本身**。
 
@@ -138,6 +139,46 @@ cd <端目录> && "$NODE" validate-spec.js <用户项目路径>/output/<产出�
 4. **倾向**：业务上倾向什么布局（栅格占比 / 排列方式），而非默认对半均分？
 5. **论证**：这个布局决策的理由能说清楚吗？换一种布局会更差吗？
 6. **高度**：这一行每张卡的高度由谁决定？（定高卡 vs 弹性卡，Web RULES §4.4b）有无定高卡与弹性卡混排？定高卡是否会被行等高拉伸？
+
+**布局模式库（2026-08-12 拍板：区块级模式 + 自由组合，非整页骨架枚举）**：
+
+> **原则**：框架层（顶栏/侧栏/底栏；移动导航）与组件层锁死；**页面构图层开放**——库存「布局原子模式」，Agent 按业务特征为每个区块选模式后**自由组合**拼装整页（组合空间 = 模式数相乘）。模式库是**参照与下限，不是白名单**：库中模式表达不了的业务形态 → 走 §7.9/§10.10 论证式自造（三步判定 + 值落 token）→ 视觉验证 → 成熟形态上报补库（闭环演进）。门禁只保组件一致性与防溢出，不锁构图。
+
+**Web 区块模式（7 区块）**：
+
+| 区块 | 模式（按业务维度覆盖） |
+|---|---|
+| 页头区 | A 面包屑条+标题+操作（**有父级路径必用**）/ B 直接标题（**仅顶级入口页可无面包屑**）/ C 页签切换页头 |
+| 筛选区 | A 顶部筛选条（筛选项 ≤4） / B 左筛选卡 303（筛选项多/常驻） / C 折叠筛选（高级筛选） |
+| KPI 区 | A 单行 4 卡 stat-grid / B 2×2 网格 / C 1+3 混合（主指标大卡+3 小卡） / D 环形卡 ring |
+| 图表区 | A 单图全宽 / B 7+5 双图 / C 6+6 双图 / D 9+3 主图+窄摘要 / E 图+列表混排 |
+| 表格区 | A 全宽表格 / B 嵌入侧栏表格（明细/参数） / C 双列表格对比 / D 明细小表（≤5 行，尾部「共 N 条」） |
+| 详情信息区 | A 键值对网格 / B 左右分栏 / C 纵向堆叠 / D 页签分组 |
+| 日志/时间轴区 | A 时间轴 / B 表格 / C 紧凑列表 |
+
+**移动端区块模式（5 区块，受 343 宽 + gap 12 约束）**：
+
+| 区块 | 模式 |
+|---|---|
+| 首焦区 | A Hero 品牌蓝 / B 搜索+快捷入口 / C 无（直接列表） |
+| 金刚区 | A 单行 4-5 入口 / B 双行 ≤8 入口 / C 无 |
+| KPI 概览 | A 三列等宽条 / B 卡片网格 |
+| 列表区 | A 双行列表 92 / B 卡片网格 / C 单行紧凑 |
+| 组合顺序 | §9.6 固定顺序 → **可选区域 + 顺序按业务可调**（告警优先页 = 列表提前） |
+
+**选择路由（业务特征 → 推荐组合，布局随业务推导非枚举）**：
+
+| 业务特征 | 推荐组合 |
+|---|---|
+| 筛选项 ≤4、查询为主 | 页头A + 筛选A + 表格A（工单列表示范） |
+| 主指标 ≥4、实时监控 | 页头B + KPI 2×2 + 图表E + 表格A（设备看板示范） |
+| 分析型（图多表少） | 页头B + KPI 单行 + 图表D + 图表B + 表格D（生产分析示范） |
+| 单对象详情 | 页头A + 详情B 左右分栏 + 日志A（设备详情示范） |
+| 数据录入/配置 | 页头A + 筛选B + 页签表单 |
+| 移动首页（多入口） | Hero + 金刚双行 + KPI 条 + 列表 |
+| 移动告警（时效优先） | 列表区提前 + 筛选 Tab + 状态 Tag |
+
+**示范页**（同框架 4 布局，真实浏览器截图对照）：`output/布局多样化测试/`。
 
 **结构自检清单（门禁项速查；完整版见 RULES 对应节 + 附录 F）**：
 
@@ -199,26 +240,43 @@ cd <端目录> && "$NODE" validate-spec.js <用户项目路径>/output/<产出�
 - 明确品牌色 ≠ `#005EAE`（如「用森绿 #2E7D5B」「绛红主题」）
 - 暗色模式（「夜间模式 / dark / 暗色」）
 
-### 步骤 1：调引擎拿调色板
+### 步骤 1：调引擎拿「亮 + 暗」双调色板（2026-08-12 拍板：亮暗双映射）
 
 ```bash
 cd brand-color-engine
-"$NODE" generate.js <品牌色> <mode> <platform>
+"$NODE" generate.js <品牌色> light <platform>   # 亮色板 → 步骤 2a 映射进 :root
+"$NODE" generate.js <品牌色> dark  <platform>   # 暗色板 → 步骤 2b 映射进 :root[data-theme="dark"]
 # 例：node generate.js 2E7D5B light web
-#     node generate.js 005EAE dark mobile
+#     node generate.js 2E7D5B dark  web
 ```
 
 - `brand`：3/6 位十六进制（带不带 # 均可）。非法输入（如 `xyz`）会 **throw**，不会静默产出垃圾色。
-- `mode`：`light`（默认）/ `dark`。
+- `mode`：`light` / `dark`（**双模式须各调一次**）。
 - `platform`：`web`（默认）/ `mobile`。
-- 在 Agent 中：`const { generatePalette } = require('./generate.js'); const pal = generatePalette(brand,{mode,platform});`
+- 在 Agent 中：`const { generatePalette } = require('./generate.js'); const palLight = generatePalette(brand,{mode:'light',platform}); const palDark = generatePalette(brand,{mode:'dark',platform});`
 
-返回结构：`{ primary, neutral[], functional, background, chart[], gradient[], css{} }`。
+返回结构（两端同构）：`{ primary, neutral[], functional, background, chart[], gradient[], css{} }`。
+
+> **双模式（2026-08-12 拍板）**：非默认品牌页默认生成**亮 + 暗两套**——顶栏「暗色模式」按钮（page-template 已内置）驱动 `<html data-theme>` 切换、localStorage 记忆。不再按「用户是否提『暗色』」二选一；无论提不提暗色，都做双模式。
 > ⚠️ **引擎 `css` 字段是旧长名 `--color-*`（如 `--color-primary`/`--color-neutral-1`），设计系统现行是短名，旧长名已废弃。禁止直接注入 `pal.css`。** 必须按下表把色值**映射进模板短名 `:root`**。
 
-### 步骤 2：映射进克隆模板的短名 :root
+### 步骤 2：亮暗双映射进克隆模板（2026-08-12 拍板）
 
-**通用规则**：`cp agent-starter.html <用户项目>/output/<页面语义名>_<YYYYMMDD>_<HHmm>.html` 后（**落盘「用户项目」output/，自动命名，见 §① 步骤4 产出落盘规则**），按下表替换 `:root` 里对应变量的**值**（变量名不动）。引擎只改色值，布局 / 字号 / 字重 / 圆角 / 投影 / 字体仍服从设计系统 spec。
+**通用规则**：`cp agent-starter.html <用户项目>/output/<页面语义名>_<YYYYMMDD>_<HHmm>.html` 后（**落盘「用户项目」output/，自动命名，见 §① 步骤4 产出落盘规则**），按下表 A/B/C/D 映射（变量名不动，只改值）。引擎只改色值，布局 / 字号 / 字重 / 圆角 / 投影 / 字体仍服从设计系统 spec。
+
+- **步骤 2a（亮色）**：把 **palLight** 值替换内联 `:root{}` 的对应变量（原单模式流程不变）。
+- **步骤 2b（暗色，新增）**：把 **palDark** 值写进内联**新增块** `:root[data-theme="dark"]{}`（紧接 `:root{}` 之后）：
+
+  ```css
+  :root[data-theme="dark"]{
+    --primary:#2E7D5B; --primary-hover:#43B584; --primary-active:#276A4D; --primary-dis-bg:#374151; --primary-dis-fg:#9CA3AF;
+    --n1:#1E293B; --n2:#243044; /* … */ --n11:#FFFFFF;   /* palDark.neutral[i].hex 反相阶 */
+    --suc:#52C41A; --suc-soft:#162312; --suc-fg:#FFFFFF; /* … palDark.functional 固定暗色值 */
+    --brand-surface:#020604; --brand-surface-fg:#FFFFFF; /* palDark.background.brandSurface */
+  }
+  ```
+
+  顶栏「暗色模式」按钮驱动 `<html data-theme>` 切换；template.css 暗色骨架规则（`.topbar/.sidebar/.footer → var(--brand-surface)`，framework.css 已内置）自动把骨架转深色（默认品牌深蓝黑 / 自定义品牌深品牌色）。
 
 #### A. 品牌色 + 中性色（两端通用）
 
@@ -280,20 +338,12 @@ cd brand-color-engine
 
 > ⚠️ Web 端**任何文件禁 `#10B981`**（移动端成功绿，Web 用 `#389E0D`）。运行/在线绿 `#16A34A` 两端共用（≠成功绿）。
 
-#### C. 暗色模式额外处理：brand-surface
+#### C. 暗色骨架深色：brand-surface（已由真源兑现）
 
-> **缺口说明**：模板顶栏 / 侧栏 / 底栏（Web）/ 导航栏（移动端）的 `background` 引用 `var(--primary)`。亮色下 `--primary` = 品牌色，正确；**暗色下 `--primary.default` 是亮主色**（005EAE dark 特例 = `#3B82F6`），顶栏会过亮。
+> **说明**：暗色下顶栏 / 侧栏 / 底栏（Web）/ 导航栏（移动端）的骨架背景应转**深品牌色** `--brand-surface`（默认品牌深蓝黑 `#0A2540` / 自定义品牌 = palDark.background.brandSurface），避免用亮主色。**framework.css 暗色骨架规则（`.topbar/.sidebar/.footer → var(--brand-surface)`）已内置**，页面只需在步骤 2b 暗色块里写对 `--brand-surface` 值即可，无需改组件 `background`。
 
-暗色模式必须：
-
-1. 在 `:root` 新增变量：`--brand-surface: <pal.background.brandSurface>;`
-   - 005EAE dark = `#0A2540`；任意品牌 dark = `adjustLightness(brand,-32)`
-2. 把顶栏 / 侧栏 / 底栏 / 导航栏的 `background:var(--primary)` 改为 `background:var(--brand-surface)`
-   - Web：`.topbar` / `.sidebar` / `.footer`
-   - 移动端：`.navbar`
-   - 这些选择器不在门禁 contract 内，改引用变量不算改结构规格（尺寸 / 字重 / 圆角仍按 contract）
-
-> 暗色样例只改配色，**不改组件结构规格**（尺寸 / 字重 / 圆角仍按 contract）。任意品牌暗色留给使用者（本 SOP 暗色样例以 005EAE dark 特例为准，引擎该路径零漂移）。
+- 005EAE dark = `#0A2540`；任意品牌 dark = palDark.background.brandSurface（引擎直接给）。
+- 这些选择器不在门禁 contract 内，暗色只改配色，**不改组件结构规格**（尺寸 / 字重 / 圆角仍按 contract）。
 
 #### D. 不映射的变量（保留模板原值）
 

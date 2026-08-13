@@ -37,21 +37,53 @@ ${webCss}
       <div class="topbar-titles"><span class="topbar-title">弘讯科技</span><span class="topbar-subtitle">智能工厂管理系统</span></div></div>
     <div class="spacer"></div>
     <div class="topbar-right">
-      <span class="topbar-item">首页</span><span class="topbar-sep"></span><span class="topbar-item"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>管理员</span>
-      <span class="topbar-sep"></span><button class="topbar-item" title="修改密码"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-      <button class="topbar-item" title="退出登录"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
-      <span class="topbar-sep"></span><button class="topbar-item" title="全屏"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M16 21h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
+      <span class="topbar-item"><span data-i18n="topbar.home">首页</span></span><span class="topbar-sep"></span><span class="topbar-item"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span data-i18n="topbar.admin">管理员</span></span>
+      <span class="topbar-sep"></span><button class="topbar-item" title="修改密码" data-i18n-title="topbar.changepwd"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+      <button class="topbar-item" title="退出登录" data-i18n-title="topbar.logout"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
+      <span class="topbar-sep"></span><button class="topbar-item" title="全屏" data-i18n-title="topbar.fullscreen"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M16 21h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
+      <span class="lang-sel" id="langSel">
+        <button class="lang-trigger" id="langTrigger" type="button" title="语言 / Language">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a15 15 0 0 1 0 18"/><path d="M12 3a15 15 0 0 0 0 18"/><path d="M7.5 12a14 14 0 0 0 2 7M16.5 12a14 14 0 0 1-2 7"/></svg>
+          <span id="langLabel">简体中文</span>
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="lang-panel">
+          <div class="lang-opt on" data-lang="zh">简体中文</div>
+          <div class="lang-opt" data-lang="en">English</div>
+          <div class="lang-opt is-disabled" data-lang="ja">日本語</div>
+          <div class="lang-opt is-disabled" data-lang="ko">한국어</div>
+          <div class="lang-opt is-disabled" data-lang="de">Deutsch</div>
+          <div class="lang-opt is-disabled" data-lang="fr">Français</div>
+          <div class="lang-opt is-disabled" data-lang="ru">Русский</div>
+          <div class="lang-opt is-disabled" data-lang="es">Español</div>
+        </div>
+      </span>
     </div>
   </header>
   <div class="body">
     <aside class="sidebar">
-      <div class="group-title">设备作业树</div>
       <div class="tree">
-        <div class="tree-node"><span class="tree-sw">▾</span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20h20V9l-6 4V9l-6 4V4H2z"/><path d="M6 20v-4M10 20v-4M14 20v-4M18 20v-4"/></svg></span><span class="tree-label">注塑车间</span></div>
-        <div class="tree-node on tree-node--child"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/></svg></span><span class="tree-label">A 线 · 注塑机 A-01</span></div>
-        <div class="tree-node tree-node--child"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="18" r="3"/><circle cx="18" cy="6" r="3"/><path d="M8.5 15.5 15.5 8.5"/></svg></span><span class="tree-label">B 线 · 机械手 C-07</span></div>
-        <div class="tree-node"><span class="tree-sw">▾</span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20h20V9l-6 4V9l-6 4V4H2z"/><path d="M6 20v-4M10 20v-4M14 20v-4M18 20v-4"/></svg></span><span class="tree-label">装配车间</span></div>
-        <div class="tree-node tree-node--child"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="3"/><circle cx="7" cy="12" r="1.5"/><circle cx="17" cy="12" r="1.5"/></svg></span><span class="tree-label">总装线 · 输送带 D-02</span></div>
+        <div class="tree-node on" data-expand><span class="tree-sw">▾</span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 3 21V 11L 6 7L 9 11L 12 7L 15 11L 18 7L 21 11V 21Z"/><rect x="10" y="14" width="4" height="7"/></svg></span><span class="tree-text">注塑车间</span></div>
+        <div class="tree-group">
+          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 18h17"/><rect x="5.5" y="8.5" width="4" height="9.5" rx="1"/><rect x="9.5" y="11" width="8" height="7" rx="1"/><path d="M8.5 7h7l-2 4h-3z"/></svg></span><span class="tree-text">A线 · 注塑机 A-01</span></div>
+          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="17" width="6" height="3.5" rx="1"/><path d="M7 17v-6"/><path d="M7 11h8"/><path d="M15 11v4.5"/><path d="M12.5 15.5h5"/></svg></span><span class="tree-text">B线 · 机械手 C-07</span></div>
+          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 3.5h11l-2.8 5h-5.4z"/><rect x="8.5" y="8.5" width="7" height="8.5" rx="1"/><path d="M8.5 17h7"/></svg></span><span class="tree-text">干燥机 D-03</span></div>
+        </div>
+        <div class="tree-node" data-expand><span class="tree-sw">▾</span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="6" width="16" height="12" rx="1.5"/><circle cx="9" cy="10" r="2"/><circle cx="9" cy="15" r="2"/><line x1="13" y1="10" x2="16" y2="10"/><line x1="13" y1="15" x2="16" y2="15"/></svg></span><span class="tree-text">设备中心</span></div>
+        <div class="tree-group">
+          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="5" width="3.5" height="14" rx="1"/><rect x="13.5" y="5" width="3.5" height="14" rx="1"/></svg></span><span class="tree-text">待机设备</span></div>
+          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4 22 19.5H2z"/><path d="M12 9.5v5"/><path d="M12 17.4v.1"/></svg></span><span class="tree-text">故障设备</span></div>
+        </div>
+        <div class="tree-node" data-expand><span class="tree-sw">▾</span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="5" rx="1"/><rect x="13" y="10" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="5" rx="1"/></svg></span><span class="tree-text">运营中心</span></div>
+        <div class="tree-group">
+          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="11" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="17" width="7" height="3" rx="1"/></svg></span><span class="tree-text">运营总览</span></div>
+          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M12 16v4M8.5 20h7"/></svg></span><span class="tree-text">实时监控</span></div>
+        </div>
+        <div class="tree-node" data-expand><span class="tree-sw">▾</span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 3 21V 11L 6 7L 9 11L 12 7L 15 11L 18 7L 21 11V 21Z"/><rect x="10" y="14" width="4" height="7"/></svg></span><span class="tree-text">生产管理</span></div>
+        <div class="tree-group">
+          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="4" width="12" height="16" rx="1.5"/><path d="M9.5 4.5a2.5 2.5 0 0 1 5 0"/><path d="M9 9.5h6M9 13h6M9 16.5h4"/></svg></span><span class="tree-text">工单列表</span></div>
+          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15.5" rx="2"/><path d="M8 2.5V7M16 2.5V7M4 9.5h16"/><path d="M8 13.5l2 2 4-4"/></svg></span><span class="tree-text">排产计划</span></div>
+        </div>
       </div>
       <div class="sidebar-foot"><button class="collapse-btn" onclick="document.querySelector('.sidebar').classList.toggle('collapsed')" title="收起/展开侧栏" aria-label="收起侧栏"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg></button></div>
     </aside>
@@ -189,6 +221,48 @@ ${webCss}
   </div>
 </div>
 </body>
+<script>
+  (function(){
+    var DICT = {
+      'topbar.home': {zh:'首页', en:'Home'},
+      'topbar.admin': {zh:'管理员', en:'Admin'},
+      'topbar.changepwd': {zh:'修改密码', en:'Change Password'},
+      'topbar.logout': {zh:'退出登录', en:'Sign Out'},
+      'topbar.fullscreen': {zh:'全屏', en:'Fullscreen'}
+    };
+    var LANGS = ['zh','en'];
+    var lang = 'zh';
+    try { var s = localStorage.getItem('hx-lang'); if (LANGS.indexOf(s) > -1) lang = s; } catch(e){}
+    function apply(){
+      document.documentElement.setAttribute('lang', lang);
+      document.querySelectorAll('[data-i18n]').forEach(function(el){
+        var k = el.getAttribute('data-i18n');
+        if (DICT[k] && DICT[k][lang]) el.textContent = DICT[k][lang];
+      });
+      document.querySelectorAll('[data-i18n-title]').forEach(function(el){
+        var k = el.getAttribute('data-i18n-title');
+        if (DICT[k] && DICT[k][lang]) el.setAttribute('title', DICT[k][lang]);
+      });
+      document.querySelectorAll('.lang-opt').forEach(function(o){ o.classList.toggle('on', o.getAttribute('data-lang') === lang); });
+      var lb = document.getElementById('langLabel');
+      if (lb) lb.textContent = lang === 'en' ? 'English' : '简体中文';
+      try { localStorage.setItem('hx-lang', lang); } catch(e){}
+    }
+    apply();
+    var sel = document.getElementById('langSel');
+    if (sel) {
+      var trg = document.getElementById('langTrigger');
+      if (trg) trg.addEventListener('click', function(e){ e.stopPropagation(); sel.classList.toggle('open'); });
+      sel.querySelectorAll('.lang-opt').forEach(function(o){
+        o.addEventListener('click', function(){
+          if (o.classList.contains('is-disabled')) return;
+          lang = o.getAttribute('data-lang'); apply(); sel.classList.remove('open');
+        });
+      });
+      document.addEventListener('click', function(){ sel.classList.remove('open'); });
+    }
+  })();
+<\/script>
 </html>`;
 }
 
@@ -212,6 +286,11 @@ ${mobCss}
 
 </head>
 <body class="ios">
+<div class="stage-wrap">
+<button class="theme-toggle" id="themeToggle" title="切换到暗色模式">
+  <svg class="ico" id="themeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+  <svg class="ico" id="themeIconSun" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+</button>
 <div class="phone-stage">
   <div class="phone">
     <!-- 状态栏（透明悬浮，品牌导航栏上白字） -->
@@ -318,23 +397,45 @@ ${mobCss}
   </div>
 </div>
 </div>
+</div>
+<script>
+  (function(){
+    var btn = document.getElementById('themeToggle');
+    if (!btn) return;
+    function apply(dark){
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : '');
+      btn.setAttribute('title', dark ? '切换到亮色模式' : '切换到暗色模式');
+      var moon = document.getElementById('themeIconMoon'), sun = document.getElementById('themeIconSun');
+      if (moon) moon.style.display = dark ? 'none' : '';
+      if (sun) sun.style.display = dark ? '' : 'none';
+      try { localStorage.setItem('hx-theme', dark ? 'dark' : 'light'); } catch(e){}
+    }
+    var saved = null;
+    try { saved = localStorage.getItem('hx-theme'); } catch(e){}
+    if (saved === 'dark') apply(true);
+    btn.addEventListener('click', function(){ apply(document.documentElement.getAttribute('data-theme') !== 'dark'); });
+  })();
+<\/script>
 </body>
 </html>`;
 }
 
-// ========== 品牌覆盖块（非 005EAE 页注入 :root） ==========
-function brandCover(brand, mode, platform) {
-  const pal = generatePalette(brand, { mode, platform });
-  const vars = {
-    '--primary': pal.primary.default,
-    '--primary-hover': pal.primary.hover,
-    '--primary-active': pal.primary.active || pal.primary.click,
-    '--primary-dis-bg': pal.primary.disabledBg,
-    '--primary-dis-fg': pal.primary.disabledFg
-  };
-  if (mode === 'dark') vars['--brand-surface'] = pal.background.brandSurface;
-  const body = Object.entries(vars).map(([k, v]) => `  ${k}: ${v};`).join('\n');
-  return `<style>\n:root{\n${body}\n}\n</style>`;
+// ========== 品牌覆盖块（非 005EAE 页注入「亮 + 暗」双 :root，2026-08-12 双模式） ==========
+function brandCover(brand, platform) {
+  const light = generatePalette(brand, { mode: 'light', platform });
+  const dark = generatePalette(brand, { mode: 'dark', platform });
+  function vars(pal, isDark) {
+    const v = {
+      '--primary': pal.primary.default,
+      '--primary-hover': pal.primary.hover,
+      '--primary-active': pal.primary.active || pal.primary.click,
+      '--primary-dis-bg': pal.primary.disabledBg,
+      '--primary-dis-fg': pal.primary.disabledFg
+    };
+    if (isDark) v['--brand-surface'] = pal.background.brandSurface;
+    return Object.entries(v).map(([k, val]) => `  ${k}: ${val};`).join('\n');
+  }
+  return `<style>\n:root{\n${vars(light, false)}\n}\n:root[data-theme="dark"]{\n${vars(dark, true)}\n}\n</style>`;
 }
 
 // ========== 生成 6 个页面 ==========
@@ -352,7 +453,7 @@ for (const j of jobs) {
   let html = j.fn(j.arg);
   if (j.arg.brand !== '#005EAE') {
     // 品牌覆盖注入到 <head>（内联 style 之后）
-    const cover = brandCover(j.arg.brand, j.arg.mode, j.arg.brand === '#C2185B' ? 'mobile' : 'web');
+    const cover = brandCover(j.arg.brand, j.arg.brand === '#C2185B' ? 'mobile' : 'web');
     html = html.replace('</head>', cover + '</head>');
   }
   fs.writeFileSync(j.dir + j.file, html, 'utf8');

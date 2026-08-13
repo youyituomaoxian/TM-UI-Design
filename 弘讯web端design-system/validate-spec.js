@@ -2138,6 +2138,9 @@ function checkChartBaseline(html) {
 
 // ===== 表格分页器门禁（2026-08-06：Web RULES 已有分页契约但示例页表格缺 pager——门禁补齐）=====
 // 列表表格（tbody > 5 行）必须有 .pager 分页器（components.json pager 契约：44 高，‹ 1 2 3 › 共 N 条）。
+// RED-019（2026-08-12）：2500 字符窗口缺陷——列多/行多表格（HTML > 2500 字符）pager 必在窗口外 → 误报
+// 「缺 pager」（实测工单列表 9 列 8 行，pager 距表格 2876 字符）。改为「本表格结束后 → 下一个表格前」
+// 区间内查找 .pager：pager 恒紧跟所属表格，多表格页互不串扰；≤5 行明细表不受影响。
 function checkTablePager(html) {
   const violations = [];
   const noScript = stripScriptTags(html);
@@ -2146,7 +2149,10 @@ function checkTablePager(html) {
     const tb = t[1].match(/<tbody>([\s\S]*?)<\/tbody>/);
     const rowCount = tb ? (tb[1].match(/<tr/g) || []).length : 0;
     if (rowCount > 5) {
-      const after = noScript.slice(t.index, t.index + 2500);
+      const tableEnd = t.index + t[0].length;
+      const nextTable = noScript.indexOf('<table', tableEnd);
+      const searchEnd = nextTable === -1 ? noScript.length : nextTable;
+      const after = noScript.slice(tableEnd, searchEnd);
       if (!after.includes('class="pager"')) {
         violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'table.pager.required', sel: 'table', msg: `列表表格 ${rowCount} 行（>5）缺 .pager 分页器——Web RULES 列表页规格（筛选 + 表格 + 分页）：表格后必有分页器（‹ 1 2 3 › 共 N 条，components.json pager 契约）` });
       }

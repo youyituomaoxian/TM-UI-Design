@@ -487,10 +487,10 @@ itemSpacing       = 4px
 
 > 详见 RULES.md §6 Web 布局黄金法则 + §4.3/§4.4 跨模块间距与卡片对齐契约。最小可执行步骤：
 
-1. **整体框架**：TopBar(72) + Sidebar(240, 可折叠) + Content + Footer(32)。
+1. **整体框架**：TopBar(72) + Sidebar(240, 可折叠) + Content + Footer(32)。顶栏右依次为 首页/用户名/修改密码/退出登录/全屏/**暗色模式**（`.theme-btn` 亮/暗切换，2026-08-12 拍板）。
 2. **内容区**：背景 N4 `#F5F7FB`，内边距 16–24px，使用 24 列栅格（`.grid12 > .col-N`）排布卡片。**col-* 是弹性容器**（`display:flex;flex-direction:column`，模板已配），col 内卡片自动 flex:1 平分列高——单卡撑满/多卡平分，与同 grid 行其他列对齐。
-3. **面包屑/Tab**：位于内容区顶部，Tab 高 32px，选中态主色。
-4. **卡片/表格**：插入卡片实例（白底、阴影、圆角 8），**col 内卡片一律 `.card--fill`**（图表/列表/统计卡均适用）；表格用表头(44)+行(44)，动态表格数据不足补 `minRow` 占位行（RULES §4.4）。KPI 卡用 `.stat-card` 族 + 卡数匹配 `--N`（`stat-grid--5/6/8`，RULES §3.7）。
+3. **面包屑/Tab**：位于内容区顶部，面包屑条 32px 高 + N5 底（`›` 分隔，下方间距 16px）；Tab 高 32px，选中态主色。
+4. **卡片/表格**：插入卡片实例（白底、阴影、圆角 8），**col 内卡片一律 `.card--fill`**（图表/列表/统计卡均适用）；表格用表头(48)+行(44)，动态表格数据不足补 `minRow` 占位行（RULES §4.4）。KPI 卡用 `.stat-card` 族 + 卡数匹配 `--N`（`stat-grid--5/6/8`，RULES §3.7）。
 5. **按钮/输入**：主按钮 32px 高、输入 32px 高，严格用 DESIGN-TOKENS 变量；带图标按钮文字用 `.btn-label` 包裹（RULES §3.7）。
 6. **复核**：Batch_read 抽查 3 个元素，确认无硬编码 HEX、宽度未超容器、颜色来自变量集；图表 SVG 用 `.chart-svg--fill` + viewBox 末端留 ≥20px 边距（RULES §3.7）。
 7. **落盘（2026-08-06 更新）**：产出写「**用户项目**」的 `output/`（无则自动创建，**不是设计系统仓库 output/**——仓库 output/ 仅历史归档），文件名自动拼 `<页面语义名>_<YYYYMMDD>_<HHmm>.html`（同日重名递增 `_2`，禁覆盖）；CSS 链接相对路径指向 `弘讯web端design-system/template.css`；门禁 `cd 弘讯web端design-system && node validate-spec.js <用户项目路径>/output/<文件>.html`（详见 GENERATION-SOP 步骤4 产出落盘规则）。

@@ -88,10 +88,10 @@
   --brand-surface:oklch(25.99% 0.0604 251.32);
   --n1:#1E293B; --n2:#243044; --n3:#334155; --n4:#121826; --n5:#1E293B; --n6:#334155;
   --n7:#475569; --n8:#94A3B8; --n9:#CBD5E1; --n10:#F1F5F9; --n11:#FFFFFF;
-  --suc:#52C41A; --suc-soft:#162312; --suc-fg:#FFFFFF;
+  --suc:#52C41A; --suc-soft:#162312; --suc-fg:#1A1A1A;
   --warn:#FFA940; --warn-soft:#2E2410; --warn-fg:#1A1A1A;
-  --err:#FF4D4F; --err-soft:#2A1414; --err-fg:#FFFFFF;
-  --run:#22C55E; --run-soft:#0E2018; --run-fg:#FFFFFF;
+  --err:#FF4D4F; --err-soft:#2A1414; --err-fg:#1A1A1A;
+  --run:#22C55E; --run-soft:#0E2018; --run-fg:#1A1A1A;
   
   --suc-hover:#6acc3a; --suc-active:#48ac17; --suc-disabled:#32642e; --suc-soft-hover:#374233; --suc-soft-active:#131f10; --suc-border-hover:#75d048; --suc-border-active:#89d763; --suc-dis-fg:#838993;
   --warn-hover:#ffb55b; --warn-active:#e09538; --warn-disabled:#745a3d; --warn-soft-hover:#4b4331; --warn-soft-active:#28200e; --warn-border-hover:#ffba66; --warn-border-active:#ffc57d; --warn-dis-fg:#1c222c;

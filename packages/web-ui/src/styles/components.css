@@ -67,7 +67,7 @@
 .tree-light .tree-node:hover{background:var(--n3);}
 
 
-.tag{display:inline-flex;align-items:center;height:22px;padding:0 10px;border-radius:var(--radius-base);
+.tag{display:inline-flex;align-items:center;height:22px;padding:0 var(--space-md);border-radius:var(--radius-base);
   font-size:12px;font-weight:400;margin-right:8px;}
 .tag-suc{background:var(--suc-soft);color:var(--suc-active);}
 .tag-warn{background:var(--warn-soft);color:var(--n11);}
@@ -199,7 +199,7 @@
 .toggle[data-on="true"]{background:var(--primary);color:var(--text-on-brand);border-color:var(--primary);}
 
 
-.badge{display:inline-flex;align-items:center;height:22px;padding:0 10px;border-radius:var(--radius-base);
+.badge{display:inline-flex;align-items:center;height:22px;padding:0 var(--space-md);border-radius:var(--radius-base);
   font-size:12px;font-weight:500;font-family:var(--font-cn);margin-right:8px;}
 .badge-suc{background:var(--suc-soft);color:var(--suc-active);}
 .badge-warn{background:var(--warn-soft);color:var(--n11);}
@@ -222,7 +222,7 @@
 .avatar-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
 
 
-.alert+.alert{margin-top:10px;}
+.alert+.alert{margin-top:var(--space-md);}
 .progress{width:100%;height:8px;border-radius:var(--radius-round);background:var(--n5);overflow:hidden;}
 .progress-bar{height:100%;background:var(--primary);}
 
@@ -297,7 +297,8 @@
 .tooltip:focus-within .tooltip-content{display:block;}
 
 
-.breadcrumb{display:flex;align-items:center;gap:8px;font-size:14px;font-family:var(--font-cn);margin-bottom:var(--space-lg);}
+/* Breadcrumb 条（RULES §1.1b 规格：32 高 · N5 底 · › 分隔；下方间距 --space-base 16 页头组内档，2026-08-12 由 LG 24 降档） */
+.breadcrumb{display:flex;align-items:center;gap:8px;height:32px;padding:0 12px;background:var(--n5);border-radius:var(--radius-base);font-size:14px;font-family:var(--font-cn);margin-bottom:var(--space-base);}
 .breadcrumb-item{color:var(--n9);cursor:pointer;}
 .breadcrumb-item[aria-current="page"]{color:var(--n11);cursor:default;}
 .breadcrumb-sep{color:var(--n8);}

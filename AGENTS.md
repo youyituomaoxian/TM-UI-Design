@@ -1,6 +1,6 @@
 # 弘讯设计系统 · Agent 使用入口（AGENTS.md）
 
-> 本文件是 **codex / Claude Code / 任何通用 Agent** 的入口。先读它，再决定读哪些规范文件。
+> 本文件是 **Codex / Reasonix / Cursor / 任何认 AGENTS.md 的 Agent** 的入口。**Claude Code 读 `CLAUDE.md`**（其内容 `@AGENTS.md` 导入本文件，同源不漂移）。先读它，再决定读哪些规范文件。
 > 人读使用说明见 `团队使用指南.md`；Agent 生成规范总纲见 `GENERATION-SOP.md`。
 
 ## 这是什么
@@ -14,7 +14,7 @@
 2. 克隆模板（框架来源，**唯一可复制的结构**）：优先用脚手架（自动克隆 + 注入克隆凭证 meta + 修正 CSS link）：
    - Web B 端后台：`node scripts/new-page-web.js <语义名>`（克隆 `弘讯web端design-system/page-template.html`）
    - 移动端：`node scripts/new-page-mobile.js <语义名>`（克隆 `弘讯移动端design-system/page-template.html`；自由布局用 `agent-starter.html`）
-   - 克隆后**按业务定制作业树**：结构零改动（层级/图标/折叠/选中/group-title），**节点文本、分组、选中态随当前系统定制**（禁保留示例树，RULES §0.2 第 9 条）
+   - 克隆后**按业务定制作业树**：结构零改动（层级/图标/折叠/选中/**无 group-title 分类、顶级节点并列**，RULES §0.2 第 9 条），**节点文本、分组、选中态随当前系统定制**（禁保留示例树）
    - 移动端**底部导航 3-5 项随需求增减**（最少 3、最多 5；登录/详情等无 BottomNav 合法，RULES §1.1b，门禁 bottomnav.count）
 3. 页面内容**从零自建**（禁参照 output/、packages/ 或任何既有页面 DOM，防风格漂移）：
    - 页面类型规格：各端 `RULES.md §1.1b`（登录/列表/详情/弹窗/看板等）
@@ -23,7 +23,7 @@
    - **字体：只用 `var(--font-cn)` / `var(--font-mono)` 栈**，禁具体字体名（宋体/微软雅黑等字符串，门禁 font.family MED；tabular-nums 仅限纯数字，中文内容会回退宋体；headless 验证字体会误判，须真实浏览器核对，RULES 字体守则）
    - 图表：`CHART-SPEC.md`（原子 SVG 自建，色走 `--chart-*`）
    - 跨端中性色契约：`CROSS-PLATFORM-COLORS.md`（N1-N10 两端对照 + 语义守则）
-   - 非默认品牌色/暗色：`brand-color-engine/`（一键生成整套配色）
+   - 非默认品牌色/暗色：`brand-color-engine/`（一键生成整套配色）；**非默认品牌默认双模式**（亮 + 暗两块 :root，附录 B 亮暗双映射；顶栏已内置「暗色模式」切换按钮，RULES §0.1）
 4. 产出落盘：**「用户项目」的 `output/`**（不是本仓库；CSS link 指向本仓库对应端 `template.css`）。
 5. 门禁（风格合规才交付）：
    - 单页：`node 弘讯web端design-system/validate-spec.js <页面.html>`（移动端同理）→ 必须 **0 HIGH**

@@ -126,11 +126,13 @@ RULES.md + CHART-SPEC.md；报警/日志列表定高滚动（.scroll-fixed），
 - 工业物联网（IIoT）移动端应用
 - 企业级 B 端管理界面
 
-## Agent 接入（codex / workbuddy / 其他）
+## Agent 接入（codex / Claude Code / workbuddy / Reasonix / Cursor）
 
-- **codex / Claude Code / 通用 Agent**：仓库根 `AGENTS.md` 即入口（标准生成流程，自动加载，零配置）。
+- **Codex / Reasonix / Cursor / 通用 Agent**：仓库根 `AGENTS.md` 即入口（标准生成流程，自动加载，零配置）。
+- **Claude Code**：仓库根 `CLAUDE.md`（`@AGENTS.md` 导入，与通用入口同源；Claude Code 原生不读 AGENTS.md）。
 - **workbuddy**：仓库内 `.workbuddy/skills/tm-design-system/SKILL.md`（项目级 skill，可移植定位：`TM_DESIGN_REPO` 环境变量或相对自身向上找仓库根）。
 - **Reasonix**：全局薄壳 skill（`%APPDATA%\reasonix\skills\tm-design-system\SKILL.md`）指向本仓库（`TM_DESIGN_REPO`）；其兼容分支会优先加载仓库内 `.workbuddy/skills/` 本体。
+- **克隆即用**：`git clone https://github.com/youyituomaoxian/TM-UI-Design.git <目录>` → 进入目录直接对话「用弘讯设计系统，生成…」——各智能体自动加载对应入口（AGENTS.md / CLAUDE.md / skill），零额外配置。
 - 生成合规页：按 `GENERATION-SOP.md` 克隆 `弘讯web端design-system/page-template.html` → 按 `RULES.md §1.1b` 自建内容 → `node 弘讯web端design-system/validate-spec.js <页面.html>`（HIGH 0 才交付）。
 - 全仓总门禁：`node ci-local.js`（86 项全绿 EXIT 0）。
 - 部署/分发：Git 仓库（私有）clone 或整目录拷贝（打包时排除 `output/`、`node_modules/`、`.git/`、`.reasonix/`）——详见 `团队使用指南.md`「部署与团队分发」。

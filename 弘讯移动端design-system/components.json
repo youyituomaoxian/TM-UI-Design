@@ -1415,4 +1415,10 @@
     "name": "KPI 概览条（品牌蓝 3 列）",
     "desc": "页面组合范式（2026-08-06 复盘登记）：品牌蓝底 flex 3 列概览条（设备总数/开机率/今日产量），文字用 .mcard-title + .m-text-num，容器内联 flex（背景 var(--primary)），非独立 CSS 组件。参考 docs/examples/mobile-弘讯监控.html。",
     "tokens": ["--primary"]
+  },
+  "chart-box": {
+    "id": "chart-box",
+    "name": "图表容器（移动端 canvas/SVG 挂载点）",
+    "desc": "图表容器（2026-08-13 补契约，对齐 CHART-SPEC §6.1）：.chart-box 相对定位容器 + .chart-box--sm 120px 高（折线卡标准结构）；SVG 用 .chart-svg--fill 占满。移动端仪表盘图表卡必含此容器。",
+    "tokens": ["--bg-surface", "--shadow-card", "--n6"]
   }}
