@@ -108,10 +108,17 @@ cd TM-UI-Design
 
 ### 对 Agent 说
 
+**认 AGENTS.md 的 Agent（codex / Claude Code / Reasonix，克隆目录内对话）——一句话即可：**
+
 ```
-按弘讯设计系统 GENERATION-SOP 生成移动端（或 Web）视觉预览：<需求描述>。
-起手克隆 page-template.html 落「用户项目」output/（自动命名），按 RULES.md §1.1b 自建内容，
-颜色走 var(--*)，跑 validate-spec.js 0 HIGH 交付。
+按弘讯设计系统生成 <需求描述> 页面。
+```
+
+**外部 Agent（不加载 AGENTS.md）——给「任务 + 入口」完整版：**
+
+```
+按弘讯设计系统生成 <需求描述>：node <仓库根>/scripts/new-page-<web|mobile>.js <语义名>，
+遵循 GENERATION-SOP.md 与 <对应端>design-system/RULES.md，门禁 0 HIGH 才交付。
 ```
 
 ### 流程 4 步
@@ -181,9 +188,9 @@ npx taro build --type weapp   # 产物 dist/ 导入微信开发者工具
 
 ## 改规范的唯一正确姿势
 
-1. **改视觉（Web）**：改 `packages/web-ui/src/styles/` 四件 CSS → `node packages/web-ui/scripts/build-template-css.js` 重新生成 `template.css`（N=1 构建链，勿手改 template.css）。移动端规范为**冻结资产**（见其 RULES 锁定声明），改动须用户拍板。
+1. **改视觉（Web）**：改 `packages/web-ui/src/styles/` 四件 CSS → `node packages/web-ui/scripts/build-template-css.js` 重新生成 `template.css`（N=1 构建链，勿手改 template.css）。移动端规范已解冻（2026-08-06 用户拍板，恢复可修改）；结构性/视觉性改动仍建议先与用户确认方向。
 2. **改 token**：改 `tokens.json` → 重跑 `scripts/generate-design-tokens-md.js` 生成 `DESIGN-TOKENS.md`。
-3. **改品牌色**：`node brand-color-engine/generate.js <brand> <light|dark> <web|mobile>`（引擎推导整套配色，功能色不随品牌变）。
+3. **改品牌色**：`node brand-color-engine/generate.js <brand> light <web|mobile>` 与 dark 各一次（非默认品牌默认双模式，功能色不随品牌变）。
 4. **总门禁**：`node ci-local.js` → 期望 `86 pass / 0 fail`。
 
 三条链路各自重新生成，**禁止从任何产物（设计稿 / HTML / 代码）倒推 spec**。
@@ -231,7 +238,7 @@ npx taro build --type weapp   # 产物 dist/ 导入微信开发者工具
 A: 能——仓库为公开，任何人 `git clone https://github.com/youyituomaoxian/TM-UI-Design.git` 即可；如需限制访问可改回私有并加 Collaborators。
 
 **Q: 换品牌色？**
-A: `node brand-color-engine/generate.js <brand> <light|dark> <web|mobile>` → 按 GENERATION-SOP §② 映射进模板短名 `:root`。功能色（成功/警告/错误/运行）固定不随品牌变。
+A: `node brand-color-engine/generate.js <brand> light <web|mobile>` 与 dark 各一次（非默认品牌默认双模式）→ 按 GENERATION-SOP 附录 B 映射进模板短名 `:root`。功能色（成功/警告/错误/运行）固定不随品牌变。
 
 **Q: 加新组件？**
 A: token 需求写入 `tokens.json` → `packages/web-ui/src/components/ui/` 加 `.tsx` → `src/styles/components.css` 加样式 → `build-template-css.js` 重建 → 设计端同步加同名组件 → `validate-static.js` / `validate-spec.js` 全绿。
