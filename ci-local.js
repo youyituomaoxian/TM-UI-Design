@@ -3,7 +3,7 @@
  * ci-local.js — 弘讯设计系统 A 包本地 CI 等效验证（2026-07-30）
  * ---------------------------------------------------------------------------
  * 串联：两端门禁 validate-spec.js page-template.html + tokens 结构断言 + 模板值断言
- * 全绿 exit 0；任一失败 exit 1。CI 文件本身不动（待 push 后接入 .github/workflows/validate.yml，见 BLOCKED.md）。
+ * 全绿 exit 0；任一失败 exit 1。CI 文件本身不动（待 push 后接入 .github/workflows/validate.yml）。
  * 自包含：不依赖 .workbuddy/tmp 脚本，断言逻辑内联。
  * ---------------------------------------------------------------------------
  */

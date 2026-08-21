@@ -1891,7 +1891,7 @@ function run(specPath, targetPath) {
 
   const violations = [];
   for (const c of spec.contract) {
-    if (!isTemplate && c.id && c.id.startsWith('type.')) continue; // B 包：字阶断言仅对 page-template 生效（examples 不受约束，BLOCKED #5）
+    if (!isTemplate && c.id && c.id.startsWith('type.')) continue; // B 包：字阶断言仅对 page-template 生效（examples 不受约束）
     const scopeNote = c.scope ? `[${c.scope}]` : '';
     for (const rule of rules) {
       if (!c.selector.some(p => selectorMatches(rule.selectors, p, c.exclude))) continue;

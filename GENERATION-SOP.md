@@ -357,7 +357,7 @@ cd <端目录> && "$NODE" validate-spec.js <用户项目路径>/output/<产出�
 ```
 
 - 引擎派生色**只能出现在 `:root` 变量定义里**，组件 CSS 必须用 `var(--*)`。硬编码派生色会被门禁 `forbidNonTokenHex` 报 MEDIUM。
-- 若门禁报非 token 色：先确认是否把派生色写进了组件规则（只允许在 `:root`）；确认是门禁误报则停，写 BLOCKED.md，**不许改门禁**。
+- 若门禁报非 token 色：先确认是否把派生色写进了组件规则（只允许在 `:root`）；确认是门禁误报则停，上报维护者（记录到两端 CHANGELOG.md），**不许改门禁**。
 
 ### 参考实现
 
@@ -555,7 +555,7 @@ cd packages/mobile-ui && npm run build:weapp   # 验证编译 exit 0
 
 #### 禁区（违反即不合格）
 
-- 禁改 `validate-spec.js` / `components.json` contract / `tokens.json` / `base-spec.json` / `generate.js`（真源与引擎不动；发现 bug 写 BLOCKED.md）
+- 禁改 `validate-spec.js` / `components.json` contract / `tokens.json` / `base-spec.json` / `generate.js`（真源与引擎不动；发现 bug 上报维护者，记录到两端 CHANGELOG.md）
 - 禁在样例页用内联 `style` 或 `!important` 绕过组件规则
 - 禁注入 `--color-*` 旧长名变量（引擎 `css` 字段是旧长名，必须映射进短名）
 - 禁硬编码非 token 色（引擎派生色只能出现在 `:root` 变量定义里）

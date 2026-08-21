@@ -79,3 +79,7 @@ dist-static/
 
 # 视觉稿产物（本地预览用，不入库——历史稿见 archive/output/ 或本地保留）
 output/
+
+# 本地工作文档（不随设计系统分发）
+设计系统创作记录.md
+待绘制Icon清单.md

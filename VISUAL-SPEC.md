@@ -124,7 +124,7 @@
 | `--font-overline` | Medium 11/16 | 极小标注 |
 | `--font-link` | Regular 14/22 | 超链接 |
 
-> **KPI 数字**：`stat-card` 内数值用 28px/mono（`.kpi-ico` 为图标容器类，24/48px 变体 + 语义底色；⚠️ RULES §7.3 提的 `.kpi-count` 数字类**真源未实现**——见 BLOCKED 漂移记录，暂以 `stat-card` 内 `b/span` + mono 字阶实现）。表格数字 mono + tabular-nums。
+> **KPI 数字**：`stat-card` 内数值用 28px/mono（`.kpi-ico` 为图标容器类，24/48px 变体 + 语义底色；⚠️ RULES §7.3 提的 `.kpi-count` 数字类**真源未实现**——漂移历史已归档（CHANGELOG），暂以 `stat-card` 内 `b/span` + mono 字阶实现）。表格数字 mono + tabular-nums。
 > **层级不跳级**：h4(18) → 卡标题(16/500) → 正文(14/400)。
 
 ### 3.3 密度模式 Density
@@ -254,7 +254,7 @@ TopBar        height=72   FIXED   主色底 白字
 | **下拉 Select / 日期 DatePicker** | 触发器高 32 | 4/8 | 14 | 浮层 overlay 投影；选项 hover n3；选中 primary 底 |
 | **树菜单 Tree** | 节点高 32 | 4 | 14 | 缩进 16/级；品牌底用 `.tree--brand`（白字）|
 | **卡片 Card** | — | 8 | — | `.shadow-card` + radius-md；`.card--fill` 等高收底 |
-| **KPI 统计卡** | 4 列默认（5/6/8 变体）| 8 | — | `.stat-card` 28px/mono（`.kpi-count` 未实现见 BLOCKED #39）|
+| **KPI 统计卡** | 4 列默认（5/6/8 变体）| 8 | — | `.stat-card` 28px/mono（`.kpi-count` 真源未实现）|
 
 > 详细尺寸/状态机/伪类见 `components.json`（机器真源）+ components.css（CSS 真源）。
 
