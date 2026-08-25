@@ -1075,16 +1075,38 @@ function checkChartLayout(html) {
     const ptsRe = /\bpoints\s*=\s*["']([^"']*)["']/g;
     let pm;
     while ((pm = ptsRe.exec(inner))) {
-      const nums = pm[1].trim().split(/[\s,]+/).map(Number).filter(n => !isNaN(n));
-      if (nums.length < 2) continue;
+      const ptsNums = pm[1].trim().split(/[\s,]+/).map(Number).filter(n => !isNaN(n));
+      if (ptsNums.length < 2) continue;
       let minX = Infinity, maxX = -Infinity;
-      for (let i = 0; i < nums.length; i += 2) { if (nums[i] < minX) minX = nums[i]; if (nums[i] > maxX) maxX = nums[i]; }
+      for (let i = 0; i < ptsNums.length; i += 2) { if (ptsNums[i] < minX) minX = ptsNums[i]; if (ptsNums[i] > maxX) maxX = ptsNums[i]; }
       if (Math.abs((minX + maxX) - W) > 2) {
         violations.push({
           line: 0, severity: 'MEDIUM', contract: 'chart.symmetry', sel: cls,
           msg: `折线数据 x 左=${minX} 右=${maxX}（应 min+max=viewBox 宽 ${W}）——数据区左右不对称，见 CHART-SPEC §3`
         });
         break;
+      }
+      // 折线纵向占满（2026-08-24：数据带不得集中一条带 / 上下留白对称）
+      const H = parseFloat(vb[2]);
+      if (!isNaN(H) && H > 0) {
+        let minY = Infinity, maxY = -Infinity;
+        for (let i = 1; i < ptsNums.length; i += 2) { if (ptsNums[i] < minY) minY = ptsNums[i]; if (ptsNums[i] > maxY) maxY = ptsNums[i]; }
+        // 负 y / 超 viewBox 防御：clamp 到 [0,H]，防 coverage>1 漏检与对称差放大
+        const cMin = Math.max(0, Math.min(minY, H)), cMax = Math.max(0, Math.min(maxY, H));
+        const coverage = (cMax - cMin) / H;
+        const top = cMin, bottom = H - cMax;
+        if (coverage < 0.7) {
+          violations.push({
+            line: 0, severity: 'MEDIUM', contract: 'chart.line.vertical', sel: cls,
+            msg: `折线数据 y 覆盖 ${(coverage * 100).toFixed(0)}% < 70%（y ${minY}–${maxY}，viewBox 高 ${H}）——数据带集中一条带，上下留白过多；应纵向占满（上下对称，覆盖 ≥70%），见 CHART-SPEC §3`
+          });
+        }
+        if (Math.abs(top - bottom) / H > 0.15) {
+          violations.push({
+            line: 0, severity: 'MEDIUM', contract: 'chart.line.vertical', sel: cls,
+            msg: `折线数据上下留白不对称（上 ${top.toFixed(1)} / 下 ${bottom.toFixed(1)}，差 ${Math.abs(top - bottom).toFixed(1)} > H×15%）——应上下对称分布，见 CHART-SPEC §3`
+          });
+        }
       }
     }
   }

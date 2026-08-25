@@ -361,7 +361,7 @@ START: 我要做什么类型的页面？
 | 文本列（工单号/产品/机台/备注/时间） | 左对齐 | th/td 默认（无需类） |
 | 数值列（数量/金额/百分比/计数/产能） | **右对齐** | **th 与 td 都加 `.num`**（`.num{text-align:right;font-variant-numeric:tabular-nums}` 真源） |
 | 状态列（tag/badge/状态灯） | 左对齐 | 默认 |
-| 操作列（按钮/链接） | 左对齐 | 默认 |
+| 操作列（按钮/链接） | 左对齐 | 默认；如需按钮贴右边缘用真源 `.col-op{text-align:right}`（2026-08-24 沉淀 utilities.css）|
 | 进度列（progress 条） | 左对齐 | 默认（条左起，th 跟随） |
 
 **门禁双向校验**：① 任一数据单元格 `td.num` → 对应列表头必须 `th.num`；② 表头 `th.num` → 该列所有数据 `td` 必须带 `num`。违反即 HIGH（表头与数据错位）。数值列数字用 `tabular-nums` 等宽对齐（千分位对齐）。
@@ -496,7 +496,7 @@ START: 我要做什么类型的页面？
 
 1. **`col-*` 是弹性容器**：`.col-3/4/5/6/7/8/9/12` 一律 `display:flex;flex-direction:column;gap:var(--space-base)`（grid item 身份不变，内部转 flex column，col 内多卡片间距 16px 由 col 自身 gap 接管）。
 2. **col 内卡片一律 `flex:1` 平分 col 高度**（模板 `.col-* > .card{flex:1;min-height:0}`）：单卡片 = 撑满 col 高度；多卡片 = 平分。内容超高的卡片由 `min-height:auto` 保底不被压缩（高卡片决定 col 高度，矮卡片 stretch 对齐底部）。
-3. **图表/列表卡片配 `.card--fill`**（`flex column` + `.card-body{flex:1;min-height:0}`）：`card-body` 内的内容容器（`.donut-wrap` / `.chart-box` / `.table-wrap`）须 `flex:1` 吃掉剩余高度，杜绝"卡片撑满但内部内容悬空"。
+3. **图表/列表卡片配 `.card--fill`**（`flex column` + `.card-body{flex:1;min-height:0}`）：`card-body` 内的内容容器（`.donut-wrap` / `.chart-box` / `.table-wrap`）须 `flex:1` 吃掉剩余高度，杜绝"卡片撑满但内部内容悬空"。**弹性填充型图表容器 `.chart-box--flex`（2026-08-24）须配合 `.card--fill` + `.col-*` 环境才生效**（`.card:has(.chart-box--flex) .card-body{display:flex}` 组合）——脱离该组合单独使用 `.chart-box--flex` 不产生弹性拉伸；环形/迷你图用 `.chart-box--ring` 定高，**不要**加 `.chart-box--flex`（会被全局 :has 拉高）。
 4. **表格空数据占位（min-row 契约）**：表格数据行数 < 8 行时，渲染到 **8 行**（`minRow=8`，行高 44px）——不足部分用空占位行 `<tr class="table-placeholder"><td colspan="N">&nbsp;</td></tr>`（无内容、保持行高、`pointer-events:none` 禁 hover）。数据为 0 时同样渲染 8 行占位 + 首行提示「无数据」。门禁 `layout.table-minrow`（MEDIUM）核对 JS 渲染模板是否含 minRow 常量。
 5. **适用**：机器列表、告警列表、工单列表、环形图/折线图/柱状图等图表卡片，及一切在 `.grid12 > .col-*` 内的卡片；**不适用**：详情弹窗表单、非 grid12 列的独立卡片。门禁 `card.fill-in-grid`（MEDIUM）核对 col-* 直接子 .card 是否缺 `.card--fill`。
 
@@ -520,7 +520,7 @@ START: 我要做什么类型的页面？
 3. **滚动容器不定高 → 门禁 `scroll.container.height`（MEDIUM）拦截**（页面自造滚动类无 height/固定 max-height 即报）。
 4. `.card-body--scroll{max-height:100%}` 是「弹性滚动」语义（配合 `card--fill` 弹性吸收），仅适用于弹性卡内部；定高卡内部滚动用 `.scroll-fixed`。
 
-**示例**：趋势卡（弹性，`.chart-box{flex:1}` 吸收）+ 报警卡（定高，`<div class="card-body scroll-fixed">`）并排 → 报警卡恒高 320px 滚动，不被行高拉伸。
+**示例**：趋势卡（弹性，`.chart-box--flex` 吸收）+ 报警卡（定高，`<div class="card-body scroll-fixed">`）并排 → 报警卡恒高 320px 滚动，不被行高拉伸。弹性图表卡用 `.chart-box--flex`（2026-08-24 收窄：仅填充型图表弹性，环形/迷你图不再被全局 `:has(.chart-box)` 拉高）。
 
 ---
 
@@ -821,7 +821,7 @@ TopBar         height=72   FIXED   主色底 白字
 
 **① 实现放开（2026-08-07 拍板，替代固定 viewBox/尺寸/数据量）**
 
-- 图表**不设组件、不锁实现**：尺寸、数据量、坐标方式（HTML flex 柱 / SVG polyline + HTML 点 / 定尺寸方形 SVG 环）**Agent 按容器自适应自选**——不再固定 viewBox 400×160、chart-box 320px、折线 ≥8 点、柱状 12 根等实现级断言。
+- 图表**不设组件、不锁实现**：尺寸、数据量、坐标方式（HTML flex 柱 / SVG polyline + HTML 点 / 定尺寸方形 SVG 环）**Agent 按容器自适应自选**——不再固定 viewBox 400×160、折线 ≥8 点、柱状 12 根等实现级断言。图表容器高度走 **`--chart-height` token**（默认 320px，可密度/场景覆盖），弹性填充型图表用 `.chart-box--flex`（2026-08-24）。
 - 环形/圆形图**禁 preserveAspectRatio="none"**（圆变椭圆）——定尺寸方形 SVG 居中，中心文字 HTML 绝对定位。
 - SVG 拉伸区**禁放文字**——轴标签 / 数值 / 图例一律 HTML 叠层；SVG 属性 stroke/fill 一律 style="var(--chart-*)"（禁裸 hex：svg.paint.non-palette HIGH；禁未定义 var：token.svg-var HIGH）。
 
@@ -836,6 +836,7 @@ TopBar         height=72   FIXED   主色底 白字
 7. **颜色只用信息化图表色 --chart-***（见 ③）。
 8. **图表不溢出卡片**：图表容器高度自定，禁止内容溢出卡片。
 9. **网格线水平范围限于绘图区**：网格线两侧为 y 轴刻度标签留白（≥20），不贯穿标签区；y 轴刻度与网格线同高对齐但水平错开（刻度在留白区、网格线在绘图区）——**禁网格线贯穿到图表左右边缘贴卡边**（2026-08-07 执行上报补齐）。
+10. **折线纵向占满（2026-08-24 新增）**：折线数据 y 范围纵向覆盖 **≥ viewBox 高度 70%**、上下留白对称（差 ≤15%）——禁"数据集中一条带 + 下方大片空白"。门禁 chart.line.vertical（MED）兜底。
 
 **③ 色彩契约（2026-08-07 强化：系列色只能用 --chart-*）**
 
@@ -854,6 +855,6 @@ TopBar         height=72   FIXED   主色底 白字
 
 **⑤ 门禁口径**
 
-- 容器缺失（chart.container.missing）→ HIGH；SVG 裸 hex（svg.paint.non-palette）→ HIGH；未定义 var（token.svg-var）→ HIGH；**系列色用通用语义色（chart.series.color）→ MED**（建议 --chart-*，目标线 polyline+dasharray 豁免）；meet 撑不满（chart.svg.fill）→ MED；内容贴边（chart.svg.viewbox-edge）→ MED；SVG 内文字（chart.text.inline）→ MED；数据区左右对称（chart.symmetry）→ MED；柱底对齐基线（chart.baseline）→ MED。
+- 容器缺失（chart.container.missing）→ HIGH；SVG 裸 hex（svg.paint.non-palette）→ HIGH；未定义 var（token.svg-var）→ HIGH；**系列色用通用语义色（chart.series.color）→ MED**（建议 --chart-*，目标线 polyline+dasharray 豁免）；meet 撑不满（chart.svg.fill）→ MED；内容贴边（chart.svg.viewbox-edge）→ MED；SVG 内文字（chart.text.inline）→ MED；数据区左右对称（chart.symmetry）→ MED；柱底对齐基线（chart.baseline）→ MED；**折线纵向占满（chart.line.vertical）→ MED**（数据带 y 覆盖 ≥70% 且上下留白对称差 ≤15%，2026-08-24 新增——根治"折线数据集中一条带/下方大片空白"）。
 
 

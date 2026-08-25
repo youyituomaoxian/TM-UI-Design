@@ -1192,22 +1192,23 @@
       "id": "chart-box",
       "name": "图表容器（canvas 挂载点）",
       "category": "数据可视化",
-      "summary": "canvas 图表库（ECharts 等）定高容器：position relative + width 100% + height 320px（4px 网格，默认兜底，2026-08-07 起高度自定——内容撑开或固定均可，Agent 按容器调整），防图表四周留白失控。业务页可覆盖高度。",
+      "summary": "canvas 图表库（ECharts 等）定高容器：position relative + width 100% + height var(--chart-height)（默认 320px，token 化，2026-08-24；密度/场景可覆盖），防图表四周留白失控。弹性填充型图表（折线/柱状需占满卡内）用 .chart-box--flex（2026-08-24 收窄：仅该变体被 :has 弹性拉高，环形/迷你图不再被全局 :has(.chart-box) 拉伸）。",
       "anatomy": {
-        "box": "定高容器(默认320px，业务页可覆盖)",
+        "box": "定高容器(默认 var(--chart-height)=320px；弹性填充用 .chart-box--flex)",
         "canvas": "canvas 本体(.chart-canvas 占满)"
       },
       "tokens": [
         "--bg-surface",
         "--shadow-card",
-        "--n6"
+        "--n6",
+        "--chart-height"
       ],
       "sizing": {
         "height": 320
       },
-      "referenceCss": ".chart-box{position:relative;width:100%;height:320px}",
+      "referenceCss": ".chart-box{position:relative;width:100%;height:var(--chart-height)}.chart-box--flex{flex:1 1 auto;min-height:var(--chart-height);height:auto}",
       "referenceHtml": "<div class=\"chart-box\"><canvas class=\"chart-canvas\"></canvas></div>",
-      "note": "2026-08-03 新增容器原语：ECharts 等 canvas 库挂载点，不绑定具体库只约束容器。2026-08-04 补充：SVG 图表请用 .chart-svg--fill（width/height:100% + non-scaling-stroke），禁 preserveAspectRatio=xMidYMid meet 硬塞（等比缩放撑不满容器，见 RULES §3.7）；preserveAspectRatio=none 拉伸态 viewBox 右侧须留 16-20px 内部边距（元素 x ≤ viewBox 宽-20，门禁 chart.svg.viewbox-edge，否则末端 X 轴标签被 card-body padding 裁切）。"
+      "note": "2026-08-03 新增容器原语：ECharts 等 canvas 库挂载点，不绑定具体库只约束容器。2026-08-04 补充：SVG 图表请用 .chart-svg--fill（width/height:100% + non-scaling-stroke），禁 preserveAspectRatio=xMidYMid meet 硬塞（等比缩放撑不满容器，见 RULES §3.7）；preserveAspectRatio=none 拉伸态 viewBox 右侧须留 16-20px 内部边距（元素 x ≤ viewBox 宽-20，门禁 chart.svg.viewbox-edge，否则末端 X 轴标签被 card-body padding 裁切）。2026-08-24：高度 token 化 --chart-height（320 默认）+ 弹性拉高仅 .chart-box--flex（原全局 :has(.chart-box) 收窄，环形/迷你图不再被拉高）。"
     },
     {
       "id": "chart-canvas",

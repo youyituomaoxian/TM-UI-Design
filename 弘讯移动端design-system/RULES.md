@@ -769,6 +769,7 @@ KPI（关键指标）
 7. **颜色只用信息化图表色 --chart-***：移动 13 色（chart-blue/green/orange/red/blue-aux/green-g/yellow/red-neg/purple-a/purple-b/cyan/rose/gray）——**禁通用语义色（--primary/--suc/--warn/--err）做系列色**（门禁 chart.series.color MED）；目标线等辅助线例外（polyline+dasharray 可用 --warn）；禁裸 hex（HIGH）。
 8. **图表不溢出卡片**：`.chart-box` 高度自定（不再锁 130px/320px），内容不溢出。
 9. **网格线水平范围限于绘图区**：网格线两侧为 y 轴刻度标签留白（≥20），不贯穿标签区；y 轴刻度与网格线同高对齐但水平错开（刻度在留白区、网格线在绘图区）——**禁网格线贯穿到图表左右边缘贴卡边**（2026-08-07 执行上报补齐）。
+10. **折线纵向占满（2026-08-24 新增，双端同规则）**：折线数据 y 范围纵向覆盖 **≥ viewBox 高度 70%**、上下留白对称（差 ≤15%）——禁"数据集中一条带 + 下方大片空白"。门禁 chart.line.vertical（MED）兜底。
 
 **③ 交互（移动端差异）**
 

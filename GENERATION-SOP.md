@@ -202,15 +202,15 @@ cd <端目录> && "$NODE" validate-spec.js <用户项目路径>/output/<产出�
 
 **主路线（方案 C 拍板 + 2026-08-07 重构）**：信息化图表**不设组件、不锁实现**——尺寸/数据量/坐标 Agent 按容器自适应自选（HTML flex 柱 / SVG polyline+HTML 点 / 定尺寸方形 SVG 环）。**canvas 图表库（ECharts 等）仅限库级复杂图表**（3D/地图/海量点），且仍须挂容器原语。
 
-- **容器原语（必须用，防留白失控）**：外层 `.chart-box`（**高度自定**——内容撑开或固定均可，不再锁 320px；弹性吸收用 `.card:has(.chart-box) .chart-box{flex:1;min-height:320px}`）；canvas 本体加 `.chart-canvas`（`absolute inset:0` 占满）
+- **容器原语（必须用，防留白失控）**：外层 `.chart-box`（**高度走 `--chart-height` token**——默认 320px，内容撑开或固定均可，密度/场景可覆盖；弹性填充型图表用 `.chart-box--flex`，2026-08-24 收窄：仅该变体被弹性拉高，环形/迷你图不被全局 `:has(.chart-box)` 拉伸）；canvas 本体加 `.chart-canvas`（`absolute inset:0` 占满）
   ```html
   <div class="chart-box"><canvas class="chart-canvas" id="myChart"></canvas></div>
   ```
 - **实现放开（2026-08-07）**：柱状/横向柱用 HTML flex（高度/宽度百分比）或 SVG 百分比；折线用 SVG `<polyline>`（`viewBox="0 0 100 100"` + `preserveAspectRatio="none"` + `non-scaling-stroke`）+ HTML 点（同一百分比坐标系）；环形/圆**定尺寸方形 SVG（禁 none，圆变椭圆）**。**SVG 拉伸区禁放文字**——轴标签/数值/图例一律 HTML 叠层（`.chart-x-labels` / `.chart-v` / `.chart-hl/.chart-hr` / `.chart-ring-center`）
-- **结果约束（必达，见 CHART-SPEC §2）**：柱底对齐基线；x 轴标签独立行不叠柱（柱多跳显）；标签不溢出容器（底部留白 ≥20px）；折线点严格落线；环形中心文字不变形；多系列配图例；**颜色只用 `--chart-*`**；图表不溢出卡片。示范 = `docs/examples/web-图表自适应测试.html`
+- **结果约束（必达，见 CHART-SPEC §2）**：柱底对齐基线；x 轴标签独立行不叠柱（柱多跳显）；标签不溢出容器（底部留白 ≥20px）；折线点严格落线；**折线纵向占满（y 覆盖 ≥70% + 上下留白对称 ≤15%，门禁 chart.line.vertical MED，2026-08-24）**；环形中心文字不变形；多系列配图例；**颜色只用 `--chart-*`**；图表不溢出卡片。示范 = `docs/examples/web-图表自适应测试.html`
 - **交互与动画（默认即带）**：图形挂动画类 `.chart-bar`（柱升起）/`.chart-hbar`（条生长）/`.chart-line`（描边生长）/`.chart-ring-anim`（环放大）/`.chart-dot`（点延迟淡入）；Web hover 数据元素本身（三合一，阴影 `--shadow-data-hover` 轻弥散）；移动点按反馈（active 提亮）；时长全走 `--motion-duration-*`
 - **图例**：`.chart-legend` / `.legend-item` / `.legend-dot`（圆点）/ `.legend-line`（线段，可 `--dash`）
-- **卡片内图表**：卡片一律 `.card--fill`（等高收底）；图表/表格容器（`.donut-wrap` / `.chart-box` / `.table-wrap`）`flex:1` 弹性吸收拉伸空白（Web，禁图例下方留白）
+- **卡片内图表**：卡片一律 `.card--fill`（等高收底）；图表/表格容器（`.donut-wrap` / `.chart-box--flex` / `.table-wrap`）`flex:1` 弹性吸收拉伸空白（Web，禁图例下方留白）。**`.chart-box--flex` 须配合 `.card--fill` + `.col-*` 环境才产生弹性拉伸**（单用不生效）；环形/迷你图用 `.chart-box--ring` 定高，勿加 `.chart-box--flex`
 - **禁止**：自造 chart 类；canvas 挂裸 `<div>`（门禁 MEDIUM）；环形图 none 拉伸；SVG 裸 hex；**系列色用通用语义色（--primary/--suc/--warn/--err，门禁 `chart.series.color` MED）**
 
 #### 图表色板契约（两端 token，CHART-SPEC §4）
