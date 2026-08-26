@@ -1021,7 +1021,7 @@ KPI（关键指标）
 
 **④ 图标来源守则（2026-08-07 拍板，与 Web §7.9③ 对称）⚠️ 必读**
 
-> 图标库：`弘讯移动端design-system/icons/`（与 Web 同源 70 个通用，索引见 `icons/icons.md`）。
+> 图标库：`弘讯移动端design-system/icons/`（184 个，2026-08-14 图标库换新后，索引见 `icons/icons.md`）。
 > 统一规格：viewBox 24×24 · stroke-width 1.8 · round · currentColor。
 
 1. **页面图标一律从 `icons/` 取**：`icons/icons.md` 索引找语义图标，path 内联进尺寸类（`.m-icon` 16 / `.bn-icon` 24 / `.mbtn-ico` 16 等）。

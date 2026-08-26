@@ -169,12 +169,44 @@ guard('引擎对等性自检', () => {
   ok('引擎亮/暗对等性无硬错误', true);
 });
 
-// RED-003 修复（增量、非阻断）：遍历仓库根 *.html 逐个过门禁，暴露「已交付产物未受门禁覆盖」的缺口。
-// 注：当前 checkClassWhitelist 对页面自带 <style> 的定义会误报（NEW-001），故仅作信息展示、暂不影响 allOk；
-// 待 NEW-001 修复后可改为阻断。
-console.log(`\n▶ 仓库根 *.html 门禁覆盖扫描（RED-003 · 信息性，暂不阻断）`);
-// 真 glob：不写死文件名（早期版本硬编码已废弃的 cnc-dashboard*.html，文件删除后扫描静默失效）。
-// 端别按文件名启发式路由：含 mobile/移动 → 移动端门禁，其余 → Web 门禁。
+// ===== P0-1 文档计数门禁（2026-08-25）：让手写文档的数字被机器管住 =====
+// 背景：MASTER.md（声称 196）/ RULES.md（声称 84）与 icons/ 实际数（Web 185 / 移动 184）
+// 长期漂移无信号——图标库换新后文档没跟上，直到 HANDOFF §7 P0-1 才发现。
+// 方案：解析双端 MASTER.md / RULES.md 的「N 个」声称数字，与 icons/ 目录实际 SVG 数比对，不一致即 fail。
+// 治本思路（相对 P2-4「删数字只留指针」）：数字是文档最易漂移也最该被校验的部分，
+// 删掉数字门禁就无的放矢；保留数字 + 机器断言，让文档像代码一样被门禁管住。
+function iconCountAssertions() {
+  console.log(`\n▶ 文档图标计数 vs 目录实际（P0-1 · 阻断）`);
+  const ends = [['Web', WEB], ['移动端', MOB]];
+  for (const [label, dir] of ends) {
+    const iconsDir = path.join(dir, 'icons');
+    if (!fs.existsSync(iconsDir)) { ok(`${label} icons/ 目录存在`, false); continue; }
+    const actual = fs.readdirSync(iconsDir).filter(f => /\.svg$/i.test(f)).length;
+    ok(`${label} icons/ 实际 ${actual} 个 SVG`, actual > 0);
+    for (const doc of ['MASTER.md', 'RULES.md']) {
+      const docPath = path.join(dir, doc);
+      if (!fs.existsSync(docPath)) { ok(`${label} ${doc} 存在`, false); continue; }
+      const text = fs.readFileSync(docPath, 'utf8');
+      // 限定「图标库/图标集/Icon」语境，避免误抓「~38 个独立组件（图标/原子元件）」这类组件计数；
+      // 逐行取首个声明（一行同时写双端数字如「185 个…移动端 184 个」时，以首个即本端总数为准）。
+      const claimed = [];
+      for (const line of text.split('\n')) {
+        const m = line.match(/(图标库|图标集|Icon)[^\n]*?(\d+)\s*个|(\d+)\s*个[^\n]*?(图标库|图标集|Icon)/);
+        if (m) claimed.push(parseInt(m[2] || m[3], 10));
+      }
+      ok(`${label} ${doc} 图标数声明 ${claimed.join('/') || '(无声明)'} = 目录 ${actual}`, claimed.length === 0 || claimed.every(c => c === actual));
+    }
+  }
+}
+guard('文档图标计数断言', iconCountAssertions);
+
+// RED-003 升级（2026-08-25）：根目录 *.html 由「信息性」升级为「阻断」。
+// 前提已核实：NEW-001 假阳性已在 validate-spec.js L624-628 彻底修复（类名判定分两级，
+// 页面自带 <style> 定义即可通过），且当前根目录 2 个 HTML（USAGE.html / USAGE_分享版.html）实测 HIGH 0。
+// 范围分层（第一性原理）：根目录 *.html = 交付物 → 任一 HIGH 即 fail；
+// output/ = 历史归档（非交付标准下的旧产物，如规范效果验证_20260807 实测 HIGH 17）→ 报告但信息性，
+// 阻断会让 ci-local 对历史欠账立即红，且这些文件本就不是新标准产物。交付物 0 HIGH 才是门禁本义。
+console.log(`\n▶ 仓库根 *.html 门禁覆盖扫描（RED-003 · 阻断）`);
 let scanned = 0, anyHigh = 0;
 for (const f of fs.readdirSync(ROOT)) {
   if (!/\.html?$/i.test(f)) continue;
@@ -190,11 +222,35 @@ for (const f of fs.readdirSync(ROOT)) {
   const m = out.match(/HIGH (\d+)/);
   const h = m ? parseInt(m[1], 10) : 0;
   scanned++; anyHigh += h;
-  console.log(`  ${h > 0 ? '⚠️' : '✅'} ${f} — HIGH ${h}${h > 0 ? '（含 NEW-001 已知假阳性，待修后转阻断）' : ''}`);
+  console.log(`  ${h > 0 ? '❌' : '✅'} ${f} — HIGH ${h}`);
 }
-console.log(scanned > 0
-  ? `  ℹ️ 共扫描 ${scanned} 个根目录 HTML，HIGH 合计 ${anyHigh}（信息性）`
-  : `  ℹ️ 仓库根未发现 HTML 交付产物，跳过。`);
+ok(`根目录 ${scanned} 个 HTML 交付物 0 HIGH（阻断）`, scanned > 0 ? anyHigh === 0 : true);
+
+// RED-003 扩展：output/ 历史归档扫描（信息性，不阻断）——展示历史产物规范漂移趋势，不追溯交付。
+console.log(`\n▶ output/ 历史归档门禁覆盖扫描（RED-003-ext · 信息性，不阻断）`);
+const outDir = path.join(ROOT, 'output');
+let scannedOut = 0, outHigh = 0;
+if (fs.existsSync(outDir)) {
+  for (const f of fs.readdirSync(outDir)) {
+    if (!/\.html?$/i.test(f)) continue;
+    if (!fs.statSync(path.join(outDir, f)).isFile()) continue;
+    const end = /mobile|移动/i.test(f) ? MOB : WEB;
+    const spec = path.join(end, 'validate-spec.js');
+    let out = '';
+    try {
+      out = execSync(`"${NODE}" "${spec}" "${path.resolve(outDir, f)}"`, { encoding: 'utf8' }).toString();
+    } catch (e) {
+      out = (e.stdout || '').toString();
+    }
+    const m = out.match(/HIGH (\d+)/);
+    const h = m ? parseInt(m[1], 10) : 0;
+    scannedOut++; outHigh += h;
+    console.log(`  ${h > 0 ? '⚠️' : '✅'} ${f} — HIGH ${h}`);
+  }
+}
+console.log(scannedOut > 0
+  ? `  ℹ️ 共扫描 ${scannedOut} 个 output/ HTML，HIGH 合计 ${outHigh}（信息性，历史归档不阻断）`
+  : `  ℹ️ output/ 未发现 HTML 归档，跳过。`);
 
 console.log(`\n========== ci-local 总结 ==========`);
 console.log(`📊 ${pass} pass / ${fail} fail | 门禁 ${gW && gM ? '✅' : '❌'}`);

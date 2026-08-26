@@ -768,7 +768,7 @@ TopBar         height=72   FIXED   主色底 白字
 
 **③ 图标来源守则（2026-08-07 拍板）⚠️ 必读**
 
-> 图标库：`弘讯web端design-system/icons/`（84 个：B 端特有 14 + 通用 70，索引见 `icons/icons.md`）；移动端同源（`弘讯移动端design-system/icons/`）。
+> 图标库：`弘讯web端design-system/icons/`（185 个，2026-08-14 图标库换新后；分类明细见 `icons/icons.md`）；移动端同源（`弘讯移动端design-system/icons/`，184 个）。
 > 统一规格：viewBox 24×24 · stroke-width 1.8 · linecap/linejoin round · fill none · currentColor。
 
 1. **页面图标一律从 `icons/` 取**：打开 `icons/icons.md` 索引表找到语义图标，把对应 `.svg` 的 **path 内联**进尺寸类（`.ico` 16 / `.btn-ico` 16 / `.tree-ico` 16 / `.kpi-ico` 20 / `.kpi-ico--lg` 24）。
