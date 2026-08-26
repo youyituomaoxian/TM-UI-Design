@@ -93,7 +93,8 @@ function build() {
     ['--primary-hover', c.primary.hover, '主色悬停 — 按钮 hover、链接、聚焦'],
     ['--primary-active', c.primary.active, '主色点击 — 按钮 active/pressed'],
     ['--primary-dis-bg', c.primary.disabledBg, '主色禁用背景'],
-    ['--primary-dis-fg', c.primary.disabledFg, '主色禁用文字']
+    ['--primary-dis-fg', c.primary.disabledFg, '主色禁用文字'],
+    ['--focus-ring', 'color-mix(in srgb, var(--primary) 20%, transparent)', '焦点环（派生自 --primary 20% 透明混色；输入/按钮 focus-visible）']
   ]);
 
   line('### 2.2 辅助色 Secondary（强调 / 操作辅助）');
@@ -146,6 +147,12 @@ function build() {
     ...funcGroup('警告 Warning', 'warn', c.functional.warning),
     ...funcGroup('错误 Error', 'err', c.functional.error),
     ...funcGroup('运行/在线 Running', 'run', c.functional.statusRunning)
+  ]);
+
+  line('### 2.7 覆盖层 / 遮罩');
+  line('');
+  root('', [
+    ['--mask', c.mask, '弹窗/抽屉/底部动作面板遮罩背景（半透明黑）']
   ]);
 
   // ===== 三、字体体系 =====
@@ -207,7 +214,8 @@ function build() {
     ['--shadow-card', sh.card, '卡片（双层复合）'],
     ['--shadow-modal', sh.modal, '弹窗（双层复合）'],
     ['--shadow-float', sh.float, '悬浮块 / 按钮（双层复合）'],
-    ['--shadow-row-hover', sh.tableRowHover, '表格行悬停（双层复合）']
+    ['--shadow-row-hover', sh.tableRowHover, '表格行悬停（双层复合）'],
+    ['--shadow-data-hover', sh.dataHover, '数据元素悬停（drop-shadow 单阴影；图表点/柱/线 hover）']
   ]);
 
   // ===== 七、Elevation 层级体系（5 级，A 包新增） =====
@@ -353,6 +361,9 @@ function build() {
     ['--topbar-height', `${lay.topbarHeight}px`, '顶部导航高'],
     ['--topbar-bg', 'var(--primary)', '顶栏底'],
     ['--topbar-fg', 'var(--n1)', '顶栏字'],
+    ['--topbar-subtitle-fg', lay.topbarSubtitleFg, '顶栏副标题前景'],
+    ['--topbar-sep-bg', lay.topbarSepBg, '顶栏分隔线背景'],
+    ['--text-on-brand', 'var(--n1)', '品牌色表面文字（别名 --n1）'],
     ['--sidebar-width', `${lay.sidebarWidth}px`, '侧边栏宽'],
     ['--sidebar-collapsed-width', `${lay.sidebarCollapsedWidth}px`, '侧边栏折叠宽'],
     ['--sidebar-bg', 'var(--primary)', '侧边栏底'],
@@ -366,6 +377,7 @@ function build() {
     ['--tab-gap', '4px', '页签间距'],
     ['--pagination-height', `${lay.paginationHeight}px`, '分页器高'],
     ['--status-dot', `${lay.statusDot}px`, '状态指示灯直径（约）'],
+    ['--chart-height', `${lay.chartBoxHeight}px`, '图表容器默认高（弹性填充用 .chart-box--flex）'],
     ['--grid-columns', `${lay.gridColumns}`, 'Ant Design 24 栅格']
   ]);
 

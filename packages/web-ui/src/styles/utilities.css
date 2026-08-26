@@ -102,11 +102,12 @@
 .chart-caption{fill:var(--n9);font-size:12px;}
 
 
-.chart-box{position:relative;width:100%;height:320px;}
+.chart-box{position:relative;width:100%;height:var(--chart-height);}
+.chart-box--flex{flex:1 1 auto;min-height:var(--chart-height);height:auto;}
 .chart-canvas{position:absolute;inset:0;width:100%;height:100%;}
 
 
-.chart-svg--fill{width:100%;height:100%;display:block;}
+.chart-svg--fill{width:100%;height:100%;display:block;aspect-ratio:16/9;}
 .chart-svg--fill polyline,.chart-svg--fill path,.chart-svg--fill line{vector-effect:non-scaling-stroke;}
 
 .chart-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;}
@@ -129,9 +130,9 @@
 .chart-box:has(.ring-seg--b:hover) .chart-ring-tip--b{opacity:1;}
 .chart-box:has(.ring-seg--a:hover) .chart-ring-default,
 .chart-box:has(.ring-seg--b:hover) .chart-ring-default{opacity:0;}
-/* §9 图表卡禁拉伸空白（2026-08-06 拍板）：card--fill 列拉伸时由图表区弹性吸收——chart-box flex 增长（保底 320），不允许底部留白 */
-.card:has(.chart-box) .card-body{display:flex;flex-direction:column;}
-.card:has(.chart-box) .chart-box{flex:1;min-height:320px;height:auto;}
+/* §9 图表卡禁拉伸空白（2026-08-06 拍板）：card--fill 列拉伸时由图表区弹性吸收——chart-box--flex 弹性增长（保底 --chart-height），不允许底部留白。V6 收窄：仅弹性变体被 :has 拉高，环形/迷你图不再被全局 :has(.chart-box) 误伤 */
+.card:has(.chart-box--flex) .card-body{display:flex;flex-direction:column;}
+.card:has(.chart-box--flex) .chart-box--flex{flex:1;min-height:var(--chart-height);height:auto;}
 .chart-legend--list{flex-direction:column;gap:12px;width:100%;}
 .legend-item{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--n10);}
 .legend-dot{width:10px;height:10px;border-radius:var(--radius-round);flex-shrink:0;background:var(--primary);}

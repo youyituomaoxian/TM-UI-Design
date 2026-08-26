@@ -105,6 +105,15 @@ function buildCss(opts = {}) {
     .map(([k, v]) => `  --font-${k}:${W[v.weight] || 400} ${v.size}px/${v.lineHeight}px var(--font-cn);`)
     .join('\n');
 
+  // 排版语义类 .t-*（font.scale 派生，与 --font-* 变量 1:1；build 漂移修复——曾在产物手写、源缺失，回写真源）
+  const typeClasses = Object.entries(t.font.scale)
+    .map(([k, v]) => {
+      const extra = k === 'link' ? ';color:var(--primary-hover)' : '';
+      return `.t-${k}{font-family:var(--font-cn);font-size:${v.size}px;line-height:${v.lineHeight}px;font-weight:${W[v.weight] || 400}${extra};}`;
+    })
+    .concat([`.t-mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums;}`])
+    .join('\n');
+
   const elev = lv =>
     `  --elev-${lv}-surface:${t.elevation[lv].surface}; --elev-${lv}-shadow:${t.elevation[lv].shadow};`;
   const delev = lv =>
@@ -131,6 +140,7 @@ function buildCss(opts = {}) {
   ${dual('--primary-hover', P.hover)}
   ${dual('--primary-active', P.active)}
   --primary-dis-bg:${P.disabledBg}; --primary-dis-fg:${P.disabledFg};
+  --focus-ring:color-mix(in srgb, var(--primary) 20%, transparent);
   ${dual('--brand-surface', brandSurface)}
   --secondary:${t.colors.secondary.default}; --secondary-hover:${t.colors.secondary.hover}; --secondary-active:${t.colors.secondary.active}; --secondary-disabled-bg:${t.colors.secondary.disabledBg}; --secondary-disabled-fg:${t.colors.secondary.disabledFg};
   --link:${t.colors.link};
@@ -158,6 +168,7 @@ function buildCss(opts = {}) {
   --shadow-modal:${t.shadow.modal};
   --shadow-float:${t.shadow.float};
   --shadow-row-hover:${t.shadow.tableRowHover};
+  --shadow-data-hover:${t.shadow.dataHover};
   /* Elevation 5 级 */
 ${['sunken', 'default', 'raised', 'overlay', 'overflow'].map(elev).join('\n')}
   /* Motion */
@@ -176,6 +187,13 @@ ${fontVars}
   /* 布局骨架 */
   --topbar-height:${t.layout.topbarHeight}px; --sidebar-width:${t.layout.sidebarWidth}px;
   --sidebar-collapsed-width:${t.layout.sidebarCollapsedWidth}px; --footer-height:${t.layout.footerHeight}px;
+  /* 图表容器默认高（V6 修复：token 化，供 .chart-box 定高 + .chart-box--flex 保底；密度/场景可覆盖） */
+  --chart-height:${t.layout.chartBoxHeight}px;
+  /* 覆盖层/顶栏/品牌表面专用（build 漂移修复：值真源在 tokens.json，回写真源闭环） */
+  --mask:${t.colors.mask};
+  --text-on-brand:var(--n1);
+  --topbar-subtitle-fg:${t.layout.topbarSubtitleFg};
+  --topbar-sep-bg:${t.layout.topbarSepBg};
 }
 
 /* 密度三档（opt-in；对标 Material compact/comfortable/spacious） */
@@ -213,6 +231,9 @@ ${['sunken', 'default', 'raised', 'overlay', 'overflow'].map(delev).join('\n')}
   --bg-page:${d.background.page}; --bg-surface:${d.background.surface}; --bg-elevated:${d.background.elevated};
   --text-1:${d.background.textPrimary}; --text-2:${d.background.textSecondary}; --text-3:${d.background.textTertiary}; --border:${d.background.border};
 }
+
+/* ===== 排版语义类（.t-*：font.scale 派生，与 --font-* 1:1；build 漂移修复回写真源） ===== */
+${typeClasses}
 `;
   // DEFECT-12/守卫（2026-08-05 对抗审查）：token 缺字段输出 undefined 会让声明失效——替换 inherit 兜底，
   //   但为避免"无声降级"，生成后对残留 :inherit 断言告警（缺键应在 tokens.json 补，不得静默）。

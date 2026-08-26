@@ -2,6 +2,19 @@
 
 ---
 
+## [1.9.16] — 2026-08-26 · 图表 SVG 1:1 回退修复 + 表格列宽变体 + 真源-产物漂移回写（19 项）
+
+### Changed
+- **V6 图表 SVG 1:1 回退修复**：`.chart-svg--fill` 加 `aspect-ratio:16/9` 兜底——阻断 auto 高度链（`.chart-box--flex` 置于 `.card--fill` 等 auto 高度容器）下 SVG `height:100%` 无基准 → 回退 viewBox 1:1 爆炸；`.chart-box--flex` 前置条件文档化（确定高度容器，auto 高度链须用定高 `.chart-box`）。
+- **V7 表格列宽分配**：新增 `.table--fixed{table-layout:fixed}` opt-in 变体——fixed 下按 th 显式 width 分配、无宽度列等宽均分，避免 auto 布局把剩余宽度全给最长文本列（「项目」列 67% 挤压其余列）；长文本列对 th 设 width 百分比（如 30%）、操作列建议 ≤12%。
+- **🔴 真源-产物漂移回写（19 项）**：template.css 是 build 产物（真源 = packages/web-ui/src/styles/ 四件 CSS + map-tokens.js 从 tokens.json 生成），历史上有大量「直接改产物不回写源」的手写补丁。build 后暴露并回写：**6 个 token**（`--focus-ring`/`--mask`/`--shadow-data-hover`/`--topbar-subtitle-fg`/`--topbar-sep-bg`/`--text-on-brand`）+ **13 个排版类**（`.t-display`/`.t-h1~h5`/`.t-body1/2`/`.t-caption`/`.t-label`/`.t-overline`/`.t-link`/`.t-mono`）。
+- **token 真源闭环**：`--chart-height` 从 tokens.json `layout.chartBoxHeight` 映射（map-tokens.js 补映射，此前是产物手写）；3 个固定值（`--mask`/`--topbar-subtitle-fg`/`--topbar-sep-bg`）补进 tokens.json；DESIGN-TOKENS.md 自动生成补 7 个 token 文档（generate-design-tokens-md.js）。
+- **page-template.html 内联 :root 同步**：补 `--focus-ring`/`--mask`/`--topbar-subtitle-fg`/`--topbar-sep-bg`（template.root.sync 校验）。
+- **验证**：ci-local 93 pass / 0 fail（build 曾暴露 91/2——19 项漂移被冲掉导致 USAGE.html HIGH 6，回写后恢复全绿；output/ 历史归档 HIGH 合计 60→21，token.undefined 全消）。
+- **教训**：改 Web 端样式必须「改源（四件 CSS 或 map-tokens.js）→ 跑 map-tokens.js + build-template-css.js → 跑 ci-local」，禁止直接改产物 template.css。
+
+---
+
 ## [1.9.15] — 2026-08-25 · 门禁加固：文档图标计数门禁 + RED-003 升级阻断
 
 ### Changed

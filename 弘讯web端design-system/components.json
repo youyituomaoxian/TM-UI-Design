@@ -849,7 +849,7 @@
         "带状态点",
         "分页表"
       ],
-      "referenceCss": ".table{width:100%;border-collapse:collapse;font-size:13px}.table th{height:48px;background:var(--n2);text-align:left;padding:0 16px;color:var(--n10);font-weight:500}.table td{height:var(--density-row-height);padding:0 16px;border-bottom:1px solid var(--n6);color:var(--n10)}.table tbody tr:hover{background:var(--n3)}",
+      "referenceCss": ".table{width:100%;border-collapse:collapse;font-size:13px}.table th{height:48px;background:var(--n2);text-align:left;padding:0 16px;color:var(--n10);font-weight:500}.table td{height:var(--density-row-height);padding:0 16px;border-bottom:1px solid var(--n6);color:var(--n10)}.table tbody tr:hover{background:var(--n3)}.table--fixed{table-layout:fixed}",
       "referenceHtml": "<table class=\"table\"><thead><tr><th>设备</th><th>状态</th><th>负载</th></tr></thead><tbody><tr><td>注塑机 A-01</td><td>运行中</td><td>72%</td></tr></tbody></table>",
       "ardot": {
         "libraryComponent": "Table（Ardot 组件库）",
@@ -868,7 +868,7 @@
       ],
       "deprecated": true,
       "supersededBy": "table",
-      "note": "2026-07-31 弃用：新页面改用 packages/web-ui 真实组件「table」（shadcn）。本条目仅作 HTML 原型对照与门禁来源。",
+      "note": "2026-07-31 弃用：新页面改用 packages/web-ui 真实组件「table」（shadcn）。本条目仅作 HTML 原型对照与门禁来源。2026-08-26（V7）：新增 .table--fixed{table-layout:fixed} opt-in 变体——fixed 下按首行 th 显式 width 分配、无宽度列等宽均分，避免 auto 布局把剩余宽度全给最长文本列（如「项目」列 67% 挤压其余列）；长文本列对 th 设 width 百分比（如 30%）、操作列建议 ≤12%。",
       "motion": {
         "transition": {
           "property": "background",
@@ -1208,7 +1208,7 @@
       },
       "referenceCss": ".chart-box{position:relative;width:100%;height:var(--chart-height)}.chart-box--flex{flex:1 1 auto;min-height:var(--chart-height);height:auto}",
       "referenceHtml": "<div class=\"chart-box\"><canvas class=\"chart-canvas\"></canvas></div>",
-      "note": "2026-08-03 新增容器原语：ECharts 等 canvas 库挂载点，不绑定具体库只约束容器。2026-08-04 补充：SVG 图表请用 .chart-svg--fill（width/height:100% + non-scaling-stroke），禁 preserveAspectRatio=xMidYMid meet 硬塞（等比缩放撑不满容器，见 RULES §3.7）；preserveAspectRatio=none 拉伸态 viewBox 右侧须留 16-20px 内部边距（元素 x ≤ viewBox 宽-20，门禁 chart.svg.viewbox-edge，否则末端 X 轴标签被 card-body padding 裁切）。2026-08-24：高度 token 化 --chart-height（320 默认）+ 弹性拉高仅 .chart-box--flex（原全局 :has(.chart-box) 收窄，环形/迷你图不再被拉高）。"
+      "note": "2026-08-03 新增容器原语：ECharts 等 canvas 库挂载点，不绑定具体库只约束容器。2026-08-04 补充：SVG 图表请用 .chart-svg--fill（width/height:100% + non-scaling-stroke），禁 preserveAspectRatio=xMidYMid meet 硬塞（等比缩放撑不满容器，见 RULES §3.7）；preserveAspectRatio=none 拉伸态 viewBox 右侧须留 16-20px 内部边距（元素 x ≤ viewBox 宽-20，门禁 chart.svg.viewbox-edge，否则末端 X 轴标签被 card-body padding 裁切）。2026-08-24：高度 token 化 --chart-height（320 默认）+ 弹性拉高仅 .chart-box--flex（原全局 :has(.chart-box) 收窄，环形/迷你图不再被拉高）。2026-08-26（V6）：.chart-svg--fill 补 aspect-ratio:16/9 兜底——阻断 auto 高度链（.chart-box--flex 置于 .card--fill 等 auto 高度容器）下 SVG height:100% 无基准 → 回退 viewBox 1:1 爆炸；.chart-box--flex 前置条件=确定高度容器（auto 高度链须用定高 .chart-box）。"
     },
     {
       "id": "chart-canvas",

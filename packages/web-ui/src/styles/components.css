@@ -87,6 +87,7 @@
 .table td{height:var(--density-row-height);padding:0 16px;border-bottom:1px solid var(--n6);color:var(--n10);font-family:var(--font-cn);font-size:14px;} /* td 显式字体：数据统一黑体 14px（与表头 13 区分；含 .num 数字防 tabular-nums 回退衬线数字） */
 .num{text-align:right;font-variant-numeric:tabular-nums;} /* 数值列对齐类（th 与 td 通用）：表格数值列右对齐 + 等宽数字，表头 th.num 与数据 td.num 必须同用（门禁 table.align） */
 .table tbody tr:hover{background:var(--n3);}
+.table--fixed{table-layout:fixed;} /* V7 修复（2026-08-26）：列宽分配可控（opt-in）。fixed 下按首行 th 显式 width 分配、无宽度列等宽均分，避免 auto 布局把剩余宽度全给最长文本列（「项目」列 67% 挤压其余列）；长文本列对 th 设 width 百分比（如 30%）、操作列建议 ≤12% */
 
 .table-wrap{width:100%;overflow:auto;}
 .card-body.table-wrap{padding-top:var(--space-lg);} /* 表格卡：顶部留白 24 与 card-head 拉开 */

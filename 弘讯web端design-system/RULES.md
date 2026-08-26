@@ -366,6 +366,8 @@ START: 我要做什么类型的页面？
 
 **门禁双向校验**：① 任一数据单元格 `td.num` → 对应列表头必须 `th.num`；② 表头 `th.num` → 该列所有数据 `td` 必须带 `num`。违反即 HIGH（表头与数据错位）。数值列数字用 `tabular-nums` 等宽对齐（千分位对齐）。
 
+**列宽分配（2026-08-26 V7）**：`.table` 默认 `table-layout:auto`，浏览器会把剩余宽度大量倾斜给最长文本列（如「项目」列吃到 67% 挤压其余列）。**多列短内容表格（≥5 列）用 `.table--fixed{table-layout:fixed}` opt-in 变体**——fixed 下按首行 `th` 显式 `width` 分配、无宽度列等宽均分；长文本列对 `th` 设 width 百分比（如 30%）、操作列建议 ≤12%。
+
 **⚠️ 特异性陷阱**：`.table th` 的 `text-align:left` 特异性高于 `.num` 的 `right`——仅给 th 加 `num` 类不会右对齐。**必须由真源 `.table th.num{text-align:right}` 显式覆盖**（契约 `table.head.num-align` HIGH 锁定该规则值）。
 
 **⚠️ 字体回退陷阱**：`.num` 的 `font-variant-numeric:tabular-nums` **只用于数据单元格**——表头 `th.num` 必须 `font-variant-numeric:normal`（真源已写死，契约锁定；中文表头遇衬线字体系统会回退宋体，事故细节见 CHANGELOG）。
@@ -821,7 +823,7 @@ TopBar         height=72   FIXED   主色底 白字
 
 **① 实现放开（2026-08-07 拍板，替代固定 viewBox/尺寸/数据量）**
 
-- 图表**不设组件、不锁实现**：尺寸、数据量、坐标方式（HTML flex 柱 / SVG polyline + HTML 点 / 定尺寸方形 SVG 环）**Agent 按容器自适应自选**——不再固定 viewBox 400×160、折线 ≥8 点、柱状 12 根等实现级断言。图表容器高度走 **`--chart-height` token**（默认 320px，可密度/场景覆盖），弹性填充型图表用 `.chart-box--flex`（2026-08-24）。
+- 图表**不设组件、不锁实现**：尺寸、数据量、坐标方式（HTML flex 柱 / SVG polyline + HTML 点 / 定尺寸方形 SVG 环）**Agent 按容器自适应自选**——不再固定 viewBox 400×160、折线 ≥8 点、柱状 12 根等实现级断言。图表容器高度走 **`--chart-height` token**（默认 320px，可密度/场景覆盖），弹性填充型图表用 `.chart-box--flex`（2026-08-24）。**2026-08-26（V6）**：`.chart-svg--fill` 已带 `aspect-ratio:16/9` 兜底；`.chart-box--flex` 前置条件=**确定高度容器**——auto 高度链（如 `.card--fill` 内）禁用弹性类，须用定高 `.chart-box`，否则 SVG `height:100%` 无基准回退 viewBox 1:1 爆炸。
 - 环形/圆形图**禁 preserveAspectRatio="none"**（圆变椭圆）——定尺寸方形 SVG 居中，中心文字 HTML 绝对定位。
 - SVG 拉伸区**禁放文字**——轴标签 / 数值 / 图例一律 HTML 叠层；SVG 属性 stroke/fill 一律 style="var(--chart-*)"（禁裸 hex：svg.paint.non-palette HIGH；禁未定义 var：token.svg-var HIGH）。
 

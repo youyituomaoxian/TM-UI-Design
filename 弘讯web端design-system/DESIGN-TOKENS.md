@@ -3,7 +3,7 @@
 > ⚠️ **本文件由 `scripts/generate-design-tokens-md.js` 自动生成，请勿手改。** 改 token 请编辑 `tokens.json`（值真源）或脚本内的命名映射后重跑。
 > **命名规范**：全文使用「短名」CSS 变量（`--primary` / `--n5` / `--suc` / `--run` / `--radius-base` …），与 `components.json` referenceCss 及 `page-template.html :root` **1:1 对齐**。旧版 `--color-*` 全名已废弃。
 > **平台**: Web / B端 / 后台管理系统（Ant Design 风格）
-> **生成日期**: 2026-08-25
+> **生成日期**: 2026-08-26
 
 ---
 
@@ -31,6 +31,7 @@
   --primary-active: #004A8F; /* 主色点击 — 按钮 active/pressed */
   --primary-dis-bg: #DAEAFA; /* 主色禁用背景 */
   --primary-dis-fg: #A0B4C0; /* 主色禁用文字 */
+  --focus-ring: color-mix(in srgb, var(--primary) 20%, transparent); /* 焦点环（派生自 --primary 20% 透明混色；输入/按钮 focus-visible） */
 }
 ```
 
@@ -143,6 +144,14 @@
 }
 ```
 
+### 2.7 覆盖层 / 遮罩
+
+```css
+:root {
+  --mask: rgba(0,0,0,.45); /* 弹窗/抽屉/底部动作面板遮罩背景（半透明黑） */
+}
+```
+
 ## 三、字体体系
 
 ```css
@@ -224,6 +233,7 @@
   --shadow-modal: 0 6px 16px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04); /* 弹窗（双层复合） */
   --shadow-float: 0 4px 8px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04); /* 悬浮块 / 按钮（双层复合） */
   --shadow-row-hover: 0 1px 2px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03); /* 表格行悬停（双层复合） */
+  --shadow-data-hover: 0 1px 2px rgba(0,0,0,0.15); /* 数据元素悬停（drop-shadow 单阴影；图表点/柱/线 hover） */
 }
 ```
 
@@ -380,6 +390,9 @@
   --topbar-height: 72px; /* 顶部导航高 */
   --topbar-bg: var(--primary); /* 顶栏底 */
   --topbar-fg: var(--n1); /* 顶栏字 */
+  --topbar-subtitle-fg: rgba(255,255,255,.78); /* 顶栏副标题前景 */
+  --topbar-sep-bg: rgba(255,255,255,.30); /* 顶栏分隔线背景 */
+  --text-on-brand: var(--n1); /* 品牌色表面文字（别名 --n1） */
   --sidebar-width: 240px; /* 侧边栏宽 */
   --sidebar-collapsed-width: 80px; /* 侧边栏折叠宽 */
   --sidebar-bg: var(--primary); /* 侧边栏底 */
@@ -393,7 +406,7 @@
   --tab-gap: 4px; /* 页签间距 */
   --pagination-height: 44px; /* 分页器高 */
   --status-dot: 10px; /* 状态指示灯直径（约） */
-  --chart-height: 320px; /* 图表容器默认高（2026-08-24 收窄 token；弹性填充用 .chart-box--flex） */
+  --chart-height: 320px; /* 图表容器默认高（弹性填充用 .chart-box--flex） */
   --grid-columns: 24; /* Ant Design 24 栅格 */
 }
 ```
