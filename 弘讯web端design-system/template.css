@@ -60,7 +60,7 @@
   --motion-ease-out-circ:cubic-bezier(0.08, 0.82, 0.17, 1);
   
   --font-cn:"Source Han Sans CN","思源黑体",sans-serif; --font-en:"Roboto",sans-serif;
-  --font-mono:'JetBrains Mono', 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+  --font-mono:'JetBrains Mono', 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace, 'Source Han Sans CN', '思源黑体';
   
   --font-display:500 32px/40px var(--font-cn);
   --font-h1:500 28px/36px var(--font-cn);
@@ -248,6 +248,16 @@
 .tabs .tab.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:500;}
 .tabs .tab.is-disabled{opacity:.5;cursor:not-allowed;}
 .tabs .tab:focus-visible{outline:2px solid var(--primary);outline-offset:-2px;}
+
+
+.filter-chip{height:32px;padding:0 16px;display:inline-flex;align-items:center;gap:6px;
+  border:1px solid var(--n6);border-radius:var(--radius-round);background:var(--n1);color:var(--n10);
+  font-size:13px;font-family:var(--font-cn);cursor:pointer;
+  transition:color var(--motion-duration-fast) var(--motion-ease-out),border-color var(--motion-duration-fast) var(--motion-ease-out),background var(--motion-duration-fast) var(--motion-ease-out);}
+.filter-chip:hover{border-color:var(--primary-hover);color:var(--primary-hover);}
+.filter-chip.on{background:var(--primary-dis-bg);border-color:var(--primary);color:var(--primary-active);font-weight:500;}
+.filter-chip.is-disabled{opacity:.5;cursor:not-allowed;}
+.filter-chip:focus-visible{outline:2px solid var(--primary);outline-offset:-2px;}
 
 
 .pager{display:flex;align-items:center;gap:4px;height:44px;margin:var(--space-md) 0;}
@@ -461,14 +471,15 @@
 
 @keyframes fade-in{from{opacity:0;}to{opacity:1;}}
 @keyframes fade-out{from{opacity:1;}to{opacity:0;}}
-@keyframes float-up{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+@keyframes float-up{from{opacity:0;transform:translateY(8px);}}
 @keyframes float-down{from{opacity:1;transform:translateY(0);}to{opacity:0;transform:translateY(8px);}}
-@keyframes slide-in-right{from{opacity:0;transform:translateX(16px);}to{opacity:1;transform:translateX(0);}}
+@keyframes slide-in-right{from{opacity:0;transform:translateX(16px);}}
 @keyframes slide-out-right{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(16px);}}
-@keyframes scale-in{from{opacity:0;transform:scale(.95);}to{opacity:1;transform:scale(1);}}
+@keyframes scale-in{from{opacity:0;transform:scale(.95);}}
 @keyframes scale-out{from{opacity:1;transform:scale(1);}to{opacity:0;transform:scale(.95);}}
 @keyframes shimmer{from{background-position:-200% 0;}to{background-position:200% 0;}}
-@keyframes list-in{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+@keyframes list-in{from{opacity:0;transform:translateY(8px);}}
 @keyframes toast-in{from{opacity:0;transform:translate(-50%,-100%);}to{opacity:1;transform:translate(-50%,0);}}
 @keyframes toast-out{from{opacity:1;transform:translate(-50%,0);}to{opacity:0;transform:translate(-50%,-100%);}}
 
@@ -849,11 +860,11 @@ body{margin:0;font-family:var(--font-cn);font-size:14px;color:var(--n10);backgro
 
 .anim-fade-in{animation:fade-in var(--motion-duration-fast) var(--motion-ease-out) both;}
 .anim-fade-out{animation:fade-out var(--motion-duration-fast) var(--motion-ease-in-out) both;}
-.anim-float-up{animation:float-up var(--motion-duration-normal) var(--motion-ease-out) both;}
+.anim-float-up{animation:float-up var(--motion-duration-normal) var(--motion-ease-out) backwards;} 
 .anim-float-down{animation:float-down var(--motion-duration-fast) var(--motion-ease-in-out) both;}
-.anim-slide-in-right{animation:slide-in-right var(--motion-duration-fast) var(--motion-ease-out) both;}
+.anim-slide-in-right{animation:slide-in-right var(--motion-duration-fast) var(--motion-ease-out) backwards;}
 .anim-slide-out-right{animation:slide-out-right var(--motion-duration-fast) var(--motion-ease-in-out) both;}
-.anim-scale-in{animation:scale-in var(--motion-duration-normal) var(--motion-ease-out-circ) both;}
+.anim-scale-in{animation:scale-in var(--motion-duration-normal) var(--motion-ease-out-circ) backwards;}
 .anim-scale-out{animation:scale-out var(--motion-duration-fast) var(--motion-ease-in-out) both;}
 .anim-spin{animation:spin var(--motion-duration-slow) linear infinite;}
 .anim-press{transition:transform var(--motion-duration-instant) var(--motion-ease-out);}
@@ -861,7 +872,7 @@ body{margin:0;font-family:var(--font-cn);font-size:14px;color:var(--n10);backgro
 
 .anim-list-in{display:flex;flex-direction:column;gap:12px}
 .anim-list-in>*{animation:none;}
-.anim-list-in.mounted>*{animation:list-in var(--motion-duration-normal) var(--motion-ease-out) both;}
+.anim-list-in.mounted>*{animation:list-in var(--motion-duration-normal) var(--motion-ease-out) backwards;}
 .anim-list-in.mounted>*:nth-child(1){animation-delay:0ms}
 .anim-list-in.mounted>*:nth-child(2){animation-delay:50ms}
 .anim-list-in.mounted>*:nth-child(3){animation-delay:100ms}

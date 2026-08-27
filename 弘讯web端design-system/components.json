@@ -1022,10 +1022,75 @@
       ],
       "deprecated": true,
       "supersededBy": "tabs",
-      "note": "2026-07-31 弃用：新页面改用 packages/web-ui 真实组件「tabs」（shadcn）。本条目仅作 HTML 原型对照与门禁来源。",
+      "note": "2026-07-31 弃用：新页面改用 packages/web-ui 真实组件「tabs」（shadcn）。本条目仅作 HTML 原型对照与门禁来源。2026-08-27（V9）：数据范围/快速过滤禁用本组件（页签=导航语义），改用新增真源组件「filter-chip」。",
       "motion": {
         "transition": {
           "property": "color",
+          "duration": "fast",
+          "easing": "ease-out"
+        }
+      }
+    },
+    {
+      "id": "filter-chip",
+      "name": "筛选胶囊 Filter Chip",
+      "category": "导航",
+      "summary": "V9 新增（2026-08-27）：数据范围/快速过滤专用互斥胶囊，高32、圆角胶囊、字13；选中 primary-dis-bg 底+primary 边框+字重500。真源曾缺此组件致各页各造（辅机自造 ord-chip、订单总览误用页签 .tab）。",
+      "anatomy": {
+        "chip": "单个胶囊",
+        "on": "选中态"
+      },
+      "tokens": [
+        "--n1",
+        "--n6",
+        "--n10",
+        "--primary-dis-bg",
+        "--primary",
+        "--primary-active",
+        "--font-cn"
+      ],
+      "sizing": {
+        "height": 32,
+        "paddingX": 16,
+        "fontSize": 13,
+        "radius": "round"
+      },
+      "states": {
+        "default": {
+          "bg": "N1",
+          "border": "N6",
+          "text": "N10"
+        },
+        "hover": {
+          "border": "primary-hover",
+          "text": "primary-hover"
+        },
+        "on": {
+          "bg": "primary-dis-bg",
+          "border": "primary",
+          "text": "primary-active",
+          "weight": 500
+        }
+      },
+      "variants": [
+        "基础",
+        "选中 on"
+      ],
+      "referenceCss": ".filter-chip{height:32px;padding:0 16px;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--n6);border-radius:var(--radius-round);background:var(--n1);color:var(--n10);font-size:13px;font-family:var(--font-cn);cursor:pointer}.filter-chip:hover{border-color:var(--primary-hover);color:var(--primary-hover)}.filter-chip.on{background:var(--primary-dis-bg);border-color:var(--primary);color:var(--primary-active);font-weight:500}",
+      "referenceHtml": "<div style=\"display:flex;gap:8px\"><button class=\"filter-chip on\">本月</button><button class=\"filter-chip\">本季度</button><button class=\"filter-chip\">本年</button></div>",
+      "do": [
+        "数据范围/快速过滤互斥选择",
+        "选中态加 on（primary-dis-bg 底+primary 边框+500）",
+        "高32/字13/圆角胶囊"
+      ],
+      "dont": [
+        "用于导航页签（那是 .tabs 的语义）",
+        "页内自造等效胶囊（如 ord-chip）"
+      ],
+      "note": "2026-08-27（V9）新增：数据范围筛选曾无规范归宿——辅机总览自造 .ord-chip、订单总览误用 .tabs 页签，各页各造。本组件收敛该场景。RULES 列表页规格段同步约束。",
+      "motion": {
+        "transition": {
+          "property": "color,border-color,background",
           "duration": "fast",
           "easing": "ease-out"
         }

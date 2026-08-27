@@ -102,6 +102,17 @@
 .tabs .tab.is-disabled{opacity:.5;cursor:not-allowed;}
 .tabs .tab:focus-visible{outline:2px solid var(--primary);outline-offset:-2px;}
 
+/* V9（2026-08-27）筛选 chip：数据范围 / 快速过滤专用互斥胶囊。真源曾缺此组件 → 各页各造
+   （辅机总览自造 ord-chip、订单总览误用页签 .tab——tabs 是导航页签语义，禁用于数据范围筛选）。 */
+.filter-chip{height:32px;padding:0 16px;display:inline-flex;align-items:center;gap:6px;
+  border:1px solid var(--n6);border-radius:var(--radius-round);background:var(--n1);color:var(--n10);
+  font-size:13px;font-family:var(--font-cn);cursor:pointer;
+  transition:color var(--motion-duration-fast) var(--motion-ease-out),border-color var(--motion-duration-fast) var(--motion-ease-out),background var(--motion-duration-fast) var(--motion-ease-out);}
+.filter-chip:hover{border-color:var(--primary-hover);color:var(--primary-hover);}
+.filter-chip.on{background:var(--primary-dis-bg);border-color:var(--primary);color:var(--primary-active);font-weight:500;}
+.filter-chip.is-disabled{opacity:.5;cursor:not-allowed;}
+.filter-chip:focus-visible{outline:2px solid var(--primary);outline-offset:-2px;}
+
 
 .pager{display:flex;align-items:center;gap:4px;height:44px;margin:var(--space-md) 0;}
 .pager .pg{width:24px;height:24px;border-radius:var(--radius-round);display:flex;align-items:center;
@@ -314,14 +325,17 @@
 
 @keyframes fade-in{from{opacity:0;}to{opacity:1;}}
 @keyframes fade-out{from{opacity:1;}to{opacity:0;}}
-@keyframes float-up{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+/* V9 层叠地雷修复（2026-08-27）：入场 keyframes 省略 to 的 transform——fill:both 曾永久保留 to 态 translateY(0)/scale(1)（identity matrix），
+   使挂 .anim-* 的区块成为【永久 stacking context】：区块内 absolute 浮层（下拉/气泡，z 再高也被封印）被 DOM 靠后的同层级区块整体盖住
+   （订单总览实战：角色下拉被 KPI 卡遮挡）。省略 to = 结束回归元素基准（transform none），结界消失，视觉不变。 */
+@keyframes float-up{from{opacity:0;transform:translateY(8px);}}
 @keyframes float-down{from{opacity:1;transform:translateY(0);}to{opacity:0;transform:translateY(8px);}}
-@keyframes slide-in-right{from{opacity:0;transform:translateX(16px);}to{opacity:1;transform:translateX(0);}}
+@keyframes slide-in-right{from{opacity:0;transform:translateX(16px);}}
 @keyframes slide-out-right{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(16px);}}
-@keyframes scale-in{from{opacity:0;transform:scale(.95);}to{opacity:1;transform:scale(1);}}
+@keyframes scale-in{from{opacity:0;transform:scale(.95);}}
 @keyframes scale-out{from{opacity:1;transform:scale(1);}to{opacity:0;transform:scale(.95);}}
 @keyframes shimmer{from{background-position:-200% 0;}to{background-position:200% 0;}}
-@keyframes list-in{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+@keyframes list-in{from{opacity:0;transform:translateY(8px);}}
 @keyframes toast-in{from{opacity:0;transform:translate(-50%,-100%);}to{opacity:1;transform:translate(-50%,0);}}
 @keyframes toast-out{from{opacity:1;transform:translate(-50%,0);}to{opacity:0;transform:translate(-50%,-100%);}}
 

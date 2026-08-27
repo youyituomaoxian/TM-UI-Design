@@ -147,6 +147,7 @@ START: 我要做什么类型的页面？
 - **布局变体（自由选择，非固定）**：A 顶部筛选条 + 全宽表格（筛选项 ≤4）/ B 左筛选卡 303 + 右侧表格（筛选项多/常驻）/ C 工具栏 + 折叠筛选 + 表格（高级筛选）。下表为变体 B 的基准结构，变体 A/C 保持必含区块与组件规格即可：
 - 内容区结构（变体 B）：Breadcrumb 条 32（N5 底）→ 左侧筛选卡（宽 303，白底 Shadow-Card，内部表单项 itemSpacing 8）→ 工具栏（操作按钮区 56 + 搜索/批量区 48）→ 表格卡（表头 48 / 行 44 / 分页器 44）。
 - 表格 / 分页规格走 `components.json` 的 `table` / `pager` 契约（数值列 th.num↔td.num 右对齐），勿自造。
+- **数据范围筛选组件（V9 新增 2026-08-27）**：本月/本季度/自定义这类**数据范围 / 快速过滤**用真源 **`.filter-chip`**（互斥胶囊，选中加 `.on`）——**禁用页签 `.tabs/.tab`**（tabs 是导航页签语义；真源曾缺此组件致各页各造：辅机总览自造 ord-chip、订单总览误用页签）。
 - **分页器规则（2026-08-12 定稿）**：列表表格（tbody > 5 行）**必带完整 `.pager`**（‹ 1 2 3 › 共 N 条，门禁 `table.pager.required` HIGH）；**≤5 行的短表格**（明细 / 最近 N 条）尾部**统一显示「共 N 条」总览文本**（复用 `.pager` 容器内 `.pg-tot`，与分页器视觉对齐，禁留白、禁自造文案样式）；详情页参数表等明细表豁免。分页器必须紧跟所属表格（本表格后、下一表格前）。
 
 #### 详情页（必含区块：基础信息 + 参数 + 日志）
@@ -377,6 +378,7 @@ START: 我要做什么类型的页面？
 **字体守则（2026-08-07 扩充，防衬线回退）**：
 - **字体只用 token 栈**：`var(--font-cn)`（黑体：思源黑体 → 微软雅黑，Windows 兜底已补）/ `var(--font-mono)`。页面自造 CSS **禁写具体字体名**（`宋体`/`SimSun`/`微软雅黑`/`Microsoft YaHei`/`Helvetica` 等字符串直接进 font-family 即违规）——门禁 `font.family` MED 兜底。
 - **tabular-nums 仅限纯数字单元格**：`font-variant-numeric:tabular-nums` 只用于**无中文混排**的数据（纯数字/纯数值列）；中文表头与中英混合内容一律 `normal`（数字特性会触发浏览器找支持等宽数字的字体 → 中文环境回退宋体衬线）。
+- **mono 栈中文兜底（V9 修复 2026-08-27，订单总览「万」字宋体事故）**：`--font-mono` 栈尾已追加 `'Source Han Sans CN', '思源黑体'`——mono 场景的**中文字符**（KPI 单位「万」、JS 拼接文案）不再落 monospace 泛型（Windows = 宋体），自动落黑体；数字/符号仍走西文等宽。修复前根因：栈尾只有 `monospace` 泛型，中文无字形命中 → 宋体。
 - **字体验证须知（headless 误判陷阱）**：headless Chrome **无用户系统中文字体**，`computed font-family` 与 CSS 文本检查都会**误判「字体已改/已生效」**——字体改动必须用**真实浏览器（用户系统）渲染**核对；Agent 报告「字体已修」须附真实浏览器截图，不以 computed style / CSS 文本为准（th.num 衬线事故同源，2026-08-06 CHANGELOG）。
 
 ### [硬] 3.4 Tag 状态
@@ -498,7 +500,7 @@ START: 我要做什么类型的页面？
 
 1. **`col-*` 是弹性容器**：`.col-3/4/5/6/7/8/9/12` 一律 `display:flex;flex-direction:column;gap:var(--space-base)`（grid item 身份不变，内部转 flex column，col 内多卡片间距 16px 由 col 自身 gap 接管）。
 2. **col 内卡片一律 `flex:1` 平分 col 高度**（模板 `.col-* > .card{flex:1;min-height:0}`）：单卡片 = 撑满 col 高度；多卡片 = 平分。内容超高的卡片由 `min-height:auto` 保底不被压缩（高卡片决定 col 高度，矮卡片 stretch 对齐底部）。
-3. **图表/列表卡片配 `.card--fill`**（`flex column` + `.card-body{flex:1;min-height:0}`）：`card-body` 内的内容容器（`.donut-wrap` / `.chart-box` / `.table-wrap`）须 `flex:1` 吃掉剩余高度，杜绝"卡片撑满但内部内容悬空"。**弹性填充型图表容器 `.chart-box--flex`（2026-08-24）须配合 `.card--fill` + `.col-*` 环境才生效**（`.card:has(.chart-box--flex) .card-body{display:flex}` 组合）——脱离该组合单独使用 `.chart-box--flex` 不产生弹性拉伸；环形/迷你图用 `.chart-box--ring`，**不要**加 `.chart-box--flex`（会被全局 :has 拉高）。**V8（2026-08-27）**：`.chart-box--ring` 已带 `height:auto` 与基类 `.chart-box` 的 320 canvas 锚点**彻底解耦**——与基类连用安全（误挂不再产生 320 定高大空白；辅机总览页实战踩坑：160 环装 320 容器实测上下各空 77/83px）。**V8b 弹性吸收守则（2026-08-27，同页二次实战沉淀）**：等高行内**一切图表内容容器必须弹性**（`flex:1 1 auto` + `min-height` 保底），**禁止定高**（定高 = 矮卡底部死白的根源）——SVG 拉伸型折线用 `.chart-box--flex`（+ 页面级 `--chart-height` 覆盖压行高保底）、HTML flex 柱状区用 `flex:1;min-height:Npx`、环形卡用「环上 + 图例纵排下」布局让内容自然填满（环 SVG 必须保留固定等宽高属性保证**正圆不拉伸**，禁 preserveAspectRatio=none）。`.card-body--center` **降级为文字类卡片兜底**，图表卡禁用（居中只是均分死白，不消灭死白——85px 居中空仍违反内边距语义，2026-08-27 用户拍板）。
+3. **图表/列表卡片配 `.card--fill`**（`flex column` + `.card-body{flex:1;min-height:0}`）：`card-body` 内的内容容器（`.donut-wrap` / `.chart-box` / `.table-wrap`）须 `flex:1` 吃掉剩余高度，杜绝"卡片撑满但内部内容悬空"。**弹性填充型图表容器 `.chart-box--flex`（2026-08-24）须配合 `.card--fill` + `.col-*` 环境才生效**（`.card:has(.chart-box--flex) .card-body{display:flex}` 组合）——脱离该组合单独使用 `.chart-box--flex` 不产生弹性拉伸；环形/迷你图用 `.chart-box--ring`，**不要**加 `.chart-box--flex`（会被全局 :has 拉高）。**V8（2026-08-27）**：`.chart-box--ring` 已带 `height:auto` 与基类 `.chart-box` 的 320 canvas 锚点**彻底解耦**——与基类连用安全（误挂不再产生 320 定高大空白；辅机总览页实战踩坑：160 环装 320 容器实测上下各空 77/83px）。**V8b 弹性吸收守则（2026-08-27，同页二次实战沉淀）**：等高行内**一切图表内容容器必须弹性**（`flex:1 1 auto` + `min-height` 保底），**禁止定高**（定高 = 矮卡底部死白的根源）——SVG 拉伸型折线用 `.chart-box--flex`（+ 页面级 `--chart-height` 覆盖压行高保底）、HTML flex 柱状区用 `flex:1;min-height:Npx`、环形卡用「环上 + 图例纵排下」布局让内容自然填满（环 SVG 必须保留固定等宽高属性保证**正圆不拉伸**，禁 preserveAspectRatio=none）。`.card-body--center` **降级为文字类卡片兜底**，图表卡禁用（居中只是均分死白，不消灭死白——85px 居中空仍违反内边距语义，2026-08-27 用户拍板）。**V9 细则（2026-08-27，订单总览实战：metric-row 被拉到 356px 死白）**：弹性**吸收者只能是图表本体**（`.chart-box--flex` 或图表区容器）——图例行 `.chart-legend`、汇总行 `.metric-row` 一律 `flex-shrink:0` 定自然高，**禁 flex:1**（吸收职责错位 = 死白从图表转移到汇总行，性质不变）。
 4. **表格空数据占位（min-row 契约）**：表格数据行数 < 8 行时，渲染到 **8 行**（`minRow=8`，行高 44px）——不足部分用空占位行 `<tr class="table-placeholder"><td colspan="N">&nbsp;</td></tr>`（无内容、保持行高、`pointer-events:none` 禁 hover）。数据为 0 时同样渲染 8 行占位 + 首行提示「无数据」。门禁 `layout.table-minrow`（MEDIUM）核对 JS 渲染模板是否含 minRow 常量。
 5. **适用**：机器列表、告警列表、工单列表、环形图/折线图/柱状图等图表卡片，及一切在 `.grid12 > .col-*` 内的卡片；**不适用**：详情弹窗表单、非 grid12 列的独立卡片。门禁 `card.fill-in-grid`（MEDIUM）核对 col-* 直接子 .card 是否缺 `.card--fill`。
 

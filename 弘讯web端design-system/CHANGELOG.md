@@ -2,6 +2,17 @@
 
 ---
 
+## [1.9.18] — 2026-08-27 · V9 四连：mono 中文兜底 + 入场动画层叠地雷排除 + 筛选 chip 组件 + 弹性归属细则（订单总览页实战）
+
+### Changed
+- **V9-① `--font-mono` 栈补中文兜底（治「万」字宋体）**：栈尾追加 `'Source Han Sans CN', '思源黑体'`——mono 场景中文字符（KPI 单位「万」、JS 拼接文案）不再落 monospace 泛型（Windows = 宋体衬线），自动落黑体；数字/符号仍走西文等宽。根因：栈尾只有 monospace 泛型，中文无字形命中。全量页面自动修复。
+- **V9-② 入场动画层叠地雷排除（治下拉被 KPI 遮挡）**：**Chrome 行为**——fill 含 forwards/both 时，动过 transform 的元素动画结束后 computed 永远返回 identity matrix（即使 underlying=none）→ 挂 `.anim-float-up` 等入场类的区块成为**永久 stacking context**，区块内 absolute 浮层（下拉，z 再高也被封印）被 DOM 靠后区块整体盖住（角色下拉被 KPI 卡遮挡实战）。修复双管：① `float-up`/`slide-in-right`/`scale-in`/`list-in` keyframes 省略 to 的 transform（结束回归基准）；② 入场类 fill `both → backwards`（结束不保留帧，transform 归 none，结界消失，视觉不变）。退场类（float-down 等，配 display:none）与 toast-in（to 为功能性定位）不动。实测：page-head/stat-grid transform → **none**，面板上下缘 elementFromPoint 均命中自身。
+- **V9-③ 新增真源组件 `.filter-chip`（治筛选各页各造）**：数据范围/快速过滤专用互斥胶囊（高 32/圆角 round/字 13，选中 `.on` = primary-dis-bg 底 + primary 边框 + 500）。真源曾缺此组件 → 辅机总览自造 ord-chip、订单总览误用页签 `.tab`。RULES 列表页规格同步：**数据范围筛选禁用页签（tabs=导航语义）**。components.json 新增契约。
+- **V9-④ V8b 弹性归属细则**：吸收者**只能是图表本体**——图例行/汇总行（`.metric-row`）一律 `flex-shrink:0` **禁 flex:1**（订单总览实战：metric-row 被拉到 356px 死白，弹性职责安反 = 死白转移非消灭）。
+- **验证**：ci-local 93 pass / 0 fail；订单总览页实测——趋势卡 chart-box 320→589（弹性吃满）、metric-row 356→87（自然高）、面板点击命中自身、mono 栈含中文兜底、chip 交互正常。
+
+---
+
 ## [1.9.17] — 2026-08-27 · V8 环形容器解耦 + V8b 等高行图表弹性吸收守则
 
 ### Changed

@@ -54,7 +54,7 @@
   --motion-ease-out-circ:cubic-bezier(0.08, 0.82, 0.17, 1);
   /* 字体族 */
   --font-cn:"Source Han Sans CN","思源黑体",sans-serif; --font-en:"Roboto",sans-serif;
-  --font-mono:'JetBrains Mono', 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+  --font-mono:'JetBrains Mono', 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace, 'Source Han Sans CN', '思源黑体';
   /* 字阶（12 级硬切换；与 tokens.json.font.scale / contract type.* 1:1） */
   --font-display:500 32px/40px var(--font-cn);
   --font-h1:500 28px/36px var(--font-cn);
