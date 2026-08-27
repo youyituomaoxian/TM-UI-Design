@@ -26,7 +26,7 @@
 - **V10-⑥ 月份标签与数据点对齐（用户红框实战）**：数据点 x 在绘图区 X0–X1(10.5%–94.3%)内均布，标签是 flex **全宽**均分（首格中心 6.3%）——两套坐标系错位。修复：标签改 absolute + `left = xs(i)%` + `translateX(-50%)`，容器 `relative` 定高，实测对齐 delta = **0**。
 - **V10-⑦ `.pg` 补 background（治暗色分页器文字不可见）**：真源漏设 background → button UA 默认浅灰底(#F0F0F0)在亮色恰好像设计效果、暗色暴露（浅底 + 暗色亮字 #F1F5F9 = 对比度趋零）。补 `background:var(--n1)` 亮暗自适应（暗色深底 #1E293B + 亮字）。button 类组件 audit 注意：凡未显式设 background 的 button 在暗色都会踩同雷。
 - **V10-⑧ content 滚动条统一细样式（用户拍板）**：纵向滚动条=框架 G8 设计（`.app` 100vh 固定 + `.content{overflow:auto}` 内容区滚动），非 bug；样式统一 **thin/悬停加深**（scrollbar-width:thin + webkit 8px/n6→n7 悬停，与侧栏树「滚动条视觉隐藏」条款同族）。RULES 显式化「≤12 列表格禁滚动条（预算内消化）」条款至表格主规格段（源头：常见问题表 L313「>12 列才横向滚动」+ 检查清单「无元素超出父容器」，原分散未被遵守）。
-- **V10-⑨ 表格徽章组间距 + td 垂直呼吸（用户红框实战）**：① 徽章组裸 span 堆叠无间距——真源 `.badge-row` 组件早已存在（flex wrap + gap 8）但执行未用，新增 `.table .badge-row{margin-top:0}`（badge-row 本体 margin-top:12 是卡片底部语义，td 场景清零）；② `.table td` 垂直 padding `0 → 8`——行高自适应（多行内容）时上下贴边无呼吸；单行 td 行高仍由 `height:44` 保证**不变**，多行行高 75→99（间距+呼吸的空间守恒代价，行高收敛 "+N" 折叠为后续设计选项）。RULES 宽表指引同步「表格内徽章组必须 badge-row + td 垂直 padding 8」。**归因：组件存在未用（执行）+ td 无垂直呼吸（真源缺陷）各半**。
+- **V10-⑨ 表格徽章组间距 + td 垂直呼吸（用户红框实战）**：① 徽章组裸 span 堆叠无间距——真源 `.badge-row` 组件早已存在（flex wrap + gap 8）但执行未用，新增 `.table .badge-row{margin-top:0}`（badge-row 本体 margin-top:12 是卡片底部语义，td 场景清零）；② `.table td` 垂直 padding `0 → 8`——行高自适应（多行内容）时上下贴边无呼吸；单行 td 行高仍由 `height:44` 保证**不变**，多行行高收敛 **"+N" 折叠已实施（V10-B2 用户拍板 b）**：徽章最多显 2 个 + "+N"（title 悬停看全，详情抽屉有完整清单），行高统一 91/99 双行节奏——选配窄列 badge 竖排（每 badge 宽 > 列内容宽）是 11 列预算下的信息密度物理形态，非缺陷。RULES 宽表指引同步「表格内徽章组必须 badge-row + td 垂直 padding 8」。**归因：组件存在未用（执行）+ td 无垂直呼吸（真源缺陷）各半**。
 - **验证**：ci-local 93 pass / 0 fail；实测暗色网格 #3E4C63 可见、表格 fixed 1120 无横向滚动、x 标签归位无重叠、多语言切换正常。
 
 ---
