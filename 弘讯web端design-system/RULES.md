@@ -498,7 +498,7 @@ START: 我要做什么类型的页面？
 
 1. **`col-*` 是弹性容器**：`.col-3/4/5/6/7/8/9/12` 一律 `display:flex;flex-direction:column;gap:var(--space-base)`（grid item 身份不变，内部转 flex column，col 内多卡片间距 16px 由 col 自身 gap 接管）。
 2. **col 内卡片一律 `flex:1` 平分 col 高度**（模板 `.col-* > .card{flex:1;min-height:0}`）：单卡片 = 撑满 col 高度；多卡片 = 平分。内容超高的卡片由 `min-height:auto` 保底不被压缩（高卡片决定 col 高度，矮卡片 stretch 对齐底部）。
-3. **图表/列表卡片配 `.card--fill`**（`flex column` + `.card-body{flex:1;min-height:0}`）：`card-body` 内的内容容器（`.donut-wrap` / `.chart-box` / `.table-wrap`）须 `flex:1` 吃掉剩余高度，杜绝"卡片撑满但内部内容悬空"。**弹性填充型图表容器 `.chart-box--flex`（2026-08-24）须配合 `.card--fill` + `.col-*` 环境才生效**（`.card:has(.chart-box--flex) .card-body{display:flex}` 组合）——脱离该组合单独使用 `.chart-box--flex` 不产生弹性拉伸；环形/迷你图用 `.chart-box--ring` 定高，**不要**加 `.chart-box--flex`（会被全局 :has 拉高）。
+3. **图表/列表卡片配 `.card--fill`**（`flex column` + `.card-body{flex:1;min-height:0}`）：`card-body` 内的内容容器（`.donut-wrap` / `.chart-box` / `.table-wrap`）须 `flex:1` 吃掉剩余高度，杜绝"卡片撑满但内部内容悬空"。**弹性填充型图表容器 `.chart-box--flex`（2026-08-24）须配合 `.card--fill` + `.col-*` 环境才生效**（`.card:has(.chart-box--flex) .card-body{display:flex}` 组合）——脱离该组合单独使用 `.chart-box--flex` 不产生弹性拉伸；环形/迷你图用 `.chart-box--ring`，**不要**加 `.chart-box--flex`（会被全局 :has 拉高）。**V8（2026-08-27）**：`.chart-box--ring` 已带 `height:auto` 与基类 `.chart-box` 的 320 canvas 锚点**彻底解耦**——与基类连用安全（误挂不再产生 320 定高大空白；辅机总览页实战踩坑：160 环装 320 容器实测上下各空 77/83px）。**V8b 弹性吸收守则（2026-08-27，同页二次实战沉淀）**：等高行内**一切图表内容容器必须弹性**（`flex:1 1 auto` + `min-height` 保底），**禁止定高**（定高 = 矮卡底部死白的根源）——SVG 拉伸型折线用 `.chart-box--flex`（+ 页面级 `--chart-height` 覆盖压行高保底）、HTML flex 柱状区用 `flex:1;min-height:Npx`、环形卡用「环上 + 图例纵排下」布局让内容自然填满（环 SVG 必须保留固定等宽高属性保证**正圆不拉伸**，禁 preserveAspectRatio=none）。`.card-body--center` **降级为文字类卡片兜底**，图表卡禁用（居中只是均分死白，不消灭死白——85px 居中空仍违反内边距语义，2026-08-27 用户拍板）。
 4. **表格空数据占位（min-row 契约）**：表格数据行数 < 8 行时，渲染到 **8 行**（`minRow=8`，行高 44px）——不足部分用空占位行 `<tr class="table-placeholder"><td colspan="N">&nbsp;</td></tr>`（无内容、保持行高、`pointer-events:none` 禁 hover）。数据为 0 时同样渲染 8 行占位 + 首行提示「无数据」。门禁 `layout.table-minrow`（MEDIUM）核对 JS 渲染模板是否含 minRow 常量。
 5. **适用**：机器列表、告警列表、工单列表、环形图/折线图/柱状图等图表卡片，及一切在 `.grid12 > .col-*` 内的卡片；**不适用**：详情弹窗表单、非 grid12 列的独立卡片。门禁 `card.fill-in-grid`（MEDIUM）核对 col-* 直接子 .card 是否缺 `.card--fill`。
 
@@ -825,7 +825,7 @@ TopBar         height=72   FIXED   主色底 白字
 
 - 图表**不设组件、不锁实现**：尺寸、数据量、坐标方式（HTML flex 柱 / SVG polyline + HTML 点 / 定尺寸方形 SVG 环）**Agent 按容器自适应自选**——不再固定 viewBox 400×160、折线 ≥8 点、柱状 12 根等实现级断言。图表容器高度走 **`--chart-height` token**（默认 320px，可密度/场景覆盖），弹性填充型图表用 `.chart-box--flex`（2026-08-24）。**2026-08-26（V6）**：`.chart-svg--fill` 已带 `aspect-ratio:16/9` 兜底；`.chart-box--flex` 前置条件=**确定高度容器**——auto 高度链（如 `.card--fill` 内）禁用弹性类，须用定高 `.chart-box`，否则 SVG `height:100%` 无基准回退 viewBox 1:1 爆炸。
 - 环形/圆形图**禁 preserveAspectRatio="none"**（圆变椭圆）——定尺寸方形 SVG 居中，中心文字 HTML 绝对定位。
-- SVG 拉伸区**禁放文字**——轴标签 / 数值 / 图例一律 HTML 叠层；SVG 属性 stroke/fill 一律 style="var(--chart-*)"（禁裸 hex：svg.paint.non-palette HIGH；禁未定义 var：token.svg-var HIGH）。
+- SVG 拉伸区**禁放一切需保形元素**——**文字与数据点圆标均不得写入 `preserveAspectRatio="none"` 的 SVG**（非等比拉伸会把圆拉成椭圆、文字变形；辅机总览实战：r=1.6 圆点实测被拉成 10.9×8.7 椭圆）。轴标签 / 数值 / 图例 / **数据点**一律 HTML 叠层（数据点 = absolute 定位 span，left/top 百分比与 polyline points 同源，8px 正圆）；SVG 属性 stroke/fill 一律 style="var(--chart-*)"（禁裸 hex：svg.paint.non-palette HIGH；禁未定义 var：token.svg-var HIGH）。
 
 **② 结果约束清单（8 条，缺一不可）**
 

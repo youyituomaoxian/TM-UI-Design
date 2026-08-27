@@ -336,6 +336,8 @@
 .card--fill .card-body{flex:1;min-height:0;}
 
 .card-body--scroll{overflow:auto;max-height:100%;}
+/* V8（2026-08-27）：等高行矮内容卡的防死白工具——card--fill 被 grid 等高 stretch 后，内容垂直居中（空白上下均衡呼吸），替代「顶置+底部死白」（辅机总览实战：柱状卡 metric-row 下 107px 死白）。与 --scroll 互斥。 */
+.card-body--center{display:flex;flex-direction:column;justify-content:center;}
 
 
 @media (prefers-reduced-motion: reduce) {

@@ -2,6 +2,18 @@
 
 ---
 
+## [1.9.17] — 2026-08-27 · V8 环形容器解耦 + V8b 等高行图表弹性吸收守则
+
+### Changed
+- **V8 `.chart-box--ring` 与基类定高解耦**：`--ring` 加 `height:auto`——环形容器高由内容（自带尺寸的 SVG 环）决定，与 `.chart-box` 基类 `--chart-height=320`（canvas/ECharts 渲染锚点）彻底解耦。**与基类连用从此安全**，误挂不再产生 320 定高大空白。实战背景（辅机总览页，Playwright 实测 1440×900）：160 环装 320 容器，容器内上下各空 77/83px；移动端真源 `--ring` 自带 height:200，Web 端环尺寸多样（160/240）故取 auto 更通用。
+- **V8b 等高行图表弹性吸收守则（用户拍板：居中是均分死白不是消灭死白）**：等高行内一切图表内容容器**必须弹性**（`flex:1 1 auto` + `min-height` 保底）、**禁止定高**——SVG 拉伸型折线用 `.chart-box--flex`（+ 页面级 `--chart-height` 覆盖压保底）、HTML flex 柱状区用 `flex:1;min-height:Npx`、环形卡用「环上 + 图例纵排下」布局自然填满（环 SVG 保留固定等宽高属性保证**正圆不拉伸**）。实测（辅机总览行1）：行高 449→402，三卡底部死白 57/107/0 → **0/0/0 全归零**，环形正圆。
+- **新增 `.card-body--center`**：`display:flex;flex-direction:column;justify-content:center`——**降级为文字类卡片兜底**，图表卡禁用（中间方案：环形卡居中后上下各 ~85px 仍违反内边距语义，被 V8b 取代，类保留供非图表场景）。与 `--scroll` 互斥。
+- **文档**：RULES §4.4b 第 3 条补 V8 解耦 + V8b 弹性守则；components.json chart-box 契约同步。
+- **V8c 拉伸 SVG 禁数据点 + 图表文字显式锁字体（用户实战反馈）**：① 守则升级——`preserveAspectRatio="none"` 拉伸 SVG **禁放一切需保形元素**（文字+数据点圆标，r=1.6 圆实测被拉成 10.9×8.7 椭圆），数据点一律 HTML 叠层（absolute span，left/top 百分比与 polyline 同源，天然正圆）；② `.chart-x-labels`（曾漏显式声明：字号错继承 body 14px、字体靠继承链——暗底细灰字渲染发虚被误读为衬线）等 5 类图表文字（x-labels/caption/hl/legend-item/metric-label）**显式锁定** `var(--font-cn)`/`var(--font-mono)` + x-labels 12px，兑现「显式 font-family 锁定黑体家族」守则。
+- **验证**：ci-local 93 pass / 0 fail。
+
+---
+
 ## [1.9.16] — 2026-08-26 · 图表 SVG 1:1 回退修复 + 表格列宽变体 + 真源-产物漂移回写（19 项）
 
 ### Changed

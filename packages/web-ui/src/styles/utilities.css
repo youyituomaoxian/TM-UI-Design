@@ -99,7 +99,7 @@
 .chart-grid{stroke:var(--n6);stroke-width:1;}
 .chart-axis{font-size:11px;fill:var(--n8);font-family:var(--font-mono);}
 .chart-value{font-family:var(--font-mono);font-weight:500;fill:var(--n11);}
-.chart-caption{fill:var(--n9);font-size:12px;}
+.chart-caption{fill:var(--n9);font-size:12px;font-family:var(--font-cn);}
 
 
 .chart-box{position:relative;width:100%;height:var(--chart-height);}
@@ -113,16 +113,18 @@
 .chart-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;}
 
 /* §9 图表文字 HTML 层（SVG none 拉伸区禁放文字——会变形；轴标签/数值/图例全 HTML + .t-* 语义类） */
-.chart-x-labels{display:flex;justify-content:space-between;margin-top:4px;color:var(--n8);}
+/* 轴标签显式锁定黑体 + 12px（V8c：曾漏显式声明——字号错继承 body 14px、字体全靠继承链，违反「显式 font-family 锁定黑体家族」守则；暗底细灰字渲染发虚被误读为衬线） */
+.chart-x-labels{display:flex;justify-content:space-between;margin-top:4px;color:var(--n8);font-family:var(--font-cn);font-size:12px;}
 .chart-x-labels span{flex:1;text-align:center;}
 .chart-v{position:absolute;transform:translateX(-50%);color:var(--n11);font-family:var(--font-mono);}
-.chart-hl{position:absolute;left:0;transform:translateY(-50%);color:var(--n8);}
+.chart-hl{position:absolute;left:0;transform:translateY(-50%);color:var(--n8);font-family:var(--font-mono);}
 .chart-hr{position:absolute;transform:translateY(-50%);color:var(--n11);font-family:var(--font-mono);}
 .chart-ring-svg{display:block;margin:0 auto;}
 .chart-ring-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
 
-/* §9 环状图：环居中；中心常显主段数值（70% 设备利用率），悬停环段时切换为对应段数值（运行→70% / 待机→30%），离开恢复常显 */
-.chart-box--ring{display:flex;align-items:center;justify-content:center;}
+/* §9 环状图：环居中；中心常显主段数值（70% 设备利用率），悬停环段时切换为对应段数值（运行→70% / 待机→30%），离开恢复常显。
+   V8 解耦（2026-08-27）：height:auto —— 环形容器高由内容（自带尺寸的 SVG 环）决定，与 .chart-box 基类的 --chart-height=320 canvas 锚点彻底解耦；误挂基类（chart-box chart-box--ring）不再产生 320 定高大空白（辅机总览页实战踩坑：160 环装 320 容器，上下各空 ~80px，实测 gapTop77/gapBottom83）。移动端真源 --ring 自带 height:200，Web 端环尺寸多样（160/240）故取 auto 更通用。 */
+.chart-box--ring{display:flex;align-items:center;justify-content:center;height:auto;}
 .ring-seg--a,.ring-seg--b{cursor:pointer;}
 .chart-ring-default{opacity:1;transition:opacity var(--motion-duration-fast) var(--motion-ease-out);}
 .chart-ring-tip{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;opacity:0;transition:opacity var(--motion-duration-fast) var(--motion-ease-out);pointer-events:none;}
@@ -134,7 +136,7 @@
 .card:has(.chart-box--flex) .card-body{display:flex;flex-direction:column;}
 .card:has(.chart-box--flex) .chart-box--flex{flex:1;min-height:var(--chart-height);height:auto;}
 .chart-legend--list{flex-direction:column;gap:12px;width:100%;}
-.legend-item{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--n10);}
+.legend-item{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--n10);font-family:var(--font-cn);}
 .legend-dot{width:10px;height:10px;border-radius:var(--radius-round);flex-shrink:0;background:var(--primary);}
 .legend-line{width:16px;height:0;border-top:2px solid var(--primary);flex-shrink:0;}
 .legend-line--dash{border-top-style:dashed;}
@@ -163,7 +165,7 @@
 
 .metric-row{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--n6);}
 .metric-row:last-child{border-bottom:none;}
-.metric-label{color:var(--n9);font-size:14px;}
+.metric-label{color:var(--n9);font-size:14px;font-family:var(--font-cn);}
 .metric-val{font-size:18px;font-weight:500;color:var(--n11);font-family:var(--font-mono);}
 .metric-unit{font-size:12px;color:var(--n8);font-weight:400;}
 
