@@ -96,7 +96,7 @@
 
 .chart-wrap{width:100%;}
 .chart-svg{display:block;width:100%;}
-.chart-grid{stroke:var(--n6);stroke-width:1;}
+.chart-grid{stroke:var(--chart-grid);stroke-width:1;}
 .chart-axis{font-size:11px;fill:var(--n8);font-family:var(--font-mono);}
 .chart-value{font-family:var(--font-mono);font-weight:500;fill:var(--n11);}
 .chart-caption{fill:var(--n9);font-size:12px;font-family:var(--font-cn);}

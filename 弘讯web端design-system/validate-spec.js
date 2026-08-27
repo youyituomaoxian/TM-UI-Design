@@ -740,7 +740,7 @@ function checkGrid4px(selfCss) {
   const selfRules = parseRules('<style>' + selfCss + '</style>');
   const violations = [];
   const seen = new Set();
-  const skipProp = /font-size|line-height|letter-spacing|border|box-shadow|top|left|right|bottom|transform|background-position|text-shadow/i;
+  const skipProp = /font-size|line-height|letter-spacing|border|outline|box-shadow|top|left|right|bottom|transform|background-position|text-shadow/i; /* V5 闭环（2026-08-27）：outline 豁免——焦点环 2px 是行业惯例，非布局尺寸 */
   for (const r of selfRules) {
     if (r.selectors.some(s => s.includes(':root'))) continue;
     const decls = r.decl.split(';');
@@ -1690,11 +1690,21 @@ function checkTemplateCloneMeta(html, targetPath) {
   const violations = [];
   if (isFrameworkExempt(targetPath)) return violations;
   const noScript = stripScriptTags(html);
-  const isBiz = noScript.includes('class="app"') && noScript.includes('class="topbar"') && noScript.includes('class="sidebar"');
+  /* V10 修复（2026-08-27，订单总览实战）：原用 includes('class="app"') 字符串全等——多类拼接
+     （class="app anim-fade-in"）匹配失败 → isBiz false → 整个克隆检查被跳过（fail-open），
+     绕过脚手架的手工框架（丢 lang JS 等）带病过关。改词级正则匹配。 */
+  const hasClass = (name) => new RegExp('class="[^"]*\\b' + name + '\\b[^"]*"').test(noScript);
+  const isBiz = hasClass('app') && hasClass('topbar') && hasClass('sidebar');
   if (!isBiz) return violations;
   if (!/name\s*=\s*["']x-template-clone["']/.test(noScript)) {
     violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'template.clone.missing', sel: 'html',
       msg: 'B 端框架页缺 <meta name="x-template-clone"> 克隆来源标记——必须从 page-template.html 克隆框架起步（脚手架 scripts/new-page-web.js 自动注入）；自搭框架或未走克隆流程的产出会被拦截。见标准提示词模板.md 第零步' });
+  } else if (!html.includes('hx-lang')) {
+    /* V10 补（2026-08-27，订单总览实战）：有克隆 META 但框架 i18n JS（hx-lang 指纹）缺失——克隆后 script 段被误删，
+       语言切换 DOM 齐全却无 handler，整页多语言失效。注意：指纹必须在【原始 html】（含 script）中查找——
+       noScript 已剥脚本，JS 指纹永远找不到（首版误报教训）。 */
+    violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'template.i18n.missing', sel: 'html',
+      msg: '克隆页缺框架多语言切换 JS（hx-lang 指纹未命中）——语言切换 DOM 齐全但无 handler，切换无效。page-template.html 的「框架级多语言」<script> IIFE（DICT/LANGS/apply/绑定）必须随框架一起保留，禁止在填内容时删除框架 <script> 段。' });
   }
   return violations;
 }

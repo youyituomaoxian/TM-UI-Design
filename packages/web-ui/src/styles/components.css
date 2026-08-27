@@ -84,10 +84,10 @@
 .table{width:100%;border-collapse:collapse;font-size:13px;} /* 表头基准字号 13（数据 14——表头与数据区分，见 .table td） */
 .table th{height:48px;background:var(--n2);text-align:left;padding:0 16px;color:var(--n10);font-weight:500;font-family:var(--font-cn);} /* th 显式字体：全表头统一黑体 13px/500（防 font-variant 特性回退落宋体；表头与数据字号区分） */
 .table th.num{text-align:right;font-variant-numeric:normal;} /* 数值列表头右对齐（特异性覆盖 .table th 的 left）；表头为中文标题无数字，禁 tabular-nums 数字特性——否则浏览器为满足特性会回退到宋体等衬线字体（2026-08-06 用户实测：计划数/完成数标题衬线） */
-.table td{height:var(--density-row-height);padding:0 16px;border-bottom:1px solid var(--n6);color:var(--n10);font-family:var(--font-cn);font-size:14px;} /* td 显式字体：数据统一黑体 14px（与表头 13 区分；含 .num 数字防 tabular-nums 回退衬线数字） */
+.table td{height:var(--density-row-height);padding:8px 16px;border-bottom:1px solid var(--n6);color:var(--n10);font-family:var(--font-cn);font-size:14px;} /* td 显式字体：数据统一黑体 14px（与表头 13 区分；含 .num 数字防 tabular-nums 回退衬线数字）。V10：垂直 padding 0→8——行高自适应（多行内容）时上下贴边无呼吸（订单总览实战）；单行 td 行高仍由 height:44 保证不变 */
 .num{text-align:right;font-variant-numeric:tabular-nums;} /* 数值列对齐类（th 与 td 通用）：表格数值列右对齐 + 等宽数字，表头 th.num 与数据 td.num 必须同用（门禁 table.align） */
 .table tbody tr:hover{background:var(--n3);}
-.table--fixed{table-layout:fixed;} /* V7 修复（2026-08-26）：列宽分配可控（opt-in）。fixed 下按首行 th 显式 width 分配、无宽度列等宽均分，避免 auto 布局把剩余宽度全给最长文本列（「项目」列 67% 挤压其余列）；长文本列对 th 设 width 百分比（如 30%）、操作列建议 ≤12% */
+.table--fixed{table-layout:fixed;border-collapse:separate;border-spacing:0;} /* V10 补：separate 治 collapse + 百分比列宽的 Chromium 幻影 2px scrollWidth（td 全部 ≤100% 仍出横向滚动条）；本表边框仅 border-bottom，separate+spacing:0 视觉无差 */ /* V7 修复（2026-08-26）：列宽分配可控（opt-in）。fixed 下按首行 th 显式 width 分配、无宽度列等宽均分，避免 auto 布局把剩余宽度全给最长文本列（「项目」列 67% 挤压其余列）；长文本列对 th 设 width 百分比（如 30%）、操作列建议 ≤12% */
 
 .table-wrap{width:100%;overflow:auto;}
 .card-body.table-wrap{padding-top:var(--space-lg);} /* 表格卡：顶部留白 24 与 card-head 拉开 */
@@ -116,7 +116,8 @@
 
 .pager{display:flex;align-items:center;gap:4px;height:44px;margin:var(--space-md) 0;}
 .pager .pg{width:24px;height:24px;border-radius:var(--radius-round);display:flex;align-items:center;
-  justify-content:center;font-size:12px;border:1px solid var(--n6);cursor:pointer;color:var(--n10);}
+  justify-content:center;font-size:12px;border:1px solid var(--n6);cursor:pointer;color:var(--n10);
+  background:var(--n1); /* V10 补：漏设 background 时 button UA 默认浅灰底在暗色暴露（浅底+暗色亮字 → 文字不可见，订单总览实战） */}
 .pager .pg.active{background:var(--primary);color:var(--text-on-brand);border-color:var(--primary);}
 .pager .pg:hover{background:var(--n3);}
 .pager .pg.disabled{opacity:.4;cursor:not-allowed;}
@@ -223,6 +224,7 @@
 .badge-run:hover{background:var(--run-soft-hover);} .badge-run.is-disabled{background:var(--run-disabled);color:var(--run-fg);opacity:.6;}
 .badge-outline{border:1px solid var(--n6);color:var(--n10);}
 .badge-row{display:flex;align-items:center;gap:var(--space-sm);flex-wrap:wrap;margin-top:var(--space-md);}
+.table .badge-row{margin-top:0;} /* V10：表格 td 内徽章组——badge-row 本体 margin-top:12 是卡片底部徽章行语义，td 场景清零（gap:8 仍生效，治裸 span 堆叠无间距） */
 .badge-muted{background:var(--n3);color:var(--n9);}
 
 
@@ -240,7 +242,7 @@
 
 
 .skeleton{width:100%;height:16px;border-radius:var(--radius-base);background:var(--n5);}
-.skeleton.pulse{animation:pulse 1.5s ease-in-out infinite;}
+.skeleton.pulse{animation:pulse var(--motion-duration-slowest) ease-in-out infinite;} /* V3 闭环：裸秒数 → token（slower 档 800 加载旋转 / slowest 1500 骨架脉冲，2026-08-27 补档） */
 
 
 .separator{border:none;border-top:1px solid var(--border);margin:8px 0;width:100%;}
@@ -317,7 +319,7 @@
 
 
 .spinner{width:20px;height:20px;border:2px solid var(--n6);border-top-color:var(--primary);border-radius:var(--radius-round);
-  animation:spin .8s linear infinite;}
+  animation:spin var(--motion-duration-slower) linear infinite;}
 
 
 @keyframes spin{to{transform:rotate(360deg);}}

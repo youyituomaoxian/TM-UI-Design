@@ -14,6 +14,7 @@
   --brand-surface:#005EAE; --brand-surface:oklch(48.19% 0.1478 252.82);
   --secondary:#0A84FF; --secondary-hover:#3DA0FF; --secondary-active:#0066CC; --secondary-disabled-bg:#0A84FF; --secondary-disabled-fg:#FFFFFF;
   --link:#1A75D2;
+  --chart-grid:#EAEAED;
   /* 中性 N1–N11 */
   --n1:#FFFFFF; --n2:#FAFAFA; --n3:#F6F9FC; --n4:#F5F7FB; --n5:#EAEAED; --n6:#DEE2E6;
   --n7:#CED4DA; --n8:#ADB5BD; --n9:#6C757D; --n10:#334155; --n11:#212532;
@@ -46,7 +47,7 @@
   --elev-overlay-surface:#FFFFFF; --elev-overlay-shadow:0 6px 16px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
   --elev-overflow-surface:#FFFFFF; --elev-overflow-shadow:0 0 8px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04);
   /* Motion */
-  --motion-duration-instant:120ms; --motion-duration-fast:240ms; --motion-duration-normal:360ms; --motion-duration-slow:480ms;
+  --motion-duration-instant:120ms; --motion-duration-fast:240ms; --motion-duration-normal:360ms; --motion-duration-slow:480ms; --motion-duration-slower:800ms; --motion-duration-slowest:1500ms;
   --motion-ease-in-out:cubic-bezier(0.645, 0.045, 0.355, 1);
   --motion-ease-out:cubic-bezier(0.215, 0.61, 0.355, 1);
   --motion-ease-out-quint:cubic-bezier(0.23, 1, 0.32, 1);
@@ -115,6 +116,7 @@
   /* 暗色次级/链接/图表（D-T2-17 2026-08-05 补齐：dark 键集与亮色对称；图表色深底直接复用亮值对比更高） */
   --secondary:#38BDF8; --secondary-hover:#7DD3FC; --secondary-active:#0284C7; --secondary-disabled-bg:#3B82F6; --secondary-disabled-fg:#1E293B;
   --link:#60A5FA;
+  --chart-grid:#3E4C63;
   --chart-tech-blue:#0066CC; --chart-smart-cyan:#00A3E0; --chart-data-cyan:#00C7BE; --chart-fresh-green:#00D4A1; --chart-vivid-orange:#FF9500; --chart-alert-red:#FF4D4D; --chart-wisdom-purple:#8A5CF5; --chart-modern-pink:#FF66C2;
   --elev-sunken-surface:#0F172A; --elev-sunken-shadow:none;
   --elev-default-surface:#1E293B; --elev-default-shadow:none;

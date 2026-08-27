@@ -20,6 +20,7 @@
   --brand-surface:#005EAE; --brand-surface:oklch(48.19% 0.1478 252.82);
   --secondary:#0A84FF; --secondary-hover:#3DA0FF; --secondary-active:#0066CC; --secondary-disabled-bg:#0A84FF; --secondary-disabled-fg:#FFFFFF;
   --link:#1A75D2;
+  --chart-grid:#EAEAED;
   
   --n1:#FFFFFF; --n2:#FAFAFA; --n3:#F6F9FC; --n4:#F5F7FB; --n5:#EAEAED; --n6:#DEE2E6;
   --n7:#CED4DA; --n8:#ADB5BD; --n9:#6C757D; --n10:#334155; --n11:#212532;
@@ -52,7 +53,7 @@
   --elev-overlay-surface:#FFFFFF; --elev-overlay-shadow:0 6px 16px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
   --elev-overflow-surface:#FFFFFF; --elev-overflow-shadow:0 0 8px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04);
   
-  --motion-duration-instant:120ms; --motion-duration-fast:240ms; --motion-duration-normal:360ms; --motion-duration-slow:480ms;
+  --motion-duration-instant:120ms; --motion-duration-fast:240ms; --motion-duration-normal:360ms; --motion-duration-slow:480ms; --motion-duration-slower:800ms; --motion-duration-slowest:1500ms;
   --motion-ease-in-out:cubic-bezier(0.645, 0.045, 0.355, 1);
   --motion-ease-out:cubic-bezier(0.215, 0.61, 0.355, 1);
   --motion-ease-out-quint:cubic-bezier(0.23, 1, 0.32, 1);
@@ -121,6 +122,7 @@
   
   --secondary:#38BDF8; --secondary-hover:#7DD3FC; --secondary-active:#0284C7; --secondary-disabled-bg:#3B82F6; --secondary-disabled-fg:#1E293B;
   --link:#60A5FA;
+  --chart-grid:#3E4C63;
   --chart-tech-blue:#0066CC; --chart-smart-cyan:#00A3E0; --chart-data-cyan:#00C7BE; --chart-fresh-green:#00D4A1; --chart-vivid-orange:#FF9500; --chart-alert-red:#FF4D4D; --chart-wisdom-purple:#8A5CF5; --chart-modern-pink:#FF66C2;
   --elev-sunken-surface:#0F172A; --elev-sunken-shadow:none;
   --elev-default-surface:#1E293B; --elev-default-shadow:none;
@@ -231,10 +233,10 @@
 .table{width:100%;border-collapse:collapse;font-size:13px;} 
 .table th{height:48px;background:var(--n2);text-align:left;padding:0 16px;color:var(--n10);font-weight:500;font-family:var(--font-cn);} 
 .table th.num{text-align:right;font-variant-numeric:normal;} 
-.table td{height:var(--density-row-height);padding:0 16px;border-bottom:1px solid var(--n6);color:var(--n10);font-family:var(--font-cn);font-size:14px;} 
+.table td{height:var(--density-row-height);padding:8px 16px;border-bottom:1px solid var(--n6);color:var(--n10);font-family:var(--font-cn);font-size:14px;} 
 .num{text-align:right;font-variant-numeric:tabular-nums;} 
 .table tbody tr:hover{background:var(--n3);}
-.table--fixed{table-layout:fixed;} 
+.table--fixed{table-layout:fixed;border-collapse:separate;border-spacing:0;}  
 
 .table-wrap{width:100%;overflow:auto;}
 .card-body.table-wrap{padding-top:var(--space-lg);} 
@@ -262,7 +264,8 @@
 
 .pager{display:flex;align-items:center;gap:4px;height:44px;margin:var(--space-md) 0;}
 .pager .pg{width:24px;height:24px;border-radius:var(--radius-round);display:flex;align-items:center;
-  justify-content:center;font-size:12px;border:1px solid var(--n6);cursor:pointer;color:var(--n10);}
+  justify-content:center;font-size:12px;border:1px solid var(--n6);cursor:pointer;color:var(--n10);
+  background:var(--n1); }
 .pager .pg.active{background:var(--primary);color:var(--text-on-brand);border-color:var(--primary);}
 .pager .pg:hover{background:var(--n3);}
 .pager .pg.disabled{opacity:.4;cursor:not-allowed;}
@@ -369,6 +372,7 @@
 .badge-run:hover{background:var(--run-soft-hover);} .badge-run.is-disabled{background:var(--run-disabled);color:var(--run-fg);opacity:.6;}
 .badge-outline{border:1px solid var(--n6);color:var(--n10);}
 .badge-row{display:flex;align-items:center;gap:var(--space-sm);flex-wrap:wrap;margin-top:var(--space-md);}
+.table .badge-row{margin-top:0;} 
 .badge-muted{background:var(--n3);color:var(--n9);}
 
 
@@ -386,7 +390,7 @@
 
 
 .skeleton{width:100%;height:16px;border-radius:var(--radius-base);background:var(--n5);}
-.skeleton.pulse{animation:pulse 1.5s ease-in-out infinite;}
+.skeleton.pulse{animation:pulse var(--motion-duration-slowest) ease-in-out infinite;} 
 
 
 .separator{border:none;border-top:1px solid var(--border);margin:8px 0;width:100%;}
@@ -463,7 +467,7 @@
 
 
 .spinner{width:20px;height:20px;border:2px solid var(--n6);border-top-color:var(--primary);border-radius:var(--radius-round);
-  animation:spin .8s linear infinite;}
+  animation:spin var(--motion-duration-slower) linear infinite;}
 
 
 @keyframes spin{to{transform:rotate(360deg);}}
@@ -627,7 +631,13 @@ body{margin:0;font-family:var(--font-cn);font-size:14px;color:var(--n10);backgro
 .main{flex:1;display:flex;flex-direction:column;min-width:0;height:100%;overflow:hidden;}
 
 
-.content{flex:1;min-width:0;background:var(--n4);padding:var(--space-lg);overflow:auto;}
+
+.content{flex:1;min-width:0;background:var(--n4);padding:var(--space-lg);overflow:auto;
+  scrollbar-width:thin;scrollbar-color:var(--n6) transparent;}
+.content::-webkit-scrollbar{width:8px;height:8px;}
+.content::-webkit-scrollbar-track{background:transparent;}
+.content::-webkit-scrollbar-thumb{background:var(--n6);border-radius:4px;}
+.content::-webkit-scrollbar-thumb:hover{background:var(--n7);}
 
 
 .footer{height:var(--footer-height);background:var(--primary);color:var(--text-on-brand);flex-shrink:0;
@@ -754,7 +764,7 @@ body{margin:0;font-family:var(--font-cn);font-size:14px;color:var(--n10);backgro
 
 .chart-wrap{width:100%;}
 .chart-svg{display:block;width:100%;}
-.chart-grid{stroke:var(--n6);stroke-width:1;}
+.chart-grid{stroke:var(--chart-grid);stroke-width:1;}
 .chart-axis{font-size:11px;fill:var(--n8);font-family:var(--font-mono);}
 .chart-value{font-family:var(--font-mono);font-weight:500;fill:var(--n11);}
 .chart-caption{fill:var(--n9);font-size:12px;font-family:var(--font-cn);}

@@ -117,7 +117,13 @@
 .main{flex:1;display:flex;flex-direction:column;min-width:0;height:100%;overflow:hidden;}
 
 
-.content{flex:1;min-width:0;background:var(--n4);padding:var(--space-lg);overflow:auto;}
+/* V10（2026-08-27 用户拍板）：content 纵向滚动条统一细样式/悬停加深——与侧栏树「滚动条视觉隐藏」条款同族，长列表页滚动条不破坏视觉统一 */
+.content{flex:1;min-width:0;background:var(--n4);padding:var(--space-lg);overflow:auto;
+  scrollbar-width:thin;scrollbar-color:var(--n6) transparent;}
+.content::-webkit-scrollbar{width:8px;height:8px;}
+.content::-webkit-scrollbar-track{background:transparent;}
+.content::-webkit-scrollbar-thumb{background:var(--n6);border-radius:4px;}
+.content::-webkit-scrollbar-thumb:hover{background:var(--n7);}
 
 
 .footer{height:var(--footer-height);background:var(--primary);color:var(--text-on-brand);flex-shrink:0;

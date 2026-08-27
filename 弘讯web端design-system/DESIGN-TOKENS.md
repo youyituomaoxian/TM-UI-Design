@@ -3,7 +3,7 @@
 > ⚠️ **本文件由 `scripts/generate-design-tokens-md.js` 自动生成，请勿手改。** 改 token 请编辑 `tokens.json`（值真源）或脚本内的命名映射后重跑。
 > **命名规范**：全文使用「短名」CSS 变量（`--primary` / `--n5` / `--suc` / `--run` / `--radius-base` …），与 `components.json` referenceCss 及 `page-template.html :root` **1:1 对齐**。旧版 `--color-*` 全名已废弃。
 > **平台**: Web / B端 / 后台管理系统（Ant Design 风格）
-> **生成日期**: 2026-08-26
+> **生成日期**: 2026-08-27
 
 ---
 
@@ -85,6 +85,7 @@
   --chart-alert-red: #FF4D4D; /* 醒目红 — 负向/告警 */
   --chart-wisdom-purple: #8A5CF5; /* 智慧紫 — 多维分析 */
   --chart-modern-pink: #FF66C2; /* 现代粉 — 关键标注 */
+  --chart-grid: #EAEAED; /* 图表网格线（暗色 #3E4C63；V9 暗色分割线消失修复——原用 --n5 与暗色卡片底同色） */
 }
 ```
 
@@ -158,7 +159,7 @@
 :root {
   --font-cn: "Source Han Sans CN", "思源黑体", sans-serif; /* 中文 */
   --font-en: "Roboto", sans-serif; /* 英文 / 数字 */
-  --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace; /* 等宽（B 包新增；工控数据/代码，对标 AntD fontFamilyCode + Polaris mono） */
+  --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace, 'Source Han Sans CN', '思源黑体'; /* 等宽（B 包新增；工控数据/代码，对标 AntD fontFamilyCode + Polaris mono） */
 }
 ```
 
@@ -263,6 +264,8 @@
   --motion-duration-fast: 240ms; /* 小型组件 enter/exit */
   --motion-duration-normal: 360ms; /* 标准转场 */
   --motion-duration-slow: 480ms; /* 全屏转场、复杂展开 */
+  --motion-duration-slower: 800ms; /* 加载旋转等慢循环（spinner 800） */
+  --motion-duration-slowest: 1500ms; /* 骨架屏脉冲等最长循环（1500） */
 }
 ```
 

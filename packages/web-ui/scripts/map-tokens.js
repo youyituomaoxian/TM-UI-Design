@@ -144,6 +144,7 @@ function buildCss(opts = {}) {
   ${dual('--brand-surface', brandSurface)}
   --secondary:${t.colors.secondary.default}; --secondary-hover:${t.colors.secondary.hover}; --secondary-active:${t.colors.secondary.active}; --secondary-disabled-bg:${t.colors.secondary.disabledBg}; --secondary-disabled-fg:${t.colors.secondary.disabledFg};
   --link:${t.colors.link};
+  --chart-grid:${t.colors.chartGrid};
   /* 中性 N1–N11 */
   --n1:${n.N1}; --n2:${n.N2}; --n3:${n.N3}; --n4:${n.N4}; --n5:${n.N5}; --n6:${n.N6};
   --n7:${n.N7}; --n8:${n.N8}; --n9:${n.N9}; --n10:${n.N10}; --n11:${n.N11};
@@ -172,7 +173,7 @@ function buildCss(opts = {}) {
   /* Elevation 5 级 */
 ${['sunken', 'default', 'raised', 'overlay', 'overflow'].map(elev).join('\n')}
   /* Motion */
-  --motion-duration-instant:${t.motion.duration.instant}ms; --motion-duration-fast:${t.motion.duration.fast}ms; --motion-duration-normal:${t.motion.duration.normal}ms; --motion-duration-slow:${t.motion.duration.slow}ms;
+  --motion-duration-instant:${t.motion.duration.instant}ms; --motion-duration-fast:${t.motion.duration.fast}ms; --motion-duration-normal:${t.motion.duration.normal}ms; --motion-duration-slow:${t.motion.duration.slow}ms; --motion-duration-slower:${t.motion.duration.slower}ms; --motion-duration-slowest:${t.motion.duration.slowest}ms;
 ${Object.entries(t.motion.easing).map(([k, v]) => `  --motion-ease-${k.replace(/^ease-/, '')}:${v};`).join('\n')}
   /* 字体族 */
   --font-cn:"${t.font.familyCN}","思源黑体",sans-serif; --font-en:"${t.font.familyEN}",sans-serif;
@@ -226,6 +227,7 @@ ${fontVars}
   /* 暗色次级/链接/图表（D-T2-17 2026-08-05 补齐：dark 键集与亮色对称；图表色深底直接复用亮值对比更高） */
   --secondary:${d.colors.secondary.default}; --secondary-hover:${d.colors.secondary.hover}; --secondary-active:${d.colors.secondary.active}; --secondary-disabled-bg:${d.colors.secondary.disabledBg}; --secondary-disabled-fg:${d.colors.secondary.disabledFg};
   --link:${d.colors.link};
+  --chart-grid:${d.colors.chartGrid};
   ${Object.entries(d.colors.chart || {}).map(([k, v]) => `--chart-${k.replace(/([A-Z])/g, '-$1').toLowerCase()}:${v};`).join(' ')}
 ${['sunken', 'default', 'raised', 'overlay', 'overflow'].map(delev).join('\n')}
   --bg-page:${d.background.page}; --bg-surface:${d.background.surface}; --bg-elevated:${d.background.elevated};

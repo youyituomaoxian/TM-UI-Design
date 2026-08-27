@@ -2,6 +2,35 @@
 
 ---
 
+## [1.9.20] — 2026-08-27 · V11 首屏预算守则（用户原则拍板：滚动自由、切点只落 gap、核心区块禁截断）
+
+### Added
+- **V11 RULES §4.4c 首屏预算守则（七条款）**：A 预算公式 `= 视口高 − 120`（768→648/900→796/1080→960，实测三方验证，禁硬编码）；B 页面类型 × 首屏构成矩阵（看板/列表/详情/表单各有核心定义）；C 首屏行规则（禁叠加行、flex 弹性与预算闭环）；D minRow 冲突裁决；E 超预算裁决顺序（精简头部→收敛→移次屏→接受滚动并标注）；F 切点自查；G 生效范围（新页面即日、存量不回溯）。
+- **V11 GENERATION-SOP 步骤 3.5「首屏预算规划」**：生成 IA 前必做预算核算 + 裁决 + 交付切点自查。
+- **V11-T5 运行时门禁落地（提前执行）**：新增 `scripts/fold-gate-web.js`（Playwright + 系统 Chrome，浏览器不可用自动 SKIP）——判定看板页（含 stat-grid）主图行（stat-grid 后首个 grid12）内每卡完整在 content 可视底边内，次屏行不查（滚动形态豁免）；ci-local 新增接入段（**一期信息性不计 fail**，观察误报后另议阻断）。实测三看板页全过（辅机 3 卡/订单 1 卡）。**负例验证**：剥 hx-lang 副本被 template.i18n.missing HIGH 拦截 ✓（新门禁首版在 stripScriptTags 后找 JS 指纹的乌龙已修——指纹必须查原始 html）。
+
+### Fixed
+- **V11 订单总览按守则适配（示范页）**：① 通知行（40px）删除，三条业务提醒降级为**页头副标题行内嵌 mini 徽标**（保留 id/数据填充/点击筛选行为）；② 图表行重排——趋势卡升 **col-12 全宽**（box 定高 228，首屏预算内）、机型分布与预警中心降次屏 **col-6 + col-6**（消除叠加行与右空位）；③ 图例行与汇总行**合并单行**（省 55px）。实测：首屏内容 772px 预算内（764），**视口底边精确落在趋势行底与次屏之间的 gap——核心区块零截断**。
+- **V11 趋势图 aspect-ratio 全宽爆炸修复（执行教训）**：`chart-svg--fill` 的 `aspect-ratio:16/9` 兜底在**全宽容器**（1152px）下推出 648px 固有高、把行撑到 766——兜底比例在宽容器会反向爆炸。解：全宽独行场景 box 用**定高**（`chart-box` + 页面级 `--chart-height` 覆盖 228），不用 `--flex`（无等高兄弟、无死白风险，与 V8b 不冲突）。**教训：模式迁移必须盘点旧模式配套参数**（PB=42 底部预留同批回收：42→8，消除 102px 死空间）。
+
+---
+
+## [1.9.19] — 2026-08-27 · V10：--chart-grid 暗色网格 token + 宽表列宽预算 + 行内菜单 fixed 定位 + 多语言 JS 移植（订单总览页第二轮实战）
+
+### Changed
+- **V10-① 新增 `--chart-grid` token（治暗色分割线消失，对比度 0 实锤）**：亮 `#EAEAED`（`colors.chartGrid`）/ 暗 `#3E4C63`（`dark.colors.chartGrid`）——原网格线用 `--n5`，dark N5 恰等于暗色卡片表面色 → 暗色下网格全灭。真源 `.chart-grid` 改用新 token；`--chart-grid` 独立于 `colors.chart` 数据系列调色板（NEW-006 引擎逐项锁定约束，放 chart 内会破坏 8 色序列——初版踩坑已纠正）。map-tokens 亮/暗双块映射 + DESIGN-TOKENS 文档 + page-template 内联同步。
+- **V10-② 宽表列宽预算（RULES 新增）**：≥8 列或含宽内容列的宽表**必须 `.table--fixed` + 全部 th 显式 width 百分比**（合计 100%），禁裸 auto 放任 min-content 溢出；fixed 下长文本配 ellipsis；`.table--fixed` 补 `border-collapse:separate;border-spacing:0`（collapse + 百分比列宽的 Chromium 幻影 2px scrollWidth）。
+- **V10-③ 行内浮层菜单 fixed 定位（RULES 新增）**：表格操作 ⋯ 下拉禁 absolute 展开——overflow:auto 容器内 absolute 面板撑宽 scrollWidth（「点击操作按钮后出现横向滚动条」根因），用 fixed 定位（JS 按按钮坐标计算）。订单总览已按此修复，实测面板视口内、滚动条消失。
+- **V10-④ 多语言切换 JS 移植**：page-template 的框架 i18n IIFE（DICT/LANGS/apply/绑定）在克隆生成页时**丢失**（DOM 齐全、JS 缺失 → 语言切换无效）。订单总览已移植恢复（实测切 English：顶栏 Home/Admin、htmlLang=en、localStorage 持久化）。**脚手架/克隆流程需排查 lang JS 注入缺口**。
+- **V10-⑤ 趋势图数据逻辑重构（用户拍板：双量纲共轴无意义 + 数据失真）**：① 删「订单数量」第二折线（万元 vs 台归一化共轴后两线近乎重合、对比无意义），改单系列金额——数量保留在汇总行与数据点 tooltip；② 三组时间序列数据从「完美单调递增」改为带波动的真实形态（真实订单必有涨跌）；③ `ys()` 纵向改 min-max 归一映射（viewBox 12–88%，覆盖 76% 满足 `chart.line.vertical`）——原按 max 比例直接映射导致数据挤上半区、下半区空网格。RULES 图表结果约束新增第 3 条「禁不同量纲共单轴」+ 数据业务常识要求。
+- **V10-⑥ 月份标签与数据点对齐（用户红框实战）**：数据点 x 在绘图区 X0–X1(10.5%–94.3%)内均布，标签是 flex **全宽**均分（首格中心 6.3%）——两套坐标系错位。修复：标签改 absolute + `left = xs(i)%` + `translateX(-50%)`，容器 `relative` 定高，实测对齐 delta = **0**。
+- **V10-⑦ `.pg` 补 background（治暗色分页器文字不可见）**：真源漏设 background → button UA 默认浅灰底(#F0F0F0)在亮色恰好像设计效果、暗色暴露（浅底 + 暗色亮字 #F1F5F9 = 对比度趋零）。补 `background:var(--n1)` 亮暗自适应（暗色深底 #1E293B + 亮字）。button 类组件 audit 注意：凡未显式设 background 的 button 在暗色都会踩同雷。
+- **V10-⑧ content 滚动条统一细样式（用户拍板）**：纵向滚动条=框架 G8 设计（`.app` 100vh 固定 + `.content{overflow:auto}` 内容区滚动），非 bug；样式统一 **thin/悬停加深**（scrollbar-width:thin + webkit 8px/n6→n7 悬停，与侧栏树「滚动条视觉隐藏」条款同族）。RULES 显式化「≤12 列表格禁滚动条（预算内消化）」条款至表格主规格段（源头：常见问题表 L313「>12 列才横向滚动」+ 检查清单「无元素超出父容器」，原分散未被遵守）。
+- **V10-⑨ 表格徽章组间距 + td 垂直呼吸（用户红框实战）**：① 徽章组裸 span 堆叠无间距——真源 `.badge-row` 组件早已存在（flex wrap + gap 8）但执行未用，新增 `.table .badge-row{margin-top:0}`（badge-row 本体 margin-top:12 是卡片底部语义，td 场景清零）；② `.table td` 垂直 padding `0 → 8`——行高自适应（多行内容）时上下贴边无呼吸；单行 td 行高仍由 `height:44` 保证**不变**，多行行高 75→99（间距+呼吸的空间守恒代价，行高收敛 "+N" 折叠为后续设计选项）。RULES 宽表指引同步「表格内徽章组必须 badge-row + td 垂直 padding 8」。**归因：组件存在未用（执行）+ td 无垂直呼吸（真源缺陷）各半**。
+- **验证**：ci-local 93 pass / 0 fail；实测暗色网格 #3E4C63 可见、表格 fixed 1120 无横向滚动、x 标签归位无重叠、多语言切换正常。
+
+---
+
 ## [1.9.18] — 2026-08-27 · V9 四连：mono 中文兜底 + 入场动画层叠地雷排除 + 筛选 chip 组件 + 弹性归属细则（订单总览页实战）
 
 ### Changed

@@ -51,7 +51,7 @@ function checkEnd(label, dir, isMobile) {
     ok(`--elev-${lv}-shadow 模板值=tokens`, norm(vars[`--elev-${lv}-shadow`]) === norm(obj.shadow));
   });
   // motion duration 4 档 + 模板
-  ok('motion.duration 恰 4 档', JSON.stringify(Object.keys(t.motion.duration)) === JSON.stringify(['instant','fast','normal','slow']));
+  ok('motion.duration 恰 6 档', JSON.stringify(Object.keys(t.motion.duration)) === JSON.stringify(['instant','fast','normal','slow','slower','slowest']));
   Object.entries(t.motion.duration).forEach(([k, v]) => {
     ok(`--motion-duration-${k} 模板值=${v}ms`, norm(vars[`--motion-duration-${k}`]) === norm(v + 'ms'));
   });
@@ -251,6 +251,40 @@ if (fs.existsSync(outDir)) {
 console.log(scannedOut > 0
   ? `  ℹ️ 共扫描 ${scannedOut} 个 output/ HTML，HIGH 合计 ${outHigh}（信息性，历史归档不阻断）`
   : `  ℹ️ output/ 未发现 HTML 归档，跳过。`);
+
+// ===== V11-T5 运行时首屏截断检查（RULES §4.4c · 一期信息性，观察误报后另议升级阻断）=====
+console.log(`\n▶ V11 运行时首屏截断检查（看板页核心卡完整性 · 信息性一期）`);
+try {
+  const foldGate = path.join(WEB, 'scripts', 'fold-gate-web.js');
+  if (!fs.existsSync(foldGate)) throw new Error('fold-gate-web.js 不存在');
+  if (!fs.existsSync(outDir)) throw new Error('无 output/ 目录');
+  const boards = fs.readdirSync(outDir)
+    .filter(f => /\.html?$/i.test(f))
+    .filter(f => { try { return fs.readFileSync(path.join(outDir, f), 'utf8').includes('stat-grid'); } catch (e) { return false; } })
+    .map(f => path.join(outDir, f));
+  if (!boards.length) throw new Error('无看板页（含 stat-grid）');
+  let out3 = '';
+  try {
+    out3 = execSync(`"${NODE}" "${foldGate}" ${boards.map(b => `"${b}"`).join(' ')}`, { encoding: 'utf8', timeout: 120000 }).toString();
+  } catch (e) {
+    out3 = ((e.stdout || '') + '\n' + (e.stderr || '')).toString();
+  }
+  let results = null;
+  try { results = JSON.parse(out3.slice(out3.indexOf('['))); } catch (e) {}
+  if (!results) throw new Error('fold-gate 输出解析失败');
+  for (const r of results) {
+    if (r.skip) { console.log(`  ⏭️ ${r.file} — ${r.skip}（SKIP）`); continue; }
+    if (r.error) { console.log(`  ⚠️ ${r.file} — 检查异常：${r.error}`); continue; }
+    if (r.cut && r.cut.length) {
+      console.log(`  ⚠️ ${r.file} — 首屏核心卡被截断：${r.cut.map(c => `${c.title}（可见 ${c.visiblePct}%）`).join('、')}`);
+    } else {
+      console.log(`  ✅ ${r.file} — 主图行 ${r.cards} 卡首屏完整（切点落 gap）`);
+    }
+  }
+  console.log(`  ℹ️ 一期信息性：结果不计入 fail（阻断升级观察误报后另议）。`);
+} catch (e) {
+  console.log(`  ⏭️ 跳过：${e.message.slice(0, 60)}（环境不可用时自动 SKIP，不计失败）`);
+}
 
 console.log(`\n========== ci-local 总结 ==========`);
 console.log(`📊 ${pass} pass / ${fail} fail | 门禁 ${gW && gM ? '✅' : '❌'}`);

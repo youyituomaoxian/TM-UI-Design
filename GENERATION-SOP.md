@@ -61,6 +61,10 @@
 
 > 页面类型规格给出该页面的精确尺寸 / 区域结构 / 组件变体 / 配色规则。**未列出的 token 回退 MASTER.md**。
 
+### 步骤 3.5：首屏预算规划（V11 新增 2026-08-27，⚠️ 生成 IA 前必做）
+
+按 `RULES.md §4.4c 首屏预算守则` 执行：① 按 **预算公式 = 视口高 − 120**（默认 900 → **796px**）取首屏预算；② 按 **页面类型 × 首屏构成矩阵** 列出首屏核心区块（看板=KPI+主图行 / 列表=筛选+表格首屏 / 详情=信息卡）；③ 头部区 + 核心区块高度合计 ≤ 预算，**超预算按裁决顺序执行**（精简头部 → 内容收敛 → 移次屏 → 接受滚动并标注）；④ 叠加行（一列叠多卡）禁入首屏。**交付自查**：视口 900 截图，切点必须落在区块 gap，核心区块完整（`template.i18n.missing` 同级自查项）。
+
 ### 步骤 4：克隆 page-template 框架外壳（Web B 端）——克隆源统一
 
 > ✅ **V3.0（2026-08-03 拍板）**：HTML 原型一律克隆 **`page-template.html`**（含固定框架外壳），不再用 agent-starter 起步。
@@ -83,7 +87,8 @@ cp 弘讯移动端design-system/page-template.html "<用户项目>/output/设备
 3. **注入克隆凭证 meta**（P1 门禁）：`<head>` 内加 `<meta name="x-template-clone" content="弘讯web端design-system/page-template.html">`（移动端 content 换 `弘讯移动端design-system/page-template.html`）——**脚手架已自动注入，手动克隆必须自己加**；B 端/手机壳页面缺此 meta → 门禁 `template.clone.missing` HIGH。
 4. **定制作业树 + 图标从库取（2026-08-07 拍板；2026-08-12 去菜单分类）**：作业树**结构零改动**（层级/图标/折叠/选中/**无 group-title 分类、顶级节点并列**契约，RULES §0.2），**节点文本/分组/选中态按当前系统业务定制**（禁保留制造业示例树）；页面图标一律从 `<对应端>/icons/` 取（`icons/icons.md` 索引，path 内联进 `.ico/.tree-ico/.kpi-ico` 等尺寸类，规格 viewBox 24/stroke 1.8），库缺才手写并上报（RULES §7.9③）。
 5. **移动端底部导航（2026-08-07 收编）**：`.bottomnav` 内 `.bn-item` **3-5 个**，按业务需求增减（最少 3、最多 5，不是定死 3 个）；无 BottomNav 的页面（登录/详情等）合法不挂；home indicator 挂最后一项后。门禁 `bottomnav.count` MED 兜底（移动 RULES §1.1b）。
-6. **删 head 展示样式 `<style>` 块（2026-08-12 补）**：page-template 自带展示页专用 `<style>`（`.sec/.swatch/.motion-*/.type-*/.callout/.kv/.comp-*` 等约 52 行）——业务页克隆后**删除该 `<style>` 块**（保留其后的内联 `:root` 同步副本，同步规则不变）。残留它会带来每页 27-34 条 MED 噪音（裸 font-size / grid.4px / token.undefined 隐患）。删除边界：以 `/* 仅布局/容器助手` 注释开头的 `<style>` 块。
+6. **删 head 展示样式 `<style>` 块（2026-08-12 补；V10 补强边界 2026-08-27）**：page-template 自带展示页专用 `<style>`（`.sec/.swatch/.motion-*/.type-*/.callout/.kv/.comp-*` 等约 52 行）——业务页克隆后**删除该 `<style>` 块**（保留其后的内联 `:root` 同步副本，同步规则不变）。残留它会带来每页 27-34 条 MED 噪音（裸 font-size / grid.4px / token.undefined 隐患）。删除边界：以 `/* 仅布局/容器助手` 注释开头的 `<style>` 块。**⚠️ 只删 `<style>` 块本身——框架 `<script>` 段（多语言 i18n / 主题切换 / 折叠）一个都不许删**（订单总览实战：删 style 时连带删掉多语言 IIFE → 语言切换全页失效，门禁 `template.i18n.missing` HIGH 已拦截）。
+7. **框架 `<script>` 段禁删（V10 新增 2026-08-27）**：`</style>` 之后的全部 `<script>` 段（框架级多语言 IIFE / 亮暗切换 / 折叠交互）是**框架外壳的一部分**，与顶栏/侧栏同级，**禁止以"演示代码"为由删除**。门禁 `template.i18n.missing`（HIGH）核对 hx-lang 指纹，缺失即拦。
 
 **⚠️ 禁参照既有页面 DOM（2026-08-06 用户拍板）**：克隆后页面结构一律按 `RULES.md §1.1b` + `components.json` + `CHART-SPEC.md` **从零填充**。**禁止**参照 output/、packages/ 或任何既有页面的 DOM 拼新页（既有页面可能含历史漂移，参照它会把漂移复制进新页）。**唯一可复制的结构 = 克隆源 page-template 的框架外壳本身**。
 

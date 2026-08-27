@@ -137,7 +137,8 @@ function build() {
     ['--chart-vivid-orange', c.chart.vividOrange, '活力橙 — 中性/预警'],
     ['--chart-alert-red', c.chart.alertRed, '醒目红 — 负向/告警'],
     ['--chart-wisdom-purple', c.chart.wisdomPurple, '智慧紫 — 多维分析'],
-    ['--chart-modern-pink', c.chart.modernPink, '现代粉 — 关键标注']
+    ['--chart-modern-pink', c.chart.modernPink, '现代粉 — 关键标注'],
+    ['--chart-grid', c.chartGrid, '图表网格线（暗色 #3E4C63；V9 暗色分割线消失修复——原用 --n5 与暗色卡片底同色）']
   ]);
 
   line('### 2.6 功能色 Functional（成功 / 警告 / 错误 / 运行）');
@@ -242,7 +243,9 @@ function build() {
     ['--motion-duration-instant', `${mot.duration.instant}ms`, '微交互（状态切换、ripple）'],
     ['--motion-duration-fast', `${mot.duration.fast}ms`, '小型组件 enter/exit'],
     ['--motion-duration-normal', `${mot.duration.normal}ms`, '标准转场'],
-    ['--motion-duration-slow', `${mot.duration.slow}ms`, '全屏转场、复杂展开']
+    ['--motion-duration-slow', `${mot.duration.slow}ms`, '全屏转场、复杂展开'],
+    ['--motion-duration-slower', `${mot.duration.slower}ms`, '加载旋转等慢循环（spinner 800）'],
+    ['--motion-duration-slowest', `${mot.duration.slowest}ms`, '骨架屏脉冲等最长循环（1500）']
   ]);
   line('### 8.2 Easing（cubic-bezier 曲线库）');
   line('');
