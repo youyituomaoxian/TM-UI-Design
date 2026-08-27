@@ -14,6 +14,8 @@
 ├── 弘讯移动端design-system/          # 移动端设计系统（小程序 / Android / iOS）
 ├── 弘讯web端design-system/           # Web/B端 设计系统（Ant Design 风格）
 │   │   （两端目录结构同构，各含：）
+│   │   ⚠️ 双端真源策略（P1-3，2026-08-27）：Web `template.css` = **build 产物**（改 `packages/web-ui/src/styles/` 四件 CSS → `build:template` 重新生成，直接手改会被覆盖）；
+│   │   移动 `template.css` = **手写真源**（直接改）。改样式前必读，详见 AGENTS.md「改视觉样式（维护者）」。
 │   ├── MASTER.md                    # 主规范（10 章）
 │   ├── tokens.json                  # 结构化 Token —— 值的唯一真源
 │   ├── DESIGN-TOKENS.md             # CSS 变量（脚本生成·勿手改）

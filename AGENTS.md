@@ -45,5 +45,7 @@
 
 ## 改视觉样式（维护者）
 
+> ⚠️ **双端真源策略（不对称，改前必读）**：**Web `template.css` = build 产物**（真源在 `packages/web-ui/src/styles/` 四件 CSS + `map-tokens.js` 从 `tokens.json` 生成 `globals.css`；改源 → `map-tokens.js` + `build-template-css.js` → `ci-local.js`，直接改产物会被覆盖且暴露源缺口）；**移动 `template.css` = 手写真源**（直接改）。完整链路教训见 CHANGELOG 1.9.16。
+
 - Web：改 `packages/web-ui/src/styles/` 四件 CSS → `node packages/web-ui/scripts/build-template-css.js` 重新生成 `template.css`。若直接手改 `template.css`，必须同步 `packages/web-ui/src/styles/` 对应文件（build 会覆盖，两处须一致）。
 - 移动端：移动端冻结已于 2026-08-06 解除，可修改（`弘讯移动端design-system/template.css` 为真源）；改动仍须用户拍板。
