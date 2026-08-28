@@ -5,9 +5,10 @@
  * 原则（RULES §4.4c，用户拍板）：滚动自由，但视口底边只允许落在
  * 区块之间的 gap 上——看板页首屏核心卡片禁止被底边拦腰截断。
  *
- * 判定：页面含 .stat-grid（看板特征）→ stat-grid 之后第一个 .grid12
- * （主图行）内每张卡片必须完整在 main.content 可视底边之内。
- * 次屏行（第二个及之后的 grid12）不检查——滚动后内容被切是正常形态。
+ * 判定（V11-T5 二修 2026-08-28，订单总览V2 漏报实战）：页面含 .stat-grid（看板特征）→
+ * 检查 main.content 内【所有 .card】——凡「起点在可视底边之上、终点越过底边」的卡片
+ * 即被拦腰截断，一律报告。不限定 grid12 结构（V2 页用裸 .card 排首屏曾绕过旧判定）。
+ * 次屏卡片（起点在底边之下）不检查——滚动后内容被切是正常形态。
  *
  * 用法：node fold-gate-web.js <html> [<html> ...]
  * exit 0 = 全部完整 / 无看板特征；exit 1 = 存在核心卡被截断；
@@ -47,10 +48,9 @@ if (!files.length) { console.log(JSON.stringify([{ skip: '未提供文件' }]));
         if (!document.querySelector('.stat-grid')) return { skip: '非看板页（无 stat-grid）' };
         const content = document.querySelector('main.content') || document.body;
         const fold = content.getBoundingClientRect().bottom;
-        const grids = [...document.querySelectorAll('.grid12')];
-        if (!grids.length) return { skip: '无 grid12 主图行' };
-        const hero = grids[0]; // 主图行 = 第一个 grid12（RULES §4.4c B 矩阵：看板核心 = KPI + 主图行）
-        const cards = [...hero.querySelectorAll(':scope > [class*="col-"] > .card, :scope > [class*="col-"] > section')]
+        // 通用口径（A1 修正）：所有 .card，起点在 fold 之上且终点越过 fold = 被截断。
+        // 不限定 grid12/grid 行结构——裸 .card、任意容器内卡片同样覆盖。
+        const cards = [...content.querySelectorAll('.card')]
           .filter(c => { const b = c.getBoundingClientRect(); return b.height > 40; });
         const cut = [];
         cards.forEach(c => {

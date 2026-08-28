@@ -86,6 +86,7 @@
 > - 栅格：`.grid12` + `.col-3/4/5/6/7/8/9/12`（≤1200px 自动堆叠为 12 列满宽）
 > - 标题：`.page-title` `.section-title`
 > - 指标卡：`.stat-grid`（容器）+ **KPI 两版（2026-08-06 用户拍板：标准版 = 图标卡，环形版保留需时使用）**：标准版 `.stat-card--icon`（KPI 图标卡——左浅底高圆角图标块 kpi-ico--lg 48×48 · radius-lg 16 + 右上大数字 stat-num + 底部行 stat-foot（标题左 stat-sub / 变化量右 stat-delta，贴图标底部对齐；变化量 12px 500 ↑=run 绿 ↓=err 红）——布局基准 = 回滚点 20260806_Web完成态 展示页）；环形版 `.stat-card--ring`（左环 64 + ring-info label/num/trend，需时使用）。**禁简约 stat-num+stat-sub 独立卡**（门禁 kpi.simple.forbidden HIGH 拦截）
+> - **金额类 KPI 列数/字号守则（V12-A2 新增 2026-08-28，订单总览V2 实战：8 卡等分卡宽 130px 装不下 ¥3,486@28px mono，数字盒被压到 34px 换行截断 + 标签逐字竖排）**：stat-num--lg（28px mono）渲染「¥12,345」约需 110–120px，加图标块后**单卡最小可用宽 ≈ 170px**——**含金额/大数值主值的 KPI 行 ≤6 列**（1440 基准，col 单卡 ≥180px）；7–8 列等分场景金额主值降 `stat-num--md` 或改「数值+单位分离」（`¥920` 与 `万` 分设两行/两元素）；**卡宽 <160px 时 stat-sub 标签会逐字竖排**（CJK 无断词点），同样触发本条降档。
 > - KPI 图标：`.kpi-ico`（+ `--lg` 尺寸，+ `--primary/--run/--warn/--neutral` 语义底色）。SVG 走 `currentColor`，**禁止在 `<svg>` 上写颜色**
 > - KPI 环（环形版需时使用）：`.ring`（64 svg 圆环，dashoffset = 163.4 × (1−%)）+ `.ring-val` + `.ring-fg--primary/run/warn/err/secondary`
 > - 图表：`.chart-wrap` `.chart-svg` `.chart-grid` `.chart-axis` `.chart-value` `.chart-caption` `.chart-legend`（+ `--list`）`.legend-item` `.legend-dot` `.legend-line`（+ `--dash`）`.legend-val`
@@ -527,6 +528,8 @@ START: 我要做什么类型的页面？
 
 **示例**：趋势卡（弹性，`.chart-box--flex` 吸收）+ 报警卡（定高，`<div class="card-body scroll-fixed">`）并排 → 报警卡恒高 320px 滚动，不被行高拉伸。弹性图表卡用 `.chart-box--flex`（2026-08-24 收窄：仅填充型图表弹性，环形/迷你图不再被全局 `:has(.chart-box)` 拉高）。
 
+**滚动列表条数无界禁令（V12-A5 新增 2026-08-28，订单总览V2 实战：预警卡裸渲染 20 条告警把等高行撑到 1152px，同排环形卡被拉出 ~930px 死白）**：等高行内任何「条目数不定」的列表卡（预警/消息/动态/日志）**必须套 `.scroll-fixed` 定高滚动**（或显式 height/max-height），并只渲染窗口内条目（建议 ≤6 条全量 + 其余进抽屉/详情页）；**禁裸渲染无界条目**——行高由最长卡决定，非弹性兄弟卡（环形/迷你图）无法吸收，只会留死白。
+
 ### [硬] 4.4c 首屏预算守则（V11 新增 2026-08-27，订单总览实战：核心图表被视口底边拦腰切 53%）⚠️ 必读
 
 > **原则（用户拍板）**：页面允许向下滚动，但**视口底边只允许落在区块之间的 gap 上**——首屏必须完整呈现核心内容（核心区块禁被底边拦腰截断）。长列表页内容区滚动是框架 G8 预期形态，不受本条限制其「可滚动性」，限制的是**首屏边界切在哪**。
@@ -863,6 +866,7 @@ TopBar         height=72   FIXED   主色底 白字
 1. **柱底对齐基线**：任何柱数/容器宽度下柱底贴基线（flex 容器 + 基线元素）。
 2. **x 轴标签不重叠、不叠柱**：标签独立行（flex 与柱同列宽对齐）——禁止标签作为柱子子级定位；柱多自动跳显。**x 标签外置时（V10 模式）**：标签行放 chart-box **外部**（真源 `.chart-x-labels`，span 纯 flex 均分、禁 absolute+left% 旧模式）；**SVG viewBox 的 PB（底部预留）须同步回收至 ≤8**——PB=42 是旧「图内标签」模式的占位，外置后不回收即残留 ~100px 死空间（订单总览实战）。
 3. **禁不同量纲共单轴（V10 新增 2026-08-27，订单总览实战）**：折线图两个系列单位不同（万元 vs 台）时**禁止归一化共绘一条坐标系**——量纲归一后两线位置由缩放系数偶然决定，对比无意义（实战：双线几乎重合）。双量纲场景：① 单系列主指标 + 次指标进汇总行/tooltip；② 双 Y 轴（左右刻度分离标注）；③ 柱线组合图。另：**数据必须符合业务常识**——时间序列禁止编造完美单调递增（真实订单/产能必有波动）。
+4. **x 轴标签必须用真源组件对齐（V12-A3 新增 2026-08-28，连续两代页面复犯）**：x 标签与数据点共用同一坐标系——用 `scripts/chart-x-labels.js` 的 **`renderChartXLabels()`**（从 polyline points 反解数据点 x，absolute + left% + translateX(-50%)，端点钳制防溢出），**禁页面自绘标签行**（flex 全宽均分与绘图区均布是两套坐标系，实测错位 delta -54/+36px）。**图表底部结构顺序硬规则**：SVG → x-labels（独立文档流行，容器 position:relative; height:20px; margin-top:8px）→ legend → summary，四层各占独立行、间距 token 化，禁 absolute 互相侵入（实战：「7月」叠「客单价」）。
 3. **标签不溢出容器**：图表底部为 x 轴标签留白区（基线下方 ≥20px），x 标签与柱顶数值均不得负定位溢出容器。
 4. **折线数据点严格落线**：polyline 与 HTML 点共用同一百分比坐标系（points 坐标 ÷100 = dot left/top）；点固定尺寸正圆（non-scaling-stroke 线宽恒定）。
 5. **环形图中心文字不变形**：HTML 绝对定位居中，SVG 只画环。

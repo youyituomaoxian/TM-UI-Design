@@ -2,6 +2,22 @@
 
 ---
 
+## [1.9.21] — 2026-08-28 · V12 六缺陷：外部生成页实战暴露的系统层修复（订单总览V2）
+
+> 背景：另一智能体用最新设计系统生成「订单总览V2」页——首份外部实战样本。组件层 8 项新守则全部被正确使用（filter-chip/badge-row/table--fixed/chart-grid/mono 兜底/i18n JS），但暴露 6 个系统层缺陷，本轮全数闭环：
+
+- **A1 fold-gate 判定盲区（漏报根治）**：旧判定只查「stat-grid 后首个 grid12」——V2 用裸 .card 排首屏直接绕过（表格卡被切 49% 门禁报 0）。修：判定改**通用口径**——content 内所有 .card 凡「起点在可视底边之上、终点越过底边」即报，次屏（起点在底边下）豁免。正反验证：V2 报出 订单列表 51% ✓、老订单页 0 切 ✓
+- **A4 table.fixed.no-budget（HIGH）**：.table--fixed 无列宽预算（th 无显式 width、无 colgroup）→ 拦截——fixed 只锁分配算法不锁总宽，V2 实测照样撑出 1308 vs 1120 横向滚动。V10 宽表守则的机器化落点
+- **A6 btn.variant.no-base（HIGH）**：.btn-* 变体（primary/secondary/text/ghost/danger/outline/link）脱离 .btn 基类单独使用 → 拦截——布局全在基类（inline-flex+gap6+height32），落单即退化（V2 实测 15 处图标文字上下排列）。Button SSoT 的「变体必须带基类」补锁
+- **A3 图表 x 轴标签组件化（SSoT）**：新增 `scripts/chart-x-labels.js` **renderChartXLabels()**——从 polyline points 反解数据点 x，标签与数据点共用同一坐标系（absolute+left%+translateX(-50%)+端点钳制），**禁页面自绘标签行**。x 标签「两套坐标系」缺陷连续两代页面复犯（V2 实测 delta -54/+36px、「7月」叠「客单价」）；组件注入实测 delta 归零 0/0。配套 RULES「图表底部结构顺序」硬规则（SVG→x-labels→legend→summary 四层独立行）
+- **A5 滚动列表条数无界禁令（RULES）**：等高行内条目数不定的列表卡必须 .scroll-fixed 定高滚动（窗口 ≤6 条 + 其余进抽屉），禁裸渲染无界条目——V2 预警卡 20 条裸渲染把等高行撑到 1152px，同排环形卡拉出 ~930px 死白
+- **A2 金额类 KPI 列数/字号守则（RULES）**：stat-num--lg 金额主值 KPI ≤6 列（单卡 ≥180px）；7–8 列等分降 stat-num--md 或数值+单位分离；卡宽 <160px 触发 stat-sub 逐字竖排同样降档——V2 的 8 卡等分 130px 装不下 ¥3,486@28px
+- **验证**：ci-local 97 pass / 0 fail；fold-gate 新口径正反例通过；x 标签组件注入 delta 0/0
+
+---
+
+---
+
 ## [1.9.20] — 2026-08-27 · V11 首屏预算守则（用户原则拍板：滚动自由、切点只落 gap、核心区块禁截断）
 
 ### Added

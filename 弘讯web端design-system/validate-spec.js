@@ -1000,6 +1000,49 @@ function checkBtnLabel(html) {
   return violations;
 }
 
+// A6（2026-08-28，订单总览V2 实战：btn-secondary 落单 → 布局全失、图标文字上下排列）：
+// .btn-* 配色/形态变体的布局全在 .btn 基类（inline-flex+gap6+height32）——变体脱离基类
+// 单独使用时按钮退化为普通 inline 流。机器可查：变体类出现但同类名无独立 .btn token → HIGH。
+function checkBtnVariantBase(html) {
+  const violations = [];
+  const noScript = stripScriptTags(html);
+  const tagRe = /<[a-zA-Z][^>]*\bclass="([^"]*)"[^>]*>/g;
+  const VARIANT = /\bbtn-(?:primary|secondary|text|ghost|danger|outline|link)\b/;
+  let m;
+  while ((m = tagRe.exec(noScript))) {
+    const cls = m[1];
+    if (!VARIANT.test(cls)) continue;
+    if (/(^|\s)btn(\s|$)/.test(cls)) continue; // 已带 .btn 基类
+    violations.push({
+      line: 0, severity: 'HIGH', contract: 'btn.variant.no-base', sel: ('class="' + cls + '"').slice(0, 60),
+      msg: '按钮变体「' + (VARIANT.exec(cls) || [''])[0] + '」脱离 .btn 基类单独使用——布局（inline-flex/gap/height32）全在 .btn，落单即退化（图标文字上下排列/高度塌陷）。正确写法 class="btn btn-secondary"。见 RULES §3.7 / components.json#button'
+    });
+  }
+  return violations;
+}
+
+// A4（2026-08-28，订单总览V2 实战：table--fixed 无列宽预算 → 1308 vs 1120 横向滚动）：
+// .table--fixed 的 fixed 布局必须配全列显式宽度（th style width / width 属性 / colgroup），
+// 否则浏览器按内容分配照样撑出横向滚动——V10 宽表守则的机器化落点。
+function checkTableFixedBudget(html) {
+  const violations = [];
+  const noScript = stripScriptTags(html);
+  const tblRe = /<table\b[^>]*\bclass="[^"]*table--fixed[^"]*"[^>]*>([\s\S]*?)<\/table>/gi;
+  let m;
+  while ((m = tblRe.exec(noScript))) {
+    const inner = m[1];
+    const hasColgroup = /<colgroup\b/i.test(inner);
+    const thHasWidth = /<th\b[^>]*(style="[^"]*width\s*:|width=")/i.test(inner);
+    if (!hasColgroup && !thHasWidth) {
+      violations.push({
+        line: 0, severity: 'HIGH', contract: 'table.fixed.no-budget', sel: m[0].slice(0, 60),
+        msg: '.table--fixed 未配列宽预算（thead th 无显式 width、亦无 colgroup）——fixed 只锁分配算法不锁总宽，浏览器按内容分配照样超宽出横向滚动。每个 th 显式 style="width:X%"（合计=100%）。见 RULES 宽表列宽预算条款'
+      });
+    }
+  }
+  return violations;
+}
+
 function checkChartSvgFill(html) {
   const violations = [];
   const noScript = stripScriptTags(html);
@@ -2058,6 +2101,9 @@ function run(specPath, targetPath) {
   const btnLabelV = checkBtnLabel(html);
   const statGridV = checkStatGridCount(html);
   const chartFillV = checkChartSvgFill(html);
+  // A4+A6（2026-08-28，订单总览V2 实战）：fixed 表列宽预算 / btn 变体脱离基类
+  const btnVarV = checkBtnVariantBase(html);
+  const tblBudgetV = checkTableFixedBudget(html);
   // 图表布局门禁（2026-08-06 复盘补强）：SVG 内文字 / 左右对称 / 柱底基线
   const chartLayoutV = checkChartLayout(html);
   const chartValueV = checkChartValue(html);
@@ -2106,7 +2152,7 @@ function run(specPath, targetPath) {
   const iconSrcV = checkIconSource(html, targetPath);
   // KPI 仅两版门禁（2026-08-06 定稿）：简约版（stat-num/stat-sub 独立卡、无 kpi-ico / stat-card--icon / stat-card--ring）已删除，Agent 生成简约版即 HIGH 拦截
   const kpiV = checkKpiSimple(html);
-  return violations.concat(chartSeriesV, rootV, surfaceV, iconV, whitelistV, tokenV, motionV, chartV, svgV, topbarV, dimV, btnLabelV, statGridV, chartFillV, chartLayoutV, chartValueV, chartBaselineV, templateSyncV, moduleSpacingV, tableMinRowV, tableAlignV, tablePagerV, cardFillV, mobileV, webAesV, wcagV, gridV, overrideV, customV, kpiV, svgVarV, scrollV, cloneV, fpV, scrollBodyV, iconSrcV, fontV);
+  return violations.concat(chartSeriesV, rootV, surfaceV, iconV, whitelistV, tokenV, motionV, chartV, svgV, topbarV, dimV, btnLabelV, btnVarV, statGridV, chartFillV, chartLayoutV, chartValueV, chartBaselineV, templateSyncV, moduleSpacingV, tableMinRowV, tableAlignV, tablePagerV, cardFillV, mobileV, webAesV, wcagV, gridV, overrideV, customV, kpiV, svgVarV, scrollV, cloneV, fpV, scrollBodyV, iconSrcV, fontV, tblBudgetV);
 }
 
 // ===== 柱状图柱顶数值门禁（2026-08-06：示例页柱状图缺 .chart-v → 柱子无数据标签，门禁此前未查）=====
