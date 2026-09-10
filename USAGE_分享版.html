@@ -1054,7 +1054,7 @@ body{margin:0;font-family:var(--font-cn);font-size:14px;color:var(--n10);backgro
       <div class="hero-stats">
         <div class="hero-stat"><b>3 分钟</b><span>从一句话到首版页面</span></div>
         <div class="hero-stat"><b>0 HIGH</b><span>门禁硬指标，不达标不交付</span></div>
-        <div class="hero-stat"><b>86 pass</b><span>全链路自检全绿</span></div>
+        <div class="hero-stat"><b>99 pass</b><span>全链路自检全绿</span></div>
       </div>
     </div>
   </div>
@@ -1153,7 +1153,7 @@ body{margin:0;font-family:var(--font-cn);font-size:14px;color:var(--n10);backgro
       <div class="step-card">
         <span class="step-num sn-4">4</span>
         <b>过门禁</b>
-        <span class="t-body2"><span class="kbd">validate-spec.js &lt;页面&gt;</span> → <b>0 HIGH</b> 才交付；全链路 <span class="kbd">node ci-local.js</span> 保持 86 pass。</span>
+        <span class="t-body2"><span class="kbd">validate-spec.js &lt;页面&gt;</span> → <b>0 HIGH</b> 才交付；全链路 <span class="kbd">node ci-local.js</span> 保持 99 pass。</span>
       </div>
       <div class="step-card">
         <span class="step-num sn-5">5</span>
@@ -1230,7 +1230,7 @@ body{margin:0;font-family:var(--font-cn);font-size:14px;color:var(--n10);backgro
           <tr><td><span class="a-type at-script">引擎</span><span class="t-mono">brand-color-engine/</span></td><td>任意品牌色 / 暗色一键生成 :root 覆盖</td><td>Agent / 维护者</td></tr>
           <tr><td><span class="a-type at-script">脚本</span><span class="t-mono">scripts/new-page-web|mobile.js</span></td><td>脚手架：克隆框架 + 注入克隆凭证 meta + 修 link</td><td>Agent</td></tr>
           <tr><td><span class="a-type at-gate">门禁</span><span class="t-mono">validate-spec.js（两端）</span></td><td>页面门禁（0 HIGH 才交付）</td><td>门禁 / Agent</td></tr>
-          <tr><td><span class="a-type at-gate">门禁</span><span class="t-mono">ci-local.js</span></td><td>全链路自检（86 pass / 0 fail）</td><td>维护者 / CI</td></tr>
+          <tr><td><span class="a-type at-gate">门禁</span><span class="t-mono">ci-local.js</span></td><td>全链路自检（99 pass / 0 fail，含 audit 审计 + check-sync 一致性）</td><td>维护者 / CI</td></tr>
           <tr><td><span class="a-type at-entry">入口</span><span class="t-mono">团队使用指南.md</span></td><td>人读版使用说明 + 文件作用清单</td><td>人</td></tr>
         </tbody>
       </table>

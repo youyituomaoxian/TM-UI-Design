@@ -1,10 +1,11 @@
 {
   "$meta": {
     "title": "弘讯设计系统 · 审计规则真源（audit-rules）",
-    "version": "1.0.0",
-    "updated": "2026-09-09",
+    "version": "1.1.0",
+    "updated": "2026-09-10",
     "purpose": "存量项目按弘讯设计系统改造时的单一审计真源。RULES.md 管生成语义（怎么写），本文件管审计语义（怎么查）：每条规则声明 判定谓词 / 严重级 / 可判定性 / 修复策略。机器类规则由 audit-spec.js 与 validate-spec.js 执行，运行时类由截图×状态验证，语义类由 agent+人审查。三层互补，缺一不可。",
-    "change_policy": "新增规则必须经『漏检回灌』进入：存量改造中每发现一个漏检案例，强制归因为 规则缺口（补本文件）或 执行缺口（补脚本/流程），记录进 feedback_log。禁止绕过回灌直接手加规则。"
+    "scope_note": "⚠️ 两种审查场景，归因逻辑不同（2026-09-10 用户澄清）：① 弘讯内项目缺陷审计（项目有义务合规）→ 用 P1 归因二分法（设计系统问题 or 执行问题）+ machine_rules 违规检测；② 外部项目迁移改造（项目不是弘讯生成的，审查目的=找出视觉不符合处并改成符合）→ 归因只有一种『未对齐弘讯规范』，决策点=映射到什么（哪个 token/组件类/字阶），用 migration_dimensions 维度对照清单逐层盘点。两层规则互补：M 层抓硬违规（迁移时同样要清零），D 层管维度映射。",
+    "change_policy": "新增规则必须经『漏检回灌』进入：存量改造中每发现一个漏检案例，强制归因为 规则缺口（补本文件）或 执行缺口（补脚本/流程），记录进 feedback_log。禁止绕过回灌直接手加规则。**规范-审查双向对账（2026-09-10 用户拍板，『全』的保证机制）**：migration_dimensions 每条必须带 ref 指回规范条目（指不回=伪维度，删）；规范真源新增条目（新 token section / 新组件 / 新 RULES 章节 / 新专项 spec）时，审查侧必须同步长出核对项（指不到=审查缺口，补 D 层）。审查清单是规范真源结构树的对偶投影，『全』随规范演进持续保证，不靠一次性经验枚举。"
   },
 
   "layers": {
@@ -98,6 +99,93 @@
     { "id": "H-03", "contract": "brand.color.area", "title": "品牌蓝面积 ≤30%，语义色只点状态不铺底", "ref": "RULES §10.5" },
     { "id": "H-04", "contract": "density.breathing", "title": "间距节奏（16/20px）与留白呼吸感，无『贴一起』", "ref": "RULES §10.4" },
     { "id": "H-05", "contract": "copy.tone", "title": "文案语义与工控语境一致，状态文案与 dot 语义匹配", "ref": "RULES §6" }
+  ],
+
+  "migration_dimensions": [
+    {
+      "id": "D-1",
+      "title": "框架骨架",
+      "check": "Web B 端后台是否套弘讯固定框架（顶栏 72 / 侧栏 240 折叠 80 / 内容区 / 底栏 32 / 作业树带图标节点）；移动端是否手机壳 375×812 + 导航三槽位 + 底部导航 3-5 项 + 屏内滚动；页面是否残留自搭框架（自造 topbar/sidebar）",
+      "map_to": "克隆对应端 page-template.html 框架外壳（脚手架 new-page-web/mobile.js 自动注入克隆凭证），业务内容重建；非 B 端页面（营销/门户/大屏）合法豁免框架",
+      "ref": "Web RULES §0 + GENERATION-SOP §① 步骤 1.5/4；移动 RULES §1.1b"
+    },
+    {
+      "id": "D-2",
+      "title": "色彩系统",
+      "check": "全项目色值盘点（M-01 同步清零裸 hex）：现有品牌色 / 中性阶 / 功能色 / 图表色是否对应弘讯 token 语义；暗色模式是否有 [data-theme] 完整定义",
+      "map_to": "tokens.json colors 短名变量（--primary 系 / --n1..n11 / --suc/--warn/--err/--run 系 / --chart-* / --brand-surface）；非 #005EAE 品牌色走 brand-color-engine 重推导（亮暗双模式）",
+      "ref": "tokens.json colors + DESIGN-TOKENS.md §2 + CROSS-PLATFORM-COLORS.md + GENERATION-SOP 附录 B 映射表"
+    },
+    {
+      "id": "D-3",
+      "title": "字体与字阶",
+      "check": "现有字号/字重/行高盘点 → 是否落在弘讯字阶内（越界字号标记）；正文/数值/代码字体是否正确；是否有裸 font-size（text.layer 门禁同步清零）",
+      "map_to": "Web .t-* 12 级字阶 / 移动 .m-text-* 语义类（android+iOS 双套 9 级）；正文 var(--font-cn)（Source Han Sans CN）、数值 var(--font-mono)（JetBrains Mono，tabular-nums 仅纯数字），禁具体字体名",
+      "ref": "tokens.json typography + MASTER §2 字阶 + DESIGN-TOKENS typography"
+    },
+    {
+      "id": "D-4",
+      "title": "组件映射",
+      "check": "现有 UI 元素逐个对照弘讯组件清单：按钮（变体/状态矩阵 M-02 同步清零）/ 标签 / 表格 / 表单（input/textarea/select）/ 弹窗 / 分页 / 进度 / 空态 / 徽章 / 筛选 chip / KPI 卡（图标卡/环形卡二选一）；自造组件类标记",
+      "map_to": "components.json 契约组件（尺寸/状态/色值 contract）+ template.css 同名类；无对应组件的自造元素按自造守则（值落现有 token）处理，成熟形态上报补库",
+      "ref": "components.json + components.md + Web RULES §3.7 DOM 契约 / 移动 RULES §9 组件体系"
+    },
+    {
+      "id": "D-5",
+      "title": "间距与栅格",
+      "check": "所有 spacing 值是否落 4px 网格（grid.4px 门禁同步清零）；区块间距节奏（同类 8-16 / 关联 16-24 / 独立大区块 32-48；移动端 16/20/30 克制间距）；Web 24 列栅格 / .grid12 > .col-N 使用",
+      "map_to": "tokens.json spacing（--spacing-* / spacing.pagePaddingX / spacing.base）；移动端 .screen+.page-view gap 双容器体系",
+      "ref": "tokens.json spacing + Web RULES §6 布局黄金法则 + 移动 RULES §10.4 克制间距体系"
+    },
+    {
+      "id": "D-6",
+      "title": "圆角/投影/密度",
+      "check": "圆角值是否落 --radius-* 档位；投影是否用 --shadow-* token（裸 box-shadow 标记）；密度切换（data-density）是否可用",
+      "map_to": "tokens.json radius/shadow/density 对应 token；禁止自造第四档圆角、裸阴影值",
+      "ref": "tokens.json radius/shadow/density sections"
+    },
+    {
+      "id": "D-7",
+      "title": "动效",
+      "check": "transition/animation 时长是否裸数字秒（checkMotion 门禁同步清零，0s/0ms 合法）；缓动是否裸 cubic-bezier；入场/交互动效是否缺失（弘讯默认即带动效类）",
+      "map_to": "var(--motion-duration-*)（M1-M5 档位）+ var(--motion-ease-*)；图表挂 .chart-bar/.chart-line/.chart-ring-anim 等动效类",
+      "ref": "tokens.json motion + RULES §8 动效交互 / 移动 §10.6"
+    },
+    {
+      "id": "D-8",
+      "title": "图标",
+      "check": "页面图标是否从 icons/ 库取（path 内联进 .ico/.tree-ico/.kpi-ico 尺寸类）；自绘/外源图标规格是否为 24×24 / stroke 1.8 / fill none / currentColor / round；库缺图标是否上报",
+      "map_to": "各端 icons/（Web 185 / 移动 184，icons/icons.md 索引）；库缺才手写且须符合统一规格并上报（RULES §7.9③）",
+      "ref": "icons/icons.md + Web RULES §7.9 + 图标规格契约"
+    },
+    {
+      "id": "D-9",
+      "title": "图表",
+      "check": "图表是否挂容器原语 .chart-box（.chart-canvas）；SVG 是否裸 hex（M-04 同步清零）/ none 拉伸 / 拉伸区放文字；系列色是否通用语义色替代 --chart-*；x 轴标签是否压柱体/折线点是否落线；环形图是否变形",
+      "map_to": "CHART-SPEC 三段式结构（绘图区/标签保护区/标签区）+ .chart-* 色板（同页 ≤5 系列，多则合并灰 --n9）；x 标签用 renderChartXLabels() SSoT",
+      "ref": "CHART-SPEC.md + GENERATION-SOP 附录 A + Web RULES §9 / 移动 §9.7"
+    },
+    {
+      "id": "D-10",
+      "title": "状态与语义色",
+      "check": "状态点是否用语义白名单（M-03 同步清零）；是否存在「运行状态用成功色」混淆（运行≠成功）；语义色是否只点状态不铺底；Tag 用色是否超 5 色体系",
+      "map_to": "状态点白名单类（run/idle/off/offline/err/ok/warn）；Tag 5 色体系（浅底 --*-soft / filled 白字 --*-fg）",
+      "ref": "Web RULES §11.11 / 移动 RULES §11 + CROSS-PLATFORM-COLORS.md"
+    },
+    {
+      "id": "D-11",
+      "title": "暗色模式",
+      "check": "页面是否有完整 [data-theme=dark] 块（亮暗双模式）；暗色骨架 --brand-surface 是否定义；顶栏暗色切换按钮是否可用；暗色下是否漏 token（切到暗色后出现白底/裸色块）",
+      "map_to": "非默认品牌走 brand-color-engine dark 模式（palDark 映射进 :root[data-theme=dark]）；默认品牌 template.css 已内置",
+      "ref": "GENERATION-SOP 附录 B 步骤 2b + DARK-MODE.md + RULES §0.1"
+    },
+    {
+      "id": "D-12",
+      "title": "审美方向（语义层兜底）",
+      "check": "品牌蓝面积 ≤30%；信息层级不跳级、每屏唯一视觉焦点（H-01）；留白呼吸感无贴一起（H-04）；冷白科技风基调不被花哨渐变/重阴影破坏；文案与工控语境一致（H-05）",
+      "map_to": "按 RULES §10 审美章节重构；此维度不可静态判定，agent 按 H 层逐条核对并落台账",
+      "ref": "Web RULES §10 / 移动 RULES §10 + VISUAL-SPEC.md + human_checks H-01~05"
+    }
   ],
 
   "exemptions": [
