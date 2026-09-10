@@ -155,9 +155,15 @@
 .btn-primary{background:var(--primary);color:var(--text-on-brand);}
 .btn-primary:hover{background:var(--primary-hover);}
 .btn-primary:active{background:var(--primary-active);}
+.btn-primary:focus-visible{box-shadow:0 0 0 2px var(--focus-ring);} /* V1 闭环 2026-09-10：focus 焦点环（--focus-ring 与 .input:focus 同模式，避 grid.4px 误伤） */
 .btn-secondary{background:var(--bg-surface);color:var(--primary);border:1px solid var(--primary);}
 .btn-secondary:hover{background:var(--primary-dis-bg);}
+.btn-secondary:active{filter:brightness(0.97);}
+.btn-secondary:focus-visible{box-shadow:0 0 0 2px var(--focus-ring);}
 .btn-text{background:none;color:var(--primary);}
+.btn-text:hover{background:var(--primary-dis-bg);}
+.btn-text:active{filter:brightness(0.97);}
+.btn-text:focus-visible{box-shadow:0 0 0 2px var(--focus-ring);}
 .btn-lg{height:40px;}
 .btn-sm{height:24px;padding:0 12px;}
 .btn:disabled{background:var(--primary-dis-bg);color:var(--primary-dis-fg);cursor:not-allowed;border:none;}

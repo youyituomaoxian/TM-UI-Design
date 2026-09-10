@@ -10,6 +10,28 @@
 > 所有生成过程与规范使用方式都以该页面为准：`.screen` 容器 343 落位（居中 + gap:12 纵向）、区块自带 padding、组件不加水平 margin、
 > 阴影用 `--elev-raised-shadow`、文字走 `.m-text-*` 语义类、底部导航挂 home indicator。
 
+> **🏛️ 真源治理契约（2026-09-10 增补 · 用户拍板「分级治理」）**
+> 一句话：**消费只读，演进留痕；谁碰真源，谁走六步。** 角色不由人名定义，由行为定义——改「真源区」任何文件即进入维护者流程。
+
+| 角色 | 允许动的文件 | 约束 |
+|---|---|---|
+| **使用者**（页面/项目/Agent 默认） | 自建页面 HTML/CSS、output/ 产物、外部项目仓库 | 交付物 validate-spec 0 HIGH；**禁改真源**（页面覆写真源由 `css.override` HIGH 门禁机器化拦截） |
+| **维护者**（系统演进，含被显式指派的 Agent） | 真源区：本目录 `template.css` / `tokens.json` / `components.json` / `validate-spec.js` / `RULES.md` / `MASTER.md` / `DESIGN-TOKENS.md` / `page-template.html` / `icons/` / `scripts/`；跨端 `packages/*/src/styles/components.css`（W1 层，与真源同构）；仓库根 `ci-local.js` / `audit-spec.js` / `audit-rules.json` / `check-sync.js` | 六步流程（见下） |
+| **冻结区** | 各包 `sha256-baseline.json` 清单内文件 | 改动即 HIGH；确需演进须显式 `freeze-baseline` 并在 CHANGELOG 说明 |
+
+**维护者六步流程**（每步留痕，缺步 = 违规）：
+
+1. **缺口登记**——`audit-rules.json` feedback_log 或台账文档先记「为什么要改」
+2. **修改真源**
+3. **双端同步**——web 与 mobile 同名类/同源值一致；W1 层 components.css 与 template.css 同构同步
+4. **门禁全绿**——ci-local 全量 pass/fail 不回归 + 双包 validate-static 0 HIGH
+5. **刷指纹**——涉及冻结文件时跑 `freeze-baseline` 并说明
+6. **CHANGELOG 留痕**——改了什么 / 为什么 / 关联台账
+
+**无痕迹的维护者行为 = 违规**：真源变更但无台账、无 CHANGELOG、未刷指纹 → 复盘点名回溯。
+
+**Agent 特别约束**：Agent 默认仅允许在使用者区工作；「改真源」必须来自用户显式下发的任务（P0–P4 台账即授权载体），不得以「顺手修复」名义进入真源区；门禁（sha256 / css.override / ci-local）是硬兜底，不依赖 prompt 自觉。
+
 ---
 
 ## 软规则必读清单（无门禁兜底 · 缺读即事故 · 生成前逐条核对）

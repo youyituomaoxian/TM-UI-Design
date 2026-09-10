@@ -1,0 +1,129 @@
+{
+  "$meta": {
+    "title": "弘讯设计系统 · 审计规则真源（audit-rules）",
+    "version": "1.0.0",
+    "updated": "2026-09-09",
+    "purpose": "存量项目按弘讯设计系统改造时的单一审计真源。RULES.md 管生成语义（怎么写），本文件管审计语义（怎么查）：每条规则声明 判定谓词 / 严重级 / 可判定性 / 修复策略。机器类规则由 audit-spec.js 与 validate-spec.js 执行，运行时类由截图×状态验证，语义类由 agent+人审查。三层互补，缺一不可。",
+    "change_policy": "新增规则必须经『漏检回灌』进入：存量改造中每发现一个漏检案例，强制归因为 规则缺口（补本文件）或 执行缺口（补脚本/流程），记录进 feedback_log。禁止绕过回灌直接手加规则。"
+  },
+
+  "layers": {
+    "machine": "脚本全量召回（零漏检）。判定谓词完全可静态判定。audit-spec.js 覆盖增量审计规则，validate-spec.js 覆盖生成门禁规则。",
+    "runtime": "机器扫不到、读代码也读不到的表现层。起本地服务 → Playwright 截关键页面×关键状态 → 视觉模型/人审。",
+    "human": "信息层级、组件选型、文案等语义判断。agent 只消费结构化台账 + 本批片段，逐遍审查。"
+  },
+
+  "machine_rules": [
+    {
+      "id": "M-01",
+      "contract": "css.hex.literal",
+      "title": "CSS 裸 hex 字面量必须 token 化",
+      "severity": "HIGH(非色板)/MEDIUM(色板内应改引用)",
+      "scope": "目标 HTML 的 <style> 块 + inline style（script 剥离后）",
+      "predicate": "出现 #RGB/#RRGGBB/#RRGGBBAA 字面量：∉ token 色板(toksens.json 全量 hex 叶子+白名单) → HIGH（自造色）；∈ 色板 → MEDIUM（合法色但必须改用 var(--token) 引用）",
+      "exempt": [":root{...} 与 [data-theme]{...} 令牌定义/投影区", "含 swatch 类或 data-audit-exempt 的行（色板展示区）", "SVG paint 属性 stroke=/fill=/stop-color=（由 M-04 专管，避免双报）", "#FFFFFF/#FFF 白字约定（validate-static 规则①同口径，RULES §10.3b 白字美学优先）"],
+      "fix": "改用 var(--token) 或 components.json 契约色；确需新色走 brand-color-engine 衍生并回 tokens.json",
+      "implemented_in": "audit-spec.js"
+    },
+    {
+      "id": "M-02",
+      "contract": "btn.state.matrix",
+      "title": "页面自造按钮类必须带交互态矩阵",
+      "severity": "MEDIUM",
+      "scope": "目标 HTML <style> 中新定义的按钮类（类名含 btn/button 且声明块含 background）",
+      "predicate": "只审类自身定义了 background 的按钮类（含伪类的选择器不参与背景归属）。组合语义：变体(.btn-xxx)某态由自身或基类提供即覆盖；基类(.btn) hover/active 由任一变体提供即覆盖；:focus-visible 无组合兜底，须显式定义。缺项 → MEDIUM（列明缺哪几个）",
+      "fix": "按 RULES §3.1 补齐四态：default 主色 / pressed 加深 / disabled 禁用对 / hover-focus 聚焦色，全部 token 化",
+      "implemented_in": "audit-spec.js"
+    },
+    {
+      "id": "M-03",
+      "contract": "status.dot.unknown",
+      "title": "状态点语义色必须用白名单语义",
+      "severity": "HIGH",
+      "scope": "HTML class 属性中 status-dot(Web)/m-dot(移动) 上下文的状态类",
+      "predicate": "Web: dot-* 子类 ∉ {run,idle,off,offline,err,ok,warn} → HIGH；移动: m-dot 兄弟类 ∉ {run,idle,off,offline,err,ok,warn} → HIGH。机器状态禁用 suc/warn 表达（RULES §11.11：运行≠成功）",
+      "fix": "改用语义白名单类；新状态语义先回 RULES §11.11 登记再使用",
+      "implemented_in": "audit-spec.js"
+    },
+    {
+      "id": "M-04",
+      "contract": "svg.paint.non-token",
+      "title": "SVG 绘制属性 stroke=/fill=/stop-color= 裸 hex 必须走 token",
+      "severity": "HIGH(自造)/MEDIUM(调色板内)",
+      "implemented_in": "validate-spec.js（任务书 S 2026-08-03 已落地）",
+      "note": "2026-09-09 核实：此前记忆中的『validate-spec 未扫 SVG paint』已过时，该门禁已存在"
+    },
+    {
+      "id": "M-05",
+      "contract": "token.undefined / css.override / grid.4px / text.layer / class.undefined / class.self-defined / wcag.contrast.banned / chart.*(baseline|viewbox-edge|symmetry|series.color) / template.clone.missing / template.root.sync",
+      "title": "生成门禁规则集（指针）",
+      "severity": "见 validate-spec.js 各规则定义",
+      "implemented_in": "validate-spec.js（双端各自实现）",
+      "note": "audit-spec.js 不重复实现；存量改造审计 = validate-spec.js（生成门禁）+ audit-spec.js（增量审计）两表合并出台账"
+    }
+  ],
+
+  "runtime_checks": [
+    {
+      "id": "R-01",
+      "contract": "btn.states.render",
+      "title": "按钮四态实际渲染正确（hover/active/focus-visible/disabled）",
+      "method": "Playwright 对每个按钮态截图，视觉模型/人核对照 RULES §3.1 状态矩阵",
+      "covers": "静态审计判定不了『伪类是否真的生效』『对比度是否可感』"
+    },
+    {
+      "id": "R-02",
+      "contract": "chart.render.integrity",
+      "title": "图表渲染无重叠/裁切/拉伸（X 轴标签压柱体、preserveAspectRatio 拉伸变形）",
+      "method": "渲染后截图核对 RULES §9.7 三段式（绘图区/标签保护区/标签区）",
+      "covers": "viewBox 静态规则已管数字边界，渲染层复核视觉结果"
+    },
+    {
+      "id": "R-03",
+      "contract": "scroll.behavior",
+      "title": "滚动容器行为正确（禁 body 全局滚动、容器定高、筛选后滚动位置重置）",
+      "method": "Playwright 触发筛选/滚动，检查 scrollTop 行为"
+    },
+    {
+      "id": "R-04",
+      "contract": "kpi.icon.color",
+      "title": "KPI 图标底色/图标色用功能色 bg+default 对（图标不裸白不裸色）",
+      "method": "截图核对 stat-card--icon 色对与 tokens.json functional 定义一致"
+    }
+  ],
+
+  "human_checks": [
+    { "id": "H-01", "contract": "info.hierarchy", "title": "信息层级不跳级、每屏唯一视觉焦点", "ref": "RULES §10.1-10.3" },
+    { "id": "H-02", "contract": "component.choice", "title": "组件选型合理（该用 Tag 的地方不是按钮、该用 kv-row 的地方不是 · 串）", "ref": "RULES §1.2" },
+    { "id": "H-03", "contract": "brand.color.area", "title": "品牌蓝面积 ≤30%，语义色只点状态不铺底", "ref": "RULES §10.5" },
+    { "id": "H-04", "contract": "density.breathing", "title": "间距节奏（16/20px）与留白呼吸感，无『贴一起』", "ref": "RULES §10.4" },
+    { "id": "H-05", "contract": "copy.tone", "title": "文案语义与工控语境一致，状态文案与 dot 语义匹配", "ref": "RULES §6" }
+  ],
+
+  "exemptions": [
+    {
+      "file": "packages/web-ui/dist-static/sample-default-light.html（含同目录 sample-* 系列与 mobile-ui 同名产物）",
+      "scope": "layout.inline.dimension（12 处：demo 定宽 320/360/160、height:200、margin-top:4）+ class.self-defined（7 个演示布局类 .idx/.note/.sec 等）+ aesthetic.web.sections",
+      "reason": "W1 预览包展示区：组件样例页的演示容器定宽与自造演示布局类是刻意的展示语义（每个组件样例独立成块），非交付页面，不适用页面级布局约束",
+      "registered": "2026-09-10",
+      "registered_by": "存量改造审计 P2 批次 3（用户拍板『执行』）",
+      "count": 14,
+      "validUntil": "2026-12-31",
+      "note": "过期自动失效回违规；若展示页结构重做须重新登记"
+    }
+  ],
+
+  "feedback_log": [
+    {
+      "date": "2026-09-09",
+      "source": "存量改造审计体系立项复盘",
+      "findings": [
+        "按钮状态矩阵无机器规则 → 新增 M-02 btn.state.matrix",
+        "idle/机器状态语义色无白名单规则 → 新增 M-03 status.dot.unknown",
+        "KPI 图标色无规则 → 归入 R-04（静态误报率高，走表现层）+ M-01 覆盖其 hex 部分",
+        "记忆中『SVG paint 未扫描』经核实已过时（M-04 已于 2026-08-03 落地）→ 修正认知，登记指针"
+      ],
+      "attribution": "规则缺口 3 条（M-01/M-02/M-03 补齐）；执行缺口为流程性（单遍整体审查 → 已由 P0-P4 流程替代）"
+    }
+  ]
+}

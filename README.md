@@ -31,6 +31,10 @@
 │   （Web 端另有 CROSS-PLATFORM-COLORS.md 跨端功能色契约）
 │
 ├── CHART-SPEC.md                   # 图表规范（样式 + 结果约束，Agent 自建图表，色走 --chart-*）
+├── audit-rules.json                # 审计规则真源（machine/runtime/human 三层 + 豁免登记 + 漏检回灌）
+├── audit-spec.js                   # 存量页面增量审计（M-01~05，--end web|mobile，HIGH>0 exit 1）
+├── check-sync.js                   # 双端真源一致性门禁（vendor↔template 同构 + 双端同名类白名单比对）
+├── ci-local.js                     # 全链路自检（99 项全绿 exit 0，含 audit + check-sync 阻断）
 ├── output/                          # 历史示例/产物归档（不随设计系统分享）；新生成页落「用户项目」的 output/
 ├── AGENTS.md                        # codex / 通用 Agent 入口（标准生成流程）
 ├── .workbuddy/skills/tm-design-system/SKILL.md  # workbuddy 项目级 skill（可移植定位）
@@ -133,8 +137,9 @@ cd TM-UI-Design
 - **workbuddy**：仓库内 `.workbuddy/skills/tm-design-system/SKILL.md`（项目级 skill，可移植定位：`TM_DESIGN_REPO` 环境变量或相对自身向上找仓库根）。
 - **Reasonix**：全局薄壳 skill（`%APPDATA%\reasonix\skills\tm-design-system\SKILL.md`）指向本仓库（`TM_DESIGN_REPO`）；其兼容分支会优先加载仓库内 `.workbuddy/skills/` 本体。
 - **克隆即用**：`git clone https://github.com/youyituomaoxian/TM-UI-Design.git <目录>` → 进入目录直接对话「用弘讯设计系统，生成…」——各智能体自动加载对应入口（AGENTS.md / CLAUDE.md / skill），零额外配置。
-- 生成合规页：按 `GENERATION-SOP.md` 克隆 `弘讯web端design-system/page-template.html` → 按 `RULES.md §1.1b` 自建内容 → `node 弘讯web端design-system/validate-spec.js <页面.html>`（HIGH 0 才交付）。
-- 全仓总门禁：`node ci-local.js`（86 项全绿 EXIT 0）。
+- 生成合规页：按 `GENERATION-SOP.md` §① 克隆 `弘讯web端design-system/page-template.html` → 按 `RULES.md §1.1b` 自建内容 → `node 弘讯web端design-system/validate-spec.js <页面.html>`（HIGH 0 才交付）。
+- **存量项目审查修改**（已有页面按规范改造）：按 `GENERATION-SOP.md` §② 五阶段流程——`node audit-spec.js <页面> --end web|mobile` 盘点出台账 → 归因（设计系统问题回真源 / 执行问题改页面）→ 分批修复 + 门禁回归。
+- 全仓总门禁：`node ci-local.js`（99 项全绿 EXIT 0，2026-09-10 起）。
 - 部署/分发：Git 仓库（私有）clone 或整目录拷贝（打包时排除 `output/`、`node_modules/`、`.git/`、`.reasonix/`）——详见 `团队使用指南.md`「部署与团队分发」。
 
 ## 版权

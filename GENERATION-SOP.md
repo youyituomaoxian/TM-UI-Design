@@ -1,29 +1,31 @@
 # 弘讯设计系统 · 自然语言 → 规范 UI 生成 SOP
 
-> 把一句界面描述，变成**过门禁 0 HIGH** 的合规 HTML 页面（可选同步 Ardot 画布）。
-> 适用：设计师 / 前端 / Agent。默认品牌 `#005EAE` 直接用模板 token；指定其他品牌色或暗色时用配色引擎推导（附录 B）。
-> 配套：`brand-color-engine/`（引擎）、两端 `agent-starter.html`（纯净起始模板）、`template.css`（CSS 骨架）、`validate-spec.js`（门禁）。
+> 把一句界面描述，变成**过门禁 0 HIGH** 的合规 HTML 页面（可选同步 Ardot 画布）。  
+> 适用：设计师 / 前端 / Agent。默认品牌 `#005EAE` 直接用模板 token；指定其他品牌色或暗色时用配色引擎推导（附录 B）。  
+> 配套：`brand-color-engine/`（引擎）、两端 `agent-starter.html`（纯净起始模板）、`template.css`（CSS 骨架）、`validate-spec.js`（门禁）。  
 > 实证：本 SOP 的映射规则已由两端示例页（默认色/暗色/自定义品牌色，2026-08-06 已删除，生成器保留在 `brand-color-engine/examples/gen-examples.js`）验证通过。
 
-> **⚠️ 跨端守则（2026-08-06 更新）**：移动端冻结已于 2026-08-06 解除（见移动端 RULES 顶部声明），可修改；结构性 / 视觉性改动仍建议先与用户确认方向。
+> **⚠️ 跨端守则（2026-08-06 更新）**：移动端冻结已于 2026-08-06 解除（见移动端 RULES 顶部声明），可修改；结构性 / 视觉性改动仍建议先与用户确认方向。  
 > 改 Web 端时若涉及移动端（共享 token / 组件体系 / validate-spec 对称改动 / 两端联动规则 / 脚手架），**必须先提醒用户拍板**，不得静默同步改动。
 
 ---
 
 ## 阅读说明：主流程 vs 附录（先读这节）
 
-> **主流程（§①）= 必读**：步骤 1–5 可独立走完「默认品牌 / 亮色 / 无图表」页面的生成闭环。
-> **附录（§②）= 按需检索**：以下场景才读对应附录（详见每附录开头一句话）。
+> **主流程（§①）= 必读**：步骤 1–5 可独立走完「默认品牌 / 亮色 / 无图表」页面的生成闭环。  
+> **存量改造（§②）= 有既有项目才读**：审查修改现有页面 / 项目时走 §② 五阶段流程。  
+> **附录（§③）= 按需检索**：以下场景才读对应附录（详见每附录开头一句话）。
 
-| 场景 | 读哪里 |
-|---|---|
-| 首次生成页面（默认品牌 `#005EAE` / 亮色 / 无图表） | 只读 §① 主流程步骤 1–5 |
-| 页面含图表 | 步骤 4.5 + **附录 A**（或真源 `CHART-SPEC.md`） |
-| 非 `#005EAE` 品牌色 / 暗色模式 | **附录 B**（配色引擎映射） |
-| 使用者确认采用 React/Taro 技术栈（可选参考实现） | **附录 C** |
-| 需要 Ardot 原生画布设计稿（须已装 Ardot + MCP 已连） | **附录 D** |
-| 表达层增强（构图 / 栅格 / 留白节奏 / taste） | **附录 E** |
-| 决策树速查 / 全量禁区 | **附录 F** |
+| 场景                                   | 读哪里                                    |
+| ------------------------------------ | -------------------------------------- |
+| 首次生成页面（默认品牌 `#005EAE` / 亮色 / 无图表）    | 只读 §① 主流程步骤 1–5                        |
+| **存量项目审查修改**（已有页面按规范改造 / 审计修复）       | **§② 存量项目改造 SOP**                      |
+| 页面含图表                                | 步骤 4.5 + **附录 A**（或真源 `CHART-SPEC.md`） |
+| 非 `#005EAE` 品牌色 / 暗色模式               | **附录 B**（配色引擎映射）                       |
+| 使用者确认采用 React/Taro 技术栈（可选参考实现）       | **附录 C**                               |
+| 需要 Ardot 原生画布设计稿（须已装 Ardot + MCP 已连） | **附录 D**                               |
+| 表达层增强（构图 / 栅格 / 留白节奏 / taste）        | **附录 E**                               |
+| 决策树速查 / 全量禁区                         | **附录 F**                               |
 
 > **阅读策略联动**：本 SOP 只讲「怎么走流程」；「每类规则读不读」按 `AGENTS.md 阅读策略` + 对应端 `RULES.md 页首软规则必读清单` 执行——[硬] 规则按需检索（门禁兜底），[软] 规则必读。
 
@@ -65,9 +67,10 @@
 
 按 `RULES.md §4.4c 首屏预算守则` 执行：① 按 **预算公式 = 视口高 − 120**（默认 900 → **796px**）取首屏预算；② 按 **页面类型 × 首屏构成矩阵** 列出首屏核心区块（看板=KPI+主图行 / 列表=筛选+表格首屏 / 详情=信息卡）；③ 头部区 + 核心区块高度合计 ≤ 预算，**超预算按裁决顺序执行**（精简头部 → 内容收敛 → 移次屏 → 接受滚动并标注）；④ 叠加行（一列叠多卡）禁入首屏。**交付自查**：视口 900 截图，切点必须落在区块 gap，核心区块完整（`template.i18n.missing` 同级自查项）。
 
+
 ### 步骤 4：克隆 page-template 框架外壳（Web B 端）——克隆源统一
 
-> ✅ **V3.0（2026-08-03 拍板）**：HTML 原型一律克隆 **`page-template.html`**（含固定框架外壳），不再用 agent-starter 起步。
+> ✅ **V3.0（2026-08-03 拍板）**：HTML 原型一律克隆 **`page-template.html`**（含固定框架外壳），不再用 agent-starter 起步。  
 > ✅ **V4.0（2026-08-07 拍板）**：**脚手架优先**——`scripts/new-page-web.js`（Web）/ `new-page-mobile.js`（移动）自动完成克隆 + CSS link 修正 + **注入克隆凭证 `<meta name="x-template-clone">`**（P1 门禁 `template.clone.missing` 检查它；缺 meta 的 B 端页面 HIGH 拦截）。**禁止从空白 HTML / 自搭框架起步**（P0 门禁 `framework.fingerprint` 拦截结构不完整）。
 
 ```bash
@@ -82,7 +85,7 @@ cp 弘讯移动端design-system/page-template.html "<用户项目>/output/设备
 
 **克隆后必须做的事（2026-08-12 更新：6 件）：**
 
-1. **删 demo（可执行边界）**：Web page-template 已在 `<main class="content">` 内用 `<!-- DEMO 展示段开始 -->` / `<!-- DEMO 展示段结束 -->` 明确标记全部 demo section。删除两标记之间的全部内容（stat-grid KPI 演示 / callout / swatch / 字阶 / 色板 / 组件演示等），保留 `.app` 框架外壳。**KPI 统计卡**按业务需要**重建为 `stat-card--icon` 标准版**（components.json 已登记）；禁止保留 demo 简约卡或自造 KPI 样式。
+1. **删 demo（可执行边界）**：Web page-template 已在 `<main class="content">` 内用 `/` 明确标记全部 demo section。删除两标记之间的全部内容（stat-grid KPI 演示 / callout / swatch / 字阶 / 色板 / 组件演示等），保留 `.app` 框架外壳。**KPI 统计卡**按业务需要**重建为 `stat-card--icon` 标准版**（components.json 已登记）；禁止保留 demo 简约卡或自造 KPI 样式。
 2. **改 CSS link 为指向仓库的相对路径**（克隆自 page-template 后必须改；移动端同理；脚手架自动处理）。**相对层级按落盘目录计算**：output/ 直下层 = `../弘讯web端design-system/template.css`；output/ 子目录（如 `output/某测试/`）= `../../弘讯web端design-system/template.css`——层级写错 → CSS 加载失败（token.undefined HIGH + 表格无样式）。
 3. **注入克隆凭证 meta**（P1 门禁）：`<head>` 内加 `<meta name="x-template-clone" content="弘讯web端design-system/page-template.html">`（移动端 content 换 `弘讯移动端design-system/page-template.html`）——**脚手架已自动注入，手动克隆必须自己加**；B 端/手机壳页面缺此 meta → 门禁 `template.clone.missing` HIGH。
 4. **定制作业树 + 图标从库取（2026-08-07 拍板；2026-08-12 去菜单分类）**：作业树**结构零改动**（层级/图标/折叠/选中/**无 group-title 分类、顶级节点并列**契约，RULES §0.2），**节点文本/分组/选中态按当前系统业务定制**（禁保留制造业示例树）；页面图标一律从 `<对应端>/icons/` 取（`icons/icons.md` 索引，path 内联进 `.ico/.tree-ico/.kpi-ico` 等尺寸类，规格 viewBox 24/stroke 1.8），库缺才手写并上报（RULES §7.9③）。
@@ -94,12 +97,12 @@ cp 弘讯移动端design-system/page-template.html "<用户项目>/output/设备
 
 **产出落盘规则（2026-08-06 更新，⚠️ 必读）**：
 
-| 项 | 规则 |
-|---|---|
-| 目录 | 「**用户项目**」的 `output/`（`mkdir -p <用户项目>/output`）。设计系统仓库根的 `output/` 只放内置示例与规范展示，**不得混入用户生成页** |
-| 文件名 | 自动拼 `<页面语义名>_<YYYYMMDD>_<HHmm>.html`；同日同语义名重复 → 追加 `_2`/`_3`，**绝不覆盖** |
-| CSS 引用 | `<link rel="stylesheet" href="…/弘讯web端design-system/template.css">`（相对路径按实际位置写） |
-| 门禁 | `cd <端目录> && node validate-spec.js <用户项目路径>/output/<产出文件>.html`，期望 0 HIGH |
+| 项       | 规则                                                                                                                                                                                                      |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 目录      | 「**用户项目**」的 `output/`（`mkdir -p <用户项目>/output`）。设计系统仓库根的 `output/` 只放内置示例与规范展示，**不得混入用户生成页**                                                                                                            |
+| 文件名     | 自动拼 `<页面语义名>_<YYYYMMDD>_<HHmm>.html`；同日同语义名重复 → 追加 `_2`/`_3`，**绝不覆盖**                                                                                                                                   |
+| CSS 引用  | `<link rel="stylesheet" href="…/弘讯web端design-system/template.css">`（相对路径按实际位置写）                                                                                                                         |
+| 门禁      | `cd <端目录> && node validate-spec.js <用户项目路径>/output/<产出文件>.html`，期望 0 HIGH                                                                                                                               |
 | **分享版** | 交付前把 `<link …template.css>` 替换为内联 `<style>`（template.css 全量）→ `<用户项目>/output/share/<原名>_分享版.html`（零外链）。**门禁口径：以开发态外链版为准**（分享版 = 构建产物，selfCss 全量内联会让 class.self-defined 报全部类，MED 噪音无意义，不跑 validate-spec） |
 
 > **CSS 由 `template.css` 统一提供（不要复制 CSS）**：`:root` 变量（品牌/中性/功能/字阶/圆角/投影/motion/密度）、组件 class、布局骨架（`.app > .topbar + .body(>.sidebar+.content) + .footer`）、`[data-theme="dark"]` / `[data-density]`。色 / 尺寸 / 字重 / 圆角一律走 `:root` 变量，禁止硬编码；动效用 `var(--motion-duration-*)+var(--motion-ease-*)`，禁裸数字秒。
@@ -112,6 +115,7 @@ cp 弘讯移动端design-system/page-template.html "<用户项目>/output/设备
 - **结果约束 8 条（缺一不可，[软] 无门禁全兜）**：柱底对齐基线 / x 轴标签独立行不叠柱 / 标签不溢出容器 / 折线点严格落线 / 环形中心文字不变形 / 多系列配图例 / **颜色只用 `--chart-*`（禁通用语义色与裸 hex）** / 图表不溢出卡片。
 - 容器原语：`.chart-box`（高度自定）+ canvas 用 `.chart-canvas`；卡片内图表卡一律 `.card--fill`。
 - 交互动画默认即带：`.chart-bar` / `.chart-hbar` / `.chart-line` / `.chart-ring-anim` / `.chart-dot`，时长全走 `--motion-duration-*`。
+
 
 ### 步骤 5：门禁自检 → 软规则自查表 → 交付
 
@@ -151,37 +155,37 @@ cd <端目录> && "$NODE" validate-spec.js <用户项目路径>/output/<产出�
 
 **Web 区块模式（7 区块）**：
 
-| 区块 | 模式（按业务维度覆盖） |
-|---|---|
-| 页头区 | A 面包屑条+标题+操作（**有父级路径必用**）/ B 直接标题（**仅顶级入口页可无面包屑**）/ C 页签切换页头 |
-| 筛选区 | A 顶部筛选条（筛选项 ≤4） / B 左筛选卡 303（筛选项多/常驻） / C 折叠筛选（高级筛选） |
-| KPI 区 | A 单行 4 卡 stat-grid / B 2×2 网格 / C 1+3 混合（主指标大卡+3 小卡） / D 环形卡 ring |
-| 图表区 | A 单图全宽 / B 7+5 双图 / C 6+6 双图 / D 9+3 主图+窄摘要 / E 图+列表混排 |
-| 表格区 | A 全宽表格 / B 嵌入侧栏表格（明细/参数） / C 双列表格对比 / D 明细小表（≤5 行，尾部「共 N 条」） |
-| 详情信息区 | A 键值对网格 / B 左右分栏 / C 纵向堆叠 / D 页签分组 |
-| 日志/时间轴区 | A 时间轴 / B 表格 / C 紧凑列表 |
+| 区块      | 模式（按业务维度覆盖）                                                       |
+| ------- | ----------------------------------------------------------------- |
+| 页头区     | A 面包屑条+标题+操作（**有父级路径必用**）/ B 直接标题（**仅顶级入口页可无面包屑**）/ C 页签切换页头      |
+| 筛选区     | A 顶部筛选条（筛选项 ≤4） / B 左筛选卡 303（筛选项多/常驻） / C 折叠筛选（高级筛选）              |
+| KPI 区   | A 单行 4 卡 stat-grid / B 2×2 网格 / C 1+3 混合（主指标大卡+3 小卡） / D 环形卡 ring |
+| 图表区     | A 单图全宽 / B 7+5 双图 / C 6+6 双图 / D 9+3 主图+窄摘要 / E 图+列表混排            |
+| 表格区     | A 全宽表格 / B 嵌入侧栏表格（明细/参数） / C 双列表格对比 / D 明细小表（≤5 行，尾部「共 N 条」）      |
+| 详情信息区   | A 键值对网格 / B 左右分栏 / C 纵向堆叠 / D 页签分组                                |
+| 日志/时间轴区 | A 时间轴 / B 表格 / C 紧凑列表                                             |
 
 **移动端区块模式（5 区块，受 343 宽 + gap 12 约束）**：
 
-| 区块 | 模式 |
-|---|---|
-| 首焦区 | A Hero 品牌蓝 / B 搜索+快捷入口 / C 无（直接列表） |
-| 金刚区 | A 单行 4-5 入口 / B 双行 ≤8 入口 / C 无 |
-| KPI 概览 | A 三列等宽条 / B 卡片网格 |
-| 列表区 | A 双行列表 92 / B 卡片网格 / C 单行紧凑 |
-| 组合顺序 | §9.6 固定顺序 → **可选区域 + 顺序按业务可调**（告警优先页 = 列表提前） |
+| 区块     | 模式                                           |
+| ------ | -------------------------------------------- |
+| 首焦区    | A Hero 品牌蓝 / B 搜索+快捷入口 / C 无（直接列表）           |
+| 金刚区    | A 单行 4-5 入口 / B 双行 ≤8 入口 / C 无               |
+| KPI 概览 | A 三列等宽条 / B 卡片网格                             |
+| 列表区    | A 双行列表 92 / B 卡片网格 / C 单行紧凑                  |
+| 组合顺序   | §9.6 固定顺序 → **可选区域 + 顺序按业务可调**（告警优先页 = 列表提前） |
 
 **选择路由（业务特征 → 推荐组合，布局随业务推导非枚举）**：
 
-| 业务特征 | 推荐组合 |
-|---|---|
-| 筛选项 ≤4、查询为主 | 页头A + 筛选A + 表格A（工单列表示范） |
-| 主指标 ≥4、实时监控 | 页头B + KPI 2×2 + 图表E + 表格A（设备看板示范） |
-| 分析型（图多表少） | 页头B + KPI 单行 + 图表D + 图表B + 表格D（生产分析示范） |
-| 单对象详情 | 页头A + 详情B 左右分栏 + 日志A（设备详情示范） |
-| 数据录入/配置 | 页头A + 筛选B + 页签表单 |
-| 移动首页（多入口） | Hero + 金刚双行 + KPI 条 + 列表 |
-| 移动告警（时效优先） | 列表区提前 + 筛选 Tab + 状态 Tag |
+| 业务特征        | 推荐组合                                   |
+| ----------- | -------------------------------------- |
+| 筛选项 ≤4、查询为主 | 页头A + 筛选A + 表格A（工单列表示范）                |
+| 主指标 ≥4、实时监控 | 页头B + KPI 2×2 + 图表E + 表格A（设备看板示范）      |
+| 分析型（图多表少）   | 页头B + KPI 单行 + 图表D + 图表B + 表格D（生产分析示范） |
+| 单对象详情       | 页头A + 详情B 左右分栏 + 日志A（设备详情示范）           |
+| 数据录入/配置     | 页头A + 筛选B + 页签表单                       |
+| 移动首页（多入口）   | Hero + 金刚双行 + KPI 条 + 列表               |
+| 移动告警（时效优先）  | 列表区提前 + 筛选 Tab + 状态 Tag                |
 
 **示范页**（同框架 4 布局，真实浏览器截图对照）：`output/布局多样化测试/`。
 
@@ -199,7 +203,42 @@ cd <端目录> && "$NODE" validate-spec.js <用户项目路径>/output/<产出�
 
 ---
 
-## ② 附录（按需检索）
+## ② 存量项目改造 SOP（审查修改现有项目，2026-09-10 增补）
+
+> **什么场景读**：已有 HTML 页面 / 项目要按弘讯规范改造或审计修复（不是从零生成）。  
+> **与 §① 的本质区别**：从零生成是单向演绎（照规范写，不需全量召回）；存量改造是**全量召回**——LLM 通读有损、有显著性偏差（显眼处多看、角落漏看），逐页人工扫必漏项。**所以盘点由脚本兜底，Agent 只消费脚本产出的台账**。
+
+### 铁律（改前必读）
+
+1. **先台账后修复**：禁止拿着门禁报错逐条手改。正确顺序 = 脚本全量盘点 → 台账落盘 → 用户拍板 → 按批次修复。**台账即授权载体**：改真源区文件（template.css / tokens.json / components.json 等）必须有台账 + 用户显式拍板，无台账动真源 = 违规（真源治理契约，见双端 RULES.md 页首）。
+2. **归因强制**：每个问题必须归因二选一——**设计系统问题**（真源/规范缺失、token 缺口）→ 回真源修，走治理契约六步（登记→改真源→双端同步→门禁全绿→刷指纹→CHANGELOG）；**执行问题**（规范写了没执行）→ 直接改页面。
+3. **快照/基线不许手改**：`packages/*/dist-static` 快照与 `sha256-baseline.json` 指纹是产物——真源修好后跑双包 `freeze-baseline.js` 刷新，逐条手改快照 = 白干（下次 build 覆盖）。
+4. **每批门禁回归**：每修完一批跑 `node ci-local.js`（全绿 exit 0）才算批次完成，不积攒到最后一次性验证。
+
+### P0–P4 五阶段流程
+
+| 阶段         | 做什么                                         | 用什么                                                                               |
+| ---------- | ------------------------------------------- | --------------------------------------------------------------------------------- |
+| **P0 盘点**  | 脚本**全量扫描产出问题台账（纯脚本零遗漏，Agent 不参与找问题）**       | `node audit-spec.js <页面.html> --end web\|mobile`（加 `--json` 出结构化台账；HIGH>0 exit 1） |
+| **P1 归因**  | 台账逐项归因（设计系统问题 vs 执行问题）并定策略                  | Agent 语义判断；规则语义查 `audit-rules.json`（M-01~05 每条自带归因提示）                             |
+| **P2 修复**  | 按批次修复：真源问题走六步流程、页面问题直接改；每批门禁回归              | `validate-spec.js` 单页 + `ci-local.js` 全量                                          |
+| **P3 表现层** | 截图 × 状态的表现层审查（脚本覆盖不了的运行时问题：截断/溢出/交互态）       | Agent 视觉审查 + 用户 @image 截图反馈                                                       |
+| **P4 收口**  | DoD 终验：全部门禁 0 HIGH / 台账闭环 / 双端 CHANGELOG 留痕 | `node ci-local.js` 全绿 exit 0                                                      |
+
+### 审计规则真源（audit-rules.json，仓库根）
+
+- **三层覆盖**：`machine`（脚本全量召回：M-01 CSS 裸 hex / M-02 按钮状态矩阵 / M-03 状态点语义 / M-04 SVG paint / M-05 validate-spec 指针）+ `runtime`（截图×状态）+ `human`（Agent+人语义审查）。
+- **豁免登记**：确属合法的例外（如展示区色板、白字约定）登记进 `exemptions`（文件+行+原因+有效期），不许改代码糊弄门禁。
+- **漏检回灌闭环**：audit 漏掉的真实缺陷 → 必须归因（规则缺口→补真源/脚本规则；执行缺口→记案例）→ 更新 `audit-rules.json` 的 `feedback_log`。这是审计体系自我进化的唯一入口。
+
+### 实战范例
+
+`output/审计台账P0-P1_sample-default-light_20260909.md`——26 项台账收敛为「刷快照 + 修真源一处 + 豁免登记」，验证了「先台账后修复」防逐条手改白干的价值。
+
+---
+
+## ③ 附录（按需检索）
+
 
 ### 附录 A：图表生成规范（完整版；页面含图表时读）
 
@@ -222,10 +261,10 @@ cd <端目录> && "$NODE" validate-spec.js <用户项目路径>/output/<产出�
 
 > 色值 = `tokens.json colors.chart` / `template.css :root --chart-*`。Web 8 色 / 移动 13 色（语义映射见各端 DESIGN-TOKENS §2.x）。
 
-| 端 | 色板（按使用顺序） |
-|---|---|
+| 端   | 色板（按使用顺序）                                                                                                                                                                                                            |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Web | `--chart-tech-blue`（主系列）→ `--chart-smart-cyan`（副系列）→ `--chart-data-cyan`（对比/目标线）→ `--chart-fresh-green`（正向）→ `--chart-vivid-orange`（预警）→ `--chart-alert-red`（异常）→ 扩展 `--chart-wisdom-purple` / `--chart-modern-pink` |
-| 移动 | `--chart-blue` → `--chart-green` → `--chart-orange` → `--chart-red` → 辅助 `--chart-blue-aux` / `--chart-cyan` → 扩展 purple-a/b、rose、yellow、red-neg、gray |
+| 移动  | `--chart-blue` → `--chart-green` → `--chart-orange` → `--chart-red` → 辅助 `--chart-blue-aux` / `--chart-cyan` → 扩展 purple-a/b、rose、yellow、red-neg、gray                                                                |
 
 **使用顺序**：主系列 → 对比系列 → 预警 → 扩展色；**同页不超过 5 个系列色**（多的合并为「其他」灰 `var(--n9)`）。SVG 内一律 `style="stroke:var(--chart-*)"`，**禁裸 hex**。
 
@@ -242,8 +281,10 @@ cd <端目录> && "$NODE" validate-spec.js <用户项目路径>/output/<产出�
 ### 触发条件
 
 描述中出现以下任一：
+
 - 明确品牌色 ≠ `#005EAE`（如「用森绿 #2E7D5B」「绛红主题」）
 - 暗色模式（「夜间模式 / dark / 暗色」）
+
 
 ### 步骤 1：调引擎拿「亮 + 暗」双调色板（2026-08-12 拍板：亮暗双映射）
 
@@ -262,8 +303,9 @@ cd brand-color-engine
 
 返回结构（两端同构）：`{ primary, neutral[], functional, background, chart[], gradient[], css{} }`。
 
-> **双模式（2026-08-12 拍板）**：非默认品牌页默认生成**亮 + 暗两套**——顶栏「暗色模式」按钮（page-template 已内置）驱动 `<html data-theme>` 切换、localStorage 记忆。不再按「用户是否提『暗色』」二选一；无论提不提暗色，都做双模式。
+> **双模式（2026-08-12 拍板）**：非默认品牌页默认生成**亮 + 暗两套**——顶栏「暗色模式」按钮（page-template 已内置）驱动 `<html data-theme>` 切换、localStorage 记忆。不再按「用户是否提『暗色』」二选一；无论提不提暗色，都做双模式。  
 > ⚠️ **引擎 `css` 字段是旧长名 `--color-*`（如 `--color-primary`/`--color-neutral-1`），设计系统现行是短名，旧长名已废弃。禁止直接注入 `pal.css`。** 必须按下表把色值**映射进模板短名 `:root`**。
+
 
 ### 步骤 2：亮暗双映射进克隆模板（2026-08-12 拍板）
 
@@ -271,7 +313,6 @@ cd brand-color-engine
 
 - **步骤 2a（亮色）**：把 **palLight** 值替换内联 `:root{}` 的对应变量（原单模式流程不变）。
 - **步骤 2b（暗色，新增）**：把 **palDark** 值写进内联**新增块** `:root[data-theme="dark"]{}`（紧接 `:root{}` 之后）：
-
   ```css
   :root[data-theme="dark"]{
     --primary:#2E7D5B; --primary-hover:#43B584; --primary-active:#276A4D; --primary-dis-bg:#374151; --primary-dis-fg:#9CA3AF;
@@ -280,19 +321,18 @@ cd brand-color-engine
     --brand-surface:#020604; --brand-surface-fg:#FFFFFF; /* palDark.background.brandSurface */
   }
   ```
-
   顶栏「暗色模式」按钮驱动 `<html data-theme>` 切换；template.css 暗色骨架规则（`.topbar/.sidebar/.footer → var(--brand-surface)`，framework.css 已内置）自动把骨架转深色（默认品牌深蓝黑 / 自定义品牌深品牌色）。
 
 #### A. 品牌色 + 中性色（两端通用）
 
-| 引擎字段 | 模板短名变量 | 说明 |
-|---------|------------|------|
-| `pal.primary.default` | `--primary` | |
-| `pal.primary.hover` | `--primary-hover` | |
-| `pal.primary.active` ‖ `pal.primary.click` ‖ `pal.primary.pressed` | `--primary-active` | 005EAE dark 特例只有 `click`/`pressed`，需 fallback |
-| `pal.primary.disabledBg` | `--primary-dis-bg` | |
-| `pal.primary.disabledFg` ‖ `pal.primary.disabledText` | `--primary-dis-fg` | dark 特例只有 `disabledText`，需 fallback |
-| `pal.neutral[i].hex` | `--n{i+1}` | **Web** 11 阶 i=0..10 → `--n1..--n11`；**移动端** 10 阶 i=0..9 → `--n1..--n10`（暗色 `darkDefaults.neutralScale` 是 11 阶，移动端只取前 10） |
+| 引擎字段                                                               | 模板短名变量             | 说明                                                                                                                        |
+| ------------------------------------------------------------------ | ------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| `pal.primary.default`                                              | `--primary`        |                                                                                                                           |
+| `pal.primary.hover`                                                | `--primary-hover`  |                                                                                                                           |
+| `pal.primary.active` ‖ `pal.primary.click` ‖ `pal.primary.pressed` | `--primary-active` | 005EAE dark 特例只有 `click`/`pressed`，需 fallback                                                                             |
+| `pal.primary.disabledBg`                                           | `--primary-dis-bg` |                                                                                                                           |
+| `pal.primary.disabledFg` ‖ `pal.primary.disabledText`              | `--primary-dis-fg` | dark 特例只有 `disabledText`，需 fallback                                                                                       |
+| `pal.neutral[i].hex`                                               | `--n{i+1}`         | **Web** 11 阶 i=0..10 → `--n1..--n11`；**移动端** 10 阶 i=0..9 → `--n1..--n10`（暗色 `darkDefaults.neutralScale` 是 11 阶，移动端只取前 10） |
 
 > 中性阶索引语义两端一致：索引 0 = 主容器底（亮色白 / 暗色深背景），末位 = 最强文字（亮色深 / 暗色白）。直接 `pal.neutral[i].hex → --n{i+1}` 即可自动适配明暗。
 
@@ -302,44 +342,44 @@ cd brand-color-engine
 
 **Web 端功能色变量**（`--suc/--warn/--err/--run` 语义=背景色；浅底 Tag 用 `--*-soft`，filled 白字用 `--*-fg`）：
 
-| 引擎字段 | 模板短名变量 |
-|---------|------------|
-| `pal.functional.success.default` | `--suc` |
-| `pal.functional.success.bg` | `--suc-soft` |
-| `pal.functional.success.text` | `--suc-fg` |
-| `pal.functional.warning.default` | `--warn` |
-| `pal.functional.warning.bg` | `--warn-soft` |
-| `pal.functional.warning.text` | `--warn-fg` |
-| `pal.functional.error.default` | `--err` |
-| `pal.functional.error.bg` | `--err-soft` |
-| `pal.functional.error.text` | `--err-fg` |
-| `pal.functional.running.default` | `--run` |
-| `pal.functional.running.bg` | `--run-soft` |
-| `pal.functional.running.text` | `--run-fg` |
+| 引擎字段                             | 模板短名变量        |
+| -------------------------------- | ------------- |
+| `pal.functional.success.default` | `--suc`       |
+| `pal.functional.success.bg`      | `--suc-soft`  |
+| `pal.functional.success.text`    | `--suc-fg`    |
+| `pal.functional.warning.default` | `--warn`      |
+| `pal.functional.warning.bg`      | `--warn-soft` |
+| `pal.functional.warning.text`    | `--warn-fg`   |
+| `pal.functional.error.default`   | `--err`       |
+| `pal.functional.error.bg`        | `--err-soft`  |
+| `pal.functional.error.text`      | `--err-fg`    |
+| `pal.functional.running.default` | `--run`       |
+| `pal.functional.running.bg`      | `--run-soft`  |
+| `pal.functional.running.text`    | `--run-fg`    |
 
 **移动端功能色变量**（命名不同：`--*-pressed/--*-dis/--*-text`）：
 
-| 引擎字段 | 模板短名变量 | 补齐说明 |
-|---------|------------|---------|
-| `pal.functional.success.default` | `--suc` | |
-| `pal.functional.success.pressed` | `--suc-pressed` | 暗色 base-spec 缺失 → `adjustLightness(default,-10)` 补 |
-| `pal.functional.success.disabled` | `--suc-dis` | 暗色缺失 → `adjustLightness(default,+30)` 补 |
-| `pal.functional.success.text` | `--suc-text` | |
-| warning / error 同 success 规则 | `--warn-*` / `--err-*` | |
-| `pal.functional.link` ‖ `pal.primary.hover` | `--link` | 暗色 base-spec 缺 link → 用 `primary.hover` |
-| `pal.functional.running.default` | `--run` | |
-| `pal.functional.running.pressed` | `--run-pressed` | 暗色缺失 → `adjustLightness(default,-10)` 补 |
-| `pal.functional.running.bg` | `--run-bg` | |
-| `pal.functional.running.border` | `--run-border` | |
+| 引擎字段                                        | 模板短名变量                 | 补齐说明                                               |
+| ------------------------------------------- | ---------------------- | -------------------------------------------------- |
+| `pal.functional.success.default`            | `--suc`                |                                                    |
+| `pal.functional.success.pressed`            | `--suc-pressed`        | 暗色 base-spec 缺失 → `adjustLightness(default,-10)` 补 |
+| `pal.functional.success.disabled`           | `--suc-dis`            | 暗色缺失 → `adjustLightness(default,+30)` 补            |
+| `pal.functional.success.text`               | `--suc-text`           |                                                    |
+| warning / error 同 success 规则                | `--warn-*` / `--err-*` |                                                    |
+| `pal.functional.link` ‖ `pal.primary.hover` | `--link`               | 暗色 base-spec 缺 link → 用 `primary.hover`            |
+| `pal.functional.running.default`            | `--run`                |                                                    |
+| `pal.functional.running.pressed`            | `--run-pressed`        | 暗色缺失 → `adjustLightness(default,-10)` 补            |
+| `pal.functional.running.bg`                 | `--run-bg`             |                                                    |
+| `pal.functional.running.border`             | `--run-border`         |                                                    |
 
 **功能色固定值速查**（跨品牌一致，仅随平台/模式变）：
 
-| 平台/模式 | success | warning | error | running |
-|----------|---------|---------|-------|---------|
-| web / light | `#389E0D` | `#FA8C16` | `#F5222D` | `#16A34A` |
-| web / dark | `#52C41A` | `#FFA940` | `#FF4D4F` | `#22C55E` |
+| 平台/模式          | success   | warning   | error     | running   |
+| -------------- | --------- | --------- | --------- | --------- |
+| web / light    | `#389E0D` | `#FA8C16` | `#F5222D` | `#16A34A` |
+| web / dark     | `#52C41A` | `#FFA940` | `#FF4D4F` | `#22C55E` |
 | mobile / light | `#10B981` | `#F59E0B` | `#EF4444` | `#16A34A` |
-| mobile / dark | `#34D399` | `#FBBF24` | `#F87171` | `#22C55E` |
+| mobile / dark  | `#34D399` | `#FBBF24` | `#F87171` | `#22C55E` |
 
 > ⚠️ Web 端**任何文件禁 `#10B981`**（移动端成功绿，Web 用 `#389E0D`）。运行/在线绿 `#16A34A` 两端共用（≠成功绿）。
 
@@ -368,9 +408,10 @@ cd <端目录> && "$NODE" validate-spec.js <用户项目路径>/output/<产出�
 
 本 SOP 的映射规则已内化至步骤 2 映射表，不再依赖临时工具（旧 `.workbuddy/tmp/build-example.js` 已废弃）。两端示例页（2026-08-06 已删，生成器 `brand-color-engine/examples/gen-examples.js` 保留，需要时可重生成）曾全部 0 HIGH。
 
+
 ### 附录 C：参考实现流程（可选 · Web React / 移动端 Taro）
 
-> **什么场景读**：仅当使用者确认采用 React/Taro 技术栈时可选走本段——直接复用现成组件库，省去自实现。使用者技术栈由使用者决定；**本段不是规范强制路径**，异栈（Vue/Flutter/原生…）使用者照 §① HTML 预览 + `tokens.json` 自实现，视觉一致。
+> **什么场景读**：仅当使用者确认采用 React/Taro 技术栈时可选走本段——直接复用现成组件库，省去自实现。使用者技术栈由使用者决定；**本段不是规范强制路径**，异栈（Vue/Flutter/原生…）使用者照 §① HTML 预览 + `tokens.json` 自实现，视觉一致。  
 > 对应仓库：`packages/web-ui`（shadcn vendored 组件库 + Vite 构建）与 `packages/mobile-ui`（NutUI-React-Taro），与 HTML 流（弘讯web端design-system/）同源 tokens/globals.css，视觉零漂移。
 
 #### 步骤 1：生成页面脚手架
@@ -409,13 +450,13 @@ CODEBUDDY_SESSION_ID= CLAUDE_SESSION_ID= npm run build   # tsc + vite 全过 = e
 
 #### 与 HTML 流区别表
 
-| 维度 | HTML 预览流（§① 步骤 1–5） | 参考实现流（附录 C） |
-|------|------------------------------|----------------------|
-| 定位 | **规范交付物**：视觉规格的呈现 | **可选参考实现**：仅同栈（React/Taro）使用者复用 |
-| 门禁 | `validate-spec.js` 0 HIGH | `npm run build` exit 0（tsc + vite）/ `build:weapp` |
-| 产物 | HTML 预览页（浏览器直开看效果） | TSX 源码 + 构建产物 |
+| 维度 | HTML 预览流（§① 步骤 1–5）                | 参考实现流（附录 C）                                        |
+| -- | ---------------------------------- | -------------------------------------------------- |
+| 定位 | **规范交付物**：视觉规格的呈现                  | **可选参考实现**：仅同栈（React/Taro）使用者复用                    |
+| 门禁 | `validate-spec.js` 0 HIGH          | `npm run build` exit 0（tsc + vite）/ `build:weapp`  |
+| 产物 | HTML 预览页（浏览器直开看效果）                 | TSX 源码 + 构建产物                                      |
 | 位置 | 「用户项目」`output/`（设计系统仓库只放内置示例与规范展示） | `packages/web-ui/src/` / `packages/mobile-ui/src/` |
-| 用途 | 视觉验证 / 对照 / 交付视觉稿 | 同栈使用者省去自实现 |
+| 用途 | 视觉验证 / 对照 / 交付视觉稿                  | 同栈使用者省去自实现                                         |
 
 #### 移动端参考实现（Taro）
 
@@ -429,11 +470,13 @@ cd packages/mobile-ui && npm run build:weapp   # 验证编译 exit 0
 # 新页面可参照其结构（NavBar+SearchBar+列表+ActionSheet）与交互模式（本地过滤 / 占位跳转 / 状态 Tag）。
 ```
 
+
 ### 附录 D：Ardot 半自动段（画布搭帧）
 
 > **什么场景读**：需要 Ardot 原生画布设计稿（非 HTML）时。
 
 > ⚠️ **使用前提与降级路径（2026-08-06 补，防止误读为硬限制）**：本段**仅是「Ardot 原生画布设计稿」的可选路径**，不是生成 UI 设计稿的唯一方式，也**不是前置条件**。
+>
 > - **默认交付 = HTML 原型**（§① 主流程）：过门禁 0 HIGH 的 HTML 页面本身即**可交付的设计稿等价物**——浏览器预览、评审、标注、进开发均可，**零工具依赖、不需要任何 Ardot 文件**。
 > - **Ardot 路径仅在同时满足三者时启用**：① 用户安装并登录 Ardot；② 可访问下方两个 fileId（Web/移动端组件库，或用户自己的等价资产）；③ Ardot Design MCP 已连接（`open_design`/`fetch_*`/`batch_edit` 可用）。三者缺一 → **降级为 HTML 原型交付**（或用户自选其他 UI 工具，见 USAGE-GUIDE 工具中立原则）。
 > - **其他 UI 工具（Figma/即时设计/MasterGo/Pixso）**：工具中立，任何能读规范 + 操作画布的工具均可；Ardot 组件库资产不可移植，需在目标工具自搭组件/变量（成本高，非默认路径）。
@@ -485,11 +528,11 @@ cd packages/mobile-ui && npm run build:weapp   # 验证编译 exit 0
 
 #### 步骤 5：手动收尾边界（MCP 做不到的，设计师在 Ardot UI 内手动）
 
-| 收尾项 | 原因 | 操作 |
-|-------|------|------|
-| 合并变体为 COMPONENT_SET | MCP 插入 reusable 子组件会被提升为平铺独立组件，`componentPropertyDefinitions` 不持久化 | 用「`基名=变体值`」命名独立组件 → Ardot UI 内「合并为变体」 |
-| 发布 Text Style | MCP 不支持 publish Text Style | Ardot UI 选中节点 → 创建样式并应用（如 H3 样式补挂 `29:77`） |
-| 向实例内部插子节点 | `batch_edit` 不可向实例内部插子节点 | 用 Group 帧包裹同级兄弟 |
+| 收尾项                 | 原因                                                                 | 操作                                         |
+| ------------------- | ------------------------------------------------------------------ | ------------------------------------------ |
+| 合并变体为 COMPONENT_SET | MCP 插入 reusable 子组件会被提升为平铺独立组件，`componentPropertyDefinitions` 不持久化 | 用「`基名=变体值`」命名独立组件 → Ardot UI 内「合并为变体」      |
+| 发布 Text Style       | MCP 不支持 publish Text Style                                         | Ardot UI 选中节点 → 创建样式并应用（如 H3 样式补挂 `29:77`） |
+| 向实例内部插子节点           | `batch_edit` 不可向实例内部插子节点                                           | 用 Group 帧包裹同级兄弟                            |
 
 #### Ardot 实操格式坑（必读，曾导致全 validation 失败）
 
@@ -503,6 +546,7 @@ cd packages/mobile-ui && npm run build:weapp   # 验证编译 exit 0
 ```
 
 详见 HANDOFF §5。先加载技能 `ardot-batch-edit`（`../../.workbuddy/skills/ardot-batch-edit/SKILL.md`）固化正确 JSON 格式。
+
 
 ### 附录 E：表达层增强（P1）
 
@@ -530,6 +574,7 @@ cd packages/mobile-ui && npm run build:weapp   # 验证编译 exit 0
 - **复杂数据后台**：`V=2`（克制）、`D=6`（中密度）、`M=3`（轻交互）。
 
 **铁律**：taste 只借结构与质量清单，**不引外部色板**——否则容易触发 Web 禁 `#10B981`、硬编码色等门禁红。所有颜色回到 `tokens.json` 短名变量。
+
 
 ### 附录 F：速查决策树总览 + 禁区
 

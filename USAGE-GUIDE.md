@@ -49,8 +49,8 @@ cd TM-UI-Design
 |----|------|
 | 真源 | 两端目录下 `tokens.json`（值）+ `components.json`（契约）+ `RULES.md §1.1b`（页面类型规格） |
 | 铁律 | 不硬编码色值；不自造规范；页面内容按 `RULES.md §1.1b` 从零自建（**禁参照既有页面 DOM**）；组件词汇与代码库同源 |
-| 质量闸 | HTML 预览产物 → `validate-spec.js` **0 HIGH**；参考实现产物 → `validate-static.js` 全绿；总门禁 `node ci-local.js` → **86 pass / 0 fail** |
-| 禁区 | 不改真源 / 门禁 / 引擎；Web 端任何文件禁 `#10B981`（移动端成功绿） |
+| 质量闸 | HTML 预览产物 → `validate-spec.js` **0 HIGH**；参考实现产物 → `validate-static.js` 全绿；总门禁 `node ci-local.js` → **99 pass / 0 fail**（2026-09-10 起） |
+| 禁区 | 真源/门禁/引擎**使用者只读**（改真源走维护者六步流程，真源治理契约）；Web 端任何文件禁 `#10B981`（移动端成功绿） |
 | 边界 | 规范交付「视觉规格 + HTML 预览」，**上线实现（平台/框架）由使用者决定**；参考实现仅供同栈使用者复用 |
 | 落盘 | 生成页一律落「**用户项目**」的 `output/`；设计系统仓库根 `output/` 仅历史归档，不随仓库分发 |
 
@@ -188,12 +188,28 @@ npx taro build --type weapp   # 产物 dist/ 导入微信开发者工具
 
 ## 改规范的唯一正确姿势
 
+> 🏛️ **真源治理契约（2026-09-10 起）**：真源区文件使用者只读；要改 = 维护者六步流程（缺口登记 → 改真源 → 双端同步 → 门禁全绿 → 刷指纹 → CHANGELOG 留痕），详见双端 `RULES.md` 页首。双端同步由 `check-sync.js` 机器门禁兜底。
+
 1. **改视觉（Web）**：改 `packages/web-ui/src/styles/` 四件 CSS → `node packages/web-ui/scripts/build-template-css.js` 重新生成 `template.css`（N=1 构建链，勿手改 template.css）。移动端规范已解冻（2026-08-06 用户拍板，恢复可修改）；结构性/视觉性改动仍建议先与用户确认方向。
 2. **改 token**：改 `tokens.json` → 重跑 `scripts/generate-design-tokens-md.js` 生成 `DESIGN-TOKENS.md`。
 3. **改品牌色**：`node brand-color-engine/generate.js <brand> light <web|mobile>` 与 dark 各一次（非默认品牌默认双模式，功能色不随品牌变）。
-4. **总门禁**：`node ci-local.js` → 期望 `86 pass / 0 fail`。
+4. **总门禁**：`node ci-local.js` → 期望 `99 pass / 0 fail`（2026-09-10 起）。
 
 三条链路各自重新生成，**禁止从任何产物（设计稿 / HTML / 代码）倒推 spec**。
+
+---
+
+## 存量项目审查修改（路径二）
+
+已有 HTML 页面/项目按弘讯规范改造（审计修复 / 存量迁移）——**不走生成流程**，走 `GENERATION-SOP.md` **§② 存量项目改造 SOP** 五阶段：
+
+1. **P0 盘点**：`node audit-spec.js <页面.html> --end web|mobile` 脚本全量扫出问题台账（禁止逐条手改式找问题）。
+2. **P1 归因**：逐项归因「设计系统问题（回真源）or 执行问题（改页面）」。
+3. **P2 修复**：分批修复，每批 `node ci-local.js` 回归全绿。
+4. **P3 表现层**：截图审查运行时问题（截断/溢出/交互态）。
+5. **P4 收口**：门禁全 0 HIGH + 台账闭环 + CHANGELOG 留痕。
+
+**改真源区文件必须有台账 + 用户显式拍板**（台账即授权载体）。提示词模板见 `标准提示词模板.md`「审计/修复既有页面」「存量系统弘讯化迁移」。
 
 ---
 
@@ -209,7 +225,9 @@ npx taro build --type weapp   # 产物 dist/ 导入微信开发者工具
 | `GENERATION-SOP.md` | 产品链路详细 SOP（含引擎映射段） |
 | `CHART-SPEC.md` / `DARK-MODE.md` / `VISUAL-SPEC.md` | 图表 / 暗色 / 视觉规格 |
 | `LICENSE` | 许可证（MIT，版权已脱敏） |
-| `ci-local.js` | 86 项总门禁 |
+| `ci-local.js` | 99 项总门禁（含 audit 增量审计 + check-sync 一致性阻断） |
+| `audit-rules.json` / `audit-spec.js` | 审计规则真源 / 存量页面增量审计（路径二 P0 盘点用） |
+| `check-sync.js` | 双端真源一致性门禁（vendor 同构 + 双端同名类白名单） |
 | `.gitignore` / `.github/workflows/` | 忽略规则 + CI（validate.yml 校验两端 page-template） |
 | `.workbuddy/skills/tm-design-system/SKILL.md` | workbuddy 项目级 skill |
 | `brand-color-engine/` | 品牌色→调色板引擎（含 `examples/gen-examples.js` 示例页生成器） |
@@ -244,7 +262,7 @@ A: `node brand-color-engine/generate.js <brand> light <web|mobile>` 与 dark 各
 A: token 需求写入 `tokens.json` → `packages/web-ui/src/components/ui/` 加 `.tsx` → `src/styles/components.css` 加样式 → `build-template-css.js` 重建 → 设计端同步加同名组件 → `validate-static.js` / `validate-spec.js` 全绿。
 
 **Q: 怎么确认没改坏？**
-A: `node ci-local.js`，期望 `86 pass / 0 fail`。
+A: `node ci-local.js`，期望 `99 pass / 0 fail`（2026-09-10 起）。
 
 **Q: 规范更新怎么同步？**
 A: 维护者 commit + push → 成员 `git pull`（私有仓库成员认证）。

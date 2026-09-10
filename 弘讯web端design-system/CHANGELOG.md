@@ -2,6 +2,24 @@
 
 ---
 
+## [1.9.23] — 2026-09-10 · 双端真源一致性机器门禁（check-sync）
+
+> 背景：治理契约落地后，双端 template.css 同步仍靠人肉（治理契约第 3 步「双端同步」无机器看护）——同步语义缺失（设计系统问题）。实测双端类交集：web 281 / mobile 209 / 同名共享 33 个，15 类存在属性键差异。
+
+- **仓库根新增 `check-sync.js`（已接入 ci-local 阻断段，基线 98→99 pass / 0 fail）**：检查一 vendor `components.css` ↔ 真源 `template.css` 同构段逐声明一致（normalize 排序比对；mobile vendor 46 类 `.mn-*` 为 Taro 自有命名空间，信息性清点不比对）；检查二双端 template.css 同名类属性键差集比对，`SYNC_WHITELIST` 15 类登记平台合法差异（Web hover 交互 / Mobile 字阶 / 继承 vs 显式声明），白名单外新漂移即阻断。
+- Web 端涉及类：`.btn-variant` 系列、`.chart-line`、`.legend-item` 等双端同名类的结构性漂移现已冻结在白名单内，后续任何一侧改动必须显式更新白名单并注明理由。
+
+---
+
+## [1.9.22] — 2026-09-10 · 真源治理契约（分级治理）+ 审计体系配套
+
+> 背景：存量改造审计体系落地后，用户提出「使用者不能随意修改设计系统」的治理诉求。归因：现有门禁已拦「页面篡改真源」（css.override）与「冻结文件改动」（sha256），但 template.css/components.css 等真源文件的**维护者级修改**无流程看护、双端同步靠人肉——治理语义缺失（设计系统问题）。
+
+- **RULES.md 新增「真源治理契约」段**（分级治理）：角色由**行为**定义不由人名定义——改真源区文件即进入维护者六步流程（缺口登记 → 改真源 → 双端同步 → 门禁全绿 → 刷指纹 → CHANGELOG 留痕），无痕迹的维护者行为 = 违规；Agent 默认仅限使用者区，改真源须用户显式下发任务（P0–P4 台账即授权载体）。
+- **同批落地（关联台账 `output/审计台账P0-P1_sample-default-light_20260909.md`）**：`.btn` 家族补交互态（V1 闭环：primary/secondary/text 的 focus-visible 用 `--focus-ring`、secondary/text :active、text :hover）；仓库根新增 `audit-rules.json`（审计规则真源 M-01/02/03 + 豁免登记 + 漏检回灌）与 `audit-spec.js`（已接入 ci-local 阻断段，基线 86→98 pass / 0 fail）。
+
+---
+
 ## [1.9.21] — 2026-08-28 · V12 六缺陷：外部生成页实战暴露的系统层修复（订单总览V2）
 
 > 背景：另一智能体用最新设计系统生成「订单总览V2」页——首份外部实战样本。组件层 8 项新守则全部被正确使用（filter-chip/badge-row/table--fixed/chart-grid/mono 兜底/i18n JS），但暴露 6 个系统层缺陷，本轮全数闭环：

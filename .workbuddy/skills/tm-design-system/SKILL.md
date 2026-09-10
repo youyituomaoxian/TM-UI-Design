@@ -18,10 +18,10 @@ description: 弘讯设计系统规范：生成/修改/审计 B 端 Web 或移动
 
 ## 2. 加载规范真源（动手前必读，按序）
 
-1. `<仓库根>/GENERATION-SOP.md` — **生成流程总纲**（选端 / B 端固定框架判定 / 页面选型 §1.1b / 克隆模板 / 产出落盘 / 图表 / 配色引擎 / 禁区）。
+1. `<仓库根>/GENERATION-SOP.md` — **流程总纲**：§① 生成主流程（选端 / B 端固定框架判定 / 页面选型 §1.1b / 克隆模板 / 产出落盘 / 图表 / 配色引擎 / 禁区）；**§② 存量项目改造 SOP**（审查修改已有页面：audit-spec.js 盘点 → 归因 → 分批修复 → 收口）。
 2. 端目录规范真源（两端同构）：
-   - `<仓库根>/弘讯web端design-system/RULES.md` — 组件决策树 + **§1.1b 页面类型规格**（登录/列表/详情/弹窗/看板）+ §6 布局黄金法则 + 自造类守则
-   - `<仓库根>/弘讯移动端design-system/RULES.md` — 组件决策树 + **§1.1b 页面类型规格**（7 种页面）+ §8 防溢出 + §9 组件体系 + §10 审美
+   - `<仓库根>/弘讯web端design-system/RULES.md` — 组件决策树 + **§1.1b 页面类型规格**（登录/列表/详情/弹窗/看板）+ §6 布局黄金法则 + 自造类守则 + **页首「真源治理契约」**（使用者只读 / 维护者六步流程）
+   - `<仓库根>/弘讯移动端design-system/RULES.md` — 组件决策树 + **§1.1b 页面类型规格**（7 种页面）+ §8 防溢出 + §9 组件体系 + §10 审美 + **页首「真源治理契约」**
    - `<仓库根>/<端目录>/components.json`（组件契约，机器真源）+ `template.css`（组件类真源）+ `tokens.json` + `DESIGN-TOKENS.md` + `MASTER.md`
    - `<仓库根>/CHART-SPEC.md` — 图表规范（原子 SVG 自建）
 3. 克隆模板（框架来源）：
@@ -31,8 +31,9 @@ description: 弘讯设计系统规范：生成/修改/审计 B 端 Web 或移动
 
 ## 3. 脚本调用（Windows PowerShell，`$repo` = 仓库根绝对路径）
 
-- **全链路自检**（每次改动后必跑，须 86 pass / 0 fail / exit 0）：`node "$repo\ci-local.js"`
+- **全链路自检**（每次改动后必跑，须 99 pass / 0 fail / exit 0，2026-09-10 起）：`node "$repo\ci-local.js"`
 - **单页门禁**（0 HIGH 才交付）：`node "$repo\弘讯web端design-system\validate-spec.js" "<页面.html>"`（移动端同构换目录）
+- **存量页面增量审计**（路径二 P0 盘点，HIGH>0 exit 1）：`node "$repo\audit-spec.js" "<页面.html>" --end web`（移动端 `--end mobile`；`--json` 出结构化台账）
 - **分享版**（交付用，内联全量 CSS 到 `<页面>_分享版.html`）：把 `<link rel="stylesheet" href="…template.css">` 替换为 `<style>` + template.css 全量内容
 - **配色引擎**（非默认品牌 / 暗色）：`node "$repo\brand-color-engine\generate.js" <品牌色> <light|dark> <web|mobile>`
 
@@ -42,4 +43,5 @@ description: 弘讯设计系统规范：生成/修改/审计 B 端 Web 或移动
 - 页面内容按 `RULES.md §1.1b` **从零自建**；**禁参照 output/、packages/ 或任何既有页面 DOM**（防风格漂移）；唯一可复制结构 = 克隆模板框架外壳
 - 门禁 0 HIGH 才交付；MEDIUM（页面级布局类）可接受
 - 页面 CSS 禁裸 hex（非 token 色）；动效时长必须 `var(--motion-duration-*)`
-- 移动端规范为冻结资产，改动须用户拍板；不主动 git commit/push
+- **真源治理契约（2026-09-10 起）**：真源区文件（template.css / tokens.json / components.json / 门禁脚本等）**默认只读**；改真源须用户显式下发任务且走维护者六步流程（双端 RULES.md 页首），无台账/无拍板不动真源
+- 存量改造走 GENERATION-SOP §②：**先台账后修复**，逐项归因（设计系统问题回真源 / 执行问题改页面），每批门禁回归；不主动 git commit/push

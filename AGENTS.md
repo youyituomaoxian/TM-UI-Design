@@ -27,7 +27,11 @@
 4. 产出落盘：**「用户项目」的 `output/`**（不是本仓库；CSS link 指向本仓库对应端 `template.css`）。
 5. 门禁（风格合规才交付）：
    - 单页：`node 弘讯web端design-system/validate-spec.js <页面.html>`（移动端同理）→ 必须 **0 HIGH**
-   - 全链路：`node ci-local.js` → 必须 **86 pass / 0 fail**
+   - 全链路：`node ci-local.js` → 必须 **99 pass / 0 fail**（2026-09-10 起，含 audit 增量审计 + check-sync 一致性阻断）
+
+## 存量项目审查修改（路径二）
+
+已有页面/项目按规范改造，**不走 §生成流程**——读 `GENERATION-SOP.md §② 存量项目改造 SOP`：先台账后修复（`node audit-spec.js <页面> --end web|mobile` 盘点）、逐项归因（设计系统问题回真源 / 执行问题改页面）、每批门禁回归。**改真源区文件必须有台账 + 用户显式拍板**（真源治理契约，双端 RULES.md 页首）。
 6. 转发/交付：生成分享版（把 `<link …template.css>` 内联为 `<style>` 全量 CSS，零外链）。
 
 ## 阅读策略（必读：按需读规范，禁止通读）
@@ -45,7 +49,11 @@
 
 ## 改视觉样式（维护者）
 
+> 🏛️ **真源治理契约（2026-09-10 起，先读）**：真源区文件（template.css / tokens.json / components.json / 门禁脚本等）**使用者只读**；改真源 = 进入维护者六步流程（缺口登记 → 改真源 → 双端同步 → 门禁全绿 → 刷指纹 → CHANGELOG 留痕），无痕迹的维护者行为 = 违规。角色由行为定义（改了真源区文件即进入流程），详见双端 `RULES.md` 页首「真源治理契约」。Agent 默认仅限使用者区，改真源须用户显式下发任务（审计台账即授权载体，GENERATION-SOP §②）。
+
 > ⚠️ **双端真源策略（不对称，改前必读）**：**Web `template.css` = build 产物**（真源在 `packages/web-ui/src/styles/` 四件 CSS + `map-tokens.js` 从 `tokens.json` 生成 `globals.css`；改源 → `map-tokens.js` + `build-template-css.js` → `ci-local.js`，直接改产物会被覆盖且暴露源缺口）；**移动 `template.css` = 手写真源**（直接改）。完整链路教训见 CHANGELOG 1.9.16。
+>
+> 双端同步有机器门禁 `check-sync.js`（2026-09-10 起，已入 ci-local 阻断）：vendor components.css ↔ template.css 同构段逐声明一致 + 双端 template.css 同名类属性键白名单外零漂移——手动同步漏了会被 ci-local 拦住。
 
 - Web：改 `packages/web-ui/src/styles/` 四件 CSS → `node packages/web-ui/scripts/build-template-css.js` 重新生成 `template.css`。若直接手改 `template.css`，必须同步 `packages/web-ui/src/styles/` 对应文件（build 会覆盖，两处须一致）。
 - 移动端：移动端冻结已于 2026-08-06 解除，可修改（`弘讯移动端design-system/template.css` 为真源）；改动仍须用户拍板。

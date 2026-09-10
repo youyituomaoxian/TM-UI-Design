@@ -226,6 +226,42 @@ for (const f of fs.readdirSync(ROOT)) {
 }
 ok(`根目录 ${scanned} 个 HTML 交付物 0 HIGH（阻断）`, scanned > 0 ? anyHigh === 0 : true);
 
+// ===== 存量改造增量审计（audit-rules.json M-01/02/03 · audit-spec.js · 2026-09-09）=====
+// 与 validate-spec（生成门禁）互补的 machine 类审计规则：CSS 裸 hex / 按钮状态矩阵 / 状态点语义白名单。
+// 范围分层与 RED-003 同构：双端 page-template 真源模板 + 根目录交付物（阻断）。
+console.log(`\n▶ 存量改造增量审计 audit-spec（M-01/02/03 · 阻断）`);
+function runAudit(file, end) {
+  let out = '';
+  try {
+    out = execSync(`"${NODE}" "${path.join(ROOT, 'audit-spec.js')}" "${file}" --end ${end}`, { encoding: 'utf8' }).toString();
+  } catch (e) {
+    out = (e.stdout || '').toString(); // HIGH 时子进程 exit 1，仍读取已打印报告
+  }
+  const h = parseInt((out.match(/HIGH (\d+)/) || [])[1] || '0', 10);
+  const m = parseInt((out.match(/MEDIUM (\d+)/) || [])[1] || '0', 10);
+  console.log(`  ${h > 0 ? '❌' : '✅'} ${path.basename(file)} — audit HIGH ${h} / MED ${m}`);
+  return h;
+}
+let auditHigh = 0;
+auditHigh += runAudit(path.join(WEB, 'page-template.html'), 'web');
+auditHigh += runAudit(path.join(MOB, 'page-template.html'), 'mobile');
+for (const f of fs.readdirSync(ROOT)) {
+  if (!/\.html?$/i.test(f) || !fs.statSync(path.join(ROOT, f)).isFile()) continue;
+  auditHigh += runAudit(path.join(ROOT, f), /mobile|移动/i.test(f) ? 'mobile' : 'web');
+}
+ok('audit 增量审计（双端 page-template + 根目录交付物）0 HIGH（阻断）', auditHigh === 0);
+
+// ===== 真源一致性 check-sync（vendor↔真源同构 + 双端同名类漂移白名单 · 2026-09-09）=====
+// 检查一：packages/*/dist-static components.css ↔ template.css 同构段逐声明一致（阻断）；
+// 检查二：双端 template.css 同名类属性键差集比对，SYNC_WHITELIST 白名单外阻断。
+console.log(`\n▶ 真源一致性 check-sync（vendor 同构 + 双端同名类 · 阻断）`);
+let syncOk = false;
+try {
+  execSync(`"${NODE}" "${path.join(ROOT, 'check-sync.js')}"`, { stdio: 'inherit' });
+  syncOk = true;
+} catch (e) { syncOk = false; }
+ok('check-sync：vendor 同构段一致 + 双端同名类白名单外零漂移（阻断）', syncOk);
+
 // RED-003 扩展：output/ 历史归档扫描（信息性，不阻断）——展示历史产物规范漂移趋势，不追溯交付。
 console.log(`\n▶ output/ 历史归档门禁覆盖扫描（RED-003-ext · 信息性，不阻断）`);
 const outDir = path.join(ROOT, 'output');
