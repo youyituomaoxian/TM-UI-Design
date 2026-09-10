@@ -3,8 +3,8 @@
  * audit-spec.js — 弘讯设计系统 · 存量改造增量审计（2026-09-09）
  * ---------------------------------------------------------------------------
  * 与 validate-spec.js（生成门禁）互补：本脚本只实现 validate-spec 未覆盖的
- * machine 类审计规则（audit-rules.json M-01/M-02/M-03），用于存量项目按
- * 弘讯设计系统改造时的 P0 盘点。不重复实现已有规则。
+ * machine 类审计规则（audit-rules.json M-01/M-02/M-03 + M-06 引用 CSS 资产扫描
+ * 2026-09-10），用于存量项目按弘讯设计系统改造时的 P0 盘点。不重复实现已有规则。
  *
  * 规则真源：../audit-rules.json（变更须经漏检回灌，见其 change_policy）
  *
@@ -76,6 +76,28 @@ function buildLineStarts(text) {
   return starts;
 }
 
+// ---- 渐变色标点定位（M-01 扩展 2026-09-10）----
+// 11242 案例一：linear-gradient(180deg,#fff 0%,var(--n2) 100%) 暗皮露白顶——
+// 渐变定义的是面/边界，白字豁免（#FFF）在色标点内不适用；色标点内 hex 必须参与判定。
+function findGradientRanges(text) {
+  const ranges = [];
+  const re = /(?:linear|radial|conic)-gradient\s*\(/gi;
+  let m;
+  while ((m = re.exec(text))) {
+    let depth = 1, i = m.index + m[0].length;
+    for (; i < text.length && depth > 0; i++) {
+      if (text[i] === '(') depth++;
+      else if (text[i] === ')') depth--;
+    }
+    ranges.push([m.index, i]);
+  }
+  return ranges;
+}
+function inRanges(idx, ranges) {
+  for (const [s, e] of ranges) if (idx >= s && idx < e) return true;
+  return false;
+}
+
 // ---- M-01 css.hex.literal ----
 function checkHexLiteral(noScript, palette, lineStarts) {
   const violations = [];
@@ -91,6 +113,7 @@ function checkHexLiteral(noScript, palette, lineStarts) {
       .replace(/:root\s*\{[^}]*\}/g, '')
       .replace(/\[data-theme[^\]]*\]\s*\{[^}]*\}/g, '');
     const hexRe = /#([0-9a-fA-F]{3,8})\b/g;
+    const gradRanges = findGradientRanges(stripped);
     let h;
     while ((h = hexRe.exec(stripped))) {
       const abs = base + h.index;
@@ -98,13 +121,16 @@ function checkHexLiteral(noScript, palette, lineStarts) {
       const lineText = noScript.slice(lineStarts[line - 1], lineStarts[line] || undefined);
       if (/swatch|data-audit-exempt/i.test(lineText)) continue; // 色板展示区豁免
       const hex = ('#' + h[1]).toUpperCase();
-      if (hex === '#FFFFFF' || hex === '#FFF') continue; // 白字约定豁免（validate-static 规则①同口径：白字美学优先，RULES §10.3b）
+      const isGradStop = inRanges(h.index, gradRanges);
+      if (!isGradStop && (hex === '#FFFFFF' || hex === '#FFF')) continue; // 白字约定豁免（渐变色标点内不适用，M-01 扩展 2026-09-10）
       const inPalette = palette.has(hex) || palette.has(normalizeShort(hex));
       violations.push({
-        rule: 'M-01', contract: 'css.hex.literal', line,
+        rule: 'M-01', contract: isGradStop ? 'css.hex.gradient-stop' : 'css.hex.literal', line,
         severity: inPalette ? 'MEDIUM' : 'HIGH',
-        excerpt: hex,
-        msg: inPalette
+        excerpt: hex + (isGradStop ? ' @gradient' : ''),
+        msg: isGradStop
+          ? `渐变色标点裸 hex ${hex}${inPalette ? '（色板内）' : '（自造色）'}——渐变是面/边界非文字，白字豁免不适用；改用 var(--token) 色标点，防暗色模式露白底`
+          : inPalette
           ? `CSS 裸 hex ${hex} 在 token 色板内——合法色但必须改用 var(--token) 引用（禁字面量，防漂移）`
           : `CSS 裸 hex ${hex} 不在 token 色板——自造色，改用 var(--token)；确需新色走 brand-color-engine 回 tokens.json`,
       });
@@ -118,15 +144,20 @@ function checkHexLiteral(noScript, palette, lineStarts) {
     const lineText = noScript.slice(lineStarts[line - 1], lineStarts[line] || undefined);
     if (/swatch|data-audit-exempt/i.test(lineText)) continue;
     const hexRe = /#([0-9a-fA-F]{3,8})\b/g;
+    const gradRanges = findGradientRanges(m[1]);
     let h;
     while ((h = hexRe.exec(m[1]))) {
       const hex = ('#' + h[1]).toUpperCase();
+      const isGradStop = inRanges(h.index, gradRanges);
+      if (!isGradStop && (hex === '#FFFFFF' || hex === '#FFF')) continue;
       const inPalette = palette.has(hex) || palette.has(normalizeShort(hex));
       violations.push({
-        rule: 'M-01', contract: 'css.hex.literal', line,
+        rule: 'M-01', contract: isGradStop ? 'css.hex.gradient-stop' : 'css.hex.literal', line,
         severity: inPalette ? 'MEDIUM' : 'HIGH',
-        excerpt: hex,
-        msg: inPalette
+        excerpt: hex + (isGradStop ? ' @gradient' : ''),
+        msg: isGradStop
+          ? `inline 渐变色标点裸 hex ${hex}——白字豁免不适用于色标点，改用 var(--token)`
+          : inPalette
           ? `inline style 裸 hex ${hex} 在 token 色板内——改用 var(--token) 引用`
           : `inline style 裸 hex ${hex} 不在 token 色板——自造色，改用 var(--token)`,
       });
@@ -236,6 +267,76 @@ function checkStatusDot(noScript, end, lineStarts) {
   return violations;
 }
 
+// ---- M-06 css.asset.hex（2026-09-10 新增）----
+// 11242 案例二：dist 分页条 background:#fff 白底横条——脏值在被 <link> 引用的冻结 CSS 里，
+// 只扫页面 HTML 是假阴性。冻结 dist 降级 MEDIUM『硬编码清单』（供映射决策）；自维护 CSS 维持 HIGH。
+// 白字豁免仅适用于 color: 声明（文字白约定）；background/border 等面性声明中的 #fff 照判。
+function checkLinkedCss(targetFile, palette) {
+  const violations = [];
+  const html = fs.readFileSync(targetFile, 'utf8');
+  const dir = path.dirname(path.resolve(targetFile));
+  const seen = new Set();
+  const linkRe = /<link\b[^>]*>/gi;
+  let lk;
+  while ((lk = linkRe.exec(html))) {
+    const tag = lk[0];
+    if (!/stylesheet/i.test(tag)) continue;
+    const hm = tag.match(/href\s*=\s*["']([^"']+)["']/i);
+    if (!hm) continue;
+    const href = hm[1].trim();
+    if (/^(https?:)?\/\//i.test(href) || /^data:/i.test(href)) continue;
+    const abs = path.resolve(dir, href.split('?')[0].split('#')[0]);
+    if (!/\.css$/i.test(abs) || seen.has(abs)) continue;
+    seen.add(abs);
+    if (!fs.existsSync(abs)) continue; // 缺失引用由浏览器/其他门禁管，不在此报
+    const css = fs.readFileSync(abs, 'utf8');
+    const normPath = abs.replace(/\\/g, '/');
+    const frozen = /(^|[\\/])(dist|dist-static|vendor|node_modules|build)([\\/]|$)/i.test(normPath);
+    const rel = path.relative(path.dirname(targetFile), abs).replace(/\\/g, '/') || path.basename(abs);
+
+    // 掩码区：注释 + :root/[data-theme] 令牌定义区（与页面侧同口径豁免）
+    const masks = [];
+    let cm;
+    const commentRe = /\/\*[\s\S]*?\*\//g;
+    while ((cm = commentRe.exec(css))) masks.push([cm.index, cm.index + cm[0].length]);
+    let rb;
+    const rootRe = /:root\s*\{[^}]*\}|\[data-theme[^\]]*\]\s*\{[^}]*\}/g;
+    while ((rb = rootRe.exec(css))) masks.push([rb.index, rb.index + rb[0].length]);
+
+    const lineStartsCss = buildLineStarts(css);
+    const hexRe = /#([0-9a-fA-F]{3,8})\b/g;
+    let h;
+    while ((h = hexRe.exec(css))) {
+      const idx = h.index;
+      if (inRanges(idx, masks)) continue;
+      const line = lineOf(idx, lineStartsCss);
+      const lineText = css.slice(lineStartsCss[line - 1], lineStartsCss[line] || undefined);
+      if (/swatch|data-audit-exempt/i.test(lineText)) continue;
+      // 所在声明上下文：向前后扫到 ; { } 边界，取属性名
+      let st = idx - 1;
+      while (st >= 0 && !';{}'.includes(css[st])) st--;
+      let en = idx;
+      while (en < css.length && !';}'.includes(css[en])) en++;
+      const decl = css.slice(st + 1, en).trim();
+      const pm = decl.match(/^([-a-zA-Z]+)\s*:/);
+      const prop = pm ? pm[1].toLowerCase() : '';
+      const hex = ('#' + h[1]).toUpperCase();
+      if ((hex === '#FFFFFF' || hex === '#FFF') && prop === 'color') continue; // 白字豁免仅限文字声明
+      const inPalette = palette.has(hex) || palette.has(normalizeShort(hex));
+      const severity = frozen ? 'MEDIUM' : (inPalette ? 'MEDIUM' : 'HIGH');
+      violations.push({
+        rule: 'M-06', contract: 'css.asset.hex', line,
+        severity,
+        excerpt: `${hex} @${rel}`,
+        msg: frozen
+          ? `引用冻结 dist CSS（${rel} L${line}）声明 \`${decl}\` 含裸 hex ${hex} —— dist 硬编码清单（信息级，供映射决策；dist 不可改，修法=页面/合规层同优先级覆盖）`
+          : `引用自维护 CSS（${rel} L${line}）声明 \`${decl}\` 含裸 hex ${hex}${inPalette ? '（色板内）' : '（自造色）'} —— 自维护合规层维持 HIGH 口径，改用 var(--token)`,
+      });
+    }
+  }
+  return violations;
+}
+
 // ---- 主流程 ----
 function main() {
   const args = process.argv.slice(2);
@@ -258,12 +359,13 @@ function main() {
     ...checkHexLiteral(noScript, palette, lineStarts),
     ...checkBtnState(noScript, lineStarts),
     ...checkStatusDot(noScript, end, lineStarts),
+    ...checkLinkedCss(target, palette),
   ].sort((a, b) => (a.severity === b.severity ? a.line - b.line : a.severity === 'HIGH' ? -1 : 1));
 
   const high = violations.filter(v => v.severity === 'HIGH').length;
   const med = violations.filter(v => v.severity === 'MEDIUM').length;
 
-  console.log(`\n🔍 存量改造增量审计 audit-spec（规则真源 audit-rules.json v1.0.0 · ${end} 色板）`);
+  console.log(`\n🔍 存量改造增量审计 audit-spec（规则真源 audit-rules.json v1.2.0 · ${end} 色板）`);
   console.log(`   目标: ${path.basename(target)}`);
   console.log('');
   for (const v of violations) {

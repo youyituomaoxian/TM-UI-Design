@@ -144,7 +144,7 @@
 
 /* ============ 屏幕骨架（2026-08-04 手机壳化：body 深色底 + .phone-stage 375 手机壳 + 屏内滚动） ============ */
 /* 预览壳深色底：body 铺满视口深灰，手机壳水平+垂直居中（预览/导出专用，页面本身不依赖它）；padding 兜底小窗口可滚动查看 */
-body{background:#1b1f26;min-height:100vh;margin:0;padding:24px 0;box-sizing:border-box;overflow-x:auto} /* 预览壳水平居中用 .phone-stage{margin:0 auto}（block 中 margin auto 溢出左对齐不裁左；flex justify-content:center 窄窗口溢出裁左，2026-08-06 用户反馈卡片左边距过大） */ /* 预览壳垂直+水平居中用 .phone-stage{margin:auto}（flex justify-content:center 在窄窗口溢出会裁左，2026-08-06 用户反馈卡片左边距过大） */
+body{background:#1b1f26;min-height:100vh;margin:0;padding:24px 0;box-sizing:border-box;overflow-x:auto} /* 预览壳水平居中用 .phone-stage{margin:0 auto}（block 中 margin auto 溢出左对齐不裁左；flex justify-content:center 窄窗口溢出裁左，2026-08-06 用户反馈卡片左边距过大） */ /* 预览壳垂直+水平居中用 .phone-stage{margin:auto}（flex justify-content:center 在窄窗口溢出会裁左，2026-08-06 用户反馈卡片左边距过大） */ /* data-audit-exempt: 预览壳舞台色（预览/导出专用，非页面语义，M-06 豁免登记 2026-09-10） */
 /* 375 手机壳：固定 375×812（iPhone X 逻辑尺寸）+ 圆角 + 投影，overflow:hidden 保证圆角裁切、屏外内容不溢出视口 */
 .phone-stage{width:375px;height:812px;position:relative;margin:0 auto;border-radius:24px;box-shadow:0 0 32px rgba(0,0,0,.5);overflow:hidden}
 /* 预览壳包裹层：顶部留空放亮暗切换按钮（2026-08-12 拍板：按钮在手机框外，非页面内容） */

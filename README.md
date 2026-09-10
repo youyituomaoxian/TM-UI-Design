@@ -31,9 +31,10 @@
 │   （Web 端另有 CROSS-PLATFORM-COLORS.md 跨端功能色契约）
 │
 ├── CHART-SPEC.md                   # 图表规范（样式 + 结果约束，Agent 自建图表，色走 --chart-*）
-├── audit-rules.json                # 审计规则真源（machine/runtime/human 三层 + 迁移维度 D-1~D-12 + 豁免登记 + 漏检回灌）
-├── audit-spec.js                   # 存量页面增量审计（M-01~05，--end web|mobile，HIGH>0 exit 1）
+├── audit-rules.json                # 审计规则真源 v1.3.0（machine M-01~06 / runtime R-01~07 / human H-01~07 + 迁移维度 D-1~D-12 + 豁免登记 + issue_reporting 设计系统问题报告制度）
+├── audit-spec.js                   # 存量页面增量审计（M-01~03/M-06，--end web|mobile，HIGH>0 exit 1）
 ├── check-sync.js                   # 双端真源一致性门禁（vendor↔template 同构 + 双端同名类白名单比对）
+├── templates/                      # 应用侧可复制模板（设计系统问题报告模板.md — issue_reporting 制度的 template_file）
 ├── ci-local.js                     # 全链路自检（99 项全绿 exit 0，含 audit + check-sync 阻断）
 ├── output/                          # 历史示例/产物归档（不随设计系统分享）；新生成页落「用户项目」的 output/
 ├── AGENTS.md                        # codex / 通用 Agent 入口（标准生成流程）

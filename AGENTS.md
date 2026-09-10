@@ -18,7 +18,7 @@
    - 移动端**底部导航 3-5 项随需求增减**（最少 3、最多 5；登录/详情等无 BottomNav 合法，RULES §1.1b，门禁 bottomnav.count）
 3. 页面内容**从零自建**（禁参照 output/、packages/ 或任何既有页面 DOM，防风格漂移）：
    - 页面类型规格：各端 `RULES.md §1.1b`（登录/列表/详情/弹窗/看板等）
-   - 组件规格（尺寸/色值/状态）：各端 `components.json`（机器契约）+ `template.css`（类真源）
+   - 组件规格（尺寸/色值/状态）：各端 `components.json`（机器契约）+ `template.css`（类真源）——**由门禁与构建消费，Agent 不通读**；需要时按组件名定点检索
    - **图标：一律从各端 `icons/` 取**（`icons/icons.md` 索引 → path 内联进 `.ico/.tree-ico/.kpi-ico` 等尺寸类；库缺才手写且符合统一规格并上报，RULES §7.9③）
    - **字体：只用 `var(--font-cn)` / `var(--font-mono)` 栈**，禁具体字体名（宋体/微软雅黑等字符串，门禁 font.family MED；tabular-nums 仅限纯数字，中文内容会回退宋体；headless 验证字体会误判，须真实浏览器核对，RULES 字体守则）
    - 图表：`CHART-SPEC.md`（原子 SVG 自建，色走 `--chart-*`）
@@ -34,12 +34,26 @@
 已有页面/项目按规范改造，**不走 §生成流程**——读 `GENERATION-SOP.md §② 存量项目改造 SOP`。审查目的：找出视觉不符合弘讯设计系统的地方，修改成符合弘讯设计系统的视觉。流程：先台账后修复（`node audit-spec.js <页面> --end web|mobile` 清零硬违规 + `audit-rules.json` migration_dimensions D-1~D-12 逐维对照找差异）→ **P1 映射决策**（每个差异按 D 层 map_to 定「改成什么」：哪个 token / 哪个组件类 / 哪级字阶）→ 每批门禁回归。**改真源区文件必须有台账 + 用户显式拍板**（真源治理契约，双端 RULES.md 页首）。
 6. 转发/交付：生成分享版（把 `<link …template.css>` 内联为 `<style>` 全量 CSS，零外链）。
 
+## 发现设计系统问题必须记录（2026-09-10 起 · 单向报告流）
+
+用系统过程中发现**设计系统本身**的问题（token/组件/图标缺口、规范歧义、门禁漏洞、文档缺陷）——**先归因，再记录，只报告不改真源**：
+
+- **归因二分**：执行问题（规范写了没执行）→ 直接改页面，不记录；设计系统问题 → 记录。
+- **记录**：复制 `templates/设计系统问题报告模板.md` → 落盘**自己项目** `output/设计系统问题_YYYYMMDD_NN.md`（报告头六字段 + 必填六项 + 执行关键五项：最小复现片段/环境/证据原文/应用侧临时处置/建议回归样例）。
+- **合格线三判据**（缺一即降级为「线索」）：① 读懂 = 根因定位到 真源文件:行 / 规则 id / token 名；② 能修 = 最小复现片段 + 建议规则文本；③ 能验 = 建议回归样例。
+- **通道**：在对话内声明「这是设计系统 P? 问题，报告已落盘 `<路径>`，请转交维护者」由用户转交；**不直连维护者、不提交真源仓库**（维护侧被动消费）。
+- 制度真源：`audit-rules.json` → `issue_reporting`。
+
 ## 阅读策略（必读：按需读规范，禁止通读）
 
-- **必读（不可跳过）**：本节流程 + 对应端 RULES 页首「软规则必读清单」+ 对应端 `RULES.md §1.1b` 页面类型段（按页面类型检索）+ 所用组件的 `components.json` 对应段（按组件名检索）。
-- **按需检索（用到才读）**：`CHART-SPEC.md`（页面含图表才读）；`DESIGN-TOKENS.md`（查色值/字号才读）；GENERATION-SOP 附录（首次走流程或遇到异常才读）。
-- **禁止**：通读 RULES / GENERATION-SOP / CHART-SPEC 全文（~80KB，耗时且易漏；硬规则有门禁兜底，按需读即可）。
-- **动态调节**：若门禁报错发散（同一页面反复出现新错误）→ **退回通读对应端 RULES 相关章节**再改，不得盲目修补。
+> **加载预算：一次任务规范文本 ≤ 35k 字符**（2026-09-10 新增，纪律全表见 `GENERATION-SOP.md §0`：必读 3 项 / 不通读清单 / 章节索引 / 单点事实源 SSOT）。
+
+- **必读 3 项**：① `GENERATION-SOP.md` §①（存量改造读 §②）；② 对应端 `RULES.md` **命中章节**（按该文件页首「章节索引」挑；[软] 必读 / [硬] 按需，门禁兜底）；③ 对应端 `tokens.json` 的 `colors` 段（另：本 AGENTS.md 流程 + `§1.1b` 页面类型段按类型检索）。
+- **按需检索（用到才读）**：`CHART-SPEC.md`（含图表）｜`audit-rules.json`（审查/回灌/`issue_reporting`）｜`DESIGN-TOKENS.md`、`MASTER.md`（按章）｜SOP §③ 附录（按场景）。
+- **不要通读（门禁与构建消费，读脚本输出即可）**：`components.json`（41k/71k 字符）· `template.css`（54k/59k）· `validate-spec.js`（64k/107k）· `ci-local.js` / `audit-spec.js` / `check-sync.js`。
+- **禁止**：整份加载 RULES / GENERATION-SOP / CHART-SPEC（单端合计约 100k 字符）；用 `Grep` 标题 + `Read` 取段替代。
+- **单点事实源（SSOT）**：品牌色→`tokens.json`｜组件契约→`components.json`+`components.md`｜审计规则→`audit-rules.json`｜图表结果约束→`CHART-SPEC.md`｜治理契约→双端 RULES 页首｜交付线→`ci-local.js` 输出（详细表见 `GENERATION-SOP.md §0`）。同一事实别在多份文档里复述。
+- **动态调节**：若门禁报错发散（同一页面反复出现新错误）→ 退回读对应端 RULES 相关章节再改，不得盲目修补。
 - **警告**：软规则无门禁兜底，缺读即事故（风格漂移/层级混乱）。必读区须逐条核对，不可跳读。
 
 ## 视觉规范速览（给人看的活体展示）
