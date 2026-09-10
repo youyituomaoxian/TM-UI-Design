@@ -1,19 +1,17 @@
 {
   "$meta": {
     "title": "弘讯设计系统 · 审计规则真源（audit-rules）",
-    "version": "1.4.0",
+    "version": "1.4.1",
     "updated": "2026-09-10",
     "purpose": "存量项目按弘讯设计系统改造时的单一审计真源。RULES.md 管生成语义（怎么写），本文件管审计语义（怎么查）：每条规则声明 判定谓词 / 严重级 / 可判定性 / 修复策略。机器类规则由 audit-spec.js 与 validate-spec.js 执行，运行时类由截图×状态验证，语义类由 agent+人审查。三层互补，缺一不可。",
     "scope_note": "⚠️ 两种审查场景，归因逻辑不同（2026-09-10 用户澄清）：① 弘讯内项目缺陷审计（项目有义务合规）→ 用 P1 归因二分法（设计系统问题 or 执行问题）+ machine_rules 违规检测；② 外部项目迁移改造（项目不是弘讯生成的，审查目的=找出视觉不符合处并改成符合）→ 归因只有一种『未对齐弘讯规范』，决策点=映射到什么（哪个 token/组件类/字阶），用 migration_dimensions 维度对照清单逐层盘点。两层规则互补：M 层抓硬违规（迁移时同样要清零），D 层管维度映射。",
     "change_policy": "新增规则必须经『设计系统问题报告』进入，执行**单向报告流**（2026-09-10 用户拍板，替代旧『应用侧强制回灌』语义——旧语义要求无真源写权的角色执行写入，与真源治理契约冲突；**同日二次拍板全量泛化**：报告流的输入**不只是审计漏检**，应用侧在从零生成（SOP §①）/ 存量改造（§②）/ 日常使用中发现的任何被归因为**设计系统问题**的发现（真源/规范缺失、token/组件/图标缺口、门禁漏洞、文档缺陷）均按 `issue_reporting` 制度记录并可反馈；审计漏检是本制度的 machine 层特例。执行问题（规范已写、执行跑偏）不进报告——应用侧直接改页面）：① **应用侧义务 = 归因 + 记录 + 按严重级提请转交**：先归因二分，设计系统问题落盘自己项目 `output/设计系统问题_*.md`（schema 见 issue_reporting），并在对话内声明请用户转交，禁碰真源；② **维护侧义务 = 被动消费报告并回灌**（2026-09-10 用户拍板：应用者反馈，不去打扰——不建应用项目注册表、不主动巡检）：收到用户转交的报告（或被 @）时，走维护者六步流程登记进本文件 feedback_log（条目必须带 report_source 字段记录来源报告路径，跨项目同题用 related_reports，保持双向对账闭环）与对应规则层，并产出回执三件套（报告状态栏回写 + feedback_log + 双端 CHANGELOG）；③ 维护者自己的维护会话可直接回灌。**规范-审查双向对账（2026-09-10 用户拍板，『全』的保证机制）**：migration_dimensions 每条必须带 ref 指回规范条目（指不回=伪维度，删）；规范真源新增条目（新 token section / 新组件 / 新 RULES 章节 / 新专项 spec）时，审查侧必须同步长出核对项（指不到=审查缺口，补 D 层）。审查清单是规范真源结构树的对偶投影，『全』随规范演进持续保证，不靠一次性经验枚举。"
   },
-
   "layers": {
     "machine": "脚本全量召回（零漏检）。判定谓词完全可静态判定。audit-spec.js 覆盖增量审计规则，validate-spec.js 覆盖生成门禁规则。",
     "runtime": "机器扫不到、读代码也读不到的表现层。起本地服务 → Playwright 截关键页面×关键状态 → 视觉模型/人审。",
     "human": "信息层级、组件选型、文案等语义判断。agent 只消费结构化台账 + 本批片段，逐遍审查。"
   },
-
   "machine_rules": [
     {
       "id": "M-01",
@@ -22,7 +20,12 @@
       "severity": "HIGH(非色板)/MEDIUM(色板内应改引用)",
       "scope": "目标 HTML 的 <style> 块 + inline style（script 剥离后）+ 渐变色标点（2026-09-10 扩展）",
       "predicate": "出现 #RGB/#RRGGBB/#RRGGBBAA 字面量：∉ token 色板(toksens.json 全量 hex 叶子+白名单) → HIGH（自造色）；∈ 色板 → MEDIUM（合法色但必须改用 var(--token) 引用）。**渐变色标点（2026-09-10）**：linear-gradient/radial-gradient(...) 色标点内的 hex 同样参与判定，且白字豁免（#FFF）在色标点内不适用——渐变定义的是面/边界不是文字（11242 案例一：dist 面板头 linear-gradient(180deg,#fff 0%,var(--n2) 100%) 暗皮下露白顶，只查 backgroundColor 永远抓不到）。**色板定义行（2026-09-10 DS-20260910-01 题 1 吸收）**：声明属性名以 `--` 开头者（如 `.scope{--bg-deep:#hex}`）为**色板本体非用法** → 判 `css.vardef.hex` MEDIUM 清单级（不阻断，但须可见：核对能否映射弘讯 token / 回 tokens.json / exemptions 按块登记），不再判 HIGH——原实现把豁免绑在 `:root`/`[data-theme]` 选择器上（绑错维度），换作用域即误报「定义也违规、引用也违规」死锁；白字豁免在定义行照旧生效（防噪声）",
-      "exempt": [":root{...} 与 [data-theme]{...} 令牌定义/投影区", "含 swatch 类或 data-audit-exempt 的行（色板展示区）", "SVG paint 属性 stroke=/fill=/stop-color=（由 M-04 专管，避免双报）", "#FFFFFF/#FFF 白字约定（validate-static 规则①同口径，RULES §10.3b 白字美学优先；⚠️ 渐变色标点内不适用，见 predicate）"],
+      "exempt": [
+        ":root{...} 与 [data-theme]{...} 令牌定义/投影区",
+        "含 swatch 类或 data-audit-exempt 的行（色板展示区）",
+        "SVG paint 属性 stroke=/fill=/stop-color=（由 M-04 专管，避免双报）",
+        "#FFFFFF/#FFF 白字约定（validate-static 规则①同口径，RULES §10.3b 白字美学优先；⚠️ 渐变色标点内不适用，见 predicate）"
+      ],
       "exempt_mechanism": "data-audit-exempt 豁免标记机制（2026-09-10 补登规则文本，机制早已在 audit-spec.js 实现）：给目标元素或所在行加 data-audit-exempt 属性即豁免该行色值判定，专供色板展示/示例区使用；与 swatch 类豁免同口径，禁止用于掩盖真实违规",
       "fix": "改用 var(--token) 或 components.json 契约色；确需新色走 brand-color-engine 衍生并回 tokens.json",
       "implemented_in": "audit-spec.js"
@@ -67,14 +70,13 @@
       "id": "M-06",
       "contract": "css.asset.hex",
       "title": "页面 <link> 引用的本地 CSS 资产纳入裸 hex 扫描（2026-09-10 新增）",
-      "severity": "HIGH(自维护 CSS)/MEDIUM(冻结 dist 产物·硬编码清单)",
+      "severity": "HIGH(自维护·自造色)/MEDIUM(自维护·色板内应改引用)/MEDIUM(冻结 dist 产物·硬编码清单)",
       "scope": "目标 HTML <link rel=stylesheet> 引用的本地 .css 文件（http(s) 外链不扫；同文件多引用去重）",
-      "predicate": "引用 CSS 内出现裸 hex：白字豁免仅适用于 color: 声明（文字白约定）；background/border 等面性声明中的 #fff 同样违规（11242 案例二：dist 分页条 background:#fff 白底横条，页面源码 0 裸 hex 是假阴性——脏值在被 <link> 引用的冻结 CSS 里）。**色板定义行出口（2026-09-10 DS-20260910-01 题 1 吸收）**：声明属性名以 `--` 开头者（`--x: <hex>`）判 `css.vardef.hex` **MEDIUM 清单级**、不判 HIGH——自维护合规层由此获得合法自建色板路径（定义可见 + 引用仍须 var()）；其余声明：路径含 dist / dist-static / vendor / node_modules / build → 冻结产物，降级 MEDIUM『dist 硬编码清单』供映射决策（dist 不可改，修法只能走合规层覆盖）；其余（如 tm-ui-design.css 等应用侧自维护合规层）维持 HIGH 口径",
+      "predicate": "引用 CSS 内出现裸 hex：白字豁免仅适用于 color: 声明（文字白约定）；background/border 等面性声明中的 #fff 同样违规（11242 案例二：dist 分页条 background:#fff 白底横条，页面源码 0 裸 hex 是假阴性——脏值在被 <link> 引用的冻结 CSS 里）。**色板定义行出口（2026-09-10 DS-20260910-01 题 1 吸收）**：声明属性名以 `--` 开头者（`--x: <hex>`）判 `css.vardef.hex` **MEDIUM 清单级**、不判 HIGH——自维护合规层由此获得合法自建色板路径（定义可见 + 引用仍须 var()）；其余声明：路径含 dist / dist-static / vendor / node_modules / build → 冻结产物，降级 MEDIUM『dist 硬编码清单』供映射决策（dist 不可改，修法只能走合规层覆盖）；其余（如 tm-ui-design.css 等应用侧自维护合规层）按**色板内外分层**（2026-09-10 DS-20260910-01 题 3 吸收，与 M-01 同口径，防同一色值因所在文件不同而判级不一致）：∈ token 色板 → MEDIUM（合法色，但必须改用 var(--token) 引用，防漂移）；∉ 色板 → HIGH（自造色，须映射 token 或走 brand-color-engine 回 tokens.json）。**判级必须与文案一致**——v1.4.0 实现对色板内判 MEDIUM 却输出「维持 HIGH 口径」文案，属实现与规则自相矛盾（本次修正）",
       "fix": "自维护 CSS 改 var(--token)；冻结 dist 缺陷禁止手改 dist——在页面/合规层用同优先级覆盖规则修正，并在台账登记映射决策",
       "implemented_in": "audit-spec.js（2026-09-10）"
     }
   ],
-
   "runtime_checks": [
     {
       "id": "R-01",
@@ -124,17 +126,50 @@
       "covers": "无任何『元素可辨识度』检查时，滤镜/混合模式类缺陷全穿透；且滤镜修复对混合模式无效（滤镜在混合前应用）（11242 案例四：辅机设备图 mix-blend-mode:multiply 在暗卡上乘黑不可见）"
     }
   ],
-
   "human_checks": [
-    { "id": "H-01", "contract": "info.hierarchy", "title": "信息层级不跳级、每屏唯一视觉焦点", "ref": "RULES §10.1-10.3" },
-    { "id": "H-02", "contract": "component.choice", "title": "组件选型合理（该用 Tag 的地方不是按钮、该用 kv-row 的地方不是 · 串）", "ref": "RULES §1.2" },
-    { "id": "H-03", "contract": "brand.color.area", "title": "品牌蓝面积 ≤30%，语义色只点状态不铺底", "ref": "RULES §10.5" },
-    { "id": "H-04", "contract": "density.breathing", "title": "间距节奏（16/20px）与留白呼吸感，无『贴一起』", "ref": "RULES §10.4" },
-    { "id": "H-05", "contract": "copy.tone", "title": "文案语义与工控语境一致，状态文案与 dot 语义匹配", "ref": "RULES §6" },
-    { "id": "H-06", "contract": "review.matrix.stateful", "title": "审查矩阵逐 tab × 逐皮 × 滚动态（默认态 + 滚动 50% 态），不接受只看默认态（2026-09-10 新增）", "ref": "R-05 + GENERATION-SOP §② 布局改动专项回归清单" },
-    { "id": "H-07", "contract": "ux.visual.semantics", "title": "纯 UX 语义人审兜底：滚动条位置语义（应贴滚动内容容器边缘，贴窗口右缘=整页滚动误读）/ 空带·遮挡·穿透 / 设备图片可辨识度 / 数值+单位换行（2026-09-10 新增）", "ref": "R-05/R-07 + 11242 案例六（机器不可判，人审清单兜底）" }
+    {
+      "id": "H-01",
+      "contract": "info.hierarchy",
+      "title": "信息层级不跳级、每屏唯一视觉焦点",
+      "ref": "RULES §10.1-10.3"
+    },
+    {
+      "id": "H-02",
+      "contract": "component.choice",
+      "title": "组件选型合理（该用 Tag 的地方不是按钮、该用 kv-row 的地方不是 · 串）",
+      "ref": "RULES §1.2"
+    },
+    {
+      "id": "H-03",
+      "contract": "brand.color.area",
+      "title": "品牌蓝面积 ≤30%，语义色只点状态不铺底",
+      "ref": "RULES §10.5"
+    },
+    {
+      "id": "H-04",
+      "contract": "density.breathing",
+      "title": "间距节奏（16/20px）与留白呼吸感，无『贴一起』",
+      "ref": "RULES §10.4"
+    },
+    {
+      "id": "H-05",
+      "contract": "copy.tone",
+      "title": "文案语义与工控语境一致，状态文案与 dot 语义匹配",
+      "ref": "RULES §6"
+    },
+    {
+      "id": "H-06",
+      "contract": "review.matrix.stateful",
+      "title": "审查矩阵逐 tab × 逐皮 × 滚动态（默认态 + 滚动 50% 态），不接受只看默认态（2026-09-10 新增）",
+      "ref": "R-05 + GENERATION-SOP §② 布局改动专项回归清单"
+    },
+    {
+      "id": "H-07",
+      "contract": "ux.visual.semantics",
+      "title": "纯 UX 语义人审兜底：滚动条位置语义（应贴滚动内容容器边缘，贴窗口右缘=整页滚动误读）/ 空带·遮挡·穿透 / 设备图片可辨识度 / 数值+单位换行（2026-09-10 新增）",
+      "ref": "R-05/R-07 + 11242 案例六（机器不可判，人审清单兜底）"
+    }
   ],
-
   "migration_dimensions": [
     {
       "id": "D-1",
@@ -221,7 +256,6 @@
       "ref": "Web RULES §10 / 移动 RULES §10 + VISUAL-SPEC.md + human_checks H-01~05"
     }
   ],
-
   "exemptions": [
     {
       "file": "弘讯移动端design-system/template.css",
@@ -254,7 +288,6 @@
       "note": "过期自动失效回违规；若平台 --bg-deep 换值须同步刷新此处字面量并重新核对同源性"
     }
   ],
-
   "issue_reporting": {
     "title": "设计系统问题报告制度（单向报告流 · 2026-09-10 全量泛化 + v1.3.0 闭环补齐）",
     "scope": "应用侧在从零生成（SOP §①）/ 存量改造（§②）/ 日常使用中发现的任何设计系统问题；审计漏检为其 machine 层特例（漏检报告_*.md 沿用同一模板与通道）",
@@ -262,10 +295,17 @@
     "report_file": "应用项目 output/设计系统问题_*.md（漏检特例沿用 漏检报告_*.md；报告 ID 命名 DS-YYYYMMDD-NN）",
     "template_file": "templates/设计系统问题报告模板.md（可复制骨架 + 填写示例）",
     "report_schema": {
-      "header": ["报告 ID DS-YYYYMMDD-NN", "日期", "来源项目（项目名 + 仓库路径）", "端 web|mobile", "严重级 P0|P1|P2", "状态 待消费|已消费|已修复|已驳回(理由)|部分修复"],
+      "header": [
+        "报告 ID DS-YYYYMMDD-NN",
+        "日期",
+        "来源项目（项目名 + 仓库路径）",
+        "端 web|mobile",
+        "严重级 P0|P1|P2",
+        "状态 待消费|已消费|已修复|已驳回(理由)|部分修复"
+      ],
       "required": [
         "现象 + 复现步骤（步骤化，他人可照做）",
-        "根因定位（真源文件:行 / 规则 id / token 名 / 脚本行，三者至少其一）",
+        "根因定位（真源文件:行 / 规则 id / token 名 / 脚本行，三者至少其一）+ 所测规则版本 + 复测结论",
         "归因（设计系统问题 or 执行问题，二分法；外部项目迁移场景见 scope_note）",
         "建议归层（machine 规则 | runtime | human | 规范 RULES/SPEC | token | 组件 | 图标 | 文档 | 门禁脚本）",
         "建议方案（建议规则文本 / 建议 token 值 / 建议组件契约）",
@@ -279,7 +319,7 @@
         "建议回归样例（维护侧据此做夹具验证；无则写『无』）"
       ]
     },
-    "report_quality_bar": "报告合格线三判据（2026-09-10 拍板，见 output/设计系统问题报告制度_缺口复盘清单_20260910.md 问答 2）：① 读懂 = 根因定位到真源文件:行 / 规则 id / token 名；② 能修 = 最小复现片段 + 建议规则文本（或建议 token 值 / 组件契约）；③ 能验 = 建议回归样例。三项缺任一时报告降级为『线索』——维护侧须回问应用侧补齐，不得凭猜修复。",
+    "report_quality_bar": "报告合格线三判据（2026-09-10 拍板，见 output/设计系统问题报告制度_缺口复盘清单_20260910.md 问答 2）：① 读懂 = 根因定位到真源文件:行 / 规则 id / token 名，**且根因须为复测所得、注明所测 audit-rules.json 版本**（2026-09-10 DS-20260910-01 教训：§3 根因凭代码阅读推断而未复测，误将当版已修的问题写成现存缺口 → 维护侧须勘误，浪费一轮往返）；② 能修 = 最小复现片段 + 建议规则文本（或建议 token 值 / 组件契约）；③ 能验 = 建议回归样例。三项缺任一时报告降级为『线索』——维护侧须回问应用侧补齐，不得凭猜修复。**维护侧回执后**：应用侧若再次定性同一问题，须按回执版本复测；实测与推断不一致时以实测为准并在正文注明。",
     "channel": "反馈通道（2026-09-10 用户拍板：无直连维护者通道，可接受）：① 产出报告落盘自己项目 output/；② **在对话内显式声明**（模板话术：『这是设计系统 P0 问题，报告已落盘 <绝对路径>，请转交维护者』）由用户转交；③ **不尝试**直连维护者（无权限，禁发明通道/禁自动提交真源仓库）",
     "severity_policy": {
       "P0": "真源错误 / 门禁漏洞 / 阻断生成 → 当次会话即时产出报告 + 对话内声明转交",
@@ -291,8 +331,20 @@
     "feedback_log_contract": "每条条目：date / source / report_source（来源报告路径）/ related_reports（可选数组，跨项目同题去重，G8）/ findings / attribution；回执结论一并写入 findings 或 attribution。",
     "scattered_clause_collation": "本制度统一收口各端散落的『上报维护者』条款：图标库缺（RULES §7.9③）/ 自造组件成熟形态补库（§7.9/§10.10）/ token 缺新值（§10.10）/ 门禁误报与真源 bug 上报（GENERATION-SOP 附录）——均按本制度记录与反馈，报告格式与通道不再各说各话"
   },
-
   "feedback_log": [
+    {
+      "date": "2026-09-10",
+      "source": "维护侧消费应用侧报告 DS-20260910-01（第三轮·报告 §10 自愈结论复核）——维护侧主动实测定级，非应用侧提请",
+      "report_source": "I:/workbuddy/弘讯设计系统应用/output/设计系统问题_20260910_01_M06口径.md",
+      "findings": [
+        "题 3（P1 · 维护侧自发现）归因：M-06 严重级分层「实现与真源脱钩」——audit-spec.js 对自维护 CSS 套用了 M-01 的 inPalette 分层（色板内→MEDIUM），但 M-06 真源只定义 frozen(dist) 一条降级路径、谓词明写自维护层「维持 HIGH 口径」，且同一行代码判 MEDIUM 却输出「自维护合规层维持 HIGH 口径」文案 → 实现与规则自相矛盾。属设计系统问题（真源缺分层声明 + 实现私自套用他规则语义），无执行缺口",
+        "影响面（实测）：11242-designer-preview page_dashboard.html 报「HIGH 0」，实际 tm-ui-design.css L163/L183 的 color:#94a3b8（色板内裸 hex 引用行）应为 HIGH → 应用侧 0 HIGH 结论建立在错判上；凡自维护 CSS 中色板内颜色写成裸 hex 者均被漏放",
+        "修法（用户拍板方案 A · 对齐 M-01 口径）：① audit-spec.js M-06 文案拆三分支并与判级一致（冻结 dist→MEDIUM 信息级 / 自维护·色板内→MEDIUM「合法色但必须改用 var(--token)」/ 自维护·自造色→HIGH「须映射 token 或回 tokens.json」）；② audit-rules.json M-06 predicate 补色板内外分层声明、severity 字段三分；③ 真源 v1.4.0 → v1.4.1",
+        "回归样例（新增，供后续防回归）：自维护 CSS 写 color:#94A3B8（∈web 色板 dark.colors.neutral.N8）→ 期望 MEDIUM css.asset.hex 且文案为「色板内·须改 var」；写 background:#070B12（∉色板）→ 期望 HIGH css.asset.hex；两者判级不得因所在文件（<style> vs <link> CSS）而不同",
+        "报告 §3 根因描述勘误：报告称根因是「掩码正则 :root\\s*\\{[^}]*\\} 不覆盖 :root:not(...){...} 条件根块」——v1.4.0 实测不成立（条件根块内 --bg-deep:#070b12 → MEDIUM css.vardef.hex 正确、引用行 → HIGH 正确）。css.vardef.hex 判定为**行级谓词（属性名以 -- 开头）**，先于掩码生效，掩码非必经路径；两处掩码（页面 L136 / 引用 CSS L345）均无需改。该根因系应用侧在 v1.3.1 旧版下的推断、未在 v1.4.0 复测，已更正"
+      ],
+      "attribution": "题 3 为设计系统问题（真源谓词未声明分层 + 实现私自套用 M-01 语义 + 判级文案自相矛盾）。**回执**：真源 v1.4.0 → v1.4.1；audit-spec.js M-06 文案与判级对齐；本 feedback_log 条目；双端 CHANGELOG 1.9.30 / 1.14.17。**对应用侧结论的影响**：方案 A 下 11242 的「2 项 MEDIUM」判级**结论有效、无需回改**（色板内 MEDIUM 与 M-01 一致），但其「2 项 MEDIUM 可接受口径保留」的理由须更正为「色板内合法色→MEDIUM 应改 var」，而非「色板内无对应 var 故保留」；§10 其余处置（token 化收敛、纯 :root 块下沉）依然合规，无需回滚。"
+    },
     {
       "date": "2026-09-10",
       "source": "维护侧消费应用侧合格报告 DS-20260910-01（M-06 口径 ×2 题）——单向报告流首份实战回灌",

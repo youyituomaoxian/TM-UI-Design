@@ -826,7 +826,7 @@ TopBar         height=72   FIXED   主色底 白字
 **③ 自造底线（即使自造也必须守）**
 
 - 颜色必须 `var(--*)` 禁裸 hex · 文字必须 `.t-*` 禁裸 font-size · 动效必须 `var(--motion-duration-*)` 禁裸秒
-- **自维护色板定义出口（2026-09-10 吸收 DS-20260910-01）**：确需自建色板（项目视觉体系超出 token 覆盖）时，**定义行** `--x: <hex>` 不计入「裸 hex 用法」违规（判 `css.vardef.hex` **MEDIUM 清单级**，保持可见供映射决策）；**引用处仍必须 `var(--x)`**——定义本体与颜色用法分离，hex 不得直接写在 background/color 里。定义行须能在 P1 说清映射理由，确需长期保留走 `exemptions` 按块登记或回 `tokens.json`
+- **自维护色板定义出口（2026-09-10 吸收 DS-20260910-01）**：确需自建色板（项目视觉体系超出 token 覆盖）时，**定义行** `--x: <hex>` 不计入「裸 hex 用法」违规（判 `css.vardef.hex` **MEDIUM 清单级**，保持可见供映射决策）；**引用处仍必须 `var(--x)`**——定义本体与颜色用法分离，hex 不得直接写在 background/color 里。定义行须能在 P1 说清映射理由，确需长期保留走 `exemptions` 按块登记或回 `tokens.json`。**引用行判级分两档（与页面 `<style>` 同口径，2026-09-10 v1.4.1）**：色值 **∈ token 色板 → MEDIUM**（合法色，但必须改 `var()` 引用，禁字面量防漂移）｜**∉ 色板 → HIGH**（自造色，须映射 token 或走 brand-color-engine 回 `tokens.json`）——同一色值不得因写在 `<style>` 还是 `<link>` CSS 里而判级不同
 - **4px 网格**：所有 px 值 %4==0（**含 calc 内**）
 - **禁覆写真源组件类**（`.btn`/`.table`/`.card`/`.tag`/`.tabs` 等 template.css 组件）——需调整用变体/组合/上报维护者
 - 语义命名（`.stat-card`，禁 `.a1`/`.box1`）· **禁 `t-` 前缀**（保留给正式组件）· 禁与真源类重名

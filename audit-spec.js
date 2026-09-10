@@ -368,6 +368,8 @@ function checkLinkedCss(targetFile, palette) {
         });
         continue;
       }
+      // 严重级分层（2026-09-10 DS-20260910-01 题 3 吸收，对齐 M-01 口径）：
+      //   冻结 dist → MEDIUM（不可改，只能覆盖）；自维护层 → 色板外 HIGH（自造色）/ 色板内 MEDIUM（合法色但须改 var）
       const severity = frozen ? 'MEDIUM' : (inPalette ? 'MEDIUM' : 'HIGH');
       violations.push({
         rule: 'M-06', contract: 'css.asset.hex', line,
@@ -375,7 +377,9 @@ function checkLinkedCss(targetFile, palette) {
         excerpt: `${hex} @${rel}`,
         msg: frozen
           ? `引用冻结 dist CSS（${rel} L${line}）声明 \`${decl}\` 含裸 hex ${hex} —— dist 硬编码清单（信息级，供映射决策；dist 不可改，修法=页面/合规层同优先级覆盖）`
-          : `引用自维护 CSS（${rel} L${line}）声明 \`${decl}\` 含裸 hex ${hex}${inPalette ? '（色板内）' : '（自造色）'} —— 自维护合规层维持 HIGH 口径，改用 var(--token)`,
+          : inPalette
+          ? `引用自维护 CSS（${rel} L${line}）声明 \`${decl}\` 含裸 hex ${hex}（色板内）—— 合法色但必须改用 var(--token) 引用（禁字面量，防漂移）`
+          : `引用自维护 CSS（${rel} L${line}）声明 \`${decl}\` 含裸 hex ${hex}（自造色）—— 自造色，改用 var(--token)；确需新色走 brand-color-engine 回 tokens.json`,
       });
     }
   }
