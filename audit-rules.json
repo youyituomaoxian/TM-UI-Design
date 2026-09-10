@@ -1,7 +1,7 @@
 {
   "$meta": {
     "title": "弘讯设计系统 · 审计规则真源（audit-rules）",
-    "version": "1.3.1",
+    "version": "1.4.0",
     "updated": "2026-09-10",
     "purpose": "存量项目按弘讯设计系统改造时的单一审计真源。RULES.md 管生成语义（怎么写），本文件管审计语义（怎么查）：每条规则声明 判定谓词 / 严重级 / 可判定性 / 修复策略。机器类规则由 audit-spec.js 与 validate-spec.js 执行，运行时类由截图×状态验证，语义类由 agent+人审查。三层互补，缺一不可。",
     "scope_note": "⚠️ 两种审查场景，归因逻辑不同（2026-09-10 用户澄清）：① 弘讯内项目缺陷审计（项目有义务合规）→ 用 P1 归因二分法（设计系统问题 or 执行问题）+ machine_rules 违规检测；② 外部项目迁移改造（项目不是弘讯生成的，审查目的=找出视觉不符合处并改成符合）→ 归因只有一种『未对齐弘讯规范』，决策点=映射到什么（哪个 token/组件类/字阶），用 migration_dimensions 维度对照清单逐层盘点。两层规则互补：M 层抓硬违规（迁移时同样要清零），D 层管维度映射。",
@@ -21,7 +21,7 @@
       "title": "CSS 裸 hex 字面量必须 token 化",
       "severity": "HIGH(非色板)/MEDIUM(色板内应改引用)",
       "scope": "目标 HTML 的 <style> 块 + inline style（script 剥离后）+ 渐变色标点（2026-09-10 扩展）",
-      "predicate": "出现 #RGB/#RRGGBB/#RRGGBBAA 字面量：∉ token 色板(toksens.json 全量 hex 叶子+白名单) → HIGH（自造色）；∈ 色板 → MEDIUM（合法色但必须改用 var(--token) 引用）。**渐变色标点（2026-09-10）**：linear-gradient/radial-gradient(...) 色标点内的 hex 同样参与判定，且白字豁免（#FFF）在色标点内不适用——渐变定义的是面/边界不是文字（11242 案例一：dist 面板头 linear-gradient(180deg,#fff 0%,var(--n2) 100%) 暗皮下露白顶，只查 backgroundColor 永远抓不到）",
+      "predicate": "出现 #RGB/#RRGGBB/#RRGGBBAA 字面量：∉ token 色板(toksens.json 全量 hex 叶子+白名单) → HIGH（自造色）；∈ 色板 → MEDIUM（合法色但必须改用 var(--token) 引用）。**渐变色标点（2026-09-10）**：linear-gradient/radial-gradient(...) 色标点内的 hex 同样参与判定，且白字豁免（#FFF）在色标点内不适用——渐变定义的是面/边界不是文字（11242 案例一：dist 面板头 linear-gradient(180deg,#fff 0%,var(--n2) 100%) 暗皮下露白顶，只查 backgroundColor 永远抓不到）。**色板定义行（2026-09-10 DS-20260910-01 题 1 吸收）**：声明属性名以 `--` 开头者（如 `.scope{--bg-deep:#hex}`）为**色板本体非用法** → 判 `css.vardef.hex` MEDIUM 清单级（不阻断，但须可见：核对能否映射弘讯 token / 回 tokens.json / exemptions 按块登记），不再判 HIGH——原实现把豁免绑在 `:root`/`[data-theme]` 选择器上（绑错维度），换作用域即误报「定义也违规、引用也违规」死锁；白字豁免在定义行照旧生效（防噪声）",
       "exempt": [":root{...} 与 [data-theme]{...} 令牌定义/投影区", "含 swatch 类或 data-audit-exempt 的行（色板展示区）", "SVG paint 属性 stroke=/fill=/stop-color=（由 M-04 专管，避免双报）", "#FFFFFF/#FFF 白字约定（validate-static 规则①同口径，RULES §10.3b 白字美学优先；⚠️ 渐变色标点内不适用，见 predicate）"],
       "exempt_mechanism": "data-audit-exempt 豁免标记机制（2026-09-10 补登规则文本，机制早已在 audit-spec.js 实现）：给目标元素或所在行加 data-audit-exempt 属性即豁免该行色值判定，专供色板展示/示例区使用；与 swatch 类豁免同口径，禁止用于掩盖真实违规",
       "fix": "改用 var(--token) 或 components.json 契约色；确需新色走 brand-color-engine 衍生并回 tokens.json",
@@ -69,7 +69,7 @@
       "title": "页面 <link> 引用的本地 CSS 资产纳入裸 hex 扫描（2026-09-10 新增）",
       "severity": "HIGH(自维护 CSS)/MEDIUM(冻结 dist 产物·硬编码清单)",
       "scope": "目标 HTML <link rel=stylesheet> 引用的本地 .css 文件（http(s) 外链不扫；同文件多引用去重）",
-      "predicate": "引用 CSS 内出现裸 hex：白字豁免仅适用于 color: 声明（文字白约定）；background/border 等面性声明中的 #fff 同样违规（11242 案例二：dist 分页条 background:#fff 白底横条，页面源码 0 裸 hex 是假阴性——脏值在被 <link> 引用的冻结 CSS 里）。路径含 dist / dist-static / vendor / node_modules / build → 冻结产物，降级 MEDIUM『dist 硬编码清单』供映射决策（dist 不可改，修法只能走合规层覆盖）；其余（如 tm-ui-design.css 等应用侧自维护合规层）维持 HIGH 口径",
+      "predicate": "引用 CSS 内出现裸 hex：白字豁免仅适用于 color: 声明（文字白约定）；background/border 等面性声明中的 #fff 同样违规（11242 案例二：dist 分页条 background:#fff 白底横条，页面源码 0 裸 hex 是假阴性——脏值在被 <link> 引用的冻结 CSS 里）。**色板定义行出口（2026-09-10 DS-20260910-01 题 1 吸收）**：声明属性名以 `--` 开头者（`--x: <hex>`）判 `css.vardef.hex` **MEDIUM 清单级**、不判 HIGH——自维护合规层由此获得合法自建色板路径（定义可见 + 引用仍须 var()）；其余声明：路径含 dist / dist-static / vendor / node_modules / build → 冻结产物，降级 MEDIUM『dist 硬编码清单』供映射决策（dist 不可改，修法只能走合规层覆盖）；其余（如 tm-ui-design.css 等应用侧自维护合规层）维持 HIGH 口径",
       "fix": "自维护 CSS 改 var(--token)；冻结 dist 缺陷禁止手改 dist——在页面/合规层用同优先级覆盖规则修正，并在台账登记映射决策",
       "implemented_in": "audit-spec.js（2026-09-10）"
     }
@@ -293,6 +293,17 @@
   },
 
   "feedback_log": [
+    {
+      "date": "2026-09-10",
+      "source": "维护侧消费应用侧合格报告 DS-20260910-01（M-06 口径 ×2 题）——单向报告流首份实战回灌",
+      "report_source": "I:/workbuddy/弘讯设计系统应用/output/设计系统问题_20260910_01_M06口径.md",
+      "findings": [
+        "题 1（P1 · 规则语义缺口）→ audit-rules v1.4.0 吸收：新增子契约 `css.vardef.hex`（M-01/M-06 共用）——声明属性名以 `--` 开头者为色板本体、判 MEDIUM 清单级不阻断；根因是原豁免绑在 `:root`/`[data-theme]` **选择器**上（绑错维度），换作用域（`.scope{--x:#hex}`）即误报，自维护层陷入「定义违规、引用违规、平台无 token」死锁。修法比报告建议更进一步：统一以**属性名**判定，M-01 页面侧同步（避免双规则口径不一致），不只是 M-06",
+        "题 2（P1 · 脚本复述版本号）→ 吸收且扩展：`audit-spec.js` 横幅（L368）与 `--json` 输出的 `ruleset` 字段**均**改为从 `audit-rules.json $meta.version` 动态读取（报告只发现横幅一处，JSON 侧仍硬编码 v1.0.0，已一并修）——与 §0 SSOT 表「交付线不复述数字」同一条原则",
+        "回归样例（报告 §9）实测通过：定义行 → MEDIUM `css.vardef.hex`；引用行 → 维持 HIGH `css.asset.hex`；横幅/JSON 版本随真源（现 v1.4.0）。应用侧因此可达 0 HIGH（147 处引用收敛为 var() + 定义行转 MEDIUM 清单），其拟定豁免预案可撤"
+      ],
+      "attribution": "两条均为规则缺口（设计系统问题）：① M-01/M-06 词谓语义缺口（豁免维度错配：选择器 → 应为属性名）；② 脚本显示层复述版本号（违反 SSOT）。无执行缺口。**回执**：报告状态栏已回写『已修复』+ 结论；真源 v1.3.1 → v1.4.0；双端 CHANGELOG 1.9.29 / 1.14.16；`audit-spec.js` 已修并回归验证。**临时处置**：报告 §10 的豁免预案（定义行按 exemptions 登记）**无需执行**——新口径下定义行自然降为 MEDIUM，豁免可撤。"
+    },
     {
       "date": "2026-09-10",
       "source": "维护侧消费应用侧结构化漏检报告（11242-designer-preview 存量迁移审计，P0–P3 全流程 + 用户截图反馈 6 单）",

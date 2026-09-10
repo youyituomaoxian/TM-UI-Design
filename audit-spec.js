@@ -36,6 +36,29 @@ const PALETTE_EXTRA = new Set([
 
 const DOT_WHITELIST = new Set(['run', 'idle', 'off', 'offline', 'err', 'ok', 'warn']);
 
+// 规则版本 = 单一事实源（SSOT）：从 audit-rules.json $meta.version 动态读取，脚本内禁复述版本号
+// （2026-09-10 DS-20260910-01 题 2：横幅/JSON 曾硬编码 v1.2.0 / v1.0.0，真源升版后显示漂移）
+function loadRulesMeta() {
+  try { return JSON.parse(fs.readFileSync(path.join(ROOT, 'audit-rules.json'), 'utf8')).$meta || {}; }
+  catch (e) { return {}; }
+}
+const RULES_META = loadRulesMeta();
+const RULES_VERSION = RULES_META.version || '(版本未知)';
+
+// 声明上下文：取 index 所在声明的属性名（向前后扫到 ; { } 边界）
+// 用途（2026-09-10 DS-20260910-01 题 1）：属性名以 `--` 开头 = **色板定义行（本体）**，
+// 不是颜色用法——规则该管用法，色板本体降为 MEDIUM 清单保持可见但不阻断。
+function declPropAt(css, idx) {
+  let st = idx - 1;
+  while (st >= 0 && !';{}'.includes(css[st])) st--;
+  let en = idx;
+  while (en < css.length && !';}'.includes(css[en])) en++;
+  const decl = css.slice(st + 1, en).trim();
+  const pm = decl.match(/^([-a-zA-Z]+)\s*:/);
+  return { prop: pm ? pm[1].toLowerCase() : '', decl };
+}
+const isVarDef = (prop) => prop.startsWith('--');
+
 // ---- 工具 ----
 function collectHexLeaves(node, out) {
   if (typeof node === 'string') {
@@ -123,7 +146,17 @@ function checkHexLiteral(noScript, palette, lineStarts) {
       const hex = ('#' + h[1]).toUpperCase();
       const isGradStop = inRanges(h.index, gradRanges);
       if (!isGradStop && (hex === '#FFFFFF' || hex === '#FFF')) continue; // 白字约定豁免（渐变色标点内不适用，M-01 扩展 2026-09-10）
+      const { prop } = declPropAt(stripped, h.index);
       const inPalette = palette.has(hex) || palette.has(normalizeShort(hex));
+      // 色板定义行（--x: <hex>）：本体非用法 → MEDIUM 可见清单，不阻断（2026-09-10 DS-20260910-01 题 1）
+      if (isVarDef(prop)) {
+        violations.push({
+          rule: 'M-01', contract: 'css.vardef.hex', line,
+          severity: 'MEDIUM', excerpt: `${hex} @vardef`,
+          msg: `色板定义行 \`${prop}: ${hex}\`——定义本体不计入「裸 hex 用法」违规，但自造色板须可见：核对能否映射弘讯 token；确需自建走 brand-color-engine 回 tokens.json，或在 audit-rules.json exemptions 按块登记`,
+        });
+        continue;
+      }
       violations.push({
         rule: 'M-01', contract: isGradStop ? 'css.hex.gradient-stop' : 'css.hex.literal', line,
         severity: inPalette ? 'MEDIUM' : 'HIGH',
@@ -151,6 +184,15 @@ function checkHexLiteral(noScript, palette, lineStarts) {
       const isGradStop = inRanges(h.index, gradRanges);
       if (!isGradStop && (hex === '#FFFFFF' || hex === '#FFF')) continue;
       const inPalette = palette.has(hex) || palette.has(normalizeShort(hex));
+      const { prop: inlineProp } = declPropAt(m[1], h.index);
+      if (isVarDef(inlineProp)) {
+        violations.push({
+          rule: 'M-01', contract: 'css.vardef.hex', line,
+          severity: 'MEDIUM', excerpt: `${hex} @vardef`,
+          msg: `inline 色板定义 \`${inlineProp}: ${hex}\`——定义本体降为清单级；自造色板须可见（映射 token / 回 tokens.json / exemptions 登记）`,
+        });
+        continue;
+      }
       violations.push({
         rule: 'M-01', contract: isGradStop ? 'css.hex.gradient-stop' : 'css.hex.literal', line,
         severity: inPalette ? 'MEDIUM' : 'HIGH',
@@ -312,17 +354,20 @@ function checkLinkedCss(targetFile, palette) {
       const line = lineOf(idx, lineStartsCss);
       const lineText = css.slice(lineStartsCss[line - 1], lineStartsCss[line] || undefined);
       if (/swatch|data-audit-exempt/i.test(lineText)) continue;
-      // 所在声明上下文：向前后扫到 ; { } 边界，取属性名
-      let st = idx - 1;
-      while (st >= 0 && !';{}'.includes(css[st])) st--;
-      let en = idx;
-      while (en < css.length && !';}'.includes(css[en])) en++;
-      const decl = css.slice(st + 1, en).trim();
-      const pm = decl.match(/^([-a-zA-Z]+)\s*:/);
-      const prop = pm ? pm[1].toLowerCase() : '';
+      // 所在声明上下文（helper 去重）：属性名以 `--` 开头 = 色板定义行
+      const { prop, decl } = declPropAt(css, idx);
       const hex = ('#' + h[1]).toUpperCase();
       if ((hex === '#FFFFFF' || hex === '#FFF') && prop === 'color') continue; // 白字豁免仅限文字声明
       const inPalette = palette.has(hex) || palette.has(normalizeShort(hex));
+      // 色板定义行（--x: <hex>）：本体非用法 → MEDIUM 可见清单（2026-09-10 DS-20260910-01 题 1 吸收）
+      if (isVarDef(prop)) {
+        violations.push({
+          rule: 'M-06', contract: 'css.vardef.hex', line,
+          severity: 'MEDIUM', excerpt: `${hex} @${rel} @vardef`,
+          msg: `引用${frozen ? '冻结 dist' : '自维护'} CSS（${rel} L${line}）色板定义行 \`${decl}\`——定义本体不计入「裸 hex 用法」违规；自造色板须可见：核对能否映射弘讯 token，确需自建走 brand-color-engine 回 tokens.json 或在 audit-rules.json exemptions 按块登记`,
+        });
+        continue;
+      }
       const severity = frozen ? 'MEDIUM' : (inPalette ? 'MEDIUM' : 'HIGH');
       violations.push({
         rule: 'M-06', contract: 'css.asset.hex', line,
@@ -365,7 +410,7 @@ function main() {
   const high = violations.filter(v => v.severity === 'HIGH').length;
   const med = violations.filter(v => v.severity === 'MEDIUM').length;
 
-  console.log(`\n🔍 存量改造增量审计 audit-spec（规则真源 audit-rules.json v1.2.0 · ${end} 色板）`);
+  console.log(`\n🔍 存量改造增量审计 audit-spec（规则真源 audit-rules.json v${RULES_VERSION} · ${end} 色板）`);
   console.log(`   目标: ${path.basename(target)}`);
   console.log('');
   for (const v of violations) {
@@ -379,7 +424,7 @@ function main() {
     fs.writeFileSync(jsonOut, JSON.stringify({
       target: path.resolve(target),
       end, generatedAt: new Date().toISOString(),
-      ruleset: 'audit-rules.json v1.0.0',
+      ruleset: `audit-rules.json v${RULES_VERSION}`,
       summary: { high, medium: med, total: violations.length },
       violations,
     }, null, 2));
