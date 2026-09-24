@@ -331,6 +331,28 @@ START: 我要做什么类型的页面？
 
 **用类不用裸值（2026-08-03 拍板）**：文本字号一律 `.t-*` class，**禁裸 `font-size`**（哪怕值合法——13px 是合法 `body2`，但必须写 `class="t-body2"`，裸 `font-size:13px` 绕过类体系即违规）。字阶口径：12 字号键 + Mono = 13 级（`.t-display`/`.t-h1`…`.t-link` + `.t-mono`），勿混。
 
+
+### [软] 1.1c 页面 species 正交维度 + register 口径（2026-09-23 新增 · C-3/C-4）
+
+**页面 species（正交维度，非新页面类型）**：`<body data-species="…">` 声明本页数据密度物种，与 §1.1b 页面类型**正交组合**（列表 / 详情 / 看板 × species），不新增平行页型（防物种爆炸）：
+
+| species | 语义 | 典型页面 |
+|---|---|---|
+| `document`（默认） | 文档流密度：单任务线、阅读型区块序列 | 表单 / 详情 / 设置 / 工单 / 台账 |
+| `workbench` | 工作台密度：多模块拼盘、KPI + 图表 + 列表同屏 | 监控首页 / 运营看板 / 工作台 |
+
+- 克隆模板默认 `data-species="document"`；工作台类页改 `workbench`，**禁第三种值**。
+- 门禁（validate-spec）：缺失 → MEDIUM（存量渐进补齐）；值非法 → HIGH；声明 workbench 但无 `.stat-grid` 工作台骨架 → MEDIUM（T-F1 最小判据，防形式字段退化）。
+- 语义约定：`workbench` 页首屏模块数 ≥3 且每模块带标题条；`document` 页禁 KPI 网格拼盘。
+
+**register 口径（C-4 · 零行为变更显式化）**：弘讯双 register，互不越界——
+
+- **B 端工具页（本规范全域）= `product` register**：表现力压低、信息密度拉高——即既有「克制扁平 + 灰阶分层 + 品牌色只做强调」哲学的显式登记，不引入新旋钮、零行为变更。
+- **Brand Visual Kit（海报 / 易拉宝 / PPT / 文化物料）= `brand` register**：允许表现力（渐变 / 大字 / 视觉隐喻），以设计哲学与概念约束替代固定模板；**brand register 手法带回 B 端工具页 = §2 禁止清单违规**。
+
+---
+
+## [硬] 2. 禁止清单 Anti-Patterns
 ---
 
 ## [硬] 2. 禁止清单 Anti-Patterns

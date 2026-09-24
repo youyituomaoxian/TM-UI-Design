@@ -386,6 +386,62 @@ function checkLinkedCss(targetFile, palette) {
   return violations;
 }
 
+// ---- M-07 辅助：模板真源动画名集合（2026-09-23 误报修正）----
+// 分享版产物内联 template.css 全量 CSS，M1–M5 规范动画随之进入页面 <style>。
+// 白名单口径：命中模板真源动画名的引用不计节拍预算——预算只管「页面自加」的动画。
+function buildTemplateMotionNames(end) {
+  const cssPath = path.join(ROOT, end === 'web' ? '弘讯web端design-system/template.css' : '弘讯移动端design-system/template.css');
+  const css = fs.readFileSync(cssPath, "utf8");
+  const names = new Set();
+  // 白名单双源：animation 声明名 + @keyframes 定义名（2026-09-23 监督 ISSUE-01：
+  // 模板 @keyframes 19 名 > animation 声明 16 名，shimmer/toast-in/toast-out 等规范动画
+  // 只定义未在模板内引用会被漏收 → 页面正常使用规范骨架屏/规范 toast 即误报 HIGH）
+  const kfRe = /@keyframes\s+([\w-]+)/g;
+  let k;
+  while ((k = kfRe.exec(css))) names.add(k[1]);
+  const re = /(?:^|[^-\w])animation(?:-name)?\s*:\s*([^;}]+)/g;
+  let m;
+  while ((m = re.exec(css))) {
+    for (const piece of m[1].split(',')) {
+      const first = piece.split('!important')[0].trim().split(/\s+/)[0];
+      if (first && !/^(none|inherit|initial|unset)$/i.test(first)) names.add(first);
+    }
+  }
+  return names;
+}
+// ---- M-07 motion.beat.budget（2026-09-23 新增，finesse 借鉴 C-5）----
+// 节拍预算：一页最多一个 heavy 动效。扫页面内 <style>/inline 的 animation 声明；
+// <link> CSS 不扫（template.css 规范动效合法）；transition 不计；@keyframes 定义行不算引用。
+function checkMotionBeat(noScript, lineStarts, templateMotion) {
+  const violations = [];
+  const seen = new Map(); // name -> first index
+  const re = /(?:^|[^-\w])animation(?:-name)?\s*:\s*([^;}]+)/g;
+  let m;
+  while ((m = re.exec(noScript))) {
+    const line = lineOf(m.index, lineStarts);
+    const raw = m[1].split("!important")[0];
+    for (const piece of raw.split(',')) {
+      const first = piece.trim().split(/\s+/)[0];
+      if (!first || /^(none|inherit|initial|unset)$/i.test(first)) continue;
+      if (templateMotion && templateMotion.has(first)) continue; // 模板真源动画：不计预算
+      if (!seen.has(first)) seen.set(first, line);
+    }
+  }
+  let n = 0;
+  for (const [name, line] of seen) {
+    n++;
+    if (n === 1) continue; // 一个 heavy 预算内
+    violations.push({
+      rule: 'M-07',
+      severity: 'HIGH',
+      line,
+      contract: 'motion.beat.budget',
+      excerpt: `animation \`${name}\``,
+      msg: `节拍预算超限（页面内第 ${n} 个自声明动画）：一页最多一个 heavy 动效——删多余入场/装饰动画，规范动效只用 template.css 的 M1–M5 类`,
+    });
+  }
+  return violations;
+}
 // ---- 主流程 ----
 function main() {
   const args = process.argv.slice(2);
@@ -409,6 +465,7 @@ function main() {
     ...checkBtnState(noScript, lineStarts),
     ...checkStatusDot(noScript, end, lineStarts),
     ...checkLinkedCss(target, palette),
+    ...checkMotionBeat(noScript, lineStarts, buildTemplateMotionNames(end)),
   ].sort((a, b) => (a.severity === b.severity ? a.line - b.line : a.severity === 'HIGH' ? -1 : 1));
 
   const high = violations.filter(v => v.severity === 'HIGH').length;

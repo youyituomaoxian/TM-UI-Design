@@ -35,7 +35,9 @@
 ├── audit-spec.js                   # 存量页面增量审计（M-01~03/M-06，--end web|mobile，HIGH>0 exit 1）
 ├── check-sync.js                   # 双端真源一致性门禁（vendor↔template 同构 + 双端同名类白名单比对）
 ├── templates/                      # 应用侧可复制模板（设计系统问题报告模板.md — issue_reporting 制度的 template_file）
-├── ci-local.js                     # 全链路自检（99 项全绿 exit 0，含 audit + check-sync 阻断）
+├── ci-local.js                     # 全链路自检（全绿 exit 0，含 audit + check-sync 阻断；项数以输出为准）
+├── check-size.js                   # 文档体积门禁（真源文件字符限额 + 清单封闭防膨胀转移，2026-09-22）
+├── roll-changelog.js               # CHANGELOG 自动滚动归档（主文件超限滚最旧条目入 archive，2026-09-23）
 ├── output/                          # 历史示例/产物归档（不随设计系统分享）；新生成页落「用户项目」的 output/
 ├── AGENTS.md                        # codex / 通用 Agent 入口（标准生成流程）
 ├── .workbuddy/skills/tm-design-system/SKILL.md  # workbuddy 项目级 skill（可移植定位）
@@ -140,7 +142,7 @@ cd TM-UI-Design
 - **克隆即用**：`git clone https://github.com/youyituomaoxian/TM-UI-Design.git <目录>` → 进入目录直接对话「用弘讯设计系统，生成…」——各智能体自动加载对应入口（AGENTS.md / CLAUDE.md / skill），零额外配置。
 - 生成合规页：按 `GENERATION-SOP.md` §① 克隆 `弘讯web端design-system/page-template.html` → 按 `RULES.md §1.1b` 自建内容 → `node 弘讯web端design-system/validate-spec.js <页面.html>`（HIGH 0 才交付）。
 - **存量项目审查修改**（已有页面按规范改造）：按 `GENERATION-SOP.md` §② 五阶段流程——`node audit-spec.js <页面> --end web|mobile` 清零硬违规 + `audit-rules.json` migration_dimensions D-1~D-12 逐维对照找差异 → 映射决策（每个差异定「改成什么」）→ 分批修复 + 门禁回归。
-- 全仓总门禁：`node ci-local.js`（99 项全绿 EXIT 0，2026-09-10 起）。
+- 全仓总门禁：`node ci-local.js`（全绿 EXIT 0，2026-09-10 起；项数以脚本实际输出为准）。
 - 部署/分发：Git 仓库（私有）clone 或整目录拷贝（打包时排除 `output/`、`node_modules/`、`.git/`、`.reasonix/`）——详见 `团队使用指南.md`「部署与团队分发」。
 
 ## 版权

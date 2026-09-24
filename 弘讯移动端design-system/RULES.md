@@ -150,7 +150,28 @@ START: 我要做什么类型的页面？
 - 项：`.bn-icon`（SVG 24×24）+ `.bn-label`；当前项 `.bn-item.active`。
 - 移动端框架（导航/底部菜单）随页面类型按需组合，非固定；首页 Tab 容器才挂 BottomNav（见 §1.1 决策树）。
 
-### [软] 1.2 组件粒度选型
+
+
+### [软] 1.1c 页面 species 正交维度 + register 口径（2026-09-23 新增 · C-3/C-4）
+
+**页面 species（正交维度，非新页面类型）**：`<body data-species="…">` 声明本页数据密度物种，与 §1.1b 页面类型**正交组合**，不新增平行页型（防物种爆炸）：
+
+| species | 语义 | 典型页面 |
+|---|---|---|
+| `document`（默认） | 文档流密度：单任务线、阅读型区块序列 | 表单 / 详情 / 设置 / 列表卡片页 |
+| `workbench` | 工作台密度：多模块拼盘、KPI + 图表 + 列表同屏 | 首页 Tab 多模块 / 设备监控首页 |
+
+- 克隆模板默认 `data-species="document"`；工作台类页改 `workbench`，**禁第三种值**。
+- 门禁（validate-spec）：缺失 → MEDIUM（存量渐进补齐）；值非法 → HIGH；workbench 骨架最小判据为 web 侧 `.stat-grid`（mobile 真源无 stat-grid 骨架，暂不机器判——已知边界登记）。
+- 语义约定：`workbench` 页首屏模块数 ≥3 且每模块带标题条；`document` 页禁 KPI 网格拼盘。
+
+**register 口径（C-4 · 零行为变更显式化）**：弘讯双 register，互不越界——
+
+- **B 端工具页（本规范全域）= `product` register**：表现力压低、信息密度拉高——既有「克制扁平 + 灰阶分层」哲学的显式登记，零行为变更。
+- **Brand Visual Kit（海报 / 易拉宝 / PPT / 文化物料）= `brand` register**：允许表现力；**brand 手法带回 B 端工具页 = 违规**。
+
+
+### [软] 1.2 组件粒度选型### [软] 1.2 组件粒度选型
 
 ```
 需要展示什么内容？

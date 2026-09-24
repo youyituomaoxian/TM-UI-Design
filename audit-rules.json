@@ -1,8 +1,8 @@
 {
   "$meta": {
     "title": "弘讯设计系统 · 审计规则真源（audit-rules）",
-    "version": "1.4.1",
-    "updated": "2026-09-10",
+    "version": "1.6.1",
+    "updated": "2026-09-23",
     "purpose": "存量项目按弘讯设计系统改造时的单一审计真源。RULES.md 管生成语义（怎么写），本文件管审计语义（怎么查）：每条规则声明 判定谓词 / 严重级 / 可判定性 / 修复策略。机器类规则由 audit-spec.js 与 validate-spec.js 执行，运行时类由截图×状态验证，语义类由 agent+人审查。三层互补，缺一不可。",
     "scope_note": "⚠️ 两种审查场景，归因逻辑不同（2026-09-10 用户澄清）：① 弘讯内项目缺陷审计（项目有义务合规）→ 用 P1 归因二分法（设计系统问题 or 执行问题）+ machine_rules 违规检测；② 外部项目迁移改造（项目不是弘讯生成的，审查目的=找出视觉不符合处并改成符合）→ 归因只有一种『未对齐弘讯规范』，决策点=映射到什么（哪个 token/组件类/字阶），用 migration_dimensions 维度对照清单逐层盘点。两层规则互补：M 层抓硬违规（迁移时同样要清零），D 层管维度映射。",
     "change_policy": "新增规则必须经『设计系统问题报告』进入，执行**单向报告流**（2026-09-10 用户拍板，替代旧『应用侧强制回灌』语义——旧语义要求无真源写权的角色执行写入，与真源治理契约冲突；**同日二次拍板全量泛化**：报告流的输入**不只是审计漏检**，应用侧在从零生成（SOP §①）/ 存量改造（§②）/ 日常使用中发现的任何被归因为**设计系统问题**的发现（真源/规范缺失、token/组件/图标缺口、门禁漏洞、文档缺陷）均按 `issue_reporting` 制度记录并可反馈；审计漏检是本制度的 machine 层特例。执行问题（规范已写、执行跑偏）不进报告——应用侧直接改页面）：① **应用侧义务 = 归因 + 记录 + 按严重级提请转交**：先归因二分，设计系统问题落盘自己项目 `output/设计系统问题_*.md`（schema 见 issue_reporting），并在对话内声明请用户转交，禁碰真源；② **维护侧义务 = 被动消费报告并回灌**（2026-09-10 用户拍板：应用者反馈，不去打扰——不建应用项目注册表、不主动巡检）：收到用户转交的报告（或被 @）时，走维护者六步流程登记进本文件 feedback_log（条目必须带 report_source 字段记录来源报告路径，跨项目同题用 related_reports，保持双向对账闭环）与对应规则层，并产出回执三件套（报告状态栏回写 + feedback_log + 双端 CHANGELOG）；③ 维护者自己的维护会话可直接回灌。**规范-审查双向对账（2026-09-10 用户拍板，『全』的保证机制）**：migration_dimensions 每条必须带 ref 指回规范条目（指不回=伪维度，删）；规范真源新增条目（新 token section / 新组件 / 新 RULES 章节 / 新专项 spec）时，审查侧必须同步长出核对项（指不到=审查缺口，补 D 层）。审查清单是规范真源结构树的对偶投影，『全』随规范演进持续保证，不靠一次性经验枚举。"
@@ -75,6 +75,16 @@
       "predicate": "引用 CSS 内出现裸 hex：白字豁免仅适用于 color: 声明（文字白约定）；background/border 等面性声明中的 #fff 同样违规（11242 案例二：dist 分页条 background:#fff 白底横条，页面源码 0 裸 hex 是假阴性——脏值在被 <link> 引用的冻结 CSS 里）。**色板定义行出口（2026-09-10 DS-20260910-01 题 1 吸收）**：声明属性名以 `--` 开头者（`--x: <hex>`）判 `css.vardef.hex` **MEDIUM 清单级**、不判 HIGH——自维护合规层由此获得合法自建色板路径（定义可见 + 引用仍须 var()）；其余声明：路径含 dist / dist-static / vendor / node_modules / build → 冻结产物，降级 MEDIUM『dist 硬编码清单』供映射决策（dist 不可改，修法只能走合规层覆盖）；其余（如 tm-ui-design.css 等应用侧自维护合规层）按**色板内外分层**（2026-09-10 DS-20260910-01 题 3 吸收，与 M-01 同口径，防同一色值因所在文件不同而判级不一致）：∈ token 色板 → MEDIUM（合法色，但必须改用 var(--token) 引用，防漂移）；∉ 色板 → HIGH（自造色，须映射 token 或走 brand-color-engine 回 tokens.json）。**判级必须与文案一致**——v1.4.0 实现对色板内判 MEDIUM 却输出「维持 HIGH 口径」文案，属实现与规则自相矛盾（本次修正）",
       "fix": "自维护 CSS 改 var(--token)；冻结 dist 缺陷禁止手改 dist——在页面/合规层用同优先级覆盖规则修正，并在台账登记映射决策",
       "implemented_in": "audit-spec.js（2026-09-10）"
+    },
+    {
+      "id": "M-07",
+      "contract": "motion.beat.budget",
+      "title": "节拍预算——一页最多一个 heavy 动效（2026-09-23 新增，finesse 借鉴 C-5）",
+      "severity": "HIGH(超出预算的每个多余动画一条)",
+      "scope": "目标 HTML 内 <style> 与 inline style 中的 animation / animation-name 声明；<link> 引用 CSS 不扫（template.css 规范动效属合法微交互，不计预算）",
+      "predicate": "页面内自声明的唯一 animation-name 去重计数 > 1 即超预算：animation 简写取第一个标识符；逗号多值逐个计数；none/inherit/initial/unset 不计；@keyframes 定义行不算引用；transition 不计（hover 微交互非 heavy 入场）。模板白名单（2026-09-23 误报修正）：命中对应端 template.css 真源动画名集合的引用不计预算——分享版产物内联真源 CSS 时 M1–M5 动画属合法存在，预算只管页面自加动画；白名单双源（2026-09-23 监督 ISSUE-01）：animation 声明名 ∪ @keyframes 定义名——规范 shimmer/toast-in/toast-out 等只定义未引用的动画不漏收",
+      "fix": "删多余自加动画（AI 生成页典型病：全元素 fade-in-up 入场）；保留至多一个 heavy 动效；规范动效只用 template.css 的 M1–M5 类",
+      "implemented_in": "audit-spec.js（2026-09-23）"
     }
   ],
   "runtime_checks": [
@@ -176,84 +186,172 @@
       "title": "框架骨架",
       "check": "Web B 端后台是否套弘讯固定框架（顶栏 72 / 侧栏 240 折叠 80 / 内容区 / 底栏 32 / 作业树带图标节点）；移动端是否手机壳 375×812 + 导航三槽位 + 底部导航 3-5 项 + 屏内滚动；页面是否残留自搭框架（自造 topbar/sidebar）",
       "map_to": "克隆对应端 page-template.html 框架外壳（脚手架 new-page-web/mobile.js 自动注入克隆凭证），业务内容重建；非 B 端页面（营销/门户/大屏）合法豁免框架",
-      "ref": "Web RULES §0 + GENERATION-SOP §① 步骤 1.5/4；移动 RULES §1.1b"
+      "ref": "Web RULES §0 + GENERATION-SOP §① 步骤 1.5/4；移动 RULES §1.1b",
+      "trap": "自搭顶栏/侧栏/底栏（AI 生成页最典型：不克隆模板自由发挥 B 端版式）",
+      "pairs": [
+        {
+          "bad": "<div class='my-topbar'> 自造顶栏 + 自造侧栏",
+          "good": "克隆对应端 page-template.html 框架外壳（脚手架自动注入克隆凭证），业务内容只落内容区"
+        }
+      ]
     },
     {
       "id": "D-2",
       "title": "色彩系统",
       "check": "全项目色值盘点（M-01 同步清零裸 hex）：现有品牌色 / 中性阶 / 功能色 / 图表色是否对应弘讯 token 语义；暗色模式是否有 [data-theme] 完整定义",
       "map_to": "tokens.json colors 短名变量（--primary 系 / --n1..n11 / --suc/--warn/--err/--run 系 / --chart-* / --brand-surface）；非 #005EAE 品牌色走 brand-color-engine 重推导（亮暗双模式）",
-      "ref": "tokens.json colors + DESIGN-TOKENS.md §2 + CROSS-PLATFORM-COLORS.md + GENERATION-SOP 附录 B 映射表"
+      "ref": "tokens.json colors + DESIGN-TOKENS.md §2 + CROSS-PLATFORM-COLORS.md + GENERATION-SOP 附录 B 映射表",
+      "trap": "页面写死 hex 或自造近似色（如拿 #1677FF 当主色、#999 当中性色）",
+      "pairs": [
+        {
+          "bad": "color:#005EAE（裸 hex 引用行）",
+          "good": "color:var(--tm-primary)（token 引用）"
+        },
+        {
+          "bad": "background:#1677FF（近似主色自造）",
+          "good": "主色只认 tokens.json 的 primary，近似色一律视为自造色 HIGH"
+        }
+      ]
     },
     {
       "id": "D-3",
       "title": "字体与字阶",
       "check": "现有字号/字重/行高盘点 → 是否落在弘讯字阶内（越界字号标记）；正文/数值/代码字体是否正确；是否有裸 font-size（text.layer 门禁同步清零）",
       "map_to": "Web .t-* 12 级字阶 / 移动 .m-text-* 语义类（android+iOS 双套 9 级）；正文 var(--font-cn)（Source Han Sans CN）、数值 var(--font-mono)（JetBrains Mono，tabular-nums 仅纯数字），禁具体字体名",
-      "ref": "tokens.json typography + MASTER §2 字阶 + DESIGN-TOKENS typography"
+      "ref": "tokens.json typography + MASTER §2 字阶 + DESIGN-TOKENS typography",
+      "trap": "任意字号/行高（13px、15px、17px 混用），不走规范字阶",
+      "pairs": [
+        {
+          "bad": "font-size:15px; line-height:22px（字阶外任意值）",
+          "good": "按字阶类或字体 token 取规定档位（12/14/16/20/24…）"
+        }
+      ]
     },
     {
       "id": "D-4",
       "title": "组件映射",
       "check": "现有 UI 元素逐个对照弘讯组件清单：按钮（变体/状态矩阵 M-02 同步清零）/ 标签 / 表格 / 表单（input/textarea/select）/ 弹窗 / 分页 / 进度 / 空态 / 徽章 / 筛选 chip / KPI 卡（图标卡/环形卡二选一）；自造组件类标记",
       "map_to": "components.json 契约组件（尺寸/状态/色值 contract）+ template.css 同名类；无对应组件的自造元素按自造守则（值落现有 token）处理，成熟形态上报补库",
-      "ref": "components.json + components.md + Web RULES §3.7 DOM 契约 / 移动 RULES §9 组件体系"
+      "ref": "components.json + components.md + Web RULES §3.7 DOM 契约 / 移动 RULES §9 组件体系",
+      "trap": "规范组件类已存在却手写 CSS 复刻（按钮/卡片/表格行/标签最常见）",
+      "pairs": [
+        {
+          "bad": "自定义 .my-btn 手写按钮样式",
+          "good": "复用 components.json 契约类（按钮/卡片/表格/chip 等），组件词汇与代码库同源"
+        }
+      ]
     },
     {
       "id": "D-5",
       "title": "间距与栅格",
       "check": "所有 spacing 值是否落 4px 网格（grid.4px 门禁同步清零）；区块间距节奏（同类 8-16 / 关联 16-24 / 独立大区块 32-48；移动端 16/20/30 克制间距）；Web 24 列栅格 / .grid12 > .col-N 使用",
       "map_to": "tokens.json spacing（--spacing-* / spacing.pagePaddingX / spacing.base）；移动端 .screen+.page-view gap 双容器体系",
-      "ref": "tokens.json spacing + Web RULES §6 布局黄金法则 + 移动 RULES §10.4 克制间距体系"
+      "ref": "tokens.json spacing + Web RULES §6 布局黄金法则 + 移动 RULES §10.4 克制间距体系",
+      "trap": "间距任意值（3px、7px、13px、18px），不走 4/8 栅格",
+      "pairs": [
+        {
+          "bad": "padding:7px 13px（栅格外任意值）",
+          "good": "间距按 4/8 栅格档位（4/8/12/16/24/32）"
+        }
+      ]
     },
     {
       "id": "D-6",
       "title": "圆角/投影/密度",
       "check": "圆角值是否落 --radius-* 档位；投影是否用 --shadow-* token（裸 box-shadow 标记）；密度切换（data-density）是否可用",
       "map_to": "tokens.json radius/shadow/density 对应 token；禁止自造第四档圆角、裸阴影值",
-      "ref": "tokens.json radius/shadow/density sections"
+      "ref": "tokens.json radius/shadow/density sections",
+      "trap": "圆角任取（6px、10px、14px 层级混乱）+ 自造阴影层数",
+      "pairs": [
+        {
+          "bad": "border-radius:10px + box-shadow 自造三层",
+          "good": "圆角/投影走规范 token 档位（sm/md/lg），阴影按 elevation 双层复合"
+        }
+      ]
     },
     {
       "id": "D-7",
       "title": "动效",
       "check": "transition/animation 时长是否裸数字秒（checkMotion 门禁同步清零，0s/0ms 合法）；缓动是否裸 cubic-bezier；入场/交互动效是否缺失（弘讯默认即带动效类）",
       "map_to": "var(--motion-duration-*)（M1-M5 档位）+ var(--motion-ease-*)；图表挂 .chart-bar/.chart-line/.chart-ring-anim 等动效类",
-      "ref": "tokens.json motion + RULES §8 动效交互 / 移动 §10.6"
+      "ref": "tokens.json motion + RULES §8 动效交互 / 移动 §10.6",
+      "trap": "装饰性动效泛滥（AI 生成页典型：全元素 fade-in-up 入场、悬浮发光、一页多个 heavy 动效）",
+      "pairs": [
+        {
+          "bad": "所有卡片加 fade-in-up + hover 缩放入场特效",
+          "good": "只用 M1–M5 规范动效；装饰性动效默认不加，一页最多一个 heavy 动效"
+        }
+      ]
     },
     {
       "id": "D-8",
       "title": "图标",
       "check": "页面图标是否从 icons/ 库取（path 内联进 .ico/.tree-ico/.kpi-ico 尺寸类）；自绘/外源图标规格是否为 24×24 / stroke 1.8 / fill none / currentColor / round；库缺图标是否上报",
       "map_to": "各端 icons/（Web 185 / 移动 184，icons/icons.md 索引）；库缺才手写且须符合统一规格并上报（RULES §7.9③）",
-      "ref": "icons/icons.md + Web RULES §7.9 + 图标规格契约"
+      "ref": "icons/icons.md + Web RULES §7.9 + 图标规格契约",
+      "trap": "图标来源失控（iconfont/组件库图标/emoji/自绘 SVG）",
+      "pairs": [
+        {
+          "bad": "emoji 📊 当图标 或 <i class='el-icon-xxx'>",
+          "good": "从 icons/ 目录取规范线性图标（描边风格 1.8），缺则上报不 substitute"
+        }
+      ]
     },
     {
       "id": "D-9",
       "title": "图表",
       "check": "图表是否挂容器原语 .chart-box（.chart-canvas）；SVG 是否裸 hex（M-04 同步清零）/ none 拉伸 / 拉伸区放文字；系列色是否通用语义色替代 --chart-*；x 轴标签是否压柱体/折线点是否落线；环形图是否变形",
       "map_to": "CHART-SPEC 三段式结构（绘图区/标签保护区/标签区）+ .chart-* 色板（同页 ≤5 系列，多则合并灰 --n9）；x 标签用 renderChartXLabels() SSoT",
-      "ref": "CHART-SPEC.md + GENERATION-SOP 附录 A + Web RULES §9 / 移动 §9.7"
+      "ref": "CHART-SPEC.md + GENERATION-SOP 附录 A + Web RULES §9 / 移动 §9.7",
+      "trap": "图表用库默认配色/默认网格（ECharts 默认蓝绿橙红最常见）",
+      "pairs": [
+        {
+          "bad": "ECharts 默认 color 数组 + 默认灰色网格线",
+          "good": "series 色全部映射 --chart-* token，网格/坐标按 CHART-SPEC 约束"
+        }
+      ]
     },
     {
       "id": "D-10",
       "title": "状态与语义色",
       "check": "状态点是否用语义白名单（M-03 同步清零）；是否存在「运行状态用成功色」混淆（运行≠成功）；语义色是否只点状态不铺底；Tag 用色是否超 5 色体系",
       "map_to": "状态点白名单类（run/idle/off/offline/err/ok/warn）；Tag 5 色体系（浅底 --*-soft / filled 白字 --*-fg）",
-      "ref": "Web RULES §11.11 / 移动 RULES §11 + CROSS-PLATFORM-COLORS.md"
+      "ref": "Web RULES §11.11 / 移动 RULES §11 + CROSS-PLATFORM-COLORS.md",
+      "trap": "语义色自造或跨端混用（Web 页用移动端成功绿 #10B981 最典型）",
+      "pairs": [
+        {
+          "bad": "Web 页 success 用 #10B981",
+          "good": "Web 功能色对齐 Ant Design：成功 #389E0D / 警告 #FA8C16 / 错误 #F5222D（token 引用）"
+        }
+      ]
     },
     {
       "id": "D-11",
       "title": "暗色模式",
       "check": "页面是否有完整 [data-theme=dark] 块（亮暗双模式）；暗色骨架 --brand-surface 是否定义；顶栏暗色切换按钮是否可用；暗色下是否漏 token（切到暗色后出现白底/裸色块）",
       "map_to": "非默认品牌走 brand-color-engine dark 模式（palDark 映射进 :root[data-theme=dark]）；默认品牌 template.css 已内置",
-      "ref": "GENERATION-SOP 附录 B 步骤 2b + DARK-MODE.md + RULES §0.1"
+      "ref": "GENERATION-SOP 附录 B 步骤 2b + DARK-MODE.md + RULES §0.1",
+      "trap": "暗色模式写死亮色值、漏双模式 :root 映射",
+      "pairs": [
+        {
+          "bad": "[data-theme=dark] 下 background:#fff 写死亮色",
+          "good": "背景/文字走暗色 token 变量，双 :root 亮暗映射齐全"
+        }
+      ]
     },
     {
       "id": "D-12",
       "title": "审美方向（语义层兜底）",
       "check": "品牌蓝面积 ≤30%；信息层级不跳级、每屏唯一视觉焦点（H-01）；留白呼吸感无贴一起（H-04）；冷白科技风基调不被花哨渐变/重阴影破坏；文案与工控语境一致（H-05）",
       "map_to": "按 RULES §10 审美章节重构；此维度不可静态判定，agent 按 H 层逐条核对并落台账",
-      "ref": "Web RULES §10 / 移动 RULES §10 + VISUAL-SPEC.md + human_checks H-01~05"
+      "ref": "Web RULES §10 / 移动 RULES §10 + VISUAL-SPEC.md + human_checks H-01~05",
+      "trap": "审美两极：过度装饰（渐变横幅/多彩标签/大投影堆「设计感」）或过度留白弱对比（白字浅灰底）",
+      "pairs": [
+        {
+          "bad": "卡片彩色渐变 + 多色阴影 + 彩虹标签突出精致",
+          "good": "克制扁平：白底 + N 系灰阶分层，品牌色只做强调，有活力但不花哨"
+        }
+      ]
     }
   ],
   "exemptions": [
@@ -383,6 +481,21 @@
         "记忆中『SVG paint 未扫描』经核实已过时（M-04 已于 2026-08-03 落地）→ 修正认知，登记指针"
       ],
       "attribution": "规则缺口 3 条（M-01/M-02/M-03 补齐）；执行缺口为流程性（单遍整体审查 → 已由 P0-P4 流程替代）"
+    },
+    {
+      "date": "2026-09-23",
+      "source": "维护侧消费应用侧报告 DS-20260923-01 核验回执（page-template.html 畸形 :root 块）——应用侧报告定性修正后由维护侧执行",
+      "report_source": "H:/global-workspace/反馈/设计系统问题_20260923_01_核验回执.md",
+      "findings": [
+        "page-template.html L111-114 含畸形 :root 块（L111 孤立 :root + L112-114 缩进重复密度声明）——postcss/chromium 实测：L111-112 合成后代选择器 :root :root[data-density=compact] 永不命中（1 条死规则）；L113/114 各自独立成合法命中规则（2 条活的重复声明，取值 44/52 与 L108/109 重复）",
+        "定性修正：非「4 行纯死代码」，而是「1 条死规则 + 2 条活着的重复声明」——根因描述精确化，严重级维持 P2（无功能/视觉/门禁影响）",
+        "根因：缺陷自仓库首个提交 5aca169（2026-08-06 init）即存在，属历史导入携带，非后续 Edit 残留",
+        "影响面：仓内 12 个历史产物 + I: 应用侧克隆页共 13 处同构命中（模板克隆传播）",
+        "门禁未削弱：extractRootScopeVars 对畸形块不采信（投毒 token 不可见），无假阴性放行",
+        "处置（本回执）→ 维护者六步执行：删除 L111-114（保留 L107-109 正确块），L115 为 </style>、L116 为 <style>，勿按报告 §8「111-116」执行",
+        "报告制度小缺口（可选回灌）：issue_reporting.report_schema.required 的「建议归层」枚举缺「模板源/脚手架文件」层，模板源缺陷被迫借用「文档/门禁脚本」层"
+      ],
+      "attribution": "设计系统问题（真源模板历史缺陷 + 报告制度归层枚举缺口）；无执行问题"
     }
   ]
 }

@@ -27,7 +27,7 @@
 4. 产出落盘：**「用户项目」的 `output/`**（不是本仓库；CSS link 指向本仓库对应端 `template.css`）。
 5. 门禁（风格合规才交付）：
    - 单页：`node 弘讯web端design-system/validate-spec.js <页面.html>`（移动端同理）→ 必须 **0 HIGH**
-   - 全链路：`node ci-local.js` → 必须 **99 pass / 0 fail**（2026-09-10 起，含 audit 增量审计 + check-sync 一致性阻断）
+   - 全链路：`node ci-local.js` → 必须全绿 **0 fail**（2026-09-10 起，含 audit 增量审计 + check-sync 一致性阻断；项数以脚本实际输出为准）
 
 ## 存量项目审查修改（路径二）
 

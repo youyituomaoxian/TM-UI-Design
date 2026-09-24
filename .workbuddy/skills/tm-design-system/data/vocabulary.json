@@ -1,0 +1,34 @@
+{
+  "$meta": {
+    "title": "弘讯设计系统 · 口语→术语反向检索词典（C-1 · finesse 借鉴落地）",
+    "updated": "2026-09-23",
+    "usage": "数据与提示词分离：本文件按需检索，不整份进上下文。触发时机 = 解析用户口语需求、不确定口语对应哪个弘讯组件/规范章节时；由 SKILL.md §2 第 5 条指针调用。检索方式：对 entries[].say 做包含匹配，命中取 map（弘讯术语与组件类）+ rule（规范落点指针）。新增词条：维护者六步，随改随记。",
+    "version": "1.0.0"
+  },
+  "entries": [
+    { "say": ["表格", "数据表", "列表格"], "map": "数据表组件 .tm-table（44px 行高、表头 N5 底）", "rule": "端 RULES 表格章 + components.json table" },
+    { "say": ["卡片", "卡片列表"], "map": "卡片组件 .tm-card（白底 + N 系描边，弹性/定高规则）", "rule": "端 RULES 卡片章 + §4.4b（Web）定高守则" },
+    { "say": ["弹窗", "对话框", "模态框", "popup"], "map": "Modal 组件", "rule": "端 RULES 弹窗章 + components.json modal" },
+    { "say": ["面包屑"], "map": "Breadcrumb", "rule": "端 components.json breadcrumb" },
+    { "say": ["侧边栏", "侧栏", "导航栏", "菜单栏"], "map": "框架骨架侧栏（240 宽，折叠 80）", "rule": "GENERATION-SOP §① 步骤 1.5 + Web RULES §0——禁自搭，克隆模板自带" },
+    { "say": ["顶栏", "头部", "页头"], "map": "框架骨架顶栏（72 高，含暗色切换）", "rule": "同上，克隆 page-template.html 自带" },
+    { "say": ["按钮", "主按钮", "提交按钮"], "map": "按钮 .tm-btn-primary / secondary / danger（状态矩阵齐全）", "rule": "端 RULES 按钮状态矩阵 + components.json button" },
+    { "say": ["标签", "徽标", "小标签", "chip"], "map": "Chip / Tag 组件（宽度自适应）", "rule": "端 RULES 标签章" },
+    { "say": ["下拉", "选择器", "select"], "map": "Select 组件", "rule": "端 components.json select" },
+    { "say": ["输入框", "搜索框", "文本框"], "map": "Input / Search", "rule": "端 components.json input" },
+    { "say": ["分页", "页码"], "map": "Pagination", "rule": "端 components.json pagination" },
+    { "say": ["提示", "通知", "警告条", "横幅提示"], "map": "Alert / Message（成功 #389E0D 系语义色，Web）", "rule": "端 RULES 状态与语义色章" },
+    { "say": ["开关", "切换"], "map": "Switch", "rule": "端 components.json switch" },
+    { "say": ["进度条", "进度"], "map": "Progress", "rule": "端 components.json progress" },
+    { "say": ["加载中", "转圈", "loading"], "map": "Loading / Spinner（动效走 var(--motion-duration-*)）", "rule": "端 RULES 动效章 + M1–M5" },
+    { "say": ["空状态", "暂无数据", "空页面"], "map": "Empty 状态组件", "rule": "端 RULES 空状态章" },
+    { "say": ["报错", "错误提示", "异常提示"], "map": "错误态语义色 + Alert（Web 错误 #F5222D，禁 #10B981 出现在 Web）", "rule": "端 RULES 语义色章" },
+    { "say": ["折线图", "柱状图", "饼图", "趋势图", "图表"], "map": "原子 SVG 图表（series 色走 --chart-*，禁图表库默认色板）", "rule": "CHART-SPEC.md + SOP 附录 A" },
+    { "say": ["看板", "仪表盘", "大屏", "驾驶舱"], "map": "先做 B 端后台判定：管理台→固定框架；营销/大屏→合法豁免框架", "rule": "GENERATION-SOP §① 步骤 1.5" },
+    { "say": ["手机页面", "小程序", "移动端", "APP 页面"], "map": "移动端（手机壳 375×812 + 底部导航 3-5 项）", "rule": "移动 RULES §1.1b + SOP 步骤 1 选端" },
+    { "say": ["暗黑模式", "夜间模式", "深色"], "map": "暗色模式（双 :root 亮暗映射，顶栏内置切换）", "rule": "DARK-MODE.md + 端 RULES 暗色章" },
+    { "say": ["图标", "icon"], "map": "icons/ 规范线性图标（描边 1.8，缺则上报禁 substitute）", "rule": "icons/icons.md + 端 RULES 图标章" },
+    { "say": ["首页", "工作台", "首页看板"], "map": "工作台页型（按 §1.1b 页面类型规格自建内容）", "rule": "端 RULES §1.1b" },
+    { "say": ["登录页", "注册页"], "map": "登录页型（Web/移动各有规格）", "rule": "端 RULES §1.1b 登录页" }
+  ]
+}

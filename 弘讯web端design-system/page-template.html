@@ -108,10 +108,6 @@
 :root[data-density="comfortable"],.density-comfortable{--density-row-height:44px;--density-content-padding:16px;}
 :root[data-density="spacious"],.density-spacious{--density-row-height:52px;--density-content-padding:20px;}
 
-:root
-  :root[data-density="compact"]{--density-row-height:36px;--density-content-padding:12px;}
-  :root[data-density="comfortable"]{--density-row-height:44px;--density-content-padding:16px;}
-  :root[data-density="spacious"]{--density-row-height:52px;--density-content-padding:20px;}
 </style>
 <style>
   /* 仅布局/容器助手，绝不含颜色裸值（颜色一律 var(--*) 或参考网格 hex）。
@@ -166,7 +162,7 @@
   .dp-panel .row{margin-bottom:8px;}
 </style>
 </head>
-<body>
+<body data-species="document"><body>
 
 <div class="app">
   <!-- ===== 顶栏（布局骨架 · G8 固定滚动区之一） ===== -->

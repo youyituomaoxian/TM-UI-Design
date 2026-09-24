@@ -28,10 +28,11 @@ description: 弘讯设计系统规范：生成/修改/审计 B 端 Web 或移动
    - Web B 端后台：`<仓库根>/弘讯web端design-system/page-template.html`
    - 移动端：`<仓库根>/弘讯移动端design-system/page-template.html` / `agent-starter.html`
 4. 人读使用说明：`<仓库根>/团队使用指南.md`；视觉速览：各端 `web规范展示_框架版_*.html` / `移动端规范展示_*.html`。
+5. **口语→术语词典**（按需检索，勿整份加载）：`<本目录>/data/vocabulary.json` —— 解析用户口语需求（如「表格/看板/夜间模式/转圈」）、不确定对应哪个弘讯组件或规范章节时，对 `entries[].say` 做包含匹配取 `map` + `rule` 指针。
 
 ## 3. 脚本调用（Windows PowerShell，`$repo` = 仓库根绝对路径）
 
-- **全链路自检**（每次改动后必跑，须 99 pass / 0 fail / exit 0，2026-09-10 起）：`node "$repo\ci-local.js"`
+- **全链路自检**（每次改动后必跑，须全绿 0 fail / exit 0；项数以输出为准）：`node "$repo\ci-local.js"`
 - **单页门禁**（0 HIGH 才交付）：`node "$repo\弘讯web端design-system\validate-spec.js" "<页面.html>"`（移动端同构换目录）
 - **存量页面增量审计**（路径二 P0 盘点，HIGH>0 exit 1）：`node "$repo\audit-spec.js" "<页面.html>" --end web`（移动端 `--end mobile`；`--json` 出结构化台账）
 - **分享版**（交付用，内联全量 CSS 到 `<页面>_分享版.html`）：把 `<link rel="stylesheet" href="…template.css">` 替换为 `<style>` + template.css 全量内容

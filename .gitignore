@@ -4,8 +4,13 @@
 # Agent workspace（内部记忆，绝不提交）；skills/ 需随仓库分发，纳入版本
 .workbuddy/*
 !.workbuddy/skills/
-**/.workbuddy/
-!.workbuddy/skills/
+**/.workbuddy/*
+!**/.workbuddy/skills/
+**/.workbuddy/skills/*
+!**/.workbuddy/skills/tm-design-system/
+**/.workbuddy/skills/tm-design-system/*
+!**/.workbuddy/skills/tm-design-system/SKILL.md
+!**/.workbuddy/skills/tm-design-system/data/
 
 # 本机 Agent 记忆 / 回滚点（绝不提交）
 .reasonix/

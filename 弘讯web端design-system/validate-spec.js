@@ -2236,6 +2236,17 @@ function checkTablePager(html) {
       }
     }
   }
+  // ===== 页面 species 正交维度（C-3 · 2026-09-23，RULES §1.1c）=====
+  {
+    const bm = html.match(/<body[^>]*\bdata-species\s*=\s*["']?([^"'\s>]+)/i);
+    if (!bm) {
+      violations.push({ line: 0, src: 'html', severity: 'MEDIUM', contract: 'page.species.missing', sel: 'body', msg: 'body 未声明 data-species（workbench|document）——存量渐进补齐，新页面必写（RULES §1.1c）' });
+    } else if (!/^(workbench|document)$/.test(bm[1])) {
+      violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'page.species.invalid', sel: 'body[data-species=' + bm[1] + ']', msg: 'data-species 值非法：' + bm[1] + '——仅 workbench|document（防物种爆炸，RULES §1.1c）' });
+    } else if (bm[1] === 'workbench' && !/\bstat-grid\b/.test(html)) {
+      violations.push({ line: 0, src: 'html', severity: 'MEDIUM', contract: 'page.species.workbench.skeleton', sel: 'body[data-species=workbench]', msg: '声明 workbench 但无 .stat-grid 工作台骨架——最小判据防形式字段退化：确为工作台型请补骨架，否则改 document（RULES §1.1c · T-F1）' });
+    }
+  }
   return violations;
 }
 
