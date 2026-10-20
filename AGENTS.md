@@ -3,10 +3,16 @@
 > 本文件是 **Codex / Reasonix / Cursor / 任何认 AGENTS.md 的 Agent** 的入口。**Claude Code 读 `CLAUDE.md`**（其内容 `@AGENTS.md` 导入本文件，同源不漂移）。先读它，再决定读哪些规范文件。
 > 人读使用说明见 `团队使用指南.md`；Agent 生成规范总纲见 `GENERATION-SOP.md`。
 
+## 交接铁律（2026-10-20 起 · 任何 Agent、任何轮次）
+
+**接手先读根 `HANDOFF.md`；每轮结束前必须更新它**——改真源 / 改页面 / 出报告 / 只做分析 / 只跑一次门禁，一律算。三件事：① §1 现状快照的数字刷成现在值；② §4 未决事项增删；③ §7 更新记录追加一行。**没更新 = 本轮没完成，不得宣告 done。** 本文件不是真源，禁当规格引用。协议全文见 `HANDOFF.md §0`。
+
 ## 这是什么
 
 弘讯 B 端 Web / 移动端设计系统：把品牌风格（颜色/字阶/组件/图表/页面规格）做成机器可执行资产，
 让任何 AI 生成页面时风格统一、不漂移。
+
+**各 Agent 入口（同一份规范，入口不同）**：Codex / Cursor / 通用 → 本文件；Claude Code → `CLAUDE.md`（`@AGENTS.md`）；WorkBuddy / DSH → `.workbuddy/skills/tm-design-system/SKILL.md` 为**唯一本体**，DSH 另有 `.dsh/skills/tm-design-system/SKILL.md`（**薄指针**，< 2k 字符，只指向本体；维护时改本体即可，勿把规范复制进指针）。
 
 ## 生成 HTML 页面（视觉预览）的标准流程
 
@@ -27,7 +33,7 @@
 4. 产出落盘：**「用户项目」的 `output/`**（不是本仓库；CSS link 指向本仓库对应端 `template.css`）。
 5. 门禁（风格合规才交付）：
    - 单页：`node 弘讯web端design-system/validate-spec.js <页面.html>`（移动端同理）→ 必须 **0 HIGH**
-   - 全链路：`node ci-local.js` → 必须全绿 **0 fail**（2026-09-10 起，含 audit 增量审计 + check-sync 一致性阻断；项数以脚本实际输出为准）
+   - 全链路：`node ci-local.js` → 必须全绿 **0 fail**（2026-09-10 起，含 audit 增量审计 + check-sync 一致性 + check-size 体积/清单封闭；项数以脚本实际输出为准）
 
 ## 存量项目审查修改（路径二）
 
@@ -50,7 +56,7 @@
 
 - **必读 3 项**：① `GENERATION-SOP.md` §①（存量改造读 §②）；② 对应端 `RULES.md` **命中章节**（按该文件页首「章节索引」挑；[软] 必读 / [硬] 按需，门禁兜底）；③ 对应端 `tokens.json` 的 `colors` 段（另：本 AGENTS.md 流程 + `§1.1b` 页面类型段按类型检索）。
 - **按需检索（用到才读）**：`CHART-SPEC.md`（含图表）｜`audit-rules.json`（审查/回灌/`issue_reporting`）｜`DESIGN-TOKENS.md`、`MASTER.md`（按章）｜SOP §③ 附录（按场景）。
-- **不要通读（门禁与构建消费，读脚本输出即可）**：`components.json`（41k/71k 字符）· `template.css`（54k/59k）· `validate-spec.js`（64k/107k）· `ci-local.js` / `audit-spec.js` / `check-sync.js`。
+- **不要通读（门禁与构建消费，读脚本输出即可）**：`components.json` · `template.css` · `validate-spec.js` · `ci-local.js` / `audit-spec.js` / `check-sync.js` / `check-size.js` / `gate-capture.js` / `roll-changelog.js`（体量以 `check-size.js` LIMITS 实测为准——数字引用纪律，GENERATION-SOP §0 第五节）。
 - **禁止**：整份加载 RULES / GENERATION-SOP / CHART-SPEC（单端合计约 100k 字符）；用 `Grep` 标题 + `Read` 取段替代。
 - **单点事实源（SSOT）**：品牌色→`tokens.json`｜组件契约→`components.json`+`components.md`｜审计规则→`audit-rules.json`｜图表结果约束→`CHART-SPEC.md`｜治理契约→双端 RULES 页首｜交付线→`ci-local.js` 输出（详细表见 `GENERATION-SOP.md §0`）。同一事实别在多份文档里复述。
 - **动态调节**：若门禁报错发散（同一页面反复出现新错误）→ 退回读对应端 RULES 相关章节再改，不得盲目修补。
@@ -67,7 +73,7 @@
 
 > ⚠️ **双端真源策略（不对称，改前必读）**：**Web `template.css` = build 产物**（真源在 `packages/web-ui/src/styles/` 四件 CSS + `map-tokens.js` 从 `tokens.json` 生成 `globals.css`；改源 → `map-tokens.js` + `build-template-css.js` → `ci-local.js`，直接改产物会被覆盖且暴露源缺口）；**移动 `template.css` = 手写真源**（直接改）。完整链路教训见 CHANGELOG 1.9.16。
 >
-> 双端同步有机器门禁 `check-sync.js`（2026-09-10 起，已入 ci-local 阻断）：vendor components.css ↔ template.css 同构段逐声明一致 + 双端 template.css 同名类属性键白名单外零漂移——手动同步漏了会被 ci-local 拦住。
+> 双端同步有机器门禁 `check-sync.js`（2026-09-10 起，已入 ci-local 阻断）：vendor components.css ↔ template.css 同构段逐声明一致 + 双端 template.css 同名类属性键白名单外零漂移 + 真源未覆盖类须登记 `vendor-coverage.json`（检查三，未登记阻断）——手动同步漏了会被 ci-local 拦住。
 
 - Web：改 `packages/web-ui/src/styles/` 四件 CSS → `node packages/web-ui/scripts/build-template-css.js` 重新生成 `template.css`。若直接手改 `template.css`，必须同步 `packages/web-ui/src/styles/` 对应文件（build 会覆盖，两处须一致）。
 - 移动端：移动端冻结已于 2026-08-06 解除，可修改（`弘讯移动端design-system/template.css` 为真源）；改动仍须用户拍板。

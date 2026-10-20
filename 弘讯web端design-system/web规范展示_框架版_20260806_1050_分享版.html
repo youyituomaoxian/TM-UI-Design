@@ -173,7 +173,7 @@
 .t-link{font-family:var(--font-cn);font-size:14px;line-height:22px;font-weight:400;color:var(--primary-hover);}
 .t-mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums;}
 
-.btn{height:32px;padding:0 16px;border-radius:var(--radius-md);border:none;font-size:14px;font-weight:400;
+.btn{height:32px;padding:0 16px;border-radius:6px;border:none;font-size:14px;font-weight:400;
   font-family:var(--font-cn);cursor:pointer;
   display:inline-flex;align-items:center;justify-content:center;gap:6px;
   transition:background var(--motion-duration-fast) var(--motion-ease-out),color var(--motion-duration-fast) var(--motion-ease-out);}
@@ -195,7 +195,7 @@
 
 
 .input{height:32px;width:220px;padding:0 12px;background:var(--n1);border:1px solid var(--n6);
-  border-radius:var(--radius-base);font-size:14px;color:var(--n10);font-family:var(--font-cn);
+  border-radius:6px;font-size:14px;color:var(--n10);font-family:var(--font-cn);
   transition:border-color var(--motion-duration-fast) var(--motion-ease-out),box-shadow var(--motion-duration-fast) var(--motion-ease-out);}
 .input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px var(--focus-ring);}
 .input:disabled{background:var(--n4);color:var(--n8);}
@@ -241,22 +241,10 @@
 .tree-light .tree-node:hover{background:var(--n3);}
 
 
-.tag{display:inline-flex;align-items:center;height:22px;padding:0 10px;border-radius:var(--radius-base);
-  font-size:12px;font-weight:400;margin-right:8px;}
-.tag-suc{background:var(--suc-soft);color:var(--suc-active);}
-.tag-warn{background:var(--warn-soft);color:var(--n11);}
-.tag-err{background:var(--err-soft);color:var(--err-active);}
-.tag-run{background:var(--run-soft);color:var(--run-active);}
-.tag-def{background:var(--n3);color:var(--n9);}
-
-.tag-suc:hover{background:var(--suc-soft-hover);} .tag-suc.is-disabled{background:var(--suc-disabled);color:var(--suc-fg);opacity:.6;}
-.tag-warn:hover{background:var(--warn-soft-hover);} .tag-warn.is-disabled{background:var(--warn-disabled);color:var(--warn-fg);opacity:.6;}
-.tag-err:hover{background:var(--err-soft-hover);} .tag-err.is-disabled{background:var(--err-disabled);color:var(--err-fg);opacity:.6;}
-.tag-run:hover{background:var(--run-soft-hover);} .tag-run.is-disabled{background:var(--run-disabled);color:var(--run-fg);opacity:.6;}
 
 
 .table{width:100%;border-collapse:collapse;font-size:13px;} 
-.table th{height:48px;background:var(--n2);text-align:left;padding:0 16px;color:var(--n10);font-weight:500;font-family:var(--font-cn);} 
+.table th{height:44px;background:#FAFAFA;text-align:left;padding:0 16px;color:#334155;font-size:14px;font-weight:500;font-family:var(--font-cn);border-bottom:1px solid #DEE2E6;} 
 .table th.num{text-align:right;font-variant-numeric:normal;} 
 .table td{height:var(--density-row-height);padding:0 16px;border-bottom:1px solid var(--n6);color:var(--n10);font-family:var(--font-cn);font-size:14px;} 
 .num{text-align:right;font-variant-numeric:tabular-nums;} 
@@ -373,8 +361,8 @@
 .toggle[data-on="true"]{background:var(--primary);color:var(--text-on-brand);border-color:var(--primary);}
 
 
-.badge{display:inline-flex;align-items:center;height:22px;padding:0 10px;border-radius:var(--radius-base);
-  font-size:12px;font-weight:500;font-family:var(--font-cn);margin-right:8px;}
+.badge{display:inline-block;height:22px;line-height:22px;padding:0 12px;border-radius:4px;
+  font-size:12px;font-weight:500;font-family:var(--font-cn);margin-right:8px;vertical-align:middle;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
 .badge-suc{background:var(--suc-soft);color:var(--suc-active);}
 .badge-warn{background:var(--warn-soft);color:var(--n11);}
 .badge-err{background:var(--err-soft);color:var(--err-active);}
@@ -385,7 +373,7 @@
 .badge-run:hover{background:var(--run-soft-hover);} .badge-run.is-disabled{background:var(--run-disabled);color:var(--run-fg);opacity:.6;}
 .badge-outline{border:1px solid var(--n6);color:var(--n10);}
 .badge-row{display:flex;align-items:center;gap:var(--space-sm);flex-wrap:wrap;margin-top:var(--space-md);}
-.badge-muted{background:var(--n3);color:var(--n9);}
+.badge-muted{background:var(--n3);color:#334155;}
 
 
 .avatar{width:32px;height:32px;border-radius:var(--radius-round);background:var(--n5);color:var(--n10);
@@ -1179,11 +1167,11 @@ body{margin:0;font-family:var(--font-cn);font-size:14px;color:var(--n10);backgro
         <p class="sec-desc">语义对齐 Ant Design。成功/警告/错误/运行四态，各含实底(bg)、浅底(soft)、白字(fg)。<b>运行绿 #16A34A 独立于成功绿 #389E0D</b>——状态灯必用运行绿，成功绿仅表业务成功。</p>
         <h3 class="t-h4 sub">状态标签（Tag 组件 · 高22 / 圆角4 / 字重400）</h3>
         <div class="row">
-          <span class="tag tag-suc">成功</span>
-          <span class="tag tag-warn">警告</span>
-          <span class="tag tag-err">错误</span>
-          <span class="tag tag-run">运行</span>
-          <span class="tag tag-def">默认</span>
+          <span class="badge badge-suc">成功</span>
+          <span class="badge badge-warn">警告</span>
+          <span class="badge badge-err">错误</span>
+          <span class="badge badge-run">运行</span>
+          <span class="badge badge-muted">默认</span>
         </div>
         <h3 class="t-h4 sub">实底 / 浅底对照</h3>
         <div class="grid swatch-grid">
@@ -1420,11 +1408,11 @@ body{margin:0;font-family:var(--font-cn);font-size:14px;color:var(--n10);backgro
           <div class="comp-title">Tag 标签</div>
           <div class="comp-tokens">高 22 · 半径 4 · 字重 400 · 功能色底 + 功能色字</div>
           <div class="row">
-            <span class="tag tag-suc">成功</span>
-            <span class="tag tag-warn">警告</span>
-            <span class="tag tag-err">错误</span>
-            <span class="tag tag-run">运行</span>
-            <span class="tag tag-def">默认</span>
+            <span class="badge badge-suc">成功</span>
+            <span class="badge badge-warn">警告</span>
+            <span class="badge badge-err">错误</span>
+            <span class="badge badge-run">运行</span>
+            <span class="badge badge-muted">默认</span>
           </div>
         </div>
 
@@ -1504,7 +1492,7 @@ body{margin:0;font-family:var(--font-cn);font-size:14px;color:var(--n10);backgro
         <div class="grid12">
           <div class="col-8">
             <div class="card card--fill">
-              <div class="card-head"><span class="card-title">折线图 · Line（范式一）</span><span class="tag tag-run">达标</span></div>
+              <div class="card-head"><span class="card-title">折线图 · Line（范式一）</span><span class="badge badge-run">达标</span></div>
               <div class="card-body">
                 <div class="chart-box">
                   <svg class="chart-svg--fill" viewBox="0 0 400 160" preserveAspectRatio="none" role="img" aria-label="产能趋势折线图">

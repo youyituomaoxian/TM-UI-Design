@@ -168,7 +168,8 @@
         "--primary",
         "--primary-hover",
         "--primary-active",
-        "--primary-dis-bg",
+        "--select-item-bg",
+        "--select-item-fg",
         "--primary-dis-fg",
         "--radius-base",
         "--radius-md",
@@ -225,8 +226,8 @@
           "text": "N10"
         },
         "option.selected": {
-          "bg": "primary-dis-bg(#DAEAFA)",
-          "text": "primary-active(#004A8F)"
+          "bg": "select-item-bg(亮 #DAEAFA / 暗 #23395D)",
+          "text": "select-item-fg(#004A8F / 暗 #F1F5F9)"
         },
         "panel.open": {
           "shadow": "overlay"
@@ -238,16 +239,16 @@
         "禁用",
         "多选(Tag 化回显)"
       ],
-      "referenceCss": ".sel{position:relative;display:inline-block;min-width:120px}.sel-trigger{height:32px;width:100%;padding:0 12px;display:flex;align-items:center;justify-content:space-between;background:var(--n5);border:1px solid var(--n6);border-radius:var(--radius-base);font-size:14px;font-weight:400;color:var(--n10);font-family:var(--font-cn);cursor:pointer}.sel-trigger:hover{border-color:var(--n7)}.sel-trigger:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(0,94,174,.2)}.sel-trigger:disabled{background:var(--n4);color:var(--n8);cursor:not-allowed}.sel-arrow{color:var(--n9);font-size:12px}.sel-panel{position:absolute;top:calc(100% + 4px);left:0;min-width:100%;max-height:240px;overflow:auto;background:var(--n1);border:1px solid var(--n6);border-radius:var(--radius-md);box-shadow:var(--elev-overlay-shadow);padding:4px 0;z-index:50}.sel-opt{height:32px;display:flex;align-items:center;gap:4px;padding:0 12px;font-size:14px;color:var(--n10);cursor:pointer}.sel-opt:hover{background:var(--n3)}.sel-opt.on{background:var(--primary-dis-bg);color:var(--primary-active)}",
+      "referenceCss": ".sel{position:relative;display:inline-block;min-width:120px}.sel-trigger{height:32px;width:100%;padding:0 12px;display:flex;align-items:center;justify-content:space-between;background:var(--n5);border:1px solid var(--n6);border-radius:var(--radius-control);font-size:14px;font-weight:400;color:var(--n10);font-family:var(--font-cn);cursor:pointer}.sel-trigger:hover{border-color:var(--n7)}.sel-trigger:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(0,94,174,.2)}.sel-trigger:disabled{background:var(--n4);color:var(--n8);cursor:not-allowed}.sel-arrow{color:var(--n9);font-size:12px}.sel-panel{position:absolute;top:calc(100% + 4px);left:0;min-width:100%;max-height:240px;overflow:auto;background:var(--n1);border:1px solid var(--n6);border-radius:var(--radius-control);box-shadow:var(--elev-overlay-shadow);padding:4px 0;z-index:50}.sel-opt{height:32px;display:flex;align-items:center;gap:4px;padding:0 12px;font-size:14px;color:var(--n10);cursor:pointer}.sel-opt:hover{background:var(--n3)}.sel-opt.on{background:var(--primary-dis-bg);color:var(--primary-active)}",
       "referenceHtml": "<div class=\"sel\"><div class=\"sel-trigger\">请选择设备 <span class=\"sel-arrow\">▾</span></div><div class=\"sel-panel\"><div class=\"sel-opt\">注塑机 A-01</div><div class=\"sel-opt on\">注塑机 A-02</div><div class=\"sel-opt\">机械手 C-07</div></div></div>",
       "ardot": {
         "libraryComponent": "Select / Dropdown（Ardot 组件库）",
         "variantMapping": "trigger 高度32/半径4/底色N5 对应 Ardot 主组件默认态；panel 浮层对应 Ardot overlay 变体；option 行高32 对应 Ardot option 变体。",
-        "notes": "Ardot 内选中项背景用 primary-dis-bg(#DAEAFA)+文字 primary-active(#004A8F)，勿整行用纯 primary 填充（过重）。箭头用 N9 中性色，不用品牌色。"
+        "notes": "选中项用 --select-item-bg / --select-item-fg（亮 #DAEAFA/#004A8F，暗 #23395D/#F1F5F9），勿整行纯 primary 填充。箭头用 N9 中性色，不用品牌色。"
       },
       "do": [
         "触发器外观与单行输入完全一致（高32/半径4/N5底/N6边）",
-        "选中项用浅 primary 底+深 primary 字",
+        "选中项用 --select-item-bg/fg（浅底深字/深底浅字）",
         "浮层用 Shadow-Float + 半径8"
       ],
       "dont": [
@@ -373,7 +374,7 @@
         "日期时间(时分秒)",
         "禁用"
       ],
-      "referenceCss": ".dp{position:relative;display:inline-block}.dp-trigger{height:32px;min-width:160px;padding:0 12px;display:flex;align-items:center;justify-content:space-between;background:var(--n5);border:1px solid var(--n6);border-radius:var(--radius-base);font-size:14px;color:var(--n10);font-family:var(--font-cn);cursor:pointer}.dp-trigger:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(0,94,174,.2)}.dp-panel{width:290px;background:var(--n1);border:1px solid var(--n6);border-radius:var(--radius-md);box-shadow:var(--elev-overlay-shadow);padding:12px}.dp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.dp-title{font-size:14px;font-weight:500;color:var(--n11)}.dp-nav{color:var(--n9);cursor:pointer;padding:4px}.dp-nav:hover{color:var(--n10)}.dp-week{display:grid;grid-template-columns:repeat(7,1fr);font-size:12px;color:var(--n8);text-align:center;margin-bottom:4px}.dp-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}.dp-cell{height:36px;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--n10);border-radius:var(--radius-base);cursor:pointer}.dp-cell:hover{background:var(--n3)}.dp-cell.on{background:var(--primary);color:#fff}.dp-cell.today{border:1px solid var(--primary);color:var(--primary)}.dp-cell.di{color:var(--n8);cursor:not-allowed}",
+      "referenceCss": ".dp{position:relative;display:inline-block}.dp-trigger{height:32px;min-width:160px;padding:0 12px;display:flex;align-items:center;justify-content:space-between;background:var(--n5);border:1px solid var(--n6);border-radius:var(--radius-control);font-size:14px;color:var(--n10);font-family:var(--font-cn);cursor:pointer}.dp-trigger:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(0,94,174,.2)}.dp-panel{width:290px;background:var(--n1);border:1px solid var(--n6);border-radius:var(--radius-control);box-shadow:var(--elev-overlay-shadow);padding:12px}.dp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.dp-title{font-size:14px;font-weight:500;color:var(--n11)}.dp-nav{color:var(--n9);cursor:pointer;padding:4px}.dp-nav:hover{color:var(--n10)}.dp-week{display:grid;grid-template-columns:repeat(7,1fr);font-size:12px;color:var(--n8);text-align:center;margin-bottom:4px}.dp-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}.dp-cell{height:36px;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--n10);border-radius:var(--radius-control);cursor:pointer}.dp-cell:hover{background:var(--n3)}.dp-cell.on{background:var(--primary);color:#fff}.dp-cell.today{border:1px solid var(--primary);color:var(--primary)}.dp-cell.di{color:var(--n8);cursor:not-allowed}",
       "referenceHtml": "<div class=\"dp\"><div class=\"dp-trigger\">2026-07-27 <span>📅</span></div><div class=\"dp-panel\"><div class=\"dp-head\"><span class=\"dp-nav\">‹</span><span class=\"dp-title\">2026 年 7 月</span><span class=\"dp-nav\">›</span></div><div class=\"dp-week\"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div><div class=\"dp-grid\"><div class=\"dp-cell di\">30</div><div class=\"dp-cell\">1</div><div class=\"dp-cell today\">27</div><div class=\"dp-cell on\">28</div><div class=\"dp-cell\">31</div></div></div></div>",
       "ardot": {
         "libraryComponent": "DatePicker / Calendar（Ardot 组件库）",
@@ -416,7 +417,8 @@
         "--n11",
         "--primary",
         "--primary-active",
-        "--primary-dis-bg",
+        "--select-item-bg",
+        "--select-item-fg",
         "--radius-base",
         "--font-cn"
       ],
@@ -444,9 +446,9 @@
           "bg": "N3"
         },
         "node.selected": {
-          "bg": "primary-dis-bg(#DAEAFA)",
-          "text": "primary-active(#004A8F)",
-          "note": "白底/内容表面：浅 primary 底+深 primary 字"
+          "bg": "select-item-bg(#DAEAFA / 暗 #23395D)",
+          "text": "select-item-fg(#004A8F / 暗 #F1F5F9)",
+          "note": "白底/内容表面：light 浅底深字 / dark 深底浅字（--select-item-*，10.56:1）"
         },
         "node.selectedOnBrand": {
           "bg": "primary-active(#004A8F)",
@@ -472,12 +474,12 @@
       "ardot": {
         "libraryComponent": "Tree / 作业树（Ardot 组件库）",
         "variantMapping": "node 高32 对应 Ardot tree-item；switcher 对应 Ardot expand-icon 变体；缩进每级16 对应 Ardot padding 变体。",
-        "notes": "选中节点分表面：①白底/内容表面用 primary-dis-bg(#DAEAFA)+primary-active(#004A8F)，与下拉选中态一致；②品牌色表面(.sidebar/.demo-sidebar/.tree--brand)用深 primary 实底 primary-active(#004A8F)+白字(#FFFFFF/N1)，不用左侧白强调条（2026-07-31 取消，靠实底+白字+字重 500 表达；template.css 已对 .sidebar/.demo-sidebar 自动套用，新品牌表面加 .tree--brand 即可）。勿在品牌表面用浅 primary-dis-bg 浅 chip——那是「禁用」语义，在蓝侧栏里像逃出的禁用块，非选中。连接线用 N6，缩进每级 16px。每个节点（含二级子节点）必须带 .tree-ico 图标；收起侧栏(.sidebar.collapsed)时只显示图标、隐藏文字与箭头。"
+        "notes": "选中节点分表面：①白底/内容表面用 --select-item-bg/fg（亮 #DAEAFA+#004A8F，暗 #23395D+#F1F5F9），与下拉选中态一致；②品牌色表面(.sidebar/.demo-sidebar/.tree--brand)用深 primary 实底 primary-active(#004A8F)+白字(#FFFFFF/N1)，不用左侧白强调条（2026-07-31 取消，靠实底+白字+字重 500 表达；template.css 已对 .sidebar/.demo-sidebar 自动套用，新品牌表面加 .tree--brand 即可）。勿在品牌表面用浅 primary-dis-bg 浅 chip——那是「禁用」语义，在蓝侧栏里像逃出的禁用块，非选中。连接线用 N6，缩进每级 16px。每个节点（含二级子节点）必须带 .tree-ico 图标；收起侧栏(.sidebar.collapsed)时只显示图标、隐藏文字与箭头。"
       },
       "do": [
         "节点高32、按级缩进16",
         "每个节点（含二级子节点）带 .tree-ico 图标；收起侧栏只显示图标",
-        "选中按表面分两种：白底=浅 primary 底+深 primary 字（与下拉统一）；品牌色表面=深 primary 实底+白字（不用左侧白强调条）",
+        "选中按表面分两种：白底=--select-item-bg/fg（与下拉统一）；品牌色表面=深 primary 实底+白字（不用左侧白强调条）",
         "switcher 用 N9 中性色"
       ],
       "dont": [
@@ -577,7 +579,7 @@
         "危险操作(错误红主按钮)",
         "无遮罩抽屉(后续并入)"
       ],
-      "referenceCss": ".modal-mask{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;z-index:100}.modal{width:382px;min-height:257px;background:var(--n1);border:1px solid var(--n6);border-radius:var(--radius-md);box-shadow:0 6px 16px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);display:flex;flex-direction:column}.modal-head{height:40px;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid var(--n6);font-size:16px;font-weight:500;color:var(--n11)}.modal-body{flex:1;padding:16px 24px;font-size:14px;color:var(--n10);font-family:var(--font-cn)}.modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 16px;border-top:1px solid var(--n6)}.modal-foot .btn-p{height:32px;padding:0 16px;border:none;border-radius:var(--radius-md);background:var(--primary);color:#fff;font-size:14px;cursor:pointer}.modal-foot .btn-p:hover{background:var(--primary-hover)}.modal-foot .btn-c{height:32px;padding:0 16px;border:1px solid var(--n6);border-radius:var(--radius-md);background:var(--n1);color:var(--primary);font-size:14px;cursor:pointer}",
+      "referenceCss": ".modal-mask{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;z-index:100}.modal{width:382px;min-height:257px;background:var(--n1);border:1px solid var(--n6);border-radius:var(--radius-control);box-shadow:0 6px 16px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);display:flex;flex-direction:column}.modal-head{height:40px;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid var(--n6);font-size:16px;font-weight:500;color:var(--n11)}.modal-body{flex:1;padding:16px 24px;font-size:14px;color:var(--n10);font-family:var(--font-cn)}.modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 16px;border-top:1px solid var(--n6)}.modal-foot .btn-p{height:32px;padding:0 16px;border:none;border-radius:var(--radius-control);background:var(--primary);color:#fff;font-size:14px;cursor:pointer}.modal-foot .btn-p:hover{background:var(--primary-hover)}.modal-foot .btn-c{height:32px;padding:0 16px;border:1px solid var(--n6);border-radius:var(--radius-control);background:var(--n1);color:var(--primary);font-size:14px;cursor:pointer}",
       "referenceHtml": "<div class=\"modal-mask\"><div class=\"modal\"><div class=\"modal-head\">设备参数确认</div><div class=\"modal-body\">确认将注塑机 A-01 切换至自动模式？此操作将下发至现场控制器。</div><div class=\"modal-foot\"><button class=\"btn-c\">取消</button><button class=\"btn-p\">确认</button></div></div></div>",
       "ardot": {
         "libraryComponent": "Modal / Dialog（Ardot 组件库）",
@@ -627,7 +629,7 @@
       "id": "button",
       "name": "按钮 Button",
       "category": "通用",
-      "summary": "主/次/文字/大/小/禁用，文本绑 Body1（14px/Regular 400）；默认高32、大40、小24，圆角8。",
+      "summary": "主/次/文字/大/小/禁用，文本绑 Body1（14px/Regular 400）；默认高32、大40、小24，圆角6。",
       "anatomy": {
         "base": "基础按钮",
         "primary": "主按钮(实底)",
@@ -699,16 +701,16 @@
         "小按钮(24)",
         "禁用"
       ],
-      "referenceCss": ".btn{height:32px;padding:0 16px;border-radius:var(--radius-md);border:none;font-size:14px;font-family:var(--font-cn);cursor:pointer}.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-hover)}.btn-secondary{background:#fff;color:var(--primary);border:1px solid var(--primary)}.btn-text{background:none;color:var(--primary)}.btn-lg{height:40px}.btn-sm{height:24px;padding:0 12px}.btn:disabled{background:var(--primary-dis-bg);color:var(--primary-dis-fg);cursor:not-allowed}",
+      "referenceCss": ".btn{height:32px;padding:0 16px;border-radius:var(--radius-control);border:none;font-size:14px;font-family:var(--font-cn);cursor:pointer}.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-hover)}.btn-secondary{background:#fff;color:var(--primary);border:1px solid var(--primary)}.btn-text{background:none;color:var(--primary)}.btn-lg{height:40px}.btn-sm{height:24px;padding:0 12px}.btn:disabled{background:var(--primary-dis-bg);color:var(--primary-dis-fg);cursor:not-allowed}",
       "referenceHtml": "<span class=\"btn btn-primary\">主按钮</span><span class=\"btn btn-secondary\">次按钮</span><span class=\"btn btn-text\">文字按钮</span>",
       "ardot": {
         "libraryComponent": "Button（Ardot 组件库）",
-        "variantMapping": "主/次/文字对应 Ardot Button 三变体；大/小对应 Ardot size 变体；圆角8、字重400、全尺寸文本绑 Body1（14px/400）对齐 Ardot 默认态。",
+        "variantMapping": "主/次/文字对应 Ardot Button 三变体；大/小对应 Ardot size 变体；圆角6、字重400、全尺寸文本绑 Body1（14px/400）对齐 Ardot 默认态。",
         "notes": "主按钮 primary 实底白字；次按钮白底+primary 边框+primary 字；文字按钮仅 primary 字。禁用用 primary-dis-bg + primary-dis-fg 字（#A0B4C0，品牌色弱化色），勿整块深 primary。文本绑 Body1（14px/Regular 400，全尺寸统一）；字重 400，非 600。"
       },
       "do": [
         "默认高32/大40/小24",
-        "圆角8",
+        "圆角6",
         "字重400 Regular",
         "禁用用浅 primary 底+灰字"
       ],
@@ -777,7 +779,7 @@
         "禁用",
         "错误态(红边)"
       ],
-      "referenceCss": ".input{height:32px;width:220px;padding:0 12px;background:var(--n5);border:1px solid var(--n6);border-radius:var(--radius-base);font-size:14px;color:var(--n10);font-family:var(--font-cn)}.input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(0,94,174,.2)}",
+      "referenceCss": ".input{height:32px;width:220px;padding:0 12px;background:var(--n5);border:1px solid var(--n6);border-radius:var(--radius-control);font-size:14px;color:var(--n10);font-family:var(--font-cn)}.input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(0,94,174,.2)}",
       "referenceHtml": "<input class=\"input\" placeholder=\"请输入设备编号 / 名称…\">",
       "ardot": {
         "libraryComponent": "Input（Ardot 组件库）",
@@ -819,10 +821,13 @@
         "--n6",
         "--n10",
         "--n3",
-        "--font-cn"
+        "--font-cn",
+        "--row-selected-bg",
+        "--row-selected-bar",
+        "--cbx-border"
       ],
       "sizing": {
-        "headerHeight": 48,
+        "headerHeight": 44,
         "rowHeight": 44,
         "headerBg": "N2",
         "headerWeight": 500,
@@ -841,6 +846,13 @@
         },
         "row.hover": {
           "bg": "N3"
+        },
+        "row.selected": {
+          "bg": "row-selected-bg(#DAEAFA / 暗 #23395D)",
+          "bar": "2px row-selected-bar(#005EAE / 暗 #3B82F6)，首列 padding-left 14 保 16 缩进",
+          "text": "N10（不变）",
+          "nonColorCue": "2px 左条（灰度可辨）+ 多选复选框",
+          "note": "单选/多选统一：底 + 左条。多选由 .cbx 触发；单选 table[data-select=single] 行点击即选中、无控件；未选中行点击仅 hover，不出现左条"
         }
       },
       "variants": [
@@ -869,97 +881,6 @@
       "deprecated": true,
       "supersededBy": "table",
       "note": "2026-07-31 弃用：新页面改用 packages/web-ui 真实组件「table」（shadcn）。本条目仅作 HTML 原型对照与门禁来源。2026-08-26（V7）：新增 .table--fixed{table-layout:fixed} opt-in 变体——fixed 下按首行 th 显式 width 分配、无宽度列等宽均分，避免 auto 布局把剩余宽度全给最长文本列（如「项目」列 67% 挤压其余列）；长文本列对 th 设 width 百分比（如 30%）、操作列建议 ≤12%。",
-      "motion": {
-        "transition": {
-          "property": "background",
-          "duration": "fast",
-          "easing": "ease-out"
-        }
-      }
-    },
-    {
-      "id": "tag",
-      "name": "标签 Tag",
-      "category": "数据展示",
-      "summary": "高22、半径4、字重400；4 态用功能色底+功能色字。",
-      "anatomy": {
-        "base": "标签基",
-        "suc": "成功",
-        "warn": "警告",
-        "err": "错误",
-        "def": "默认/中性",
-        "run": "运行"
-      },
-      "tokens": [
-        "--suc",
-        "--suc-soft",
-        "--warn",
-        "--warn-soft",
-        "--err",
-        "--err-soft",
-        "--run",
-        "--run-soft",
-        "--n3",
-        "--n9",
-        "--radius-base"
-      ],
-      "sizing": {
-        "height": 22,
-        "radius": 4,
-        "fontSize": 12,
-        "fontWeight": 400,
-        "paddingX": 10
-      },
-      "states": {
-        "suc": {
-          "bg": "suc-soft(#F6FFED)",
-          "text": "suc(#389E0D)"
-        },
-        "warn": {
-          "bg": "warn-soft(#FFF7E6)",
-          "text": "warn(#FA8C16)"
-        },
-        "err": {
-          "bg": "err-soft(#FFF1F0)",
-          "text": "err(#F5222D)"
-        },
-        "run": {
-          "bg": "run-soft(#ECFDF5)",
-          "text": "run(#16A34A)"
-        },
-        "def": {
-          "bg": "N3",
-          "text": "N9"
-        }
-      },
-      "variants": [
-        "成功",
-        "警告",
-        "错误",
-        "运行",
-        "默认"
-      ],
-      "referenceCss": ".tag{display:inline-flex;align-items:center;height:22px;padding:0 10px;border-radius:var(--radius-base);font-size:12px;margin-right:8px}.tag-suc{background:var(--suc-soft);color:var(--suc)}.tag-warn{background:var(--warn-soft);color:var(--warn)}.tag-err{background:var(--err-soft);color:var(--err)}.tag-def{background:var(--n3);color:var(--n9)}",
-      "referenceHtml": "<span class=\"tag tag-suc\">成功</span><span class=\"tag tag-warn\">警告</span><span class=\"tag tag-err\">错误</span><span class=\"tag tag-def\">默认</span>",
-      "ardot": {
-        "libraryComponent": "Tag / 状态标签（Ardot 组件库）",
-        "variantMapping": "各态对应 Ardot Tag 变体；运行态用 run 而非 suc。",
-        "notes": "高22/半径4/字重400；4 态用功能色底+功能色字（底为 -bg 浅色）。运行态用 run(#16A34A) 系列，勿与成功绿混。Web 内禁止 #10B981。"
-      },
-      "do": [
-        "高22/半径4/字重400",
-        "功能色底+功能色字",
-        "运行态单独用 run"
-      ],
-      "dont": [
-        "字重 600",
-        "半径≠4",
-        "Web 内用 #10B981",
-        "运行态用成功绿"
-      ],
-      "deprecated": true,
-      "supersededBy": "tag",
-      "note": "2026-07-31 弃用：新页面改用 packages/web-ui 真实组件「tag」（shadcn）。本条目仅作 HTML 原型对照与门禁来源。",
       "motion": {
         "transition": {
           "property": "background",
@@ -1171,7 +1092,14 @@
         "sep": "› 分隔符",
         "current": "当前页"
       },
-      "tokens": ["--n5", "--n8", "--n9", "--n11", "--radius-base", "--space-base"],
+      "tokens": [
+        "--n5",
+        "--n8",
+        "--n9",
+        "--n11",
+        "--radius-base",
+        "--space-base"
+      ],
       "sizing": {
         "height": 32,
         "fontSize": 14,
@@ -1180,15 +1108,30 @@
         "radius": "base"
       },
       "states": {
-        "item.default": { "text": "N9" },
-        "item.current": { "text": "N11" },
-        "sep": { "text": "N8" }
+        "item.default": {
+          "text": "N9"
+        },
+        "item.current": {
+          "text": "N11"
+        },
+        "sep": {
+          "text": "N8"
+        }
       },
-      "variants": ["基础（N5 底条带）"],
+      "variants": [
+        "基础（N5 底条带）"
+      ],
       "referenceCss": ".breadcrumb{display:flex;align-items:center;gap:8px;height:32px;padding:0 12px;background:var(--n5);border-radius:var(--radius-base);font-size:14px;font-family:var(--font-cn);margin-bottom:var(--space-base)}.breadcrumb-item{color:var(--n9);cursor:pointer}.breadcrumb-item[aria-current=\"page\"]{color:var(--n11);cursor:default}.breadcrumb-sep{color:var(--n8)}",
       "referenceHtml": "<nav class=\"breadcrumb\"><span class=\"breadcrumb-item\">生产监控</span><span class=\"breadcrumb-sep\">›</span><span class=\"breadcrumb-item\" aria-current=\"page\">设备台账</span></nav>",
-      "do": ["32 高 / N5 底 / › 分隔", "当前页 aria-current=page", "下方间距 --space-base 16（页头组内档）"],
-      "dont": ["无底色纯文本导航", "margin 用 --space-lg（模块间档，页头组内应 --space-base）"]
+      "do": [
+        "32 高 / N5 底 / › 分隔",
+        "当前页 aria-current=page",
+        "下方间距 --space-base 16（页头组内档）"
+      ],
+      "dont": [
+        "无底色纯文本导航",
+        "margin 用 --space-lg（模块间档，页头组内应 --space-base）"
+      ]
     },
     {
       "id": "status-dot",
@@ -1403,6 +1346,123 @@
       "summary": "KPI 标准版（回滚点 20260806_Web完成态 布局）：左浅底高圆角图标块 48×48（kpi-ico--lg · radius-lg）+ 右上大数字 + 底部行（标题左 stat-sub / 变化量右 stat-delta，贴图标底部对齐）。变化量 12px 500，↑=run 绿 / ↓=err 红。",
       "note": "KPI 图标卡唯一排列（2026-08-07 用户拍板）：数值大字在上（stat-num）+ 底部行（stat-sub 标题左 + stat-delta 趋势右）；禁止「标题在上/数值居中」排列（stat-label 首行 + stat-num 居中）——门禁 kpi.label.top.forbidden HIGH 拦截；stat-label 仅限环形卡 ring-info 使用（真源已删通用 .stat-label）",
       "dom": "<div class=\"card\"><div class=\"card-body stat-card--icon\"><span class=\"kpi-ico kpi-ico--lg kpi-ico--primary\">svg</span><div class=\"stat-body\"><div class=\"stat-num\">142</div><div class=\"stat-foot\"><div class=\"stat-sub\">设备总数</div><span class=\"stat-delta stat-delta--up\">↑2.4%</span></div></div></div></div>"
+    },
+    {
+      "id": "checkbox",
+      "name": "复选框 Checkbox",
+      "category": "数据录入",
+      "summary": "16×16、半径4、边框对白底 3.03:1；勾选 = 主色底 + 白勾。表格多选用。",
+      "tokens": [
+        "--cbx-border",
+        "--cbx-check-fg",
+        "--primary",
+        "--focus-ring",
+        "--radius-base",
+        "--n6",
+        "--n8"
+      ],
+      "sizing": {
+        "size": 16,
+        "radius": 4,
+        "iconSize": 11,
+        "cellWidth": 40
+      },
+      "states": {
+        "default": {
+          "border": "#949494",
+          "bg": "N1"
+        },
+        "hover": {
+          "border": "PRIMARY"
+        },
+        "checked": {
+          "bg": "PRIMARY",
+          "fg": "cbx-check-fg(#FFFFFF)",
+          "border": "PRIMARY"
+        },
+        "indeterminate": {
+          "bg": "PRIMARY",
+          "fg": "cbx-check-fg(#FFFFFF)"
+        },
+        "focus": {
+          "ring": "2px --focus-ring"
+        },
+        "disabled": {
+          "border": "N6",
+          "bg": "N3",
+          "fg": "N8"
+        }
+      },
+      "variants": [
+        "多选（方形）",
+        "半选（表头全选）"
+      ],
+      "referenceCss": ".cbx{width:16px;height:16px;border-radius:var(--radius-base);border:1px solid var(--cbx-border);background:var(--bg-surface);display:inline-flex;align-items:center;justify-content:center;padding:0;cursor:pointer;vertical-align:-3px}.cbx:focus-visible{outline:none;box-shadow:0 0 0 2px var(--focus-ring)}.cbx[aria-checked=\"true\"],.cbx.is-indeterminate{background:var(--primary);border-color:var(--primary);color:var(--cbx-check-fg)}",
+      "referenceHtml": "<span class=\"cbx\" role=\"checkbox\" aria-checked=\"false\" tabindex=\"0\"></span><span class=\"cbx\" role=\"checkbox\" aria-checked=\"true\" tabindex=\"0\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\"><path d=\"M 4 12 L 9 17 L 20 6\"/></svg></span>",
+      "do": [
+        "边框对白底 ≥3:1（3.03）",
+        "勾选由图形承载（1.4.1）",
+        "表格多选列宽 40（th/td 加 .ck）"
+      ],
+      "dont": [
+        "N7 #CED4DA 当边框（1.49:1）",
+        "只靠底色表示勾选"
+      ]
+    },
+    {
+      "id": "empty",
+      "name": "空态 Empty",
+      "selector": [
+        ".empty",
+        ".empty-ico",
+        ".empty-title",
+        ".empty-desc",
+        ".empty-actions"
+      ],
+      "scope": "web",
+      "rules": [],
+      "notes": "2026-10-20 新增：表格 0 行 / 列表空数据统一结构；图标 48 圆形 N3 底、标题 14/500、说明 12、主操作 1 个。"
+    },
+    {
+      "id": "steps",
+      "name": "步骤条 Steps",
+      "selector": [
+        ".steps",
+        ".step",
+        ".step-dot",
+        ".step-text",
+        ".step-line"
+      ],
+      "scope": "web",
+      "rules": [],
+      "notes": "2026-10-20 新增：横向步骤；.is-done 实底 primary+白字，.is-active 描边 primary+primary 字；连接线 1px N6。"
+    },
+    {
+      "id": "timeline",
+      "name": "时间线 Timeline",
+      "selector": [
+        ".timeline",
+        ".tl-item",
+        ".tl-dot",
+        ".tl-time",
+        ".tl-text"
+      ],
+      "scope": "web",
+      "rules": [],
+      "notes": "2026-10-20 新增：纵向时间线；圆点 8、连接线 1px N6、时间 12/N9、正文 14/N10；.is-active 圆点实心。"
+    },
+    {
+      "id": "descriptions",
+      "name": "描述列表 Descriptions",
+      "selector": [
+        ".descriptions",
+        ".desc-item",
+        ".desc-label",
+        ".desc-value"
+      ],
+      "scope": "web",
+      "rules": [],
+      "notes": "2026-10-20 新增：详情页键值对；自适应列 min 240、行高 40、label 96/13/N9、value 14/N10 省略号。"
     }
   ],
   "contract": [
@@ -1416,9 +1476,9 @@
       "rules": [
         {
           "prop": "border-radius",
-          "expect": 8,
+          "expect": 6,
           "severity": "HIGH",
-          "note": "按钮圆角8"
+          "note": "按钮圆角6（--radius-control，2026-10-20 控件统一）"
         }
       ]
     },
@@ -1475,38 +1535,9 @@
         },
         {
           "prop": "border-radius",
-          "expect": 4,
-          "severity": "HIGH"
-        }
-      ]
-    },
-    {
-      "id": "tag.size",
-      "component": "tag",
-      "selector": [
-        ".tag"
-      ],
-      "scope": "web",
-      "exclude": [
-        ".hero"
-      ],
-      "rules": [
-        {
-          "prop": "height",
-          "expect": 22,
-          "severity": "HIGH"
-        },
-        {
-          "prop": "border-radius",
-          "expect": 4,
-          "severity": "HIGH"
-        },
-        {
-          "prop": "font-weight",
-          "expect": [
-            400
-          ],
-          "severity": "MEDIUM"
+          "expect": 6,
+          "severity": "HIGH",
+          "note": "--radius-control（2026-10-20 控件统一 6）"
         }
       ]
     },
@@ -1521,8 +1552,14 @@
       "rules": [
         {
           "prop": "height",
-          "expect": 48,
+          "expect": 44,
           "severity": "HIGH"
+        },
+        {
+          "prop": "font-size",
+          "expect": 14,
+          "severity": "HIGH",
+          "note": "表头与数据同级 14px（2026-10-20）"
         },
         {
           "prop": "font-weight",
@@ -1636,7 +1673,6 @@
         ".btn",
         ".input",
         ".tbl",
-        ".tag",
         ".tabs",
         ".pager",
         ".dot"
@@ -1667,7 +1703,6 @@
         ".btn",
         ".input",
         ".tbl",
-        ".tag",
         ".tabs",
         ".pager",
         ".dot"
@@ -2106,7 +2141,7 @@
             "var(--font-cn)"
           ],
           "severity": "HIGH",
-          "note": "表头 th 必须显式 font-family:var(--font-cn)（2026-08-06：锁定黑体家族，防 font-variant 特性回退落宋体；表头 13px/500 与数据 14px 区分）"
+          "note": "表头 th 必须显式 font-family:var(--font-cn)（2026-10-20：表头改 14px/500，与数据同级；字体家族仍锁死防回退宋体）"
         }
       ]
     }

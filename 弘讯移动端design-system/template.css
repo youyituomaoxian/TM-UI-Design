@@ -10,6 +10,9 @@
   --suc:#10B981; --suc-pressed:#0D9E6F; --suc-dis:#A6D4C5; --suc-text:#F0FFFA;
   --warn:#F59E0B; --warn-pressed:#DB8E09; --warn-dis:#F5D9A6; --warn-text:#FEF2E8;
   --err:#EF4444; --err-pressed:#D63B3B; --err-dis:#F5A6A6; --err-text:#FEDED8; --err-fg-deep:#101010;
+  /* 2026-10-20：功能色文字深变体 + 实底按钮色 */
+  --suc-deep:#047857; --warn-deep:#B45309; --err-deep:#B91C1C;
+  --suc-btn-bg:#047857; --warn-btn-bg:#B45309; --err-btn-bg:#B91C1C; --run-btn-bg:#15803D;
   --link:#1A75D2;
   /* 功能色 soft 浅底（2026-08-06 新增，对齐 --run-bg/--run-border 命名；值=tokens.json colors.functional.*.bg/border） */
   --suc-bg:#EAF9F3; --suc-border:#B7E7D5;
@@ -118,6 +121,8 @@
   --suc:#34D399; --suc-hover:#50d9a7; --suc-pressed:#2eba87; --suc-dis:#266a5f; --suc-text:#06281C;
   --suc-soft-hover:#2e4b41; --suc-soft-active:#0b281e; --suc-border-hover:#5ddcad; --suc-border-active:#75e1ba; --suc-dis-fg:#13292d;
   --warn:#FBBF24; --warn-hover:#fcc843; --warn-pressed:#dda820; --warn-dis:#726232; --warn-text:#1A1A1A;
+  --suc-deep:#34D399; --warn-deep:#FBBF24; --err-deep:#F87171;
+  --suc-btn-bg:#34D399; --warn-btn-bg:#FBBF24; --err-btn-bg:#F87171; --run-btn-bg:#22C55E;
   --warn-soft-hover:#4b4331; --warn-soft-active:#28200e; --warn-border-hover:#fccc50; --warn-border-active:#fcd36a; --warn-dis-fg:#1c222c;
   --err:#F87171; --err-hover:#f98585; --err-pressed:#da6363; --err-dis:#714450; --err-text:#FFFFFF;
   --err-soft-hover:#483535; --err-soft-active:#251212; --err-border-hover:#f98d8d; --err-border-active:#fa9e9e; --err-dis-fg:#838993;
@@ -190,7 +195,8 @@ body{background:#1b1f26;min-height:100vh;margin:0;padding:24px 0;box-sizing:bord
 
 /* ============ 0.7 文字语义类（2026-08-04 新增：哪里改用什么层级——Agent 按语义选类，禁裸 font-size） ============ */
 /* 对齐 antd-mobile 字阶体系（10 级→本地化 8 级）+ typography 9 级；门禁 text.layer 强制（裸 inline font-size ≥3 且无语义类 → MED） */
-.m-text-h1{font-size:24px;line-height:32px;font-weight:600;}
+.m-text-h1{font-size:28px;line-height:36px;font-weight:600;} /* 2026-10-20：对齐 tokens.android H1（iOS 用 [data-os=ios] 覆盖） */
+[data-os="ios"] .m-text-h1{font-size:26px;line-height:34px;}
 .m-text-h2{font-size:20px;line-height:28px;font-weight:600;}
 .m-text-h3{font-size:17px;line-height:24px;font-weight:600;}
 .m-text-h4{font-size:18px;line-height:26px;font-weight:600;}
@@ -199,6 +205,7 @@ body{background:#1b1f26;min-height:100vh;margin:0;padding:24px 0;box-sizing:bord
 .m-text-body2{font-size:14px;line-height:22px;font-weight:400;}
 .m-text-body3{font-size:15px;line-height:22px;font-weight:400;}
 .m-text-caption{font-size:12px;line-height:16px;font-weight:400;color:var(--n7);}
+[data-theme="dark"] .m-text-caption{color:var(--n9);} /* 2026-10-20：暗态 n7 是描边色，文字改用 n9 */
 .m-text-note{font-size:13px;line-height:20px;font-weight:400;color:var(--n7);}
 .m-text-label{font-size:12px;line-height:16px;font-weight:500;}
 .m-text-num{font-variant-numeric:tabular-nums;font-family:var(--font-mono);font-size:16px;line-height:22px;font-weight:600;}
@@ -268,9 +275,9 @@ body{background:#1b1f26;min-height:100vh;margin:0;padding:24px 0;box-sizing:bord
 .mbtn-text:active{color:var(--primary-active);text-decoration:underline}
 /* WCAG 2.0 AA（08-05）：功能色底禁用白字（白 on suc 2.54 / err 3.76 / run 3.30 均不达标）→ 深字 n10
    亮色 n10 #21253C 深；暗色模式 n10 反转成亮色，另在 dark 覆盖为 n1（dark n1 #1E293B 深） */
-.mbtn-danger{background:var(--err);color:var(--n1)}
+.mbtn-danger{background:var(--err-btn-bg);color:var(--n1)}
 .mbtn-danger:active{background:var(--err-pressed)}
-.mbtn-success{background:var(--suc);color:var(--n1)}
+.mbtn-success{background:var(--suc-btn-bg);color:var(--n1)}
 .mbtn-success:active{background:var(--suc-pressed)}
 .mbtn:disabled{background:var(--primary-dis-bg);color:var(--primary-dis-fg);cursor:not-allowed}
 /* 按压反馈：物理按压缩放（图2 参考："按压"状态） */
@@ -303,11 +310,11 @@ body{background:#1b1f26;min-height:100vh;margin:0;padding:24px 0;box-sizing:bord
    用户反馈「标签深色字不通透，白色可以；无障碍规范作参考，最重要的是视觉美观」）
    白字 on suc/warn/run/err 视觉更清爽通透，工业后台调性优先 */
 .mtag-default{background:var(--primary);color:var(--n1)}
-.mtag-suc{background:var(--suc);color:var(--n1)}
-.mtag-warn{background:var(--warn);color:var(--n1)}
-.mtag-err{background:var(--err);color:var(--n1)}
+.mtag-suc{background:var(--suc-btn-bg);color:var(--n1)}
+.mtag-warn{background:var(--warn-btn-bg);color:var(--n1)}
+.mtag-err{background:var(--err-btn-bg);color:var(--n1)}
 .mtag-neutral{background:var(--n3);color:var(--n8);border:1px solid var(--n4)}
-.mtag-run{background:var(--run);color:var(--n1)}
+.mtag-run{background:var(--run-btn-bg);color:var(--n1)}
 /* 暗色模式：功能色底变亮（suc #34D399 等），文字改 dark n1（#1E293B 深）保对比 */
 :root[data-theme="dark"] .mtag-suc,:root[data-theme="dark"] .mtag-warn,
 :root[data-theme="dark"] .mtag-err,:root[data-theme="dark"] .mtag-run,
@@ -389,9 +396,9 @@ body{background:#1b1f26;min-height:100vh;margin:0;padding:24px 0;box-sizing:bord
 .mmodal{width:343px;margin:0 auto 0;background:var(--n2);border-radius:var(--radius-lg) var(--radius-lg) 0 0;box-shadow:var(--shadow-l);overflow:hidden;}
 .mmodal-title{height:46px;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--n7);font-family:var(--font-cn);background:var(--n1);}
 .mmodal-item{height:56px;display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--primary);font-family:var(--font-cn);background:var(--n1);}
-.mmodal-item.on{color:var(--err);}
+.mmodal-item.on{color:var(--err-deep);}
 .mmodal-item .m-icon{width:20px;height:20px;margin-right:12px;color:var(--n7);flex:none;}
-.mmodal-item.on .m-icon{color:var(--err);}
+.mmodal-item.on .m-icon{color:var(--err-deep);}
 /* ActionSheet 底部取消按钮：独立分区（8px 灰底间隔）+ home indicator */
 .mmodal-cancel{height:56px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:var(--n10);font-family:var(--font-cn);border-top:8px solid var(--n2);background:var(--n1);}
 .mmodal-cancel:active{background:var(--n3);}
@@ -637,11 +644,11 @@ body{background:#1b1f26;min-height:100vh;margin:0;padding:24px 0;box-sizing:bord
 .m-notice-info{border-left-color:var(--primary);}
 .m-notice-info .m-notice-ico{color:var(--primary);}
 .m-notice-suc{border-left-color:var(--suc);}
-.m-notice-suc .m-notice-ico{color:var(--suc);}
+.m-notice-suc .m-notice-ico{color:var(--suc-deep);}
 .m-notice-warn{border-left-color:var(--warn);}
-.m-notice-warn .m-notice-ico{color:var(--warn);}
+.m-notice-warn .m-notice-ico{color:var(--warn-deep);}
 .m-notice-err{border-left-color:var(--err);}
-.m-notice-err .m-notice-ico{color:var(--err);}
+.m-notice-err .m-notice-ico{color:var(--err-deep);}
 /* --- Skeleton 骨架屏（加载占位：文字行 w60/w80 + 圆形；shimmer 扫光用规范 keyframes + 动效 token） --- */
 .m-skeleton{display:flex;flex-direction:column;gap:12px;padding:16px;background:var(--n1);border-radius:var(--radius-md);}
 .m-skeleton .sk-row{display:flex;align-items:center;gap:12px;}
@@ -707,9 +714,9 @@ body{background:#1b1f26;min-height:100vh;margin:0;padding:24px 0;box-sizing:bord
 .m-po-item .m-po-value small{font-size:12px;font-weight:400;color:var(--n7);font-family:var(--font-cn);}
 .m-po-item .m-po-trend{font-size:11px;color:var(--n7);}
 .m-po-item.run .m-po-value{color:var(--run);}
-.m-po-item.warn .m-po-value{color:var(--warn);}
-.m-po-item.err .m-po-value{color:var(--err);}
-.m-po-item.suc .m-po-value{color:var(--suc);}
+.m-po-item.warn .m-po-value{color:var(--warn-deep);}
+.m-po-item.err .m-po-value{color:var(--err-deep);}
+.m-po-item.suc .m-po-value{color:var(--suc-deep);}
 /* 列表区 = .screen 内的 section-title + mlist/mcard 组（无独立容器类，遵循 §4.3 间距节奏） */
 
 /* ===== M3 无障碍：系统"减少动效"设置下全部动效归零（2026-08-02） ===== */

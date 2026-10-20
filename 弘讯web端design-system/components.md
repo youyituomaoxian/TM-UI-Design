@@ -27,7 +27,7 @@
 
 ## 范围（v1.1）
 
-已覆盖**全部 11 个组件**：下拉 / 日期 / 树 / 弹窗（原缺口 4 个）+ 按钮 / 输入 / 表格 / 标签 / 页签 / 分页 / 状态点（原 MASTER §6.2 + showcase 已规范的 7 个）。
+已覆盖**全部 25 个组件**：下拉 / 日期 / 树 / 弹窗（原缺口 4 个）+ 按钮 / 输入 / 表格 / 徽章 / 页签 / 分页 / 状态点（原 MASTER §6.2 + showcase 已规范的 7 个）。
 每个组件的完整 `referenceCss / referenceHtml / Ardot 搭建指引` 见 `components.json`（机器/Agent/校验脚本均读 JSON）。
 
 ### Ardot 对账（2026-07-28 收口，只读比对 + 缺口补建，已完成）
@@ -39,16 +39,19 @@
 | 按钮 Button | 主按钮+次按钮+文字按钮+Button/中 | ✅ 已覆盖 |
 | 单行输入 Input | 单行输入+单行输入B | ✅ 已覆盖 |
 | 表格 Table | 单行表格+表格表头 | ✅ 已覆盖（表头高44/N2/字重500） |
+| 复选框 Checkbox | 无 → 新建（16×16 / 边框 #949494=3.03:1） | ✅ 已覆盖（2026-10-20 新建，表格多选用） |
 | 日期 DatePicker | 日期选择框/选择-时分秒+日历 | ✅ 已覆盖 |
 | 树 Tree | 作业树二级菜单 | ✅ 已覆盖 |
 | 弹窗 Modal | 弹窗 | ✅ 已覆盖 |
 | 分页器 Pager | 分页器+分页器A | ✅ 已覆盖 |
 | 状态指示灯 | 状态指示灯 | ✅ 已覆盖 |
-| 标签 Tag | 绿色标签 → 补齐 成功/警告/错误/运行 4 态 | ✅ 已覆盖（原仅绿色单态，已补齐） |
+| 标签 Badge | 原 `.tag` 2026-10-20 删除，统一到 `.badge`（5 态） | ✅ 已合并（`.tag` 不再是组件） |
 | 下拉 Select | 仅箭头子件 → 新建 触发器+浮层+选项（默认/带搜索/禁用/多选） | ✅ 已覆盖（新建 + 合并为变体） |
 | 页签 Tabs | 无 → 新建 基础/带徽标/滚动 3 变体 | ✅ 已覆盖（新建 + 合并为变体） |
 
-> 结论：**11/11 全覆盖**。本层（components.json）现已成为 HTML 生成（referenceCss/Html）与 Ardot 搭建（ardot 字段）的单一真源；Agent 起手请 clone `page-template.html`（见 README 第 5 步 + 第 7 步）。
+> **表格行态（2026-10-20 v2）**：单选/多选选中统一 = `.is-selected` 底色 + 2px 左条；多选由 `.cbx` 复选框触发（`data-select="multi"`，列宽 40，`th.ck/td.ck`），单选由行点击触发（`data-select="single"`，无控件，整行 `cursor:pointer`）；未选中行点击只表现为 hover。文字恒 N10，表格内禁 N9 次级文字（细节见 RULES §3.3）。
+
+> 结论：**22/22 全覆盖**。本层（components.json）现已成为 HTML 生成（referenceCss/Html）与 Ardot 搭建（ardot 字段）的单一真源；Agent 起手请 clone `page-template.html`（见 README 第 5 步 + 第 7 步）。
 
 ---
 
@@ -75,7 +78,7 @@
 .sel-panel{position:absolute;top:calc(100% + 4px);left:0;min-width:100%;max-height:240px;overflow:auto;background:var(--n1);border:1px solid var(--n6);border-radius:var(--radius-md);box-shadow:var(--shadow-float);padding:4px 0;z-index:50}
 .sel-opt{height:32px;display:flex;align-items:center;gap:4px;padding:0 12px;font-size:14px;color:var(--n10);cursor:pointer}
 .sel-opt:hover{background:var(--n3)}
-.sel-opt.on{background:var(--primary-dis-bg);color:var(--primary-active)}
+.sel-opt.on{background:var(--select-item-bg);color:var(--select-item-fg)}
 ```
 
 **Ardot 搭建指引**：Select/Dropdown 组件，trigger 对应主组件默认态（高32/半径4/N5底/N6边），panel 对应 overlay 变体，option 行高32 对应 option 变体。**选中项用 `#DAEAFA` 底 + `#004A8F` 字，勿整行纯 primary 填充；箭头用 N9 中性色。**
@@ -150,7 +153,7 @@
 
 | 表面 | 用在哪 | 选中底 | 选中字 | 强调条(已取消) | 箭头 |
 |---|---|---|---|---|---|
-| **白底/内容表面** | 卡片内、内容区筛选树、抽屉树 | `#DAEAFA`（`--primary-dis-bg`） | `#004A8F`（`--primary-active`） | 无（靠实底+字重 500 表达） | 同选中字色 |
+| **白底/内容表面** | 卡片内、内容区筛选树、抽屉树 | `--select-item-bg`（亮 `#DAEAFA` / 暗 `#23395D`） | `--select-item-fg`（亮 `#004A8F` / 暗 `#F1F5F9`） | 无（靠实底+字重 500 表达） | 同选中字色 |
 | **品牌色表面** | `.sidebar` / `.demo-sidebar` / `.tree--brand`（品牌蓝底侧栏） | `#004A8F`（`--primary-active` 实底） | `#FFFFFF`（`--n1`） | 无（2026-07-31 领导裁定取消） | 白 |
 
 判定口诀：**树的父容器是不是品牌蓝底？是 → 深 primary 实底 + 白字；否 → 浅 primary 底 + 深 primary 字。**
@@ -163,8 +166,8 @@
 .tree-node{height:32px;display:flex;align-items:center;padding:0 8px;border-radius:var(--radius-base);cursor:pointer;transition:background var(--motion-duration-fast),color var(--motion-duration-fast)}
 .tree-node:hover{background:var(--n3)}
 /* 白底/内容表面 */
-.tree-node.on{background:var(--primary-dis-bg);color:var(--primary-active);font-weight:500}
-.tree-node.on .tree-sw{color:var(--primary-active)}
+.tree-node.on{background:var(--select-item-bg);color:var(--select-item-fg);font-weight:500}
+.tree-node.on .tree-sw{color:var(--select-item-fg)}
 /* 品牌色表面（蓝底侧栏）—— 覆盖上面一组；不用左侧白强调条（2026-07-31 取消） */
 .sidebar .tree-node.on,.demo-sidebar .tree-node.on,.tree--brand .tree-node.on{background:var(--primary-active);color:var(--n1);font-weight:500}
 .sidebar .tree-node.on .tree-sw,.demo-sidebar .tree-node.on .tree-sw,.tree--brand .tree-node.on .tree-sw{color:var(--n1)}
@@ -267,3 +270,14 @@
 > **等宽**：`.t-mono` 或 `font-family: var(--font-mono)` 用于代码/设备参数/数值数据；数值对齐用 `font-variant-numeric: tabular-nums`（勿用 mono 对齐数字）。
 > **密度**：`:root[data-density="compact|comfortable|spacious"]` 切换 `--density-row-height` / `--density-content-padding`。compact 用于数据密集表格（opt-in 非默认），comfortable 默认基准。
 > **迁移**：旧 `.t-h1`（20/28）→ 新 `.t-h1`（28/36），值变 class 名不变；新增 `.t-display/.t-h4/.t-h5/.t-label/.t-overline/.t-mono`。
+
+## 空态 / 步骤 / 时间线 / 描述列表（2026-10-20 新增）
+
+| 组件 | 类 | 关键规格 |
+|---|---|---|
+| 空态 | `.empty` `.empty-ico` `.empty-title` `.empty-desc` `.empty-actions` | 图标 48 圆（N3 底/N9 字）、标题 14/500/N11、说明 12/N9、主操作 1 个；表格 0 行时替换表格 |
+| 步骤条 | `.steps` `.step` `.step-dot` `.step-text` `.step-line` | 点 24 圆、连接线 1px N6；`.is-done` 实底 primary+白字，`.is-active` 描边 primary+primary 字 |
+| 时间线 | `.timeline` `.tl-item` `.tl-dot` `.tl-time` `.tl-text` | 点 8、线 1px N6、时间 12/N9、正文 14/N10；`.is-active` 圆点实心 |
+| 描述列表 | `.descriptions` `.desc-item` `.desc-label` `.desc-value` | 自适应列 min240、行高 40、label 96/13/N9、value 14/N10 省略号 |
+
+**用法**：空数据禁止留白表格；步骤/时间线/键值对统一复用上述类，不自造。

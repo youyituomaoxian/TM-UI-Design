@@ -31,16 +31,19 @@
 │   （Web 端另有 CROSS-PLATFORM-COLORS.md 跨端功能色契约）
 │
 ├── CHART-SPEC.md                   # 图表规范（样式 + 结果约束，Agent 自建图表，色走 --chart-*）
-├── audit-rules.json                # 审计规则真源 v1.4.1（machine M-01~06 / runtime R-01~07 / human H-01~07 + 迁移维度 D-1~D-12 + 豁免登记 + issue_reporting 设计系统问题报告制度）
+├── audit-rules.json                # 审计规则真源（machine/runtime/human 规则 + 迁移维度 D-1~D-12 + 豁免登记 + issue_reporting 报告制度；构成以文件为准）
 ├── audit-spec.js                   # 存量页面增量审计（M-01~03/M-06，--end web|mobile，HIGH>0 exit 1）
-├── check-sync.js                   # 双端真源一致性门禁（vendor↔template 同构 + 双端同名类白名单比对）
+├── check-sync.js                   # 双端真源一致性门禁（vendor↔template 同构 + 双端同名类白名单比对 + 未覆盖类登记闭环）
 ├── templates/                      # 应用侧可复制模板（设计系统问题报告模板.md — issue_reporting 制度的 template_file）
-├── ci-local.js                     # 全链路自检（全绿 exit 0，含 audit + check-sync 阻断；项数以输出为准）
+├── ci-local.js                     # 全链路自检（全绿 exit 0，含 audit + check-sync + check-size 阻断；项数以输出为准）
 ├── check-size.js                   # 文档体积门禁（真源文件字符限额 + 清单封闭防膨胀转移，2026-09-22）
 ├── roll-changelog.js               # CHANGELOG 自动滚动归档（主文件超限滚最旧条目入 archive，2026-09-23）
+├── gate-capture.js                 # 门禁子进程结果捕获真源（退出码权威 + 文件 fd 捕获，VERDICT-A 修复 2026-10-08）
+├── vendor-coverage.json            # check-sync 检查三登记真源（RED-002 三档：tokenProjection 豁免 / gaps 真缺口，2026-10-10）
 ├── output/                          # 历史示例/产物归档（不随设计系统分享）；新生成页落「用户项目」的 output/
 ├── AGENTS.md                        # codex / 通用 Agent 入口（标准生成流程）
-├── .workbuddy/skills/tm-design-system/SKILL.md  # workbuddy 项目级 skill（可移植定位）
+├── .workbuddy/skills/tm-design-system/SKILL.md  # skill 本体（workbuddy 项目级；DSH 等入口薄壳都指向它）
+├── .dsh/skills/tm-design-system/SKILL.md        # DSH 项目级 skill（薄指针 → 上者，勿复制正文）
 ├── brand-color-engine/              # 品牌色→应用页配色引擎（engine.md 为入口）
 ├── scripts/git-hooks/pre-commit     # 提交门禁：两端 validate-spec.js 全过才许提交
 ├── scripts/setup-hooks.sh           # 队友一键启用 hook
@@ -138,7 +141,7 @@ cd TM-UI-Design
 - **Codex / Reasonix / Cursor / 通用 Agent**：仓库根 `AGENTS.md` 即入口（标准生成流程，自动加载，零配置）。
 - **Claude Code**：仓库根 `CLAUDE.md`（`@AGENTS.md` 导入，与通用入口同源；Claude Code 原生不读 AGENTS.md）。
 - **workbuddy**：仓库内 `.workbuddy/skills/tm-design-system/SKILL.md`（项目级 skill，可移植定位：`TM_DESIGN_REPO` 环境变量或相对自身向上找仓库根）。
-- **Reasonix**：全局薄壳 skill（`%APPDATA%\reasonix\skills\tm-design-system\SKILL.md`）指向本仓库（`TM_DESIGN_REPO`）；其兼容分支会优先加载仓库内 `.workbuddy/skills/` 本体。
+- **DSH（DeepSeek Harness）**：仓库根 `.dsh/skills/tm-design-system/SKILL.md`（项目级，**薄指针**，只指向 `.workbuddy/skills/` 本体；仓库内开会话即自动进技能目录）。上级工作区若也放一份同名指针，可让不落在本仓库内的会话同样可用——两处都**只写指针、不复制规范**，维护只改本体。
 - **克隆即用**：`git clone https://github.com/youyituomaoxian/TM-UI-Design.git <目录>` → 进入目录直接对话「用弘讯设计系统，生成…」——各智能体自动加载对应入口（AGENTS.md / CLAUDE.md / skill），零额外配置。
 - 生成合规页：按 `GENERATION-SOP.md` §① 克隆 `弘讯web端design-system/page-template.html` → 按 `RULES.md §1.1b` 自建内容 → `node 弘讯web端design-system/validate-spec.js <页面.html>`（HIGH 0 才交付）。
 - **存量项目审查修改**（已有页面按规范改造）：按 `GENERATION-SOP.md` §② 五阶段流程——`node audit-spec.js <页面> --end web|mobile` 清零硬违规 + `audit-rules.json` migration_dimensions D-1~D-12 逐维对照找差异 → 映射决策（每个差异定「改成什么」）→ 分批修复 + 门禁回归。

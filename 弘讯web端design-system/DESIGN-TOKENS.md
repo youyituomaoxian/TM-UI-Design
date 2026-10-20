@@ -3,7 +3,7 @@
 > ⚠️ **本文件由 `scripts/generate-design-tokens-md.js` 自动生成，请勿手改。** 改 token 请编辑 `tokens.json`（值真源）或脚本内的命名映射后重跑。
 > **命名规范**：全文使用「短名」CSS 变量（`--primary` / `--n5` / `--suc` / `--run` / `--radius-base` …），与 `components.json` referenceCss 及 `page-template.html :root` **1:1 对齐**。旧版 `--color-*` 全名已废弃。
 > **平台**: Web / B端 / 后台管理系统（Ant Design 风格）
-> **生成日期**: 2026-08-27
+> **生成日期**: 2026-10-20
 
 ---
 
@@ -61,6 +61,7 @@
 :root {
   --n1: #FFFFFF; /* N1 — 卡片底色、次按钮填充 */
   --n2: #FAFAFA; /* N2 — 表头底色 */
+  --table-header-bg: #FAFAFA; /* 表头底色（表格 th，暗 #26364F） */
   --n3: #F6F9FC; /* N3 — 行悬停 */
   --n4: #F5F7FB; /* N4 — 页面背景、禁用填充、悬停底色 */
   --n5: #EAEAED; /* N5 — 输入框底色、行悬停、按钮选中填充 */
@@ -146,6 +147,19 @@
 ```
 
 ### 2.7 覆盖层 / 遮罩
+### 2.8 行态（表格已选 / 当前行 / 复选框 · 2026-10-20 方案 D）
+
+```css
+:root {
+  --row-selected-bg: #DAEAFA; /* 已选行底色（单选/多选共用；文字 N10 不变） */
+  --row-selected-bar: #005EAE; /* 已选行 2px 左条（单选/多选共用） */
+  --select-item-bg: #DAEAFA; /* 选中项底（Tree 节点 / 下拉项 / 筛选胶囊 / 语言项） */
+  --select-item-fg: #004A8F; /* 选中项文字（暗色用 N10 级，修 1.99:1） */
+  --cbx-border: #949494; /* 复选框边框（对白 3.03:1） */
+  --cbx-check-fg: #FFFFFF; /* 勾选勾颜色 */
+}
+```
+
 
 ```css
 :root {
@@ -217,7 +231,8 @@
 ```css
 :root {
   --radius-sm: 2px; /* 弹窗投影等细微圆角 */
-  --radius-base: 4px; /* 输入框、标签、小型控件 */
+  --radius-base: 4px; /* 标签、小型元件（控件已改用 control） */
+  --radius-control: 6px; /* 按钮、输入框、下拉触发器（2026-10-20 统一 6） */
   --radius-md: 8px; /* 卡片、按钮、下拉 */
   --radius-lg: 16px; /* 大卡片、形象区 */
   --radius-round: 999px; /* 状态点、头像、分页圆钮 */
@@ -307,7 +322,7 @@
   --btn-secondary-hover-border: var(--n7);
   --btn-text-fg: var(--primary);
   --btn-text-hover-fg: var(--primary-hover);
-  --btn-radius: var(--radius-md);
+  --btn-radius: var(--radius-control);
 }
 ```
 
@@ -319,7 +334,7 @@
   --input-padding-x: 12px;
   --input-bg: var(--n5);
   --input-border: var(--n6);
-  --input-radius: var(--radius-base);
+  --input-radius: var(--radius-control);
   --input-placeholder: var(--n8);
   --input-focus-border: var(--primary);
   --input-focus-ring: rgba(0, 94, 174, 0.20);
@@ -327,19 +342,19 @@
 }
 ```
 
-### 7.3 标签 Tag
+### 7.3 标签 Badge（2026-10-20：`.tag` 已删除，统一到 `.badge`）
 
 ```css
 :root {
-  --tag-height: 22px;
-  --tag-padding-x: 10px;
-  --tag-font: Regular 12px/20px var(--font-cn);
-  --tag-radius: var(--radius-base);
-  --tag-success-bg: var(--suc-soft);   --tag-success-fg: var(--suc);
-  --tag-warning-bg: var(--warn-soft);  --tag-warning-fg: var(--warn);
-  --tag-error-bg: var(--err-soft);     --tag-error-fg: var(--err);
-  --tag-running-bg: var(--run-soft);   --tag-running-fg: var(--run);
-  --tag-default-bg: var(--n3);       --tag-default-fg: var(--n9);
+  --badge-height: 22px;
+  --badge-padding-x: 12px;
+  --badge-font: Medium 12px/22px var(--font-cn);
+  --badge-radius: var(--radius-base);
+  --badge-success-bg: var(--suc-soft);   --badge-success-fg: var(--suc-active);
+  --badge-warning-bg: var(--warn-soft);  --badge-warning-fg: var(--n11);
+  --badge-error-bg: var(--err-soft);     --badge-error-fg: var(--err-active);
+  --badge-running-bg: var(--run-soft);   --badge-running-fg: var(--run-active);
+  --badge-muted-bg: var(--n3);           --badge-muted-fg: var(--text-2);
 }
 ```
 

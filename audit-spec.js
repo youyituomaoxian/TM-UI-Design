@@ -121,20 +121,58 @@ function inRanges(idx, ranges) {
   return false;
 }
 
+// ---- RED-007 修复（2026-10-08）：豁免判定由「整行子串」收紧为结构化 ----
+// 原判定 /swatch|data-audit-exempt/i.test(lineText) 无锚定无名单核验 → 同一物理行内放入任意
+// 子串即豁免该行所有 hex 违规。实测滥用：/* swatch */ 注释、.not-a-swatch-at-all 类名、
+// data-audit-exempt-toggle 属性，单行 <style data-audit-exempt> 可吞 4 条 HIGH（自证合规）。
+// 现收紧：① 独立 data-audit-exempt 记号（属性或注释，须 = / 冒号 / 空白收尾，排除 -toggle
+//   派生名）；② 命中已登记色板容器类（.swatch/.color-swatch/.palette-swatch，class token 精确
+//   匹配）；③ 令牌定义本体另走 css.vardef.hex MEDIUM 可见清单（见下）。意图仍是「色板区按需豁免」。
+function isExemptLine(lineText) {
+  // ① 独立记号（属性或注释）。注释形式本仓库大量使用（如 page-template L147 行尾
+  //    `/* data-audit-exempt: 预览壳舞台色… */` M-06 已登记豁免），须一并识别否则误报。
+  if (/(?:^|[\s"'/*])data-audit-exempt(?:\s*[=:]|\s|["'>]|$)/i.test(lineText)) return true;
+  // ② 色板容器类：按 class token 精确匹配（.swatch / .color-swatch / .palette-swatch）
+  const clsRe = /\.[a-zA-Z][\w-]*/g;
+  const SWATCH_CLASSES = new Set(['swatch', 'color-swatch', 'palette-swatch']);
+  let cm;
+  while ((cm = clsRe.exec(lineText))) if (SWATCH_CLASSES.has(cm[0].slice(1))) return true;
+  return false;
+}
+// RED-007b：豁免注释常登记在**紧邻下一行**（长说明塞不进行尾），现允许「本行 + 下一行」命中。
+// RED-007c（2026-10-10 复盘 T-3）：三路径豁免统一入口——本行 + 紧邻下一行对称判定。
+// 原先只有 checkLinkedCss（外链 CSS）路径支持「豁免注释写在下一行」，<style> 块与 inline style
+// 两路径只看本行 → 同一登记豁免在不同载体下行为不一致（内联写法会误报 HIGH）。
+function exemptWithNext(text, starts, line) {
+  const cur = text.slice(starts[line - 1], starts[line] || undefined);
+  const next = starts[line] !== undefined ? text.slice(starts[line], starts[line + 1] || undefined) : '';
+  return isExemptLine(cur) || isExemptComment(cur) || isExemptComment(next);
+}
+function isExemptComment(text) {
+  if (!text) return false;
+  const re = /\/\*([^*]*(?:\*(?!\/)[^*]*)*)\*\//g;
+  let m;
+  while ((m = re.exec(text))) {
+    if (/(?:^|[\s"'])data-audit-exempt(?:\s*[:=]|\s|["'>]|$)/i.test(m[1])) return true;
+  }
+  return false;
+}
+
 // ---- M-01 css.hex.literal ----
 function checkHexLiteral(noScript, palette, lineStarts) {
   const violations = [];
-  // 1) <style> 块（剥离 :root / [data-theme] 令牌定义区，逐行豁免 swatch 展示区）
+  // 1) <style> 块（RED-008 后不再预剥离 :root，令牌定义行由 declPropAt 判为 vardef MEDIUM）
   const styleRe = /<style[^>]*>([\s\S]*?)<\/style>/gi;
   let m;
   while ((m = styleRe.exec(noScript))) {
     const css = m[1];
     const base = m.index + m[0].indexOf(m[1]);
     const cssStarts = buildLineStarts(css);
-    // 令牌定义/投影区剥离：:root{...} 与 [data-theme...]{...}（非贪婪配平到首个 })
-    const stripped = css
-      .replace(/:root\s*\{[^}]*\}/g, '')
-      .replace(/\[data-theme[^\]]*\]\s*\{[^}]*\}/g, '');
+    // RED-008 修复（2026-10-08）：原实现先用/:root\s*\{[^}]*\}/g 把令牌定义区整块删除再扫 hex，
+    // 定义在 :root/[data-theme] 内的自造色**根本不进扫描循环** → 下方 isVarDef→MEDIUM 分支
+    // 永不可达（死代码），与 audit-rules.json L24 声称的「定义行降为清单级保持可见」矛盾。
+    // 现不预剥离：全量扫描后由 declPropAt 判定是否 --* 定义，是则走 vardef MEDIUM。
+    const stripped = css;
     const hexRe = /#([0-9a-fA-F]{3,8})\b/g;
     const gradRanges = findGradientRanges(stripped);
     let h;
@@ -142,13 +180,14 @@ function checkHexLiteral(noScript, palette, lineStarts) {
       const abs = base + h.index;
       const line = lineOf(abs, lineStarts);
       const lineText = noScript.slice(lineStarts[line - 1], lineStarts[line] || undefined);
-      if (/swatch|data-audit-exempt/i.test(lineText)) continue; // 色板展示区豁免
+      if (exemptWithNext(noScript, lineStarts, line)) continue; // RED-007c 三路径对称
       const hex = ('#' + h[1]).toUpperCase();
       const isGradStop = inRanges(h.index, gradRanges);
       if (!isGradStop && (hex === '#FFFFFF' || hex === '#FFF')) continue; // 白字约定豁免（渐变色标点内不适用，M-01 扩展 2026-09-10）
       const { prop } = declPropAt(stripped, h.index);
       const inPalette = palette.has(hex) || palette.has(normalizeShort(hex));
-      // 色板定义行（--x: <hex>）：本体非用法 → MEDIUM 可见清单，不阻断（2026-09-10 DS-20260910-01 题 1）
+      // 色板定义行（--x: <hex>）：本体非用法 → MEDIUM 可见清单，不阻断（DS-20260910-01 题 1）
+      // RED-008：原先因 :root 预剥离而不可达，现已能正常触达。
       if (isVarDef(prop)) {
         violations.push({
           rule: 'M-01', contract: 'css.vardef.hex', line,
@@ -175,7 +214,7 @@ function checkHexLiteral(noScript, palette, lineStarts) {
     const abs = m.index + m[0].indexOf(m[1]);
     const line = lineOf(abs, lineStarts);
     const lineText = noScript.slice(lineStarts[line - 1], lineStarts[line] || undefined);
-    if (/swatch|data-audit-exempt/i.test(lineText)) continue;
+    if (exemptWithNext(noScript, lineStarts, line)) continue; // RED-007c 三路径对称
     const hexRe = /#([0-9a-fA-F]{3,8})\b/g;
     const gradRanges = findGradientRanges(m[1]);
     let h;
@@ -353,7 +392,8 @@ function checkLinkedCss(targetFile, palette) {
       if (inRanges(idx, masks)) continue;
       const line = lineOf(idx, lineStartsCss);
       const lineText = css.slice(lineStartsCss[line - 1], lineStartsCss[line] || undefined);
-      if (/swatch|data-audit-exempt/i.test(lineText)) continue;
+      // RED-007b：豁免注释常写在违规行的**下一行**（行尾塞不下长说明），故本行+紧邻下一行都参与判定
+      if (exemptWithNext(css, lineStartsCss, line)) continue; // RED-007c 归一
       // 所在声明上下文（helper 去重）：属性名以 `--` 开头 = 色板定义行
       const { prop, decl } = declPropAt(css, idx);
       const hex = ('#' + h[1]).toUpperCase();

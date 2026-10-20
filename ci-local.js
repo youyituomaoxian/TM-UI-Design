@@ -11,12 +11,21 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 const { generatePalette } = require('./brand-color-engine/generate.js');
+// VERDICT-A（2026-10-08）：子进程捕获统一走 gate-capture.js，退出码=权威判据。
+// 原实现捕获 stdout 取 HIGH 数，本机 EBUSY 下恒为空 → audit 阻断「看起来全绿实则从未执行」。推导见 .workbuddy/review/03_verdict.md
+const { runGateCapture, renderCap, capPassed } = require('./gate-capture.js');
 
 const NODE = process.execPath; // RED-022 修复：不再硬编码具体用户名/Node 版本绝对路径
 const ROOT = __dirname;
 const WEB = path.join(ROOT, '弘讯web端design-system');
 const MOB = path.join(ROOT, '弘讯移动端design-system');
-const norm = (s) => String(s).replace(/\s+/g, '').replace(/;$/, '');
+// VERDICT-A：norm() 双侧缺失会自证通过（String(undefined)==='undefined'）→ 先判空
+const norm = (s) => {
+  if (s === undefined || s === null) return ' MISSING';
+  return String(s).replace(/\s+/g, '').replace(/;$/, '');
+};
+// RED-010：双缺失 = 令牌字段缺失 = FAIL，不等于「一致」
+const bothMissing = (a, b) => (a === undefined || a === null) && (b === undefined || b === null);
 
 let pass = 0, fail = 0;
 function ok(name, cond) { console.log(`  ${cond ? '✅' : '❌'} ${name}`); cond ? pass++ : fail++; }
@@ -47,8 +56,11 @@ function checkEnd(label, dir, isMobile) {
   // elevation 5 级 + 模板变量
   ok('elevation 恰 5 级', JSON.stringify(Object.keys(t.elevation)) === JSON.stringify(['sunken','default','raised','overlay','overflow']));
   Object.entries(t.elevation).forEach(([lv, obj]) => {
-    ok(`--elev-${lv}-surface 模板值=tokens`, norm(vars[`--elev-${lv}-surface`]) === norm(obj.surface));
-    ok(`--elev-${lv}-shadow 模板值=tokens`, norm(vars[`--elev-${lv}-shadow`]) === norm(obj.shadow));
+    // RED-010 修复：双侧同时缺失不再自证通过（norm 已把 undefined 映射为 MISSING，此处显式拦）
+    const sv = vars[`--elev-${lv}-surface`], tv = obj.surface;
+    ok(`--elev-${lv}-surface 模板值=tokens`, !bothMissing(sv, tv) && norm(sv) === norm(tv));
+    const shv = vars[`--elev-${lv}-shadow`], thv = obj.shadow;
+    ok(`--elev-${lv}-shadow 模板值=tokens`, !bothMissing(shv, thv) && norm(shv) === norm(thv));
   });
   // motion duration 4 档 + 模板
   ok('motion.duration 恰 6 档', JSON.stringify(Object.keys(t.motion.duration)) === JSON.stringify(['instant','fast','normal','slow','slower','slowest']));
@@ -194,7 +206,9 @@ function iconCountAssertions() {
         const m = line.match(/(图标库|图标集|Icon)[^\n]*?(\d+)\s*个|(\d+)\s*个[^\n]*?(图标库|图标集|Icon)/);
         if (m) claimed.push(parseInt(m[2] || m[3], 10));
       }
-      ok(`${label} ${doc} 图标数声明 ${claimed.join('/') || '(无声明)'} = 目录 ${actual}`, claimed.length === 0 || claimed.every(c => c === actual));
+      // RED-009：无声明不再自动通过（原判据把「没抓到」与「一致」同等判过 → 删声明即绕过）。
+      ok(`${label} ${doc} 图标数声明 ${claimed.join('/') || '(无声明)'} = 目录 ${actual}`,
+        claimed.length > 0 && claimed.every(c => c === actual));
     }
   }
 }
@@ -207,49 +221,51 @@ guard('文档图标计数断言', iconCountAssertions);
 // output/ = 历史归档（非交付标准下的旧产物，如规范效果验证_20260807 实测 HIGH 17）→ 报告但信息性，
 // 阻断会让 ci-local 对历史欠账立即红，且这些文件本就不是新标准产物。交付物 0 HIGH 才是门禁本义。
 console.log(`\n▶ 仓库根 *.html 门禁覆盖扫描（RED-003 · 阻断）`);
-let scanned = 0, anyHigh = 0;
+let scanned = 0, anyHigh = 0, capBroken = 0;
 for (const f of fs.readdirSync(ROOT)) {
   if (!/\.html?$/i.test(f)) continue;
   if (!fs.statSync(path.join(ROOT, f)).isFile()) continue;
   const end = /mobile|移动/i.test(f) ? MOB : WEB;
   const spec = path.join(end, 'validate-spec.js');
-  let out = '';
-  try {
-    out = execSync(`"${NODE}" "${spec}" "${path.resolve(ROOT, f)}"`, { encoding: 'utf8' }).toString();
-  } catch (e) {
-    out = (e.stdout || '').toString(); // 子进程非零退出仍读取已打印的报告
-  }
-  const m = out.match(/HIGH (\d+)/);
-  const h = m ? parseInt(m[1], 10) : 0;
-  scanned++; anyHigh += h;
-  console.log(`  ${h > 0 ? '❌' : '✅'} ${f} — HIGH ${h}`);
+  // VERDICT-A 修复：退出码为权威判据（HIGH 时 validate-spec exit 1），stdout 仅信息性展示
+  const r = runGateCapture(f, `"${NODE}" "${spec}" "${path.resolve(ROOT, f)}"`);
+  scanned++;
+  if (!r.countAvailable) capBroken++;
+  if (r.high) anyHigh += r.high;
+  // fail-closed：子进程异常终止 或 计数不可用 均视为不通过（不再默认 HIGH 0 放行）
+  console.log(`  ${capPassed(r) ? '✅' : '❌'} ${renderCap(r)}`);
 }
-ok(`根目录 ${scanned} 个 HTML 交付物 0 HIGH（阻断）`, scanned > 0 ? anyHigh === 0 : true);
+ok(`根目录 ${scanned} 个 HTML 交付物 0 HIGH（阻断·退出码判定）`, scanned > 0 && anyHigh === 0 && capBroken === 0);
 
 // ===== 存量改造增量审计（audit-rules.json M-01/02/03 · audit-spec.js · 2026-09-09）=====
 // 与 validate-spec（生成门禁）互补的 machine 类审计规则：CSS 裸 hex / 按钮状态矩阵 / 状态点语义白名单。
 // 范围分层与 RED-003 同构：双端 page-template 真源模板 + 根目录交付物（阻断）。
 console.log(`\n▶ 存量改造增量审计 audit-spec（M-01/02/03 · 阻断）`);
+// VERDICT-A 修复（2026-10-08）：这是本轮最严重的一处 fail-open。
+// 原实现捕获 stdout 文本取 HIGH 数，在本机（EBUSY → e.stdout 恒 undefined → 空串 → 正则无匹配
+// → parseInt(...||'0') → 恒 0）使 M-01/02/03/06/07 五条machine 规则与本阻断整体静默失效，
+// 却仍打印「✅ audit HIGH 0」并计入全绿。已实测：同一违规页直接跑 audit-spec 得 HIGH 2，
+// 经捕获路径得 stdout 长度 0 → 计0。
+// 现改为：退出码为权威（HIGH 时 audit-spec exit 1，已实证），stdout 计数仅信息性展示；
+// 子进程异常终止或摘要行缺失一律 fail-closed，不再默认放行。
 function runAudit(file, end) {
-  let out = '';
-  try {
-    out = execSync(`"${NODE}" "${path.join(ROOT, 'audit-spec.js')}" "${file}" --end ${end}`, { encoding: 'utf8' }).toString();
-  } catch (e) {
-    out = (e.stdout || '').toString(); // HIGH 时子进程 exit 1，仍读取已打印报告
-  }
-  const h = parseInt((out.match(/HIGH (\d+)/) || [])[1] || '0', 10);
-  const m = parseInt((out.match(/MEDIUM (\d+)/) || [])[1] || '0', 10);
-  console.log(`  ${h > 0 ? '❌' : '✅'} ${path.basename(file)} — audit HIGH ${h} / MED ${m}`);
-  return h;
+  const r = runGateCapture(path.basename(file),
+    `"${NODE}" "${path.join(ROOT, 'audit-spec.js')}" "${file}" --end ${end}`);
+  console.log(`  ${capPassed(r) ? '✅' : '❌'} ${renderCap(r)}`);
+  // 返回阻断信号：HIGH 计数、子进程异常、计数不可用——三者任一即视为阻断
+  return { blocked: !capPassed(r), high: r.high || 0 };
 }
-let auditHigh = 0;
-auditHigh += runAudit(path.join(WEB, 'page-template.html'), 'web');
-auditHigh += runAudit(path.join(MOB, 'page-template.html'), 'mobile');
+let auditBlocked = 0, auditHighSum = 0;
+for (const t of [
+  runAudit(path.join(WEB, 'page-template.html'), 'web'),
+  runAudit(path.join(MOB, 'page-template.html'), 'mobile'),
+]) { if (t.blocked) auditBlocked++; auditHighSum += t.high; }
 for (const f of fs.readdirSync(ROOT)) {
   if (!/\.html?$/i.test(f) || !fs.statSync(path.join(ROOT, f)).isFile()) continue;
-  auditHigh += runAudit(path.join(ROOT, f), /mobile|移动/i.test(f) ? 'mobile' : 'web');
+  const t = runAudit(path.join(ROOT, f), /mobile|移动/i.test(f) ? 'mobile' : 'web');
+  if (t.blocked) auditBlocked++; auditHighSum += t.high;
 }
-ok('audit 增量审计（双端 page-template + 根目录交付物）0 HIGH（阻断）', auditHigh === 0);
+ok(`audit 增量审计（双端page-template + 根目录交付物）0 HIGH（阻断·退出码判定）`, auditBlocked === 0);
 
 // ===== 真源一致性 check-sync（vendor↔真源同构 + 双端同名类漂移白名单 · 2026-09-09）=====
 // 检查一：packages/*/dist-static components.css ↔ template.css 同构段逐声明一致（阻断）；
@@ -282,16 +298,11 @@ if (fs.existsSync(outDir)) {
     if (!fs.statSync(path.join(outDir, f)).isFile()) continue;
     const end = /mobile|移动/i.test(f) ? MOB : WEB;
     const spec = path.join(end, 'validate-spec.js');
-    let out = '';
-    try {
-      out = execSync(`"${NODE}" "${spec}" "${path.resolve(outDir, f)}"`, { encoding: 'utf8' }).toString();
-    } catch (e) {
-      out = (e.stdout || '').toString();
-    }
-    const m = out.match(/HIGH (\d+)/);
-    const h = m ? parseInt(m[1], 10) : 0;
-    scannedOut++; outHigh += h;
-    console.log(`  ${h > 0 ? '⚠️' : '✅'} ${f} — HIGH ${h}`);
+    const r = runGateCapture(f, `"${NODE}" "${spec}" "${path.resolve(outDir, f)}"`);
+    scannedOut++;
+    if (r.high) outHigh += r.high;
+    const mark = !r.countAvailable ? '⚠️' : (r.high > 0 ? '⚠️' : '✅');
+    console.log(`  ${mark} ${renderCap(r)}`);
   }
 }
 console.log(scannedOut > 0
@@ -309,27 +320,35 @@ try {
     .filter(f => { try { return fs.readFileSync(path.join(outDir, f), 'utf8').includes('stat-grid'); } catch (e) { return false; } })
     .map(f => path.join(outDir, f));
   if (!boards.length) throw new Error('无看板页（含 stat-grid）');
-  let out3 = '';
-  try {
-    out3 = execSync(`"${NODE}" "${foldGate}" ${boards.map(b => `"${b}"`).join(' ')}`, { encoding: 'utf8', timeout: 120000 }).toString();
-  } catch (e) {
-    out3 = ((e.stdout || '') + '\n' + (e.stderr || '')).toString();
-  }
+  // VERDICT-A 修复：原实现 execSync 捕获 + indexOf('[') 截取 JSON，在本机 EBUSY 下 stdout 恒空
+  // → JSON.parse 失败 → 被外层 catch 吞成「跳过：输出解析失败（环境不可用，不计失败）」。
+  // 这是「装了但没生效的假安全」：检查实际从未运行，却呈现为一条温和的 SKIP 提示。
+  // 现改走文件 fd 捕获（绕过管道 EBUSY 且免疫 maxBuffer），并把「解析失败」与
+  // 「确实无可检看板页」区分开——前者为门禁自身故障，必须显式暴露而非静默跳过。
+  const r = runGateCapture('fold-gate', `"${NODE}" "${foldGate}" ${boards.map(b => `"${b}"`).join(' ')}`);
   let results = null;
-  try { results = JSON.parse(out3.slice(out3.indexOf('['))); } catch (e) {}
-  if (!results) throw new Error('fold-gate 输出解析失败');
-  for (const r of results) {
-    if (r.skip) { console.log(`  ⏭️ ${r.file} — ${r.skip}（SKIP）`); continue; }
-    if (r.error) { console.log(`  ⚠️ ${r.file} — 检查异常：${r.error}`); continue; }
-    if (r.cut && r.cut.length) {
-      console.log(`  ⚠️ ${r.file} — 首屏核心卡被截断：${r.cut.map(c => `${c.title}（可见 ${c.visiblePct}%）`).join('、')}`);
-    } else {
-      console.log(`  ✅ ${r.file} — 主图行 ${r.cards} 卡首屏完整（切点落 gap）`);
+  const jsonStart = r.out.indexOf('[');
+  if (jsonStart >= 0) { try { results = JSON.parse(r.out.slice(jsonStart)); } catch (e) { results = null; } }
+  if (!results) {
+    // 显式暴露：不再伪装成「环境不可用」的 SKIP
+    console.log(`  ❌ fold-gate 未取得可解析结果（退出码 ${r.status}，输出 ${r.out.length} 字节）——`);
+    console.log('     该项检查本轮实际未执行，属门禁自身故障，不应读作「检查通过」。');
+    fail++;
+  } else {
+    for (const fr of results) {
+      if (fr.skip) { console.log(`  ⏭️ ${fr.file} — ${fr.skip}（SKIP）`); continue; }
+      if (fr.error) { console.log(`  ⚠️ ${fr.file} — 检查异常：${fr.error}`); continue; }
+      if (fr.cut && fr.cut.length) {
+        console.log(`  ⚠️ ${fr.file} — 首屏核心卡被截断：${fr.cut.map(c => `${c.title}（可见 ${c.visiblePct}%）`).join('、')}`);
+      } else {
+        console.log(`  ✅ ${fr.file} — 主图行 ${fr.cards} 卡首屏完整（切点落 gap）`);
+      }
     }
+    console.log('  ℹ️ 一期信息性：截断结论不计入 fail，但「检查未执行」计入 fail。');
   }
-  console.log(`  ℹ️ 一期信息性：结果不计入 fail（阻断升级观察误报后另议）。`);
 } catch (e) {
-  console.log(`  ⏭️ 跳过：${e.message.slice(0, 60)}（环境不可用时自动 SKIP，不计失败）`);
+  // 仅「客观前提不满足」才 SKIP：脚本/目录/看板页缺失属环境事实
+  console.log(`  ⏭️ 跳过：${e.message.slice(0, 60)}（客观前提不满足，不计失败）`);
 }
 
 console.log(`\n========== ci-local 总结 ==========`);

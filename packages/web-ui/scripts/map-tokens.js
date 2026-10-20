@@ -93,9 +93,11 @@ function buildCss(opts = {}) {
   }
 
   const n = t.colors.neutral;
+  const sel = t.colors.selection;
   const f = t.colors.functional;
   const d = t.dark;
   const dn = d.colors.neutral;
+  const dsel = d.colors.selection;
   const df = d.colors.functional;
   const W = { Medium: 500, Regular: 400 }; // tokens weight → CSS font-weight
 
@@ -148,6 +150,9 @@ function buildCss(opts = {}) {
   /* 中性 N1–N11 */
   --n1:${n.N1}; --n2:${n.N2}; --n3:${n.N3}; --n4:${n.N4}; --n5:${n.N5}; --n6:${n.N6};
   --n7:${n.N7}; --n8:${n.N8}; --n9:${n.N9}; --n10:${n.N10}; --n11:${n.N11};
+  /* 行态（方案 D · 2026-10-20）：已选行底 / 当前行左条 / 复选框边框与勾 */
+  --row-selected-bg:${sel.rowBg}; --row-selected-bar:${sel.rowBar}; --cbx-border:${sel.checkboxBorder}; --cbx-check-fg:${sel.checkboxCheck};
+  --select-item-bg:${sel.itemBg}; --select-item-fg:${sel.itemFg};
   /* 功能色（--suc/--warn/--err/--run 语义=背景色；Web 对齐 Ant Design，运行绿独立） */
   --suc:${f.success.bg}; --suc-soft:${f.success.soft}; --suc-fg:${f.success.fg};
   --warn:${f.warning.bg}; --warn-soft:${f.warning.soft}; --warn-fg:${f.warning.fg};
@@ -161,7 +166,7 @@ function buildCss(opts = {}) {
   /* 图表色 */
   ${chartVars}
   /* 圆角 */
-  --radius-sm:${t.radius.sm}px; --radius-base:${t.radius.base}px; --radius-md:${t.radius.md}px; --radius-lg:${t.radius.lg}px; --radius-round:${t.radius.round}px; --radius-btn-ios:${t.radius.btnIos || 6}px;
+  --radius-sm:${t.radius.sm}px; --radius-base:${t.radius.base}px; --radius-control:${t.radius.control}px; --radius-md:${t.radius.md}px; --radius-lg:${t.radius.lg}px; --radius-round:${t.radius.round}px; --radius-btn-ios:${t.radius.btnIos || 6}px;
   /* 间距（4 的倍数） */
   ${spaceVars}
   /* 投影（双层复合：柔光层+1px发丝线） */
@@ -183,8 +188,8 @@ ${fontVars}
   /* 密度（默认 comfortable） */
   --density-row-height:${t.density.comfortable.rowHeight}px; --density-content-padding:${t.density.comfortable.contentPadding}px;
   /* 背景/文本语义（W1 桥接层约定：亮色取自 tokens 布局+中性；暗色取自 dark.background） */
-  --bg-page:${t.layout.contentBg}; --bg-surface:${n.N1}; --bg-elevated:${n.N1};
-  --text-1:${n.N11}; --text-2:${n.N9}; --text-3:${n.N8}; --border:${n.N6};
+  --bg-page:${t.layout.contentBg}; --bg-surface:${n.N1}; --bg-elevated:${n.N1}; --table-header-bg:${t.colors.tableHeaderBg};
+  --text-1:${n.N11}; --text-2:${n.N10}; --text-3:${n.N9}; --border:${n.N6};
   /* 布局骨架 */
   --topbar-height:${t.layout.topbarHeight}px; --sidebar-width:${t.layout.sidebarWidth}px;
   --sidebar-collapsed-width:${t.layout.sidebarCollapsedWidth}px; --footer-height:${t.layout.footerHeight}px;
@@ -211,6 +216,8 @@ ${fontVars}
   ${dual('--brand-surface', d.colors.brandSurface)}
   --n1:${dn.N1}; --n2:${dn.N2}; --n3:${dn.N3}; --n4:${dn.N4}; --n5:${dn.N5}; --n6:${dn.N6};
   --n7:${dn.N7}; --n8:${dn.N8}; --n9:${dn.N9}; --n10:${dn.N10}; --n11:${dn.N11};
+  --row-selected-bg:${dsel.rowBg}; --row-selected-bar:${dsel.rowBar}; --cbx-border:${dsel.checkboxBorder}; --cbx-check-fg:${dsel.checkboxCheck};
+  --select-item-bg:${dsel.itemBg}; --select-item-fg:${dsel.itemFg};
   --suc:${df.success.default}; --suc-soft:${df.success.bg}; --suc-fg:${df.success.text};
   --warn:${df.warning.default}; --warn-soft:${df.warning.bg}; --warn-fg:${df.warning.text};
   --err:${df.error.default}; --err-soft:${df.error.bg}; --err-fg:${df.error.text};
@@ -230,8 +237,8 @@ ${fontVars}
   --chart-grid:${d.colors.chartGrid};
   ${Object.entries(d.colors.chart || {}).map(([k, v]) => `--chart-${k.replace(/([A-Z])/g, '-$1').toLowerCase()}:${v};`).join(' ')}
 ${['sunken', 'default', 'raised', 'overlay', 'overflow'].map(delev).join('\n')}
-  --bg-page:${d.background.page}; --bg-surface:${d.background.surface}; --bg-elevated:${d.background.elevated};
-  --text-1:${d.background.textPrimary}; --text-2:${d.background.textSecondary}; --text-3:${d.background.textTertiary}; --border:${d.background.border};
+  --bg-page:${d.background.page}; --bg-surface:${d.background.surface}; --bg-elevated:${d.background.elevated}; --table-header-bg:${d.colors.tableHeaderBg};
+  --text-1:${dn.N11}; --text-2:${dn.N10}; --text-3:${dn.N9}; --border:${d.background.border};
 }
 
 /* ===== 排版语义类（.t-*：font.scale 派生，与 --font-* 1:1；build 漂移修复回写真源） ===== */

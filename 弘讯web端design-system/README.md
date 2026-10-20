@@ -17,8 +17,8 @@
 | `RULES.md` | 组件决策树 + 禁止清单 + 状态机 + **§1.1b 页面类型规格** + **§6 Web 布局黄金法则** | 做组件选型 / 搭页面前**必读 §1.1b + §6** |
 | `pages/examples/` | 品牌示例页已删除（2026-08-06）；需要时用 `brand-color-engine/examples/gen-examples.js` 重新生成 | — |
 | `web规范展示_框架版_20260806_1050.html` | **Web 规范活体展示页**（人读入口，浏览器打开；同名 `_分享版.html` 零外链） | 概览设计系统全貌时打开 |
-| `components.json` | **组件规格层（机器可读，唯一真源）**：全部 11 个组件（按钮/输入/表格/标签/页签/分页/状态点/下拉/日期/树/弹窗）的结构化规格 + referenceCss/Html + Ardot 映射；底部 `contract` 字段为机器可校验硬约束（驱动 validate-spec.js） | Agent/校验脚本读；生成任意组件前读 |
-| `components.md` | 组件规格层的人读镜像（含可克隆 CSS 与 Ardot 搭建指引），v1.1 覆盖全部 11 组件 | 设计师在 Ardot 搭组件 / 同事写 HTML 时对照 |
+| `components.json` | **组件规格层（机器可读，唯一真源）**：全部 25 个组件（按钮/输入/表格/徽章/页签/分页/状态点/下拉/日期/树/弹窗/复选框/空态/步骤/时间线/描述列表 等）的结构化规格 + referenceCss/Html + Ardot 映射；底部 `contract` 字段为机器可校验硬约束（驱动 validate-spec.js） | Agent/校验脚本读；生成任意组件前读 |
+| `components.md` | 组件规格层的人读镜像（含可克隆 CSS 与 Ardot 搭建指引），覆盖全部 22 组件（含 2026-10-20 新增复选框 Checkbox） | 设计师在 Ardot 搭组件 / 同事写 HTML 时对照 |
 | `validate-spec.js` | **规范合规扫描器**（node，纯读档）：读 components.json 的 `contract`，扫描目标 HTML 的 `<style>` 组件规则，捕获字重/尺寸/半径/非 token 色等回归；HIGH 违反 exit 1，可作 pre-commit / CI gate | 交付前门禁；或批量校验历史页面 |
 | `page-template.html` | **可克隆起始模板（纯框架，2026-08-06）**：正确 `:root` token（短名对齐 components.json）+ 顶栏72/侧栏240/内容区空壳/底栏32，**无 demo 组件**（按 `RULES.md §1.1b` 自建内容）；经 `validate-spec.js` 校验 0 HIGH | 生成任意页面前先 `cp` 本文件起手 |
 
@@ -41,7 +41,7 @@
 3. 取色 / 字号 / 间距：查 `MASTER.md` 色彩与间距 Token，**禁止硬编码非系统色（尤其禁止移动端 `#10B981`）**
 4. 写代码：用 `DESIGN-TOKENS.md` 的 CSS 变量；Agent 程序化用 `tokens.json`
 5. 生成任意组件：读 `components.json` 取结构化尺寸、状态与 `referenceCss`（已对齐 showcase 变量，可直抄）；下拉/日期/树/弹窗 4 类组件须严格按规格层
-6. **交付前门禁**：跑 `node validate-spec.js <生成的.html>` → 必须 **0 HIGH 违反** 才许交付（脚本自动校验按钮字重400/圆角8、输入高32、表头高48字重500、标签高22、页签激活字重500、分页24圆钮、状态点10、Web 禁 #10B981 等）
+6. **交付前门禁**：跑 `node validate-spec.js <生成的.html>` → 必须 **0 HIGH 违反** 才许交付（脚本自动校验按钮字重400/圆角6、输入高32、表头高44（字号14）字重500、徽章高22、页签激活字重500、分页24圆钮、状态点10、Web 禁 #10B981 等）
 
 ---
 

@@ -18,6 +18,9 @@
   /* 中性 N1–N11 */
   --n1:#FFFFFF; --n2:#FAFAFA; --n3:#F6F9FC; --n4:#F5F7FB; --n5:#EAEAED; --n6:#DEE2E6;
   --n7:#CED4DA; --n8:#ADB5BD; --n9:#6C757D; --n10:#334155; --n11:#212532;
+  /* 行态（方案 D · 2026-10-20）：已选行底 / 当前行左条 / 复选框边框与勾 */
+  --row-selected-bg:#DAEAFA; --row-selected-bar:#005EAE; --cbx-border:#949494; --cbx-check-fg:#FFFFFF;
+  --select-item-bg:#DAEAFA; --select-item-fg:#004A8F;
   /* 功能色（--suc/--warn/--err/--run 语义=背景色；Web 对齐 Ant Design，运行绿独立） */
   --suc:#389E0D; --suc-soft:#F6FFED; --suc-fg:#FFFFFF;
   --warn:#FA8C16; --warn-soft:#FFF7E6; --warn-fg:#FFFFFF;
@@ -31,7 +34,7 @@
   /* 图表色 */
   --chart-tech-blue:#0066CC; --chart-smart-cyan:#00A3E0; --chart-data-cyan:#00C7BE; --chart-fresh-green:#00D4A1; --chart-vivid-orange:#FF9500; --chart-alert-red:#FF4D4D; --chart-wisdom-purple:#8A5CF5; --chart-modern-pink:#FF66C2;
   /* 圆角 */
-  --radius-sm:2px; --radius-base:4px; --radius-md:8px; --radius-lg:16px; --radius-round:999px; --radius-btn-ios:6px;
+  --radius-sm:2px; --radius-base:4px; --radius-control:6px; --radius-md:8px; --radius-lg:16px; --radius-round:999px; --radius-btn-ios:6px;
   /* 间距（4 的倍数） */
   --space-xs:4px; --space-sm:8px; --space-md:12px; --space-base:16px; --space-lg:24px; --space-xl:32px; --space-xxl:48px;
   /* 投影（双层复合：柔光层+1px发丝线） */
@@ -72,8 +75,8 @@
   /* 密度（默认 comfortable） */
   --density-row-height:44px; --density-content-padding:16px;
   /* 背景/文本语义（W1 桥接层约定：亮色取自 tokens 布局+中性；暗色取自 dark.background） */
-  --bg-page:#F5F7FB; --bg-surface:#FFFFFF; --bg-elevated:#FFFFFF;
-  --text-1:#212532; --text-2:#6C757D; --text-3:#ADB5BD; --border:#DEE2E6;
+  --bg-page:#F5F7FB; --bg-surface:#FFFFFF; --bg-elevated:#FFFFFF; --table-header-bg:#FAFAFA;
+  --text-1:#212532; --text-2:#334155; --text-3:#6C757D; --border:#DEE2E6;
   /* 布局骨架 */
   --topbar-height:72px; --sidebar-width:240px;
   --sidebar-collapsed-width:80px; --footer-height:32px;
@@ -100,6 +103,8 @@
   --brand-surface:#0A2540; --brand-surface:oklch(25.99% 0.0604 251.32);
   --n1:#1E293B; --n2:#243044; --n3:#334155; --n4:#121826; --n5:#1E293B; --n6:#334155;
   --n7:#475569; --n8:#94A3B8; --n9:#CBD5E1; --n10:#F1F5F9; --n11:#FFFFFF;
+  --row-selected-bg:#23395D; --row-selected-bar:#3B82F6; --cbx-border:#94A3B8; --cbx-check-fg:#FFFFFF;
+  --select-item-bg:#23395D; --select-item-fg:#F1F5F9;
   --suc:#52C41A; --suc-soft:#162312; --suc-fg:#FFFFFF;
   --warn:#FFA940; --warn-soft:#2E2410; --warn-fg:#1A1A1A;
   --err:#FF4D4F; --err-soft:#2A1414; --err-fg:#FFFFFF;
@@ -109,7 +114,7 @@
   --warn-hover:#ffb55b; --warn-active:#e09538; --warn-disabled:#745a3d; --warn-soft-hover:#4b4331; --warn-soft-active:#28200e; --warn-border-hover:#ffba66; --warn-border-active:#ffc57d; --warn-dis-fg:#1c222c;
   --err-hover:#ff6668; --err-active:#e04446; --err-disabled:#743743; --err-soft-hover:#483535; --err-soft-active:#251212; --err-border-hover:#ff7172; --err-border-active:#ff8687; --err-dis-fg:#838993;
   --run-hover:#41cd75; --run-active:#1ead53; --run-disabled:#206448; --run-soft-hover:#303f38; --run-soft-active:#0c1c15; --run-border-hover:#4ed17e; --run-border-active:#69d892; --run-dis-fg:#838993;
-  --shadow-card:0 1px 2px rgba(0,0,0,0.40), 0 0 0 1px rgba(255,255,255,0.04);
+  --shadow-card:0 8px 24px rgba(0,0,0,0.35), 0 0 0 1px rgba(168,197,231,0.14);
   --shadow-modal:0 6px 16px rgba(0,0,0,0.50), 0 0 0 1px rgba(255,255,255,0.06);
   --shadow-float:0 4px 8px rgba(0,0,0,0.40), 0 0 0 1px rgba(255,255,255,0.04);
   --shadow-row-hover:0 1px 2px rgba(0,0,0,0.30), 0 0 0 1px rgba(255,255,255,0.03);
@@ -117,14 +122,14 @@
   --secondary:#38BDF8; --secondary-hover:#7DD3FC; --secondary-active:#0284C7; --secondary-disabled-bg:#3B82F6; --secondary-disabled-fg:#1E293B;
   --link:#60A5FA;
   --chart-grid:#3E4C63;
-  --chart-tech-blue:#0066CC; --chart-smart-cyan:#00A3E0; --chart-data-cyan:#00C7BE; --chart-fresh-green:#00D4A1; --chart-vivid-orange:#FF9500; --chart-alert-red:#FF4D4D; --chart-wisdom-purple:#8A5CF5; --chart-modern-pink:#FF66C2;
+  --chart-tech-blue:#4C9BE8; --chart-smart-cyan:#4FC3F7; --chart-data-cyan:#2DD4BF; --chart-fresh-green:#34D399; --chart-vivid-orange:#FBBF24; --chart-alert-red:#F87171; --chart-wisdom-purple:#A78BFA; --chart-modern-pink:#F472B6;
   --elev-sunken-surface:#0F172A; --elev-sunken-shadow:none;
   --elev-default-surface:#1E293B; --elev-default-shadow:none;
   --elev-raised-surface:#243044; --elev-raised-shadow:0 1px 2px rgba(0,0,0,0.40), 0 0 0 1px rgba(255,255,255,0.04);
   --elev-overlay-surface:#1E293B; --elev-overlay-shadow:0 6px 16px rgba(0,0,0,0.50), 0 0 0 1px rgba(255,255,255,0.06);
   --elev-overflow-surface:#1E293B; --elev-overflow-shadow:0 0 8px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.06);
-  --bg-page:#121826; --bg-surface:#1E293B; --bg-elevated:#243044;
-  --text-1:#F1F5F9; --text-2:#CBD5E1; --text-3:#94A3B8; --border:#334155;
+  --bg-page:#121826; --bg-surface:#1E293B; --bg-elevated:#243044; --table-header-bg:#26364F;
+  --text-1:#FFFFFF; --text-2:#F1F5F9; --text-3:#CBD5E1; --border:#334155;
 }
 
 /* ===== 排版语义类（.t-*：font.scale 派生，与 --font-* 1:1；build 漂移修复回写真源） ===== */

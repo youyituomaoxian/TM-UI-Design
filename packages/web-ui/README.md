@@ -42,7 +42,7 @@ packages/web-ui/
 | 基础输入 | `Button` `Input` `Textarea` `Label` | `.btn` `.input` `.textarea` `.label` |
 | 选择/表单 | `Checkbox` `Radio` `Switch` `Slider` `Toggle` | `.checkbox` `.radio` `.switch` `.slider` `.toggle` |
 | 选择器 | `Select` `DatePicker` `Tree` `DropdownMenu` `Popover` | `.sel*` `.dp*` `.tree*` `.dropdown*` `.popover-content` |
-| 展示/容器 | `Card` `Badge` `Avatar` `Table` `Tag` `Tabs` `Pagination` `StatusDot` `Progress` `Skeleton` `Separator` | `.card*` `.badge` `.avatar` `.table` `.tag` `.tabs*` `.pager*` `.status-dot*` `.progress*` `.skeleton` `.separator*` |
+| 展示/容器 | `Card` `Badge` `Avatar` `Table` `Tabs` `Pagination` `StatusDot` `Progress` `Skeleton` `Separator` | `.card*` `.badge` `.avatar` `.table` `.badge` `.tabs*` `.pager*` `.status-dot*` `.progress*` `.skeleton` `.separator*` |
 | 反馈/弹出 | `Accordion` `Alert` `Dialog` `AlertDialog` `Sheet` `Tooltip` `Breadcrumb` `Spinner` | `.accordion*` `.alert*` `.modal*` `.alert-dialog*` `.sheet*` `.tooltip*` `.breadcrumb*` `.spinner` |
 
 完整导出（含类型）见 `src/index.ts`。

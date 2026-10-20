@@ -35,7 +35,13 @@ for (const dir of ['弘讯web端design-system', '弘讯移动端design-system'])
     const chunk = lines.splice(iLast, lines.length - iLast).join('\n').replace(/\n+$/, '');
     // archive：插入到头部注记之后
     let arch = fs.readFileSync(archP, 'utf8');
-    const aIns = arch.indexOf('\n', arch.lastIndexOf('> 切割线'));
+    // RED-011 修复（2026-10-08）：原 lastIndexOf 未命中返回 -1，而 indexOf(sep, -1) 会把负数
+    // 当 0 处理、不抛错，静默返回文件首个换行 → 条目被插到归档头部注记之前（顺序错乱）
+    // 而脚本仍输出 ROLL DONE exit 0，缺后续校验会静默固化进版本库。现显式判空并 fail-closed。
+    const cut = arch.lastIndexOf('> 切割线');
+    if (cut < 0) { console.error(`FAIL ${rel}: CHANGELOG-archive.md 缺「> 切割线」标记，拒绝盲目写入`); fail++; break; }
+    const aIns = arch.indexOf('\n', cut);
+    if (aIns < 0) { console.error(`FAIL ${rel}: 切割线标记后无换行，归档文件结构异常`); fail++; break; }
     arch = arch.slice(0, aIns + 1) + '\n' + chunk + '\n\n---\n' + arch.slice(aIns + 1).replace(/^\n+/, '');
     arch = arch.replace(/^> 切割线（滚动更新）：.*$/m,
       `> 切割线（滚动更新）：${dir.includes('web') ? 'web' : 'mobile'} 归档 \`[${rollId}]\` 及更早。新条目一律写主文件顶部；超限时由 roll-changelog.js 自动滚动。`);

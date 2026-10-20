@@ -101,7 +101,7 @@
 - **同系列数据色统一**：同一数据系列柱/条/线一律同色（禁最高值强调色）；分组柱状图两系列用两色区分。
 - SVG 内 `stroke=`/`fill=` 一律 `style="stroke:var(--chart-*)"`；**禁裸 hex**（门禁 `svg.paint.non-palette` HIGH）；**必须是真源已定义 token**（门禁 `token.svg-var` HIGH——2026-08-06 事故：用不存在的 `--chart-smart-blue` → stroke 失效折线不可见）。
 - 图例用 `.chart-legend` / `.legend-item` + `.legend-dot`（圆点）/ `.legend-line`（线段，可 `--dash`）。
-- **暗色（联动 DARK-MODE.md）**：两端 dark 段不重定义 `--chart-*`（沿用亮色，语义跨模式稳定）；暗底上**禁深色系作主系列线/描边**（Web `--chart-tech-blue` / 移动 `--chart-blue-aux` `--chart-green-growth`，对比 <3:1）——主系列优先亮系；图表文字走 n 级文字 token，不引 chart 色作文字。
+- **暗色（联动 DARK-MODE.md）**：**Web 端 2026-10-20 起 dark 段重定义 8 色**（tech-blue `#4C9BE8`、smart-cyan `#4FC3F7`、data-cyan `#2DD4BF`、fresh-green `#34D399`、vivid-orange `#FBBF24`、alert-red `#F87171`、wisdom-purple `#A78BFA`、modern-pink `#F472B6`，全部 ≥3:1），暗底可直接用主系列；**移动端 13 色仍沿用亮值**，暗底上禁深色系作主系列线（`--chart-blue-aux` `#1D4ED8`、`--chart-green-growth` `#059669`，<3:1）。图表文字走 n 级文字 token，不引 chart 色作文字。
 
 ---
 

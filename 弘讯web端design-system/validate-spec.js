@@ -2109,6 +2109,8 @@ function run(specPath, targetPath) {
   const chartValueV = checkChartValue(html);
   const chartBaselineV = checkChartBaseline(html);
   const tablePagerV = checkTablePager(html);
+  // 表格行态门禁（2026-10-20 方案 D，RULES §3.3）：已选行须带复选框 / tr 禁通用短名状态类
+  const tableRowStateV = checkTableRowStates(html);
   // 克隆源内联 :root 与 template.css 一致性门禁（2026-08-06：仅 page-template）
   const templateSyncV = checkTemplateRootSync(html, canonicalCss);
   // 跨模块间距门禁（2026-08-04，RULES §4.3）：页面层不得覆盖 stat-grid/grid12 margin-bottom <16px
@@ -2152,7 +2154,7 @@ function run(specPath, targetPath) {
   const iconSrcV = checkIconSource(html, targetPath);
   // KPI 仅两版门禁（2026-08-06 定稿）：简约版（stat-num/stat-sub 独立卡、无 kpi-ico / stat-card--icon / stat-card--ring）已删除，Agent 生成简约版即 HIGH 拦截
   const kpiV = checkKpiSimple(html);
-  return violations.concat(chartSeriesV, rootV, surfaceV, iconV, whitelistV, tokenV, motionV, chartV, svgV, topbarV, dimV, btnLabelV, btnVarV, statGridV, chartFillV, chartLayoutV, chartValueV, chartBaselineV, templateSyncV, moduleSpacingV, tableMinRowV, tableAlignV, tablePagerV, cardFillV, mobileV, webAesV, wcagV, gridV, overrideV, customV, kpiV, svgVarV, scrollV, cloneV, fpV, scrollBodyV, iconSrcV, fontV, tblBudgetV);
+  return violations.concat(chartSeriesV, rootV, surfaceV, iconV, whitelistV, tokenV, motionV, chartV, svgV, topbarV, dimV, btnLabelV, btnVarV, statGridV, chartFillV, chartLayoutV, chartValueV, chartBaselineV, templateSyncV, moduleSpacingV, tableMinRowV, tableAlignV, tablePagerV, tableRowStateV, cardFillV, mobileV, webAesV, wcagV, gridV, overrideV, customV, kpiV, svgVarV, scrollV, cloneV, fpV, scrollBodyV, iconSrcV, fontV, tblBudgetV);
 }
 
 // ===== 柱状图柱顶数值门禁（2026-08-06：示例页柱状图缺 .chart-v → 柱子无数据标签，门禁此前未查）=====
@@ -2245,6 +2247,39 @@ function checkTablePager(html) {
       violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'page.species.invalid', sel: 'body[data-species=' + bm[1] + ']', msg: 'data-species 值非法：' + bm[1] + '——仅 workbench|document（防物种爆炸，RULES §1.1c）' });
     } else if (bm[1] === 'workbench' && !/\bstat-grid\b/.test(html)) {
       violations.push({ line: 0, src: 'html', severity: 'MEDIUM', contract: 'page.species.workbench.skeleton', sel: 'body[data-species=workbench]', msg: '声明 workbench 但无 .stat-grid 工作台骨架——最小判据防形式字段退化：确为工作台型请补骨架，否则改 document（RULES §1.1c · T-F1）' });
+    }
+  }
+  return violations;
+}
+
+
+// ===== 表格行态门禁（2026-10-20 方案 D，RULES §3.3）=====
+// ① 已选行必须带复选框（.cbx / input[type=checkbox]）——选区只靠颜色违反 1.4.1；
+// ② tr 上禁用通用短名状态类（.sel/.cur/.hov/.on/.col/.sheet）——会撞组件类（.sel=下拉组件、
+//    .col=栅格、.sheet=面板，实测撞上后整行/整页塌陷），行态统一 .is-selected（单选表声明 data-select=single）。
+function checkTableRowStates(html) {
+  const violations = [];
+  const noScript = stripScriptTags(html);
+  const rows = [...noScript.matchAll(/<tr[^>]*>/g)];
+  for (const r of rows) {
+    const tag = r[0];
+    const cls = ((tag.match(/class\s*=\s*["']([^"']*)["']/i) || [, ''])[1] || '').split(/\s+/).filter(Boolean);
+    const bad = cls.filter((c) => /^(sel|cur|hov|on|col|sheet)$/.test(c));
+    if (bad.length) {
+      violations.push({ line: 0, src: 'html', severity: 'MEDIUM', contract: 'table.row.state.classname', sel: '<tr class="' + bad.join(' ') + '">', msg: '表格行用通用短名做状态类（' + bad.join(' / ') + '）——会撞组件类（.sel=下拉、.col=栅格、.sheet=面板，实测撞上整行塌陷）；行态统一 .is-selected；单选表须声明 data-select="single"（RULES §3.3）' });
+    }
+    const isSel = cls.indexOf('is-selected') >= 0 || /aria-selected\s*=\s*["']true["']/i.test(tag);
+    if (isSel) {
+      const start = r.index;
+      const end = noScript.indexOf('</tr>', start);
+      const rowHtml = noScript.slice(start, end === -1 ? noScript.length : end);
+      const tableStart = noScript.lastIndexOf('<table', start);
+      const tableTag = tableStart >= 0 ? noScript.slice(tableStart, noScript.indexOf('>', tableStart) + 1) : '';
+      const singleMode = /data-select\s*=\s*["']single/i.test(tableTag);
+      const hasCbx = /class\s*=\s*["'][^"']*\bcbx\b/i.test(rowHtml) || /<input[^>]+type\s*=\s*["']checkbox/i.test(rowHtml);
+      if (!hasCbx && !singleMode) {
+        violations.push({ line: 0, src: 'html', severity: 'MEDIUM', contract: 'table.row.selected.cue', sel: 'tr.is-selected', msg: '已选行既无复选框、所在表格也未声明 data-select="single"——选区缺少可操作信号（RULES §3.3：多选走 .cbx 复选框，单选走行点击并声明 data-select=single）' });
+      }
     }
   }
   return violations;

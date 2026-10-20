@@ -5,6 +5,90 @@
 
 ---
 
+## [1.9.45] — 2026-10-20 · `.tag` 物理删除 + 全库迁移（用户追认）
+
+- **删除 `.tag` 组件**：`template.css` 移除 `.tag/.tag-suc/.tag-warn/.tag-err/.tag-run/.tag-def` 及 hover/disabled 规则；`components.json` 删除 tag 组件条目与 `tag.size` 契约、两处 selector 去 `.tag`；`DESIGN-TOKENS §7.3` 改为「标签 Badge」规格；组件数 22 → **25**（-tag +empty/steps/timeline/descriptions）。
+- **迁移**：`web规范展示_框架版_20260806_1050.html` 与其分享版共 **22 处** `class="tag tag-*"` → `badge badge-*`（tag-def → badge-muted），分享版内联 `.tag*` CSS 同步删除；文档（RULES ×5、VISUAL-SPEC、packages/web-ui/README）同步为 `.badge`/徽章。
+- **体积上限追认**（用户 2026-10-20 确认）：`components.json` 77200、`template.css` 62000、`components.md` 16800、`DESIGN-TOKENS.md` 15600。
+- **焦点环不做**（用户 2026-10-20 决策）：现 20% primary 环保留，理由「视觉上无问题，符合科技克制的设计哲学」；`--focus-ring` 与 11 处 focus 规则维持原状，HANDOFF 不再列为待办。
+
+---
+
+## [1.9.44] — 2026-10-20 · 视觉缺口整改批（用户采纳 8 条 Web 项）
+
+- **暗色卡面层次**：`dark.shadow.card` 改为 `0 8px 24px rgba(0,0,0,.35), 0 0 0 1px rgba(168,197,231,.14)`（描边并入 shadow 第二层，卡面对页面 1.21→描边 1.34）；新增 `--table-header-bg`（亮 #FAFAFA / 暗 #26364F，表头对卡面 1.10→1.20）。
+- **文字三级**：`--text-1/2/3` 改为 N11/N10/N9（原 N11/N9/N8，N8 对白仅 2.07）；`.card-title/.page-title/.tabs .tab/.pager .pg-tot/.breadcrumb-item/::placeholder` 全部改用该三元组，不再零引用。
+- **暗色图表色**：`dark.colors.chart` 换独立阶梯 8 色（tech-blue #4C9BE8 等，全部 ≥3:1；原 #0066CC 仅 2.63）。
+- **控件圆角统一**：新增 `--radius-control:6`，`.btn/.input/.textarea/.sel-trigger/.dp-trigger` 由 8/4 混用改为 6；`.filter-chip` 保持胶囊。
+- **表头规格**：`.table th` 48/13 → **44/14** + `border-bottom N6`；契约 `table.head` height 48→44、新增 font-size 14，`table.head.font` note 同步。
+- **新组件**：`.empty` / `.steps` / `.timeline` / `.descriptions` 四件入真源（含 components.json 登记与 components.md 规格表）。
+- **`.tag` 收敛**：就地改为 `.badge` 同款（inline-block、22/500、nowrap+ellipsis、`--text-2`），类名保留兼容 52 处示例页，文档标 deprecated 别名；契约 `tag.size` 字重 400→500。
+- **图标描边按尺寸**：`.ico/.btn-ico svg/.tree-ico svg` 16px→2.2，`.kpi-ico svg` 20px→2.0，logo/empty 24px→1.8。
+- **体积上限调整（须追认）**：`check-size.js` 中 `components.json` 74600→77200、`template.css` 57500→59500——因新增 4 组件 + 4 条契约产生的真实增长（实测 74530 / 58848），非阈值放水。
+
+---
+
+## [1.9.43] — 2026-10-20 · 三处同根因缺陷修复（暗色选中 / badge-muted / badge 溢出）
+
+- **暗色白底表面选中 1.99:1 → 10.56:1**：新增 `--select-item-bg` / `--select-item-fg`（亮 `#DAEAFA`/`#004A8F`，暗 `#23395D`/`#F1F5F9`），`.sel-opt.on` / `.tree-node.on` / `.filter-chip.on` / `.lang-opt.on` 改用这对 token；品牌蓝底侧栏变体仍走自己的覆盖，不受影响。
+- **`.badge-muted` 4.44:1 → 9.40:1**：文字由 N9 提为 N10（`#334155` on `#F6F9FC`）；暗色同理达标。
+- **`.badge` 文字溢出定高盒**：改 `display:inline-block` + `line-height:22px` + `white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%`（原内容 38px 撑不进 22px 盒、第二行无底色溢出；现超宽显示 `…`）；窄列仍按 RULES §1.1b 收敛为「2 个 + +N」。
+- 派生产物：`globals.css` / `template.css` 重生成，`page-template.html` 内联 `:root` 同步两个新变量，`DESIGN-TOKENS.md` §2.8 补两行。
+
+---
+
+## [1.9.42] — 2026-10-20 · 表格行选中态 v2（用户拍板：底 + 左条，单选无控件）
+
+- **行态收敛为一种视觉**：单选 / 多选选中后都是「底色 `--row-selected-bg` + 2px `--row-selected-bar` 左条」（首列 `padding-left:14` + 边框 2 = 16，内容不位移）。
+- **取消「当前行」**：删除 `.table tbody tr.is-current` 三条规则（未选中行点击/悬停只表现为 hover N3，不再出现左条）与 `.row-key` 600 规则。
+- **单选无空间控件**：删除 `.cbx--radio`；单选表格用 `table[data-select="single"]`，行点击即选中（互斥）。多选表格 `data-select="multi"` 仍由 `.cbx` 复选触发。
+- **token 改名**：`--row-current-bar` → `--row-selected-bar`（`tokens.json` 键 `selection.rowBar` 不变），`page-template.html` 内联 `:root` 同步。
+- **门禁**：`table.row.selected.cue` 改为「已选行须有 `.cbx`，或所在表格声明 `data-select=single`」，不再接受 `role=radio`。
+- **指针反馈**：`.table[data-select="single"] tbody tr` 整行 `cursor:pointer`。
+- **规范**：RULES §3.3 重写为「两种选择方式 / 同一选中视觉」；§3.6 注记与移动端 §3.3 补注同步更新。
+
+---
+
+## [1.9.41] — 2026-10-20 · 复选框补单选变体（`.cbx--radio`）
+
+- `components.css` 增 `.cbx--radio`：同 `.cbx` 尺寸/边框（16/3.03:1），圆形 + 主色内点 8px；用于表格「单选」列（互斥）。
+- `components.json` checkbox `variants` 补「单选（圆形 .cbx--radio）」。
+- `.cbx svg` 默认 `opacity:0`，仅勾选/半选显示（防未选行露出勾）；
+- `validate-spec` 的 `table.row.selected.cue` 接受单选控件（`role=radio` / `input[type=radio]`），不再只认 checkbox。
+- 语义：`.is-selected` = 被选中（多选 checkbox / 单选 radio 均可）；`.is-current` = 键盘/定位当前行，两者独立。
+
+---
+
+## [1.9.40] — 2026-10-20 · 表格行选中态落地（方案 D：已选 = 复选框 + 底 / 当前 = 左条）
+
+- **tokens.json**：新增 `colors.selection`（亮 `rowBg #DAEAFA` / `rowBar #005EAE` / `checkboxBorder #949494` / `checkboxCheck #FFFFFF`；暗 `#23395D` / `#3B82F6` / `#94A3B8` / `#FFFFFF`）→ `map-tokens.js` 发射 `--row-selected-bg` / `--row-current-bar` / `--cbx-border` / `--cbx-check-fg`（亮暗双段）；`DESIGN-TOKENS.md` 增 §2.8。
+- **components.css**：`.table tbody tr.is-selected`（底 + `:hover` 保底，防同权重覆盖）、`.table tbody tr.is-current>td:first-child`（2px 左条，`padding-left:14px` 与边框合计 16 不位移）、`.row-key` 600；新增 `.cbx` 复选框（16×16 / 边框 3.03:1 / 勾选主色底 + 白勾 / `:focus-visible` 环 / 禁用态）+ `th.ck/td.ck` 列宽 40。
+- **components.json**：`table.states` 增 `row.selected`（bg + nonColorCue）与 `row.current`（bar + weight），组件新增 `checkbox`（22 个）；`components.md` 镜像同步（含表格行态说明）。
+- **规范**：RULES §3.3 重写为「已选 / 当前」双态表 + selectable 默认关 + 标识列 `.row-key` + **表格内禁 N9 次级文字**（任何行底色击穿 4.5）；§3.6 注明表格行不适用单选语义。移动端 RULES §3.3 补口径注释（双端不统一）。
+- **门禁**（validate-spec）：新增 `table.row.selected.cue`（已选行无 `.cbx`/checkbox → MED，1.4.1 颜色单信号）与 `table.row.state.classname`（`tr` 用 `.sel/.cur/.hov/.on/.col/.sheet` 通用短名 → MED，实测撞组件类整行塌陷）。
+- **page-template.html**：内联 `:root` 同步 4 个新变量（`template.root.sync`）。
+- **验证**：反例页命中 2 条新 MED、正例页 0 违反；`ci-local` 全绿（项数以输出为准）。
+
+---
+
+## [1.9.39] — 2026-10-20 · 跨智能体交接制度（HANDOFF 活文档 + 每轮更新铁律）
+
+- `HANDOFF.md` 重构为活文档（现状快照 / 未决事项 / 命令 / 权限 / 更新记录 ≤10 轮），取代 2026-09-23「HANDOFF 冻结」决议。
+- 更新铁律入 `AGENTS.md` 顶部 + `GENERATION-SOP.md §0`：任何 Agent 任何轮次结束未更新 HANDOFF = 本轮未完成。
+- **真源区未改**（template.css / tokens.json / components.json / 门禁脚本零改动），本轮仅动流程文档。
+
+---
+
+## [1.9.38] — 2026-10-10 · 门禁复盘遗留拍板落地（T-6 三档登记 / T-7 结案 / T-8 治理约束）
+
+- **T-6（RED-002 三档）**：check-sync 新增检查三「真源未覆盖类登记闭环」——Web 真源 282 类中 vendor 未覆盖 163 类原「从不比对即静默通过」，现须全部登记 vendor-coverage.json（tokenProjection 豁免 30 / gaps 真缺口 133），未登记 → FAIL。负向验证：删登记项 / 登记真源缺失均 exit 1，恢复回绿。
+- **T-7 结案**：Mobile vendor 同构段 0 类定性「不适用」（mn-* Taro 组件层自有命名空间，设计如此，非遗漏），check-sync 输出 ⏭️ 非 ⚠️，不阻断、不读作一致。
+- **T-8 治理约束**：check-size.js 新增规则 4——阈值上调须 CHANGELOG 留痕 + 复盘轮内用户追认，归位治理优先于调阈值。
+- **阈值重测留痕（T-8 口径，已追认 2026-10-10）**：check-sync.js 10900→13000（检查三落码实测 11997 + 8% 档）；check-size.js 6200→7500（注释+登记实测 6478 + 15% 档）；新登记 vendor-coverage.json 4000。
+- **回归**：ci-local 100 pass / 0 fail；本轮仅动门禁/工具层，真源 CSS/JSON/HTML 未动。
+
+---
+
 ## [1.9.37] — 2026-09-23 · 消费应用侧报告 DS-20260923-01 核验回执：修复 page-template.html 畸形 `:root` 块
 
 - **修复内容**：删除 `page-template.html` 第 111–114 行的畸形块——L111 孤立 `:root` + L112–114 缩进重复的密度声明（`:root[data-density=compact/comfortable/spacious]`）。该块自仓库首个提交 `5aca169`（2026-08-06 init）即存在，属历史导入携带缺陷。
@@ -55,64 +139,5 @@
 - **check-size 阈值调整（维护者六步）**：audit-rules.json 25,600 → 28,600（D 层新增字段属合法内容增长，26,263 现值 + 8% 余量；归位治理优先于调阈值的原则不受影响）。
 - **漏网补清**：`.workbuddy/` 为隐藏目录，ripgrep 默认跳过致 A-1 漏扫——tm-design-system SKILL.md「99 pass」复述已补改指针，深层复扫零残留。
 - **验证**：ci-local 全绿（项数以输出为准）；audit-rules.json JSON 合法 + 12 维 trap/pairs 复测齐全。
-
----
-
-## [1.9.32] — 2026-09-22 · 文档体积门禁 check-size 接入 ci-local（批 2b · T-B）
-
-> 承 [1.9.31] 批 2a——体积门禁按监督实战沉淀的 J5 修正实现：字符数为主行数为辅、阈值先实测现值、先归位治理、防膨胀转移。
-
-- **check-size.js 新增（根目录，与 check-sync.js 并列）**：①清单内真源文件字符数超限阻断（阈值 = 2026-09-22 实测现值 + 分级余量：≤10k +15% / 10~50k +8% / >50k +5%，共 42 项）；②**清单封闭防膨胀转移**——根 / 双端目录顶层新增 .md/.json/.js/.html/.css 未登记且未豁免即 FAIL（堵「拆文件绕阈值」）；③预警口径 = 剩余增长空间 <2%（首版 90% 线在 +8% 余量下数学上必然低于现值，全表误报，已修正）；④豁免清单登记产物与过程记录（USAGE.html、规范展示页、创作记录等）。
-- **ci-local.js 挂载**：check-sync 之后新增 check-size 阻断段（子进程 + ok() 断言，同构现有模式）。门禁基线相应 +1。
-- **阈值调整纪律**：走维护者六步（登记 → 改 check-size.js → ci-local 全绿 → 双端 CHANGELOG 留痕）；**归位治理优先于调阈值**。
-- **验证**：`node check-size.js` 独立通过（0 FAIL / 8 WARN，WARN 为信息性）；ci-local 全绿（项数以输出为准）。
-
----
-
-## [1.9.31] — 2026-09-22 · 加载纪律（批 2a）：基线治理——SSOT 复述指针化 + CHANGELOG 滚动归档 + 数字引用纪律
-
-> 背景：跨窗口监督实战（SUP-20260922-1640）暴露「以记忆/旧值代替实测」系统性缺口——3 条断言同源失真于引用旧提交基线值（7789a2c 时的行数/项数，实际 main 已 d3c83dd）。归因：执行缺口（活文档复述数字会漂移）+ 制度缺口（无数字引用规则）。
-
-- **SSOT 复述指针化（A-1）**：AGENTS / README / USAGE-GUIDE / USAGE.html / USAGE_分享版 / 团队使用指南 / HANDOFF 共 17 处「99 pass」类门禁项数复述改为指针（「项数以输出为准」）；CHANGELOG 条目与 `output/` 复盘中的数字属历史快照，按新纪律不回改。
-- **CHANGELOG 滚动归档（A-2）**：web 主文件 29,906 → 9,352 字符（[1.9.21] 及更早 21 条原样移入 `CHANGELOG-archive.md`）；切割由确定性脚本完成（行数 + 锚点双重断言），主文件头部加归档指针。
-- **数字引用纪律（A-3）**：SOP §0 新增第五节——①活文档禁复述会漂移的数字（一律指针化）；②快照值须标注「实测命令 + 实测日期」；③历史记录不回改、不作当前基线引用。
-- **验证**：`node ci-local.js` 全绿（项数以输出为准）。本批不动样式真源与冻结区，指纹无需刷新。
-
-
-## [1.9.30] — 2026-09-10 · 维护侧自发现：M-06 判级与文案自相矛盾（v1.4.1）
-
-> 背景：维护侧复核应用侧报告 DS-20260910-01 的 §10 自愈结论时**主动实测**发现的新题（应用侧未提请）——11242 `page_dashboard.html` 报「HIGH 0」，实际 `content/shared/tm-ui-design.css` **L163/L183** 的 `color:#94a3b8`（∈ web 色板 `dark.colors.neutral.N8`）是**色板内裸 hex 引用行**，按 M-01 同口径应判 HIGH 却被放行。归因：设计系统问题（真源谓词未声明分层 + 实现私自套用他规则语义），无执行缺口。
-
-- **根因**：`audit-spec.js` M-06 分支写成 `severity = frozen ? 'MEDIUM' : (inPalette ? 'MEDIUM' : 'HIGH')`——`inPalette ? MEDIUM` 是**从 M-01 私自套用**的；而 M-06 真源只定义 frozen(dist) 一条降级路径、谓词明写自维护层「维持 HIGH 口径」。**同一行代码判 MEDIUM、文案却说「维持 HIGH 口径」→ 实现与规则自相矛盾**。
-- **真源 v1.4.0 → v1.4.1**（**用户拍板方案 A：对齐 M-01 口径**）：M-06 `predicate` 补「色板内外分层」明写——自维护层 ∈ 色板 → MEDIUM（合法色，必须改 `var()`）/ ∉ 色板 → HIGH（自造色，须映射 token 或回 tokens.json）；`severity` 字段由二分改三分（`HIGH(自维护·自造色)/MEDIUM(自维护·色板内应改引用)/MEDIUM(冻结 dist 产物)`）。
-- **audit-spec.js**：M-06 文案拆三分支并与判级一致；沿用 M-01 同款措辞（「合法色但必须改用 var(--token)」/「自造色」），消除跨规则措辞漂移。
-- **选 A 的理由（第一性）**：M-01 的 `HIGH(非色板)/MEDIUM(色板内)` 分层是有意义的设计——**自造色是规则缺口（须映射），色板内是执行惰性（改 var 即可）**。M-06 必须同口径，否则「同一个 `#005EAE` 裸 hex，写在 `<style>` 里判 MEDIUM、写在 `<link>` CSS 里判 HIGH」这类荒谬判定会持续。真正要修的是**文案说谎** + **真源缺分层声明**，而非收紧判级。
-- **对应用侧结论的影响**：11242「2 项 MEDIUM」**判级结论有效、无需回改**（色板内 MEDIUM 与 M-01 一致）；但其「按 MEDIUM 可接受口径保留」的理由须更正为「色板内合法色 → MEDIUM，应改 `var()`」，而非「色板内无对应 var 故保留」。§10 其余处置（token 化收敛、纯 `:root{}` 块下沉）**依然合规、无需回滚**。
-- **报告 §3 根因勘误**：报告称根因是「掩码正则 `:root\s*\{[^}]*\}` 不覆盖 `:root:not(...){...}` 条件根块」——**v1.4.0 实测不成立**：条件根块内 `--bg-deep:#070b12` → MEDIUM `css.vardef.hex`（正确）、引用行 → HIGH（正确）。`css.vardef.hex` 是**行级谓词（属性名以 `--` 开头）**，先于掩码生效，掩码非必经路径；**两处掩码（页面 L136 / 引用 CSS L345）均无需改**。该描述系应用侧在 v1.3.1 旧版下的推断、未在 v1.4.0 复测，已在 feedback_log 更正。
-- **回归验证**：`#94A3B8`（∈色板，引用行）→ MEDIUM + 文案「色板内·须改 var」；`#070B12`（∉色板，引用行）→ HIGH；`fixture` 复测判级不因所在文件（`<style>` vs `<link>` CSS）而异。ci-local 99 pass / 0 fail。
-
----
-
-## [1.9.29] — 2026-09-10 · 回灌应用侧报告 DS-20260910-01：M-06 口径修正（v1.4.0）
-
-> 背景：应用侧按新制度提交**首份合格报告**（`I:/workbuddy/弘讯设计系统应用/output/设计系统问题_20260910_01_M06口径.md`，P1，合格线三判据全过）。两题均复现属实：① M-06 把**自维护 CSS 的变量定义行**（`--x:#hex`）也判 HIGH「自造色」→ 自维护层陷入「定义违规、引用违规、平台无 token」死锁（11242 实测 147 处 HIGH）；② `audit-spec.js` 横幅硬编码 v1.2.0，真源已 v1.3.1。归因：规则缺口（设计系统问题），无执行缺口。
-
-- **audit-rules.json v1.3.1 → v1.4.0**：新增子契约 **`css.vardef.hex`**（M-01/M-06 共用）——声明属性名以 `--` 开头者 = **色板本体非用法**，判 MEDIUM 清单级不阻断（自造色板须可见：映射 token / 回 tokens.json / exemptions 按块登记）。根因是原豁免绑在 `:root`/`[data-theme]` **选择器**上（绑错维度），换作用域即误报；**修法比报告建议更进一步**：统一以**属性名**判定，M-01 页面侧同步（避免双规则口径不一致），不只改 M-06。
-- **audit-spec.js**：M-01/M-06 双路径加 `css.vardef.hex` 判定（抽 `declPropAt()`/`isVarDef()` helper 去重）；**版本号改动态读取** `audit-rules.json $meta.version`——横幅（L368）与 `--json` 输出 `ruleset` **两处**均修（报告只发现横幅一处，JSON 侧仍硬编码 v1.0.0，已一并修，符合 §0 SSOT「不复述数字」原则）。
-- **双端 RULES 自造底线**补「自维护色板定义出口」条：定义行不计「裸 hex 用法」违规，**引用处仍必须 `var()`**。
-- **回归验证（报告 §9 样例）**：定义行 → MEDIUM `css.vardef.hex`；引用行 → 维持 HIGH `css.asset.hex`；横幅/JSON 版本随真源。**应用侧因此可达 0 HIGH**——其 §10 拟定豁免预案（定义行按 exemptions 登记）**无需执行，可撤**。ci-local 99 pass / 0 fail。
-
----
-
-## [1.9.28] — 2026-09-10 · 加载纪律（批 1）：必读集预算 + 章节索引 + SSOT 清单
-
-> 背景：实测文档层 23 份核心文本 = 468k 字符；单端「skill 声称必读」≈300~340k 字符 ≈100~140k tokens，最小必读集（SOP §① 13.3k + 单端 RULES 46k + tokens 12k = 71k）≈45~55k tokens。根因（设计系统问题）：全文加载无章节检索 / 同一事实多处复述（#005EAE 72 次 · 44px 36 次 · 0 HIGH 44 次）/ 机器资产被列入必读（components.json 70k、validate-spec.js 107k）/ 无体积预算。
-
-- **GENERATION-SOP 新增 §0「加载预算与章节索引」**：必读 3 项（SOP §① + 端 RULES 命中章节 + tokens.json colors 段）；**不通读清单**（components.json / template.css / validate-spec.js / ci-local.js）；章节索引（SOP §①②③ 各附录字符数）；**单点事实源 SSOT 表**（品牌色→tokens.json / 组件契约→components.json / 审计规则→audit-rules.json / 图表→CHART-SPEC / 治理契约→RULES 页首 / 交付线→ci-local 输出：同一事实只认一处，其余写指针）。**预算 ≤35k 字符**。
-- **双端 RULES.md 页首新增「章节索引」**：逐章字符数 + 何时读 + [软]/[硬] 标记，明确「别整份加载」与机器资产不通读。
-- **AGENTS.md 阅读策略重写**：必读 3 项 / 按需检索 / 不通读清单 / SSOT / 禁用整份加载（实测数字替换旧的「~80KB」）；流程步骤 3 的 components.json·template.css 处标注「门禁与构建消费，Agent 不通读」。
-- **tm-design-system skill §2 重写**：加载预算 ≤35k + 必读 3 项 + 按需检索 + 不通读清单（薄壳原则，不复制规范本体）。
-- **批 2 遗留（未做）**：正文复述文本按 SSOT 表替换为指针（需逐处核对语义）；CHANGELOG 滚动归档；文档体积门禁。
-- **同批追加（v1.3.1 · 制度冲突实证收口）**：应用侧克隆内发现未提交的真源改动（自行登记 11242 `page_dashboard.html` FOUC 启动色 `#0a0e17` 豁免）——旧 change_policy 要求无写权角色回灌所致的越权写入。维护侧**吸收进真源 `exemptions`**（内容合法：与平台 dist `--bg-deep` 精确同值 + 用户已拍板），`registered_by` 注明来源与回灌确认；应用侧回滚本地改动后从 GitHub 拉取。**分发口径同时确立：下游唯一来源 = GitHub 拉取**，维护侧不做跨项目巡检（与 `issue_reporting.consumption_model` 被动消费一致）。
 
 ---

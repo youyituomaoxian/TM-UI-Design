@@ -93,7 +93,7 @@
 | ⚠️ 仅大文本 | `n1 on danger` 4.08 / `n1 on success` 3.46 / `n1 on warning` 2.38 | — | 白 on 功能色不达正文线 |
 | ⛔ 禁止 | `n8 on n1` 2.07 / `n6 on n1` | — | 禁作正文 |
 
-**组件文字色现状（两端策略不同，08-05 拍板移动白字首选）**：Web 端 `.tag-*`/`.badge-*`/`.alert-*` 用 `-soft 浅底 + 深字档`（suc 5.44 / err 5.07 / run 4.76）；**移动端功能色标签/按钮白字首选（实底 + 白字，视觉通透，深字方案已废弃，见移动 RULES §10.3b）**。门禁 `wcag.contrast.banned` 仅拦 hex `#fff`/`white` 硬编码白字（白字须走 `var(--n1)`），**不拦移动白字首选组合**。
+**组件文字色现状（两端策略不同，08-05 拍板移动白字首选）**：Web 端 `.badge-*`/`.alert-*` 用 `-soft 浅底 + 深字档`（suc 5.44 / err 5.07 / run 4.76）；**移动端功能色实底标签/按钮白字首选（视觉通透）；2026-10-20 起成功/危险实底改深档底（`--suc-btn-bg`/`--err-btn-bg`）保白字可读，功能色作白底文字时改用 `-deep`（见移动 RULES §10.3b 补丁）**。门禁 `wcag.contrast.banned` 仅拦 hex `#fff`/`white` 硬编码白字（白字须走 `var(--n1)`），**不拦移动白字首选组合**。
 
 ---
 
@@ -251,7 +251,7 @@ TopBar        height=72   FIXED   主色底 白字
 | **分页 Pager** | 高 44，按钮 24×24 | 999 | 12 | 激活 primary 底；总条数 n9/14 |
 | **状态点** | 10×10 | 999 | — | 机器状态 7 语义色（见 §10）|
 | **弹窗 Modal** | 382×257 min | 8 | — | 头 40；overlay 投影；z 分层 10/20/30/50 |
-| **下拉 Select / 日期 DatePicker** | 触发器高 32 | 4/8 | 14 | 浮层 overlay 投影；选项 hover n3；选中 primary 底 |
+| **下拉 Select / 日期 DatePicker** | 触发器高 32 | 4/8 | 14 | 浮层 overlay 投影；选项 hover n3；选中项 `--select-item-bg/fg`（亮 #DAEAFA+#004A8F / 暗 #23395D+#F1F5F9） |
 | **树菜单 Tree** | 节点高 32 | 4 | 14 | 缩进 16/级；品牌底用 `.tree--brand`（白字）|
 | **卡片 Card** | — | 8 | — | `.shadow-card` + radius-md；`.card--fill` 等高收底 |
 | **KPI 统计卡** | 4 列默认（5/6/8 变体）| 8 | — | `.stat-card` 28px/mono（`.kpi-count` 真源未实现）|

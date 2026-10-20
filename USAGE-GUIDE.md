@@ -242,10 +242,11 @@ npx taro build --type weapp   # 产物 dist/ 导入微信开发者工具
 | `GENERATION-SOP.md` | 产品链路详细 SOP（含引擎映射段） |
 | `CHART-SPEC.md` / `DARK-MODE.md` / `VISUAL-SPEC.md` | 图表 / 暗色 / 视觉规格 |
 | `LICENSE` | 许可证（MIT，版权已脱敏） |
-| `ci-local.js` | 全链路总门禁（含 audit 增量审计 + check-sync 一致性阻断；项数以输出为准） |
+| `ci-local.js` | 全链路总门禁（含 audit 增量审计 + check-sync 一致性 + check-size 体积/清单封闭；项数以输出为准） |
 | `check-size.js` | 文档体积门禁（真源文件字符限额 + 清单封闭防膨胀转移，2026-09-22 起） |
 | `audit-rules.json` / `audit-spec.js` | 审计规则真源 / 存量页面增量审计（路径二 P0 盘点用） |
-| `check-sync.js` | 双端真源一致性门禁（vendor 同构 + 双端同名类白名单） |
+| `check-sync.js` | 双端真源一致性门禁（vendor 同构 + 双端同名类白名单 + 未覆盖类登记 `vendor-coverage.json`） |
+| `gate-capture.js` / `roll-changelog.js` | 门禁子进程结果捕获真源（退出码权威判据，2026-10-08）/ CHANGELOG 超限自动滚动归档 |
 | `.gitignore` / `.github/workflows/` | 忽略规则 + CI（validate.yml 校验两端 page-template） |
 | `.workbuddy/skills/tm-design-system/SKILL.md` | workbuddy 项目级 skill |
 | `brand-color-engine/` | 品牌色→调色板引擎（含 `examples/gen-examples.js` 示例页生成器） |
@@ -291,5 +292,4 @@ A: 维护者 commit + push → 成员 `git pull`（私有仓库成员认证）�
 
 - **codex / Claude Code / 通用 Agent**：仓库根 `AGENTS.md` 自动加载（标准生成流程：克隆 page-template → §1.1b 自建 → 0 HIGH 门禁），零配置。
 - **workbuddy**：项目级 skill `.workbuddy/skills/tm-design-system/SKILL.md` 自动生效（可移植定位：`TM_DESIGN_REPO` 环境变量或相对自身向上找仓库根）。
-- **Reasonix**：全局薄壳 skill 指向本仓库（`TM_DESIGN_REPO`）；兼容分支优先加载仓库内 `.workbuddy/skills/` 本体。
 - 一句话需求 → 过门禁 0 HIGH 的合规 HTML 页，详见 `AGENTS.md` + `GENERATION-SOP.md`。

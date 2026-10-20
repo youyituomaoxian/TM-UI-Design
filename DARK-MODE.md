@@ -38,6 +38,8 @@
 | `--primary-active` / `--primary-pressed` | `#004A8F` / `#004ABF` | `#2563EB` | Web=click，Mobile=pressed |
 | `--primary-dis-bg` | `#DAEAFA` | `#374151` | |
 | `--primary-dis-fg` | `#A0B4C0` | `#9CA3AF` | |
+| `--select-item-bg` | `#DAEAFA` | `#23395D` | 选中项底（Tree/下拉/筛选胶囊/语言项） |
+| `--select-item-fg` | `#004A8F` | `#F1F5F9` | 选中项文字（暗色 10.56:1，2026-10-20 修 1.99:1） |
 | `--brand-surface` | `#005EAE` | `#0A2540` | 品牌深表面（如品牌区底色） |
 
 ### 中性色 neutral（暗色为独立色阶，对齐引擎 `background.*` + 文本阶梯；**非**亮色机械反相）
@@ -83,7 +85,7 @@
 
 ### 图表色 chart（暗色，2026-08-06 联动 CHART-SPEC §4）
 
-> 两端 `template.css` 的 `:root[data-theme="dark"]` **不重定义 `--chart-*`**（图表色沿用亮色值）——图表数据色语义跨模式保持，靠「暗底对比筛选」而非换色。
+> **2026-10-20 更新**：Web 端暗色改为**独立 chart 阶梯**（8 色全部 ≥3:1：tech-blue `#4C9BE8`、smart-cyan `#4FC3F7`、data-cyan `#2DD4BF`、fresh-green `#34D399`、vivid-orange `#FBBF24`、alert-red `#F87171`、wisdom-purple `#A78BFA`、modern-pink `#F472B6`）；移动端 13 色仍沿用亮值并按原禁用清单规避。
 
 | 端 | 亮色可用 | 暗色（暗底 `#121826`~`#1E293B`）|
 |---|---|---|
@@ -161,7 +163,7 @@ Agent 克隆模板时自动继承此规则，无需逐页手写。
   --run:#22C55E; --run-soft:#0E2018; --run-fg:#FFFFFF;
   --brand-surface:#0A2540;
   /* 投影 / Elevation */
-  --shadow-card:0 1px 2px rgba(0,0,0,.40), 0 0 0 1px rgba(255,255,255,.04);
+  --shadow-card:0 8px 24px rgba(0,0,0,.35), 0 0 0 1px rgba(168,197,231,.14);
   --elev-default-surface:#1E293B; …
   /* ★ Chrome 背景切换：结构骨架从 primary(蓝) → brand-surface(深蓝黑) */
   .topbar, .sidebar, .footer{background:var(--brand-surface);}

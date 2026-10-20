@@ -116,6 +116,7 @@ function build() {
   root('', [
     ['--n1', c.neutral.N1, 'N1 — 卡片底色、次按钮填充'],
     ['--n2', c.neutral.N2, 'N2 — 表头底色'],
+  ['--table-header-bg', c.tableHeaderBg, '表头底色（表格 th，暗 #26364F）'],
     ['--n3', c.neutral.N3, 'N3 — 行悬停'],
     ['--n4', c.neutral.N4, 'N4 — 页面背景、禁用填充、悬停底色'],
     ['--n5', c.neutral.N5, 'N5 — 输入框底色、行悬停、按钮选中填充'],
@@ -151,6 +152,17 @@ function build() {
   ]);
 
   line('### 2.7 覆盖层 / 遮罩');
+  line('### 2.8 行态（表格已选 / 当前行 / 复选框 · 2026-10-20 方案 D）');
+  line('');
+  root('', [
+    ['--row-selected-bg', c.selection.rowBg, '已选行底色（单选/多选共用；文字 N10 不变）'],
+    ['--row-selected-bar', c.selection.rowBar, '已选行 2px 左条（单选/多选共用）'],
+    ['--select-item-bg', c.selection.itemBg, '选中项底（Tree 节点 / 下拉项 / 筛选胶囊 / 语言项）'],
+    ['--select-item-fg', c.selection.itemFg, '选中项文字（暗色用 N10 级，修 1.99:1）'],
+    ['--cbx-border', c.selection.checkboxBorder, '复选框边框（对白 3.03:1）'],
+    ['--cbx-check-fg', c.selection.checkboxCheck, '勾选勾颜色']
+  ]);
+
   line('');
   root('', [
     ['--mask', c.mask, '弹窗/抽屉/底部动作面板遮罩背景（半透明黑）']
@@ -200,7 +212,8 @@ function build() {
   line('');
   root('', [
     ['--radius-sm', `${rad.sm}px`, '弹窗投影等细微圆角'],
-    ['--radius-base', `${rad.base}px`, '输入框、标签、小型控件'],
+    ['--radius-base', `${rad.base}px`, '标签、小型元件（控件已改用 control）'],
+  ['--radius-control', `${rad.control}px`, '按钮、输入框、下拉触发器（2026-10-20 统一 6）'],
     ['--radius-md', `${rad.md}px`, '卡片、按钮、下拉'],
     ['--radius-lg', `${rad.lg}px`, '大卡片、形象区'],
     ['--radius-round', `${rad.round}px`, '状态点、头像、分页圆钮']
@@ -279,7 +292,7 @@ function build() {
     '  --btn-secondary-hover-border: var(--n7);',
     '  --btn-text-fg: var(--primary);',
     '  --btn-text-hover-fg: var(--primary-hover);',
-    '  --btn-radius: var(--radius-md);',
+    '  --btn-radius: var(--radius-control);',
     '}'
   ]);
 
@@ -291,7 +304,7 @@ function build() {
     '  --input-padding-x: 12px;',
     '  --input-bg: var(--n5);',
     '  --input-border: var(--n6);',
-    '  --input-radius: var(--radius-base);',
+    '  --input-radius: var(--radius-control);',
     '  --input-placeholder: var(--n8);',
     '  --input-focus-border: var(--primary);',
     '  --input-focus-ring: rgba(0, 94, 174, 0.20);',
@@ -299,19 +312,19 @@ function build() {
     '}'
   ]);
 
-  line('### 7.3 标签 Tag');
+  line('### 7.3 标签 Badge（2026-10-20：`.tag` 已删除，统一到 `.badge`）');
   line('');
   code([
     ':root {',
-    '  --tag-height: 22px;',
-    '  --tag-padding-x: 10px;',
-    '  --tag-font: Regular 12px/20px var(--font-cn);',
-    '  --tag-radius: var(--radius-base);',
-    '  --tag-success-bg: var(--suc-soft);   --tag-success-fg: var(--suc);',
-    '  --tag-warning-bg: var(--warn-soft);  --tag-warning-fg: var(--warn);',
-    '  --tag-error-bg: var(--err-soft);     --tag-error-fg: var(--err);',
-    '  --tag-running-bg: var(--run-soft);   --tag-running-fg: var(--run);',
-    '  --tag-default-bg: var(--n3);       --tag-default-fg: var(--n9);',
+    '  --badge-height: 22px;',
+    '  --badge-padding-x: 12px;',
+    '  --badge-font: Medium 12px/22px var(--font-cn);',
+    '  --badge-radius: var(--radius-base);',
+    '  --badge-success-bg: var(--suc-soft);   --badge-success-fg: var(--suc-active);',
+    '  --badge-warning-bg: var(--warn-soft);  --badge-warning-fg: var(--n11);',
+    '  --badge-error-bg: var(--err-soft);     --badge-error-fg: var(--err-active);',
+    '  --badge-running-bg: var(--run-soft);   --badge-running-fg: var(--run-active);',
+    '  --badge-muted-bg: var(--n3);           --badge-muted-fg: var(--text-2);',
     '}'
   ]);
 

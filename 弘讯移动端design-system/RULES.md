@@ -16,7 +16,7 @@
 | 角色 | 允许动的文件 | 约束 |
 |---|---|---|
 | **使用者**（页面/项目/Agent 默认） | 自建页面 HTML/CSS、output/ 产物、外部项目仓库 | 交付物 validate-spec 0 HIGH；**禁改真源**（页面覆写真源由 `css.override` HIGH 门禁机器化拦截） |
-| **维护者**（系统演进，含被显式指派的 Agent） | 真源区：本目录 `template.css` / `tokens.json` / `components.json` / `validate-spec.js` / `RULES.md` / `MASTER.md` / `DESIGN-TOKENS.md` / `page-template.html` / `icons/` / `scripts/`；跨端 `packages/*/src/styles/components.css`（W1 层，与真源同构）；仓库根 `ci-local.js` / `audit-spec.js` / `audit-rules.json` / `check-sync.js` | 六步流程（见下） |
+| **维护者**（系统演进，含被显式指派的 Agent） | 真源区：本目录 `template.css` / `tokens.json` / `components.json` / `validate-spec.js` / `RULES.md` / `MASTER.md` / `DESIGN-TOKENS.md` / `page-template.html` / `icons/` / `scripts/`；跨端 `packages/*/src/styles/components.css`（W1 层，与真源同构）；仓库根 `ci-local.js` / `audit-spec.js` / `audit-rules.json` / `check-sync.js` / `check-size.js` / `gate-capture.js` / `roll-changelog.js` / `vendor-coverage.json`（检查三登记真源） | 六步流程（见下） |
 | **冻结区** | 各包 `sha256-baseline.json` 清单内文件 | 改动即 HIGH；确需演进须显式 `freeze-baseline` 并在 CHANGELOG 说明 |
 
 **维护者六步流程**（每步留痕，缺步 = 违规）：
@@ -272,6 +272,10 @@ START: 我要做什么类型的页面？
 
 > **禁止一屏彩虹**：4 个 KPI 不许 4 种色——状态色只给「非默认」状态，其余一律白字；同屏最多 1 个警示色 + 1 个故障色。
 
+- **功能色默认是填充，不是文字**（2026-10-20）：状态文字/数值用 `--suc-deep`(#047857)/`--warn-deep`(#B45309)/`--err-deep`(#B91C1C)，暗态 #34D399/#FBBF24/#F87171；直接用 `--suc/--warn/--err` 当文字只有 2.5/2.2/3.8。
+- **功能色实底按钮**承载文字时用加深底 `--suc-btn-bg`(#047857)/`--err-btn-bg`(#B91C1C)，白字 5.48/6.47；浅档只做 Tag/图标底。
+- **字阶以平台 token 为准**：`.m-text-h1`=28/36（Android），iOS 用 `[data-os="ios"]` 覆盖 26/34，不再出现第三套值。
+
 ### [硬] 1.4 字号选择决策树
 
 ```
@@ -413,6 +417,8 @@ START: 我要做什么类型的页面？
 | Normal | `#FFFFFF` | 全部显示 | 可点击 → push 导航 |
 | Pressed | `#F5F7FB` (N2 浮起) | 不变 | 手指按下反馈 |
 | Selected | 微蓝底 `rgba(0,94,174,0.08)` | 标题加粗 | 多选模式 |
+
+> **与 Web 表格的差异（2026-10-20 v2）**：Web 表格选中 = `.is-selected` 底 + **2px 左条**（多选由 `.cbx` 复选触发、单选行点击即选、无 radio）；本端列表项选中 = 微蓝底 `.08` + 标题加粗——**双端不统一**，按 §3.6 表面/组件分治处理。
 | Disabled | `#F9FAFB` | `#CBD5E1` 灰化 | 不可点击 |
 | Unread (新) | `#FFFFFF` | 标题 Bold | 新消息标记（可选） |
 
@@ -908,6 +914,7 @@ KPI（关键指标）
 ### [软] 10.3b 前景/背景色使用（2026-08-05 终态：审美优先，WCAG 2.0 仅参考）
 
 > **总则（用户拍板 2026-08-05）**：**最重要的是视觉美观，遵循审美规范**；WCAG 2.0 对比度作为参考基线、不作硬性门禁。功能色标签/按钮用**白字**（视觉通透、清爽），深字方案废弃（用户反馈「标签深色字不通透」）。
+> **2026-10-20 补丁**：白字保留，但①成功/危险**实底**改深档底（`--suc-btn-bg #047857` / `--err-btn-bg #B91C1C`），白字才读得出；②功能色用于**白底/浅底上的文字或图标**（notice 图标、指标数值、删除项）改为 `-deep` 深变体，不直接把填充色当文字用；③**功能色实底标签**（`.mtag-suc/warn/err/run`）同样改用加深底 `--*-btn-bg`（成功 #047857 / 警告 #B45309 / 错误 #B91C1C / 运行 #15803D），白字保留。
 > **标准参考**（不强制）：普通文字 ≥4.5:1（AA）；大文本（≥18pt 或 ≥14pt 粗体）与图形/UI 组件 ≥3:1。纯颜色不单独传达信息（配文字/图标）。
 
 **弘讯亮色组合表（白字 on 功能色为设计首选，对比度仅供参考）**：
@@ -1088,6 +1095,7 @@ KPI（关键指标）
 **④ 图标来源守则（2026-08-07 拍板，与 Web §7.9③ 对称）⚠️ 必读**
 
 > 图标库：`弘讯移动端design-system/icons/`（184 个，2026-08-14 图标库换新后，索引见 `icons/icons.md`）。
+> **图标数声明义务（RED-009，2026-10-10）**：本文件与 MASTER.md **必须**在图标库语境写明图标总数声明（如上「184 个」），且数字须与 `icons/` 目录实际 SVG 数一致。ci-local P0-1 机器断言：无声明或数字不符 = FAIL——「删掉声明」不再是绕过计数漂移检查的路径。
 > 统一规格：viewBox 24×24 · stroke-width 1.8 · round · currentColor。
 
 1. **页面图标一律从 `icons/` 取**：`icons/icons.md` 索引找语义图标，path 内联进尺寸类（`.m-icon` 16 / `.bn-icon` 24 / `.mbtn-ico` 16 等）。
@@ -1175,7 +1183,7 @@ KPI（关键指标）
 | 5 | **白底 + 弱分隔** | WeUI | 页面背景 `n2`、卡片 `n1`、分隔线 `n4`（#E5E5E5 级）；禁用纯白页面直接落 n2 上（无层级）|
 | 6 | **状态色语义固化** | antd-mobile | run（运行绿）≠ suc（成功）——运行状态用 `--run`、操作成功反馈用 `--suc`，不可混用（已固化，勿改）|
 | 7 | **禁用态降级** | antd-mobile | 禁用 = 降饱和 + 降对比：bg `n3` / 字 `n5` / 无阴影；功能色禁用用 `-dis` 变体 + opacity .6 |
-| 8 | **审美优先于对比度**（08-05 拍板）| WCAG 2.0 仅参考 | 功能色标签/按钮**白字首选**（视觉通透，深字方案已废弃，见 §10.3b）；WCAG 对比度作参考基线不作硬门禁；纯色不得单独传达信息 |
+| 8 | **审美优先于对比度**（08-05 拍板）| WCAG 2.0 仅参考 | 功能色**实底按钮/标签保持白字**；但 2026-10-20 起成功/危险实底改用加深底（`--suc-btn-bg`/`--err-btn-bg`）；功能色作**白底/浅底上的文字**时改用 `-deep` 深变体（见 §10.3b） |
 
 ### [硬] 11.9 新增组件（2026-08-04 精细化补全，对齐 antd-mobile/WeUI）
 

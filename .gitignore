@@ -12,6 +12,14 @@
 !**/.workbuddy/skills/tm-design-system/SKILL.md
 !**/.workbuddy/skills/tm-design-system/data/
 
+# DSH 项目级 skill（入口薄壳，随仓库分发；其余 .dsh 本地内容不入库）
+.dsh/*
+!.dsh/skills/
+.dsh/skills/*
+!.dsh/skills/tm-design-system/
+.dsh/skills/tm-design-system/*
+!.dsh/skills/tm-design-system/SKILL.md
+
 # 本机 Agent 记忆 / 回滚点（绝不提交）
 .reasonix/
 回滚点/

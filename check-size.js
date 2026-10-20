@@ -3,9 +3,11 @@
 // 目标：防真源文件无序膨胀（监督实战沉淀 J5：字符数为主、阈值先实测现值、防膨胀转移）。
 // 规则：
 //   1. 清单内文件字符数超限 → FAIL（阻断）。阈值 = 2026-09-22 实测现值 + 分级余量（≤10k:+15% / 10~50k:+8% / >50k:+5%）。
-//   2. 清单封闭：根 / 双端目录顶层新增 .md/.json/.js/.html/.css/.txt/.log 未登记且未豁免 → FAIL 提示登记或豁免（防「拆文件绕阈值」及「换扩展名落根目录」的膨胀转移，2026-09-23 监督遗留风险）。
-//   3. 现值 ≥ 阈值 90% → WARN（信息性，提前预警）。
+//   2. 清单封闭：根 / 双端目录顶层新增 .md/.json/.js/.html/.css/.txt/.log 未登记且未豁免 → FAIL 提示登记或豁免（防「拆文件绕阈值」及「换扩展名落根目录」的膨胀转移，2026-09-23 监督遗留风险）。2026-10-10 扩：顶层**新增目录**同样封闭（RED-003 止血——`_v2` 验证夹具曾以「目录」形态静默通过）。
+//   3. 剩余增长空间 < max(1000 字符, 阈值 2%) → WARN（信息性，提前预警）。注：不是「≥90%」，以实现为准（RED-004 2026-10-10）。
 // 阈值调整走维护者六步：登记 → 改本文件 → ci-local 全绿 → 双端 CHANGELOG 留痕。
+//   4. 治理约束（T-8 追认 2026-10-10）：阈值上调 = 例外操作，须 CHANGELOG 留痕依据 + 复盘轮内用户追认；
+//      归位治理（压缩注释/拆分归档）优先于调阈值，禁止以调阈值代替内容治理。
 const fs = require('fs');
 const path = require('path');
 const ROOT = __dirname;
@@ -25,18 +27,28 @@ const LIMITS = [
   ['标准提示词模板.md', 5800],
   ['audit-rules.json', 28600],
   ['ci-local.js', 17800],
-  ['audit-spec.js', 22000],
-  ['check-sync.js', 9200],
-  ['check-size.js', 6200],
+  ['gate-capture.js', 5200], // VERDICT-A（2026-10-08）：门禁子进程结果捕获真源（退出码=权威判据）
+  ['vendor-coverage.json', 4000], // RED-002 三档登记真源（T-6 2026-10-10）：check-sync 检查三读取（tokenProjection 豁免 / gaps 真缺口）
+  // 2026-10-08 RED-007/008 修复：原 22000（实测现值 20000 + 10%）。修复后新增结构化豁免
+  // 判定 isExemptLine/isExemptComment（原为整行子串正则，可被 /* swatch */ 注释、
+  // .not-a-swatch-at-all 类名、data-audit-exempt-toggle 属性滥用，单行豁免可吞 4 条 HIGH），
+  // 且取消 :root 预剥离使 vardef MEDIUM 分支从死代码转为可达。属实质代码增长，按分级余量重测。
+  ['audit-spec.js', 25000],
+  // 2026-10-08 RED-001 修复：原 9200（实测现值 8364 + 10%）。修复后新增 liftNestedAtRules
+  // （at-rule 提升：@media/@supports 内声明必须进入比对面，原实现整块丢弃导致断点内漂移可拿
+  // exit 0）。属实质代码增长而非注水，按分级余量规则（10k~50k 档 +8%）重测阈值。
+  // 2026-10-10 T-6 检查三 checkCoverage 落码（RED-002 三档，拍板授权）：实测 11997 + 8%（10k~50k 档）→ 13000。
+  ['check-sync.js', 13000],
+  ['check-size.js', 7500], // 2026-10-10 T-8/T-6 落码实测 6478 + 15%（≤10k 档）重测（已追认 2026-10-10）
   ['roll-changelog.js', 5600],
   ['HANDOFF.md', 12200, true],
   // Web 端
   ['弘讯web端design-system/RULES.md', 51600],
   ['弘讯web端design-system/MASTER.md', 22200],
-  ['弘讯web端design-system/DESIGN-TOKENS.md', 15000],
-  ['弘讯web端design-system/components.md', 16300],
-  ['弘讯web端design-system/components.json', 74600],
-  ['弘讯web端design-system/template.css', 57500],
+  ['弘讯web端design-system/DESIGN-TOKENS.md', 15600],
+  ['弘讯web端design-system/components.md', 16800],
+  ['弘讯web端design-system/components.json', 77200],
+  ['弘讯web端design-system/template.css', 62000],
   ['弘讯web端design-system/tokens.json', 13300],
   ['弘讯web端design-system/page-template.html', 36000],
   ['弘讯web端design-system/validate-spec.js', 113000],
@@ -98,6 +110,29 @@ for (const [rel, max, optional] of LIMITS) {
 }
 
 // 2) 清单封闭：未登记的新文本文件 → FAIL
+// RED-003 止血（2026-10-10）：目录同样封闭——否则「建目录塞文件」是绕过清单封闭的完整通道
+// （实证：_v2 验证夹具整目录静默通过门禁，见 .workbuddy/review/07_复盘_修复回溯审查.md）。
+const DIR_EXEMPT = new Set([
+  // 根下既有目录（既有结构，非膨胀转移通道；新增目录一律先登记再落地）
+  '.git', '.github', '.reasonix', '.workbuddy', 'brand-color-engine', 'docs', 'output',
+  'packages', 'scripts', 'templates', '弘讯web端design-system', '弘讯移动端design-system',
+  'NVIDIA Corporation', // 系统垃圾空目录（0 文件），遗留待删，与本仓库无关
+  // 双端下既有目录
+  'icons', 'pages', 'showcase', '.workbuddy-web', '.workbuddy-mob',
+]);
+for (const dir of DIRS) {
+  for (const f of fs.readdirSync(dir).sort()) {
+    const p = path.join(dir, f);
+    if (!fs.statSync(p).isDirectory()) continue;
+    const rel = path.relative(ROOT, p).split(path.sep).join('/');
+    const inRoot = dir === ROOT;
+    const key = inRoot ? f : rel;
+    if (f.startsWith('.') || DIR_EXEMPT.has(key) || DIR_EXEMPT.has(f)) continue;
+    console.error(`  ✗ FAIL 未登记新目录：${rel} —— 须登记进 check-size.js DIR_EXEMPT（含用途说明）或移出仓库（防「建目录绕清单封闭」）`);
+    fail++;
+  }
+}
+
 const limitSet = new Set(LIMITS.map(l => l[0]));
 for (const dir of DIRS) {
   for (const f of fs.readdirSync(dir).sort()) {
