@@ -100,7 +100,9 @@ for (const [rel, max, optional] of LIMITS) {
     console.error(`  ✗ FAIL ${rel}：清单内文件不存在`);
     fail++; continue;
   }
-  const n = fs.readFileSync(p, 'utf8').length;
+  // 2026-10-30：字符数按 LF 归一后统计。Windows core.autocrlf=true 会把工作区换成 CRLF，
+  //   每行多 1 字符（RULES 981 行 = +981），同一份内容在不同机器上会越过阈值——尺寸门禁不该对换行符敏感。
+  const n = fs.readFileSync(p, 'utf8').replace(/\r\n/g, '\n').length;
   totalNow += n; totalMax += max;
   if (n > max) {
     console.error(`  ✗ FAIL ${rel}：${n} 字符 > 上限 ${max}（超 ${n - max}）——膨胀须走维护者六步（归位治理优先于调阈值）`);
