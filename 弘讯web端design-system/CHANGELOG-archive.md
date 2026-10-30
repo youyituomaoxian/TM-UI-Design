@@ -1,8 +1,32 @@
 # 弘讯B端视觉系统 · Web 端设计系统更新日志（归档）
 
 > 本文件为 `CHANGELOG.md` 滚动归档（2026-09-22 建立，加载纪律 SSOT A-2）：主文件只保留近期条目，更早条目**原样移入**此处，未做任何内容修改。
-> 切割线（滚动更新）：web 归档 `[1.9.32]` 及更早。新条目一律写主文件顶部；超限时由 roll-changelog.js 自动滚动。
+> 切割线（滚动更新）：web 归档 `[1.9.34]` 及更早。新条目一律写主文件顶部；超限时由 roll-changelog.js 自动滚动。
 
+## [1.9.34] — 2026-09-23 · M-07 节拍预算（机器实现）+ Design Read 停等（批 2d · C-5/C-6）
+
+- **audit-rules.json v1.5.0 → v1.6.0**：新增 **M-07 `motion.beat.budget` 节拍预算**——一页最多一个 heavy 动效。scope：页面内 `<style>`/inline 的 animation 声明（`<link>` CSS 不扫，template.css 规范动效合法；transition 微交互不计；@keyframes 定义行不算引用）；predicate：唯一 animation-name 去重 >1 → 超出部分每条 HIGH。
+- **audit-spec.js 实现并正反例实测**：正例（3 动画测试页）→ 报出超预算 HIGH、transition 正确豁免、重复 name 去重；反例（page-template.html）→ M-07 零违规零误报。
+- **GENERATION-SOP §① 新增步骤 1.6「Design Read 停等确认」**：生成前向用户输出设计读（选端/框架判定/页面类型/内容结构模块清单/规范依据）并停等——不确认不动手；跳过 = 流程违规（用户明示「直接做」可记录跳过）。
+- **验证**：check-size 通过（0 FAIL）；ci-local 全绿（项数以输出为准）。
+- **误报修正（同日）**：首版 M-07 对内联真源 CSS 的分享版产物误报 15 条 HIGH——模板真源动画名集合白名单化（buildTemplateMotionNames），预算只管页面自加动画；audit-spec 阈值 20,400→22,000（功能增长，六步留痕）。正反例三层复测通过。
+
+---
+
+---
+## [1.9.33] — 2026-09-23 · D 层 trap+pairs + 口语→术语词典（批 2c · T-C 落地）
+
+> finesse 借鉴项经监督修正后落地（J1/J2 修正形态）。另：批 2③ 复述收尾盘点结论——双端 RULES + SOP 共 158 行含 hex，全部为教学性提及（状态矩阵表/功能色对照/禁令表，且与 token 名并列、失真显式可见），**判定保留不治理**；「复述会失真」的害处集中在静默的数字基线，已于批 2a 治理收口。
+
+- **audit-rules.json v1.4.1 → v1.5.0**：migration_dimensions D-1~D-12 每维新增 `trap`（该维最常犯错误，AI 生成页典型病）+ `pairs`（正误对照 bad/good，12 维共 14 对）——审查与生成共用同一份「错误长什么样」的对照语料，供 LLM 对照识别，非机器断言（机器断言仍走 M/R 层）。
+- **语汇词典（C-1，data 与 prompt 分离）**：`.workbuddy/skills/tm-design-system/data/vocabulary.json` 新建（24 词条：say 口语数组 → map 弘讯术语/组件类 → rule 规范落点指针）；SKILL.md §2 新增第 5 条指针（触发条件：解析口语需求、不确定组件归属时按需检索，**不整份进上下文**）。J1 修正口径：正文留指针+触发条件，内容下沉 data。
+- **check-size 阈值调整（维护者六步）**：audit-rules.json 25,600 → 28,600（D 层新增字段属合法内容增长，26,263 现值 + 8% 余量；归位治理优先于调阈值的原则不受影响）。
+- **漏网补清**：`.workbuddy/` 为隐藏目录，ripgrep 默认跳过致 A-1 漏扫——tm-design-system SKILL.md「99 pass」复述已补改指针，深层复扫零残留。
+- **验证**：ci-local 全绿（项数以输出为准）；audit-rules.json JSON 合法 + 12 维 trap/pairs 复测齐全。
+
+---
+
+---
 ## [1.9.32] — 2026-09-22 · 文档体积门禁 check-size 接入 ci-local（批 2b · T-B）
 
 > 承 [1.9.31] 批 2a——体积门禁按监督实战沉淀的 J5 修正实现：字符数为主行数为辅、阈值先实测现值、先归位治理、防膨胀转移。

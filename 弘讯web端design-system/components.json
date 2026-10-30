@@ -1530,14 +1530,31 @@
       "rules": [
         {
           "prop": "height",
-          "expect": 32,
-          "severity": "HIGH"
+          "expect": [32, 40],
+          "severity": "HIGH",
+          "note": "默认 32 / .input-lg 40（登录页 v2，2026-10-30）"
         },
         {
           "prop": "border-radius",
           "expect": 6,
           "severity": "HIGH",
           "note": "--radius-control（2026-10-20 控件统一 6）"
+        }
+      ]
+    },
+    {
+      "id": "login.card.width",
+      "component": "login",
+      "selector": [
+        ".login-card"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "width",
+          "expect": 400,
+          "severity": "HIGH",
+          "note": "登录卡宽 400（--login-card-w 唯一真源，2026-10-30 登录页 v2）"
         }
       ]
     },

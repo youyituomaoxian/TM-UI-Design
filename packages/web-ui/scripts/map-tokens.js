@@ -195,6 +195,8 @@ ${fontVars}
   --sidebar-collapsed-width:${t.layout.sidebarCollapsedWidth}px; --footer-height:${t.layout.footerHeight}px;
   /* 图表容器默认高（V6 修复：token 化，供 .chart-box 定高 + .chart-box--flex 保底；密度/场景可覆盖） */
   --chart-height:${t.layout.chartBoxHeight}px;
+  /* 登录页 v2（2026-10-30）：卡宽/内边距/图右缘羽化。唯一真源，页面禁写死 */
+  --login-card-w:${t.layout.loginCardWidth}px; --login-card-pad:${t.layout.loginCardPadding}px; --login-hero-feather:${t.layout.loginHeroFeather}px;
   /* 覆盖层/顶栏/品牌表面专用（build 漂移修复：值真源在 tokens.json，回写真源闭环） */
   --mask:${t.colors.mask};
   --text-on-brand:var(--n1);

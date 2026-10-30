@@ -48,7 +48,9 @@ const LIMITS = [
   ['弘讯web端design-system/DESIGN-TOKENS.md', 15600],
   ['弘讯web端design-system/components.md', 16800],
   ['弘讯web端design-system/components.json', 77200],
-  ['弘讯web端design-system/template.css', 62000],
+  // 2026-10-30 用户追认：62000 → 64500。login v2 新增 ~3.2k 样式；实测 554 条规则零重复、无安全可回收冗余，
+  //   按「不影响现有系统优先」调阈值而非压缩产物（依据见 web CHANGELOG 1.9.46）。
+  ['弘讯web端design-system/template.css', 64500],
   ['弘讯web端design-system/tokens.json', 13300],
   ['弘讯web端design-system/page-template.html', 36000],
   ['弘讯web端design-system/validate-spec.js', 113000],
@@ -119,6 +121,8 @@ const DIR_EXEMPT = new Set([
   'NVIDIA Corporation', // 系统垃圾空目录（0 文件），遗留待删，与本仓库无关
   // 双端下既有目录
   'icons', 'pages', 'showcase', '.workbuddy-web', '.workbuddy-mob',
+  // 2026-10-30 登录页 v2：品牌概念图资产库（提示词模板 + 行业预设 + webp），非源码，按目录整体豁免
+  'assets',
 ]);
 for (const dir of DIRS) {
   for (const f of fs.readdirSync(dir).sort()) {

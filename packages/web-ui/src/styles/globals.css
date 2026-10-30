@@ -82,6 +82,8 @@
   --sidebar-collapsed-width:80px; --footer-height:32px;
   /* 图表容器默认高（V6 修复：token 化，供 .chart-box 定高 + .chart-box--flex 保底；密度/场景可覆盖） */
   --chart-height:320px;
+  /* 登录页 v2（2026-10-30）：卡宽/内边距/图右缘羽化。唯一真源，页面禁写死 */
+  --login-card-w:400px; --login-card-pad:40px; --login-hero-feather:160px;
   /* 覆盖层/顶栏/品牌表面专用（build 漂移修复：值真源在 tokens.json，回写真源闭环） */
   --mask:rgba(0,0,0,.45);
   --text-on-brand:var(--n1);

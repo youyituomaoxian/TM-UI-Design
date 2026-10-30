@@ -5,6 +5,22 @@
 
 ---
 
+## [1.9.46] — 2026-10-30 · 登录页 v2（白卡浮层 + 手机号密码 + 卡外系统名）
+
+- 新增 token `--login-card-w:400px` / `--login-card-pad:40px` / `--login-hero-feather:160px`（tokens → map-tokens → globals → template 全链路重生成）。
+- 新增 `.login-*` 18 类 + `.login-lang`（卡外右上语言，白底版触发器）+ `.input-lg`（40 高）；`input.size` 契约高度放开 **32/40**。
+- 新契约 `login.card.width`（`.login-card` 宽 400，HIGH）。
+- `RULES §1.1b 登录页` 整段改写：58/42 分栏、系统名卡外、手机号+密码、卡内 3 步找回、暗色豁免。
+- 参考实现 `output/登录页v2_参考实现.html`：4 视图（登录 / 找回 3 步），`?view=r1|r2|r3`、`?state=error|locked|caps` 深链；validate **0 HIGH**（1 MED 图标库）。
+- 提示词模板 **v3.2**：diorama 五段式，「4:3 生成 → 裁 1:1」，交付强制「默认模板 + 行业映射模板」两份。
+- 默认图 `login-hero-default.webp`（2160²，373KB；@1x 92KB），源 `login-hero-default.png`；羽化 **160** 定稿。
+- 手机号区号 `.login-cc`（112×40，默认 +86，12 地区，选项带 16×12 国旗 data-URI）；数据驱动可扩展。
+- 密码眼睛**双态图标** `.ico-off/.ico-on`（`aria-pressed` 驱动）；连续输入框间距 16。
+- 找回密码 3 步：`.steps` + 验证码 60s 倒计时 + 两次密码一致性校验。
+- 登录三态：`.input.is-error` 字段错、`.login-alert` 表单错/锁定、`.login-hint` CapsLock。
+- 阈值（用户追认）：`template.css` 62000 → **64500**（实测 554 条规则零重复，无可安全回收冗余）；`components.json` 72455/77200 未超线。
+- 规范收口：登录段压缩（1710→约 1000 字符）；`DESIGN-TOKENS §7.7` 补 3 个 login token；`vendor-coverage` 清 `.login-prefix`。
+
 ## [1.9.45] — 2026-10-20 · `.tag` 物理删除 + 全库迁移（用户追认）
 
 - **删除 `.tag` 组件**：`template.css` 移除 `.tag/.tag-suc/.tag-warn/.tag-err/.tag-run/.tag-def` 及 hover/disabled 规则；`components.json` 删除 tag 组件条目与 `tag.size` 契约、两处 selector 去 `.tag`；`DESIGN-TOKENS §7.3` 改为「标签 Badge」规格；组件数 22 → **25**（-tag +empty/steps/timeline/descriptions）。
@@ -117,27 +133,5 @@
 - **page-template.html**：body 预置 `data-species="document"`（克隆即带默认值）。
 - **validate-spec.js 新增 species 检查**：缺失 → MEDIUM（存量渐进补齐，不阻断）；值非法 → HIGH（防物种爆炸机器判据）。正反例实测：模板页 0 HIGH / 非法值页 HIGH 拦截。
 - **验证**：check-size 通过；ci-local 全绿（项数以输出为准）。
-
----
-
-## [1.9.34] — 2026-09-23 · M-07 节拍预算（机器实现）+ Design Read 停等（批 2d · C-5/C-6）
-
-- **audit-rules.json v1.5.0 → v1.6.0**：新增 **M-07 `motion.beat.budget` 节拍预算**——一页最多一个 heavy 动效。scope：页面内 `<style>`/inline 的 animation 声明（`<link>` CSS 不扫，template.css 规范动效合法；transition 微交互不计；@keyframes 定义行不算引用）；predicate：唯一 animation-name 去重 >1 → 超出部分每条 HIGH。
-- **audit-spec.js 实现并正反例实测**：正例（3 动画测试页）→ 报出超预算 HIGH、transition 正确豁免、重复 name 去重；反例（page-template.html）→ M-07 零违规零误报。
-- **GENERATION-SOP §① 新增步骤 1.6「Design Read 停等确认」**：生成前向用户输出设计读（选端/框架判定/页面类型/内容结构模块清单/规范依据）并停等——不确认不动手；跳过 = 流程违规（用户明示「直接做」可记录跳过）。
-- **验证**：check-size 通过（0 FAIL）；ci-local 全绿（项数以输出为准）。
-- **误报修正（同日）**：首版 M-07 对内联真源 CSS 的分享版产物误报 15 条 HIGH——模板真源动画名集合白名单化（buildTemplateMotionNames），预算只管页面自加动画；audit-spec 阈值 20,400→22,000（功能增长，六步留痕）。正反例三层复测通过。
-
----
-
-## [1.9.33] — 2026-09-23 · D 层 trap+pairs + 口语→术语词典（批 2c · T-C 落地）
-
-> finesse 借鉴项经监督修正后落地（J1/J2 修正形态）。另：批 2③ 复述收尾盘点结论——双端 RULES + SOP 共 158 行含 hex，全部为教学性提及（状态矩阵表/功能色对照/禁令表，且与 token 名并列、失真显式可见），**判定保留不治理**；「复述会失真」的害处集中在静默的数字基线，已于批 2a 治理收口。
-
-- **audit-rules.json v1.4.1 → v1.5.0**：migration_dimensions D-1~D-12 每维新增 `trap`（该维最常犯错误，AI 生成页典型病）+ `pairs`（正误对照 bad/good，12 维共 14 对）——审查与生成共用同一份「错误长什么样」的对照语料，供 LLM 对照识别，非机器断言（机器断言仍走 M/R 层）。
-- **语汇词典（C-1，data 与 prompt 分离）**：`.workbuddy/skills/tm-design-system/data/vocabulary.json` 新建（24 词条：say 口语数组 → map 弘讯术语/组件类 → rule 规范落点指针）；SKILL.md §2 新增第 5 条指针（触发条件：解析口语需求、不确定组件归属时按需检索，**不整份进上下文**）。J1 修正口径：正文留指针+触发条件，内容下沉 data。
-- **check-size 阈值调整（维护者六步）**：audit-rules.json 25,600 → 28,600（D 层新增字段属合法内容增长，26,263 现值 + 8% 余量；归位治理优先于调阈值的原则不受影响）。
-- **漏网补清**：`.workbuddy/` 为隐藏目录，ripgrep 默认跳过致 A-1 漏扫——tm-design-system SKILL.md「99 pass」复述已补改指针，深层复扫零残留。
-- **验证**：ci-local 全绿（项数以输出为准）；audit-rules.json JSON 合法 + 12 维 trap/pairs 复测齐全。
 
 ---

@@ -425,6 +425,9 @@
   --pagination-height: 44px; /* 分页器高 */
   --status-dot: 10px; /* 状态指示灯直径（约） */
   --chart-height: 320px; /* 图表容器默认高（弹性填充用 .chart-box--flex） */
+  --login-card-w: 400px; /* 登录卡宽（唯一真源，页面禁写死） */
+  --login-card-pad: 40px; /* 登录卡内边距 */
+  --login-hero-feather: 160px; /* 登录页 hero 右缘羽化宽（0 = 硬切） */
   --grid-columns: 24; /* Ant Design 24 栅格 */
 }
 ```
