@@ -49,19 +49,19 @@
 /* 规范说明条 */
 .spec-note{background:var(--primary-dis-bg);border-radius:var(--radius-md);padding:12px 16px;color:var(--primary-active);}
 /* 图表容器（viewBox 1:1 不缩放，高 = viewBoxH 120；md = 横向柱状 150）——chart-box--sm 120px 已沉淀真源（2026-08-06），此处不再自造 */
-.chart-box--md{height:150px;}
+.chart-box--md{height:152px;}
 .icon-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
 .icon-cell{background:var(--n1);border-radius:var(--radius-md);box-shadow:var(--elev-raised-shadow);padding:12px 4px;display:flex;flex-direction:column;align-items:center;gap:8px;}
 .icon-cell svg{width:24px;height:24px;color:var(--primary);}
 /* 交互屏列表行内标签组 */
 /* 卡片内 msearch 自适应 + 嵌套列表 16px 对齐 + 金刚区精致化 + mh-cta 去边框：均已沉淀 template.css（2026-08-06），页面无需覆盖 */
 /* 暗色切换按钮：浅色圆底，亮/暗模式均醒目可见（2026-08-07） */
-.nav-action.theme-btn{background:rgba(127,127,127,.22);border-radius:50%;width:30px;height:30px;}
+.nav-action.theme-btn{background:rgba(127,127,127,.22);border-radius:50%;width:32px;height:32px;}
 .nav-action.theme-btn:hover{background:rgba(127,127,127,.36);}
-.nav-action.theme-btn svg{width:17px;height:17px;}
+.nav-action.theme-btn svg{width:16px;height:16px;}
 </style>
 </head>
-<body class="ios">
+<body class="ios" data-species="document">
 
 <div class="phone-stage">
   <div class="phone">
@@ -775,7 +775,7 @@
                   <line x1="16" y1="80" x2="324" y2="80" stroke="var(--n4)" stroke-width="1"/>
                   <line x1="16" y1="110" x2="324" y2="110" stroke="var(--n4)" stroke-width="1"/>
                   <line x1="16" y1="62" x2="324" y2="62" stroke="var(--warn)" stroke-width="1" stroke-dasharray="4 4"/>
-                  <polyline class="chart-line" fill="none" style="stroke:var(--chart-blue)" stroke-width="2" points="16,25 67,45 118,38 170,72 221,52 272,98 324,65"/>
+                  <polyline class="chart-line" fill="none" style="stroke:var(--chart-blue)" stroke-width="2" points="NaN NaN NaN NaN NaN NaN NaN"/>
                   <circle class="chart-dot" data-val="产量 28" cx="16" cy="25" r="3.5" style="fill:var(--chart-blue)"/>
                   <circle class="chart-dot" data-val="产量 50" cx="67" cy="45" r="3.5" style="fill:var(--chart-blue)"/>
                   <circle class="chart-dot" data-val="产量 42" cx="118" cy="38" r="3.5" style="fill:var(--chart-blue)"/>
