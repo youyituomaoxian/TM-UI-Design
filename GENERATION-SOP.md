@@ -299,6 +299,20 @@ cd <端目录> && "$NODE" validate-spec.js <用户项目路径>/output/<产出�
 4. **每批门禁回归**：每修完一批跑 `node ci-local.js`（全绿 exit 0）才算批次完成，不积攒到最后一次性验证。
 5. **遮挡类结构禁当装饰删除**（2026-09-10，11242 案例五）：修改或删除平台伪元素（`::before/::after`）前必须先查证其功能——遮挡/防穿透/占位类结构**禁止当装饰删除**（二十轮删 sticky 盖板 → 滚动穿透回归，修复成本 5 倍）；修视觉异常优先「调色对齐」而非「移除结构」。
 
+### 框架外壳对齐（2026-11-03 新增 · 存量页改造第一件事）
+
+存量页若克隆自**旧版** page-template，视觉差距往往不在 CSS 而在**框架外壳**——只把内联的 template.css 换成当前真源，解决的是 token 层，框架仍落后（本轮实测：换真源后首屏像素差仅 6.5%~10.4%，用户判「没更新」）。改造前先逐项比对当前 `弘讯web端design-system/page-template.html` / `弘讯移动端design-system/page-template.html`：
+
+| 部位 | 对齐口径 | 漏了会怎样 |
+|---|---|---|
+| 顶栏语言切换 | `.lang-sel` 面板（简体中文 / English + 待支持语言置灰）+ `data-i18n` / `data-i18n-title` 标记 | 与模板不一致；视觉/可用性缺失 |
+| 顶栏暗色切换 | `#themeToggle`（moon/sun 双图标 + localStorage 记忆） | 无暗色入口 |
+| 作业树 | 节点文本用 `.tree-text`；**顶级节点并列、无 `.group-title` 分类**；选中态 `.on` | 旧类名真源无样式 → 标题/缩进失规范 |
+| 图标 | 取各端 `icons/` 内联（24×24 · 线宽 1.8 · `stroke:currentColor`） | 手绘旧图标与图标库形态不一致 |
+| 移动端手机壳 | `.stage-wrap > .phone-stage > .phone`；内含 `.m-statusbar / .navbar / .screen-scroll > .page-view / .bottomnav` | 门禁 `framework.fingerprint` 拦截 |
+| 克隆凭证 | `<meta name="x-template-clone" content="<端>design-system/page-template.html">` | 门禁 `template.clone.missing` 拦截 |
+
+> 三个坑（实测踩过）：① **模板本身会改版**——照抄记忆里的结构必错，先 `Grep` 模板现状（移动端模板曾出现 `<body>` 标签重复的瑕疵）；② 旧页头部注释里贴的骨架片段含 `class="X"` 字面量 → 门禁用 `indexOf` 判结构顺序会被注释误命中（假阳性），须清理注释内类名字面量；③ 页面自带 CSS 注释同样会触发。
 ### 布局改动专项回归清单（2026-09-10 新增，11242 案例五/六/七）
 
 凡变更滚动模型（页级滚 ↔ 容器内滚），必须逐项重审，不接受「改完看一眼默认态」：
