@@ -125,7 +125,7 @@
 - **字号（防硬套 Web）**：移动图表文字走**移动字阶**（`.m-text-caption` 12px / label 12px / num mono 12px）——**禁 Web 的 11px overline 档**；标签密度按移动屏宽（343px / 标签宽度 ≥32px 间距），柱窄时每 2 根柱标 1 个亦可。
 - **交互**：无 hover → 环状分段/数据标注用**点按**（`touchstart` 切换，点按段显示该段数值，点空白恢复主段）；再点取消（附录 A）。
 - **动画**：与 Web 同款动画类（时长走 token）；进入动画可省略（弱网/性能），点按反馈保留。
-- **原子类**：`.chart-box` / `.chart-svg` / `.chart-grid` / `.chart-x-labels` / `.chart-v` / `.chart-hl` / `.chart-hr` / `.chart-ring-center` / `.chart-legend` / `.chart-dot` / 动画类——已入移动 template.css（2026-08-06 落地）；Web 自适应图表类（`.bar-chart/.bar-area/.xrow/.line-chart/.ring-chart`）见 `docs/examples/web-图表自适应测试.html` 示范（测试验证，非强制类）。
+- **原子类**：`.chart-box` / `.chart-svg` / `.chart-grid` / `.chart-x-labels` / `.chart-v` / `.chart-hl` / `.chart-hr` / `.chart-ring-center` / `.chart-legend` / `.chart-dot` / 动画类——已入移动 template.css（2026-08-06 落地）；Web 自适应图表类（`.bar-chart/.bar-area/.xrow/.line-chart/.ring-chart`）：原示范文件已移除（曾为测试验证参考，非强制类），需要时按同范式自建。
 - **容器高度契约（2026-08-24 明确，防跨端误套）**：移动端 `.chart-box` 高度**固定值**（默认 `180px`、`.chart-box--sm` `120px`，移动小屏 4px 网格）；Web 端高度走 `--chart-height` token（默认 320px）+ 弹性填充用 `.chart-box--flex`。**两端高度体系不同（移动固定 / Web token），Agent 不得跨端互套**（如把 Web 的 320px 套到移动、或把移动 180px 当 Web 默认）。
 
 ### 6.1 折线卡标准结构（对齐展示页 2026-08-06，Agent 生成折线卡照抄此结构）
@@ -275,4 +275,4 @@
 
 ---
 
-> 最后更新: 2026-08-07 | CHART-SPEC 重构为「样式 + 结果约束」（实现放开，尺寸/数据量/坐标 Agent 自定；颜色只用 --chart-*；结果约束清单实测通过；参考 `docs/examples/web-图表自适应测试.html`）
+> 最后更新: 2026-08-07 | CHART-SPEC 重构为「样式 + 结果约束」（实现放开，尺寸/数据量/坐标 Agent 自定；颜色只用 --chart-*；结果约束清单实测通过；原参考测试文件已移除）

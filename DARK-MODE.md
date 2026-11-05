@@ -4,7 +4,7 @@
 > 真源：`tokens.json` 顶层 `dark` 节（值来自 brand-color-engine `generatePalette('#005EAE',{mode:'dark'})` 快照，引擎为唯一真源，勿手改）
 > 切换：`page-template.html` 的 `:root[data-theme="dark"]` 属性选择器
 > **内置切换（2026-08-12 拍板）**：`page-template.html` 顶栏已内置「暗色模式」按钮（`.topbar-item.theme-btn`，位于 首页|用户名|改密|退出|全屏|暗色 顺序末位，RULES §0.1）——点击切换 `<html data-theme>` + localStorage（`hx-theme`）记忆选择；**每次 Web 端生成（克隆 page-template）即默认带亮/暗双模式自由切换**。
-> 国际对标：见 `TOKENS-EVIDENCE.md` 第八节（引证 16–20：Material / AntD / Apple HIG / Atlassian / Polaris）
+> 国际对标：Material / AntD / Apple HIG / Atlassian / Polaris（引证 16–20；引证文件已移除，要点见 §六）
 > 适用：Web 后台（Ant Design 风）+ 移动端（微信小程序 / Android / iOS 跨端）
 
 ---
@@ -195,7 +195,7 @@ Agent 克隆模板时自动继承此规则，无需逐页手写。
 
 ---
 
-## 六、国际对标要点（详情见 TOKENS-EVIDENCE.md 引证 16–20）
+## 六、国际对标要点（引证 16–20；原引证文件已移除）
 
 - **深灰非纯黑**：暗色页面底 `#121826`（带品牌冷调），对标 Material「Darken with grey」。
 - **elevation 暗色保留暗阴影 + 白色发丝线**，不用浅色光晕替代阴影（Material 明示）。

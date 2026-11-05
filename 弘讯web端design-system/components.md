@@ -14,7 +14,7 @@
 | 最小点击目标 | Web 32px |
 | 色彩铁律 | 功能色对齐 Ant Design：成功 `#389E0D` / 警告 `#FA8C16` / 错误 `#F5222D`；运行绿 `#16A34A` 独立于成功绿（状态灯必用）；**Web 禁止 `#10B981`**。语义约定：`--suc/--warn/--err/--run` 现=**背景色**（与移动端对齐）；浅底 Tag 用 `--*-soft`，filled 白字场景用 `--*-fg` |
 
-变量命名与 `design-system-showcase.html :root` 一致（`--primary`/`--n5`/`--n6`/`--n3`/`--radius-base`/`--radius-md`/`--shadow-float` …），写 CSS 前先读该文件。
+变量命名与 `template.css :root` 一致（`--primary`/`--n5`/`--n6`/`--n3`/`--radius-base`/`--radius-md`/`--shadow-float` …），写 CSS 前先读真源。
 
 > **布局与卡片对齐契约（2026-08-04 补强，详见 RULES §3.7 / §4.3 / §4.4）**：
 > - 带 `.btn-ico` 的按钮文字一律 `.btn-label` 包裹（门禁 `btn.label.required` HIGH）
@@ -251,7 +251,7 @@
 
 ## Elevation 引用规范（A 包，2026-07-30）
 
-> 组件按 elevation 层级引用 shadow/surface。详见 MASTER.md §5.1 场景表。值真源 `tokens.json` 的 `elevation` 节；引证见 `TOKENS-EVIDENCE.md`。
+> 组件按 elevation 层级引用 shadow/surface。详见 MASTER.md §5.1 场景表。值真源 `tokens.json` 的 `elevation` 节；对标引证文件已移除。
 
 | 组件 | elevation 级别 | CSS 引用 |
 |------|--------------|---------|

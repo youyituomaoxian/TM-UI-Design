@@ -241,7 +241,7 @@
 
 ## 六、投影体系（双层复合）
 
-> 升级为双层复合阴影（柔光层 + 1px 发丝线），对标 Atlassian elevation.shadow + AntD boxShadow。旧名保留，引用方零改动。详见 TOKENS-EVIDENCE.md。
+> 升级为双层复合阴影（柔光层 + 1px 发丝线），对标 Atlassian elevation.shadow + AntD boxShadow。旧名保留，引用方零改动。对标引证文件已移除。
 
 ```css
 :root {
@@ -255,7 +255,7 @@
 
 ## 七、Elevation 层级体系（5 级）
 
-> 国际对标：Atlassian 5 级（sunken/default/raised/overlay/overflow）surface+shadow 配对 + Material 3 层级递进 + Polaris 组件映射。暗色值属 C 包。详见 TOKENS-EVIDENCE.md。
+> 国际对标：Atlassian 5 级（sunken/default/raised/overlay/overflow）surface+shadow 配对 + Material 3 层级递进 + Polaris 组件映射。暗色值属 C 包。对标引证文件已移除。
 
 ```css
 :root {
@@ -269,7 +269,7 @@
 
 ## 八、Motion 动效体系
 
-> 国际对标：Material 3 duration 档位 + Ant Design motion token（duration 0.1/0.2/0.3s + easing cubic-bezier 精确值）。详见 TOKENS-EVIDENCE.md。
+> 国际对标：Material 3 duration 档位 + Ant Design motion token（duration 0.1/0.2/0.3s + easing cubic-bezier 精确值）。对标引证文件已移除。
 
 ### 8.1 Duration（4 档）
 

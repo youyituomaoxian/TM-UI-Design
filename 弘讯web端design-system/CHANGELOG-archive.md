@@ -1,8 +1,30 @@
 # 弘讯B端视觉系统 · Web 端设计系统更新日志（归档）
 
 > 本文件为 `CHANGELOG.md` 滚动归档（2026-09-22 建立，加载纪律 SSOT A-2）：主文件只保留近期条目，更早条目**原样移入**此处，未做任何内容修改。
-> 切割线（滚动更新）：web 归档 `[1.9.34]` 及更早。新条目一律写主文件顶部；超限时由 roll-changelog.js 自动滚动。
+> 切割线（滚动更新）：web 归档 `[1.9.36]` 及更早。新条目一律写主文件顶部；超限时由 roll-changelog.js 自动滚动。
 
+## [1.9.36] — 2026-09-23 · 监督闭环修复批（SUP-20260923-0855 audit · T-E2/E3/F1/F2）
+
+- **词典交付通道修复（ISSUE-02）**：.gitignore 改嵌套负向链（`**/.workbuddy/*` 逐级放行 `skills/tm-design-system/` 全目录）——vocabulary.json 此前被 `**/.workbuddy/` 目录级忽略，推送后 SKILL §2 指针在消费者侧悬空；验证 check-ignore 不再命中、嵌套子项目 .workbuddy 仍忽略。
+- **M-07 白名单双源化（ISSUE-01）**：buildTemplateMotionNames 并收 `@keyframes` 定义名（16→19）——shimmer/toast-in/toast-out 等规范动画只定义未在模板内引用，页面正常使用规范骨架屏/规范 toast 即误报 HIGH。四用例复测：模板页 0 / 白名单豁免 / 自造双动画 HIGH×1 / shimmer+toast-in 回归 0。
+- **species workbench 最小判据（T-F1）**：validate-spec 新增——声明 workbench 但无 `.stat-grid` 工作台骨架 → MEDIUM（提示级，防形式字段退化）；RULES §1.1c 门禁 bullet 同步。双用例实测：无骨架出现 / 有骨架不出现。
+- **check-size 清单封闭扩展名（T-F2）**：+`.txt`/`.log`，堵「换扩展名落根目录」的膨胀转移盲区（A1 FAIL 根因同源）。
+- **audit-rules.json v1.6.0 → v1.6.1**：M-07 predicate 补白名单双源口径。
+- **验证**：ci-local 全绿（项数以输出为准）；check-size 0 FAIL。
+
+---
+
+---
+## [1.9.35] — 2026-09-23 · 页面 species 正交维度 + register 口径显式化（批 2e · C-3/C-4）
+
+- **RULES 新增 §1.1c「页面 species 正交维度 + register 口径」**：①`<body data-species="workbench|document">` 与 §1.1b 页面类型**正交组合**（不新增平行页型，防物种爆炸——J2 修正形态）；语义约定：workbench 页首屏模块数 ≥3 且每模块带标题条，document 页禁 KPI 网格拼盘。②register 口径显式化（C-4，零行为变更）：B 端工具页 = `product` register（克制哲学显式登记，不引入新旋钮）；Brand Visual Kit = `brand` register（允许表现力），brand 手法带回工具页 = §2 违规。
+- **page-template.html**：body 预置 `data-species="document"`（克隆即带默认值）。
+- **validate-spec.js 新增 species 检查**：缺失 → MEDIUM（存量渐进补齐，不阻断）；值非法 → HIGH（防物种爆炸机器判据）。正反例实测：模板页 0 HIGH / 非法值页 HIGH 拦截。
+- **验证**：check-size 通过；ci-local 全绿（项数以输出为准）。
+
+---
+
+---
 ## [1.9.34] — 2026-09-23 · M-07 节拍预算（机器实现）+ Design Read 停等（批 2d · C-5/C-6）
 
 - **audit-rules.json v1.5.0 → v1.6.0**：新增 **M-07 `motion.beat.budget` 节拍预算**——一页最多一个 heavy 动效。scope：页面内 `<style>`/inline 的 animation 声明（`<link>` CSS 不扫，template.css 规范动效合法；transition 微交互不计；@keyframes 定义行不算引用）；predicate：唯一 animation-name 去重 >1 → 超出部分每条 HIGH。

@@ -171,7 +171,7 @@ cp 弘讯移动端design-system/page-template.html "<用户项目>/output/设备
 | 文件名     | 自动拼 `<页面语义名>_<YYYYMMDD>_<HHmm>.html`；同日同语义名重复 → 追加 `_2`/`_3`，**绝不覆盖**                                                                                                                                   |
 | CSS 引用  | `<link rel="stylesheet" href="…/弘讯web端design-system/template.css">`（相对路径按实际位置写）                                                                                                                         |
 | 门禁      | `cd <端目录> && node validate-spec.js <用户项目路径>/output/<产出文件>.html`，期望 0 HIGH                                                                                                                               |
-| **分享版** | 交付前把 `<link …template.css>` 替换为内联 `<style>`（template.css 全量）→ `<用户项目>/output/share/<原名>_分享版.html`（零外链）。**门禁口径：以开发态外链版为准**（分享版 = 构建产物，selfCss 全量内联会让 class.self-defined 报全部类，MED 噪音无意义，不跑 validate-spec） |
+| **分享版** | 交付前把 `<link …template.css>` 替换为内联 `<style>`（template.css 全量）→ `<用户项目>/output/share/<原名>_分享版.html`（零外链）。**门禁口径（2026-11-05 修订）：重建后同样跑 audit-spec + validate-spec 双跑，0 HIGH 才分发**（实测全量内联后仅余少量 class.self-defined MEDIUM 噪音，非阻断可接受） |
 
 > **CSS 由 `template.css` 统一提供（不要复制 CSS）**：`:root` 变量（品牌/中性/功能/字阶/圆角/投影/motion/密度）、组件 class、布局骨架（`.app > .topbar + .body(>.sidebar+.content) + .footer`）、`[data-theme="dark"]` / `[data-density]`。色 / 尺寸 / 字重 / 圆角一律走 `:root` 变量，禁止硬编码；动效用 `var(--motion-duration-*)+var(--motion-ease-*)`，禁裸数字秒。
 

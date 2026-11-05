@@ -5,6 +5,15 @@
 
 ---
 
+## [文档死链与口径清漂] — 2026-11-05 · 说明文档对齐现行规范
+
+- 登记说明文档（根 + 双端）机检漂移，修 15 处：①死链——TOKENS-EVIDENCE.md（文件已移除，9 处引证改「对标引证文件已移除」）、web RULES 机器群览页示范、mobile RULES dashboard.md §2、components.md design-system-showcase :root 改指 template.css、CHART-SPEC 两处已移除测试文件标注（ci-chart-interaction.js 属 §9 待办登记，保留）；②口径——团队使用指南「模板 ×7」更正「两级通用+4 专用」；GENERATION-SOP 分享版口径改「重建后 audit-spec + validate-spec 双跑 0 HIGH 分发」。
+- 真值核对：图标 web 185 / 移动 184、版本 1.9.46 / 1.14.28 一致；USAGE-GUIDE 所引 packages 脚本实测存在，未改。ci-local 100 pass / 0 fail。
+## [USAGE 使用指南内容同步] — 2026-11-05 · 提示词逻辑对齐现行 SOP / 审计口径
+
+- USAGE.html（dev + 两份 USAGE_分享版）提示词内容同步到当前真源口径：审计卡完整版改「audit-spec 台账 + D-1~D-12 逐维对照 → 逐项映射决策 → 分批修复 → validate-spec 双跑收口」（旧版仅 validate 逐条修，已废止）；迁移卡完整版改「SOP §② 五阶段（P0 台账 → P1 映射 → P2 修复 → P3 截图审查 → P4 收口）」；完整版提示词统一补 SOP §0 加载纪律（≤35k 只读命中章节）与问题上报口径（templates/设计系统问题报告模板.md）。
+- 资产地图补 tokens.json / audit-rules.json / audit-spec.js 3 行（13→16 条）；「提示词模板 ×7」更正为「两级通用 + 4 个专用（共 6 个）」；FAQ 新增 data-species 条目；分享步骤改「重建后 audit-spec + validate-spec 双跑 0 HIGH 再分发」；新增「环境路径 · 从克隆到使用」节（CLI Agent / WorkBuddy / 网页版 AI 三条上手套路 + 导航项）；body 补 data-species="document"。
+- 页面布局类与真源未改；分享版按当前 template.css 重新内联重建（仓库根 + 讲解展示页两副本，仅横幅注释差 2 字符）。门禁：ci-local 全绿；validate-spec dev 与两份分享版 0 HIGH（仅文档页自建布局类 MEDIUM，设计如此）；audit-spec dev / 分享版 exit 0。
 ## [规范展示页图表合规] — 2026-11-03 · 系列色 / 折线纵向覆盖 / 4px 网格
 
 - `web规范展示_框架版_20260806_1050.html`（及分享版）：SVG 系列元素绘制色由语义色 `--warn` / `--primary` 改为图表色 `--chart-wisdom-purple` / `--chart-tech-blue`；折线静态 points 拉伸至纵向覆盖 ≥70%（CHART-SPEC §3，上下对称）；主题按钮尺寸改 4px 网格（30→32px / 10→12px）。页面层修复，真源未改。
@@ -124,25 +133,5 @@
 - **门禁未削弱**：核验实测 `extractRootScopeVars` 对畸形块不采信（投毒 token 不可见），无假阴性放行。
 - **回归验证**：删除后模板 `root[data-density]` 仅正确块 3 处、无孤立 `:root` 行、`<style>` 配对完整；ci-local 全绿（100 pass / 0 fail，项数以输出为准）。
 - **冻结指纹刷新**：page-template.html 在 web-ui `sha256-baseline.json` 冻结清单内，已跑 `freeze-baseline.js` 刷新（含此前批 2/3 未提交的 validate-spec.js 指纹一并归位）。
-
----
-
-## [1.9.36] — 2026-09-23 · 监督闭环修复批（SUP-20260923-0855 audit · T-E2/E3/F1/F2）
-
-- **词典交付通道修复（ISSUE-02）**：.gitignore 改嵌套负向链（`**/.workbuddy/*` 逐级放行 `skills/tm-design-system/` 全目录）——vocabulary.json 此前被 `**/.workbuddy/` 目录级忽略，推送后 SKILL §2 指针在消费者侧悬空；验证 check-ignore 不再命中、嵌套子项目 .workbuddy 仍忽略。
-- **M-07 白名单双源化（ISSUE-01）**：buildTemplateMotionNames 并收 `@keyframes` 定义名（16→19）——shimmer/toast-in/toast-out 等规范动画只定义未在模板内引用，页面正常使用规范骨架屏/规范 toast 即误报 HIGH。四用例复测：模板页 0 / 白名单豁免 / 自造双动画 HIGH×1 / shimmer+toast-in 回归 0。
-- **species workbench 最小判据（T-F1）**：validate-spec 新增——声明 workbench 但无 `.stat-grid` 工作台骨架 → MEDIUM（提示级，防形式字段退化）；RULES §1.1c 门禁 bullet 同步。双用例实测：无骨架出现 / 有骨架不出现。
-- **check-size 清单封闭扩展名（T-F2）**：+`.txt`/`.log`，堵「换扩展名落根目录」的膨胀转移盲区（A1 FAIL 根因同源）。
-- **audit-rules.json v1.6.0 → v1.6.1**：M-07 predicate 补白名单双源口径。
-- **验证**：ci-local 全绿（项数以输出为准）；check-size 0 FAIL。
-
----
-
-## [1.9.35] — 2026-09-23 · 页面 species 正交维度 + register 口径显式化（批 2e · C-3/C-4）
-
-- **RULES 新增 §1.1c「页面 species 正交维度 + register 口径」**：①`<body data-species="workbench|document">` 与 §1.1b 页面类型**正交组合**（不新增平行页型，防物种爆炸——J2 修正形态）；语义约定：workbench 页首屏模块数 ≥3 且每模块带标题条，document 页禁 KPI 网格拼盘。②register 口径显式化（C-4，零行为变更）：B 端工具页 = `product` register（克制哲学显式登记，不引入新旋钮）；Brand Visual Kit = `brand` register（允许表现力），brand 手法带回工具页 = §2 违规。
-- **page-template.html**：body 预置 `data-species="document"`（克隆即带默认值）。
-- **validate-spec.js 新增 species 检查**：缺失 → MEDIUM（存量渐进补齐，不阻断）；值非法 → HIGH（防物种爆炸机器判据）。正反例实测：模板页 0 HIGH / 非法值页 HIGH 拦截。
-- **验证**：check-size 通过；ci-local 全绿（项数以输出为准）。
 
 ---

@@ -587,7 +587,7 @@ START: 我要做什么类型的页面？
 4. **表格空数据占位（min-row 契约）**：表格数据行数 < 8 行时，渲染到 **8 行**（`minRow=8`，行高 44px）——不足部分用空占位行 `<tr class="table-placeholder"><td colspan="N">&nbsp;</td></tr>`（无内容、保持行高、`pointer-events:none` 禁 hover）。数据为 0 时同样渲染 8 行占位 + 首行提示「无数据」。门禁 `layout.table-minrow`（MEDIUM）核对 JS 渲染模板是否含 minRow 常量。
 5. **适用**：机器列表、告警列表、工单列表、环形图/折线图/柱状图等图表卡片，及一切在 `.grid12 > .col-*` 内的卡片；**不适用**：详情弹窗表单、非 grid12 列的独立卡片。门禁 `card.fill-in-grid`（MEDIUM）核对 col-* 直接子 .card 是否缺 `.card--fill`。
 
-**落地参照**：`机器群览页.html`（2026-08-04 修订）——机器列表/环形图/折线图/告警速览/换模计划五张卡片全部 `.card--fill`，`.donut-wrap/.chart-box--sm/.table-wrap--h` 各 `flex:1`，JS `MIN_ROW=8` 表格占位。
+**落地参照**：机器群览页（2026-08-04 修订；示范文件已移除，规格以本条为准）——机器列表/环形图/折线图/告警速览/换模计划五张卡片全部 `.card--fill`，`.donut-wrap/.chart-box--sm/.table-wrap--h` 各 `flex:1`，JS `MIN_ROW=8` 表格占位。
 
 ### [硬] 4.4b 卡片高度诉求：定高卡 vs 弹性卡（2026-08-07 补强）⚠️ 必读
 

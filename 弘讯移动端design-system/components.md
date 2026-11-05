@@ -131,7 +131,7 @@
 
 ## Elevation 引用规范（A 包，2026-07-30）
 
-> 组件按 elevation 层级引用 shadow/surface。详见 MASTER.md §5.1 场景表。值真源 `tokens.json` 的 `elevation` 节；引证见 `TOKENS-EVIDENCE.md`。移动端 shadow 发丝线保留品牌色调。
+> 组件按 elevation 层级引用 shadow/surface。详见 MASTER.md §5.1 场景表。值真源 `tokens.json` 的 `elevation` 节；对标引证文件已移除。移动端 shadow 发丝线保留品牌色调。
 
 | 组件 | elevation 级别 | CSS 引用 |
 |------|--------------|---------|

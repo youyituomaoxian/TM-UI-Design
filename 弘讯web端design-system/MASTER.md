@@ -215,7 +215,7 @@
 
 ## 5. Shadow（双层复合）
 
-> **A 包升级（2026-07-30）**：shadow 由单层升级为**双层复合**（柔光层 + 1px 发丝线），对标 Atlassian elevation.shadow + AntD boxShadow。旧名保留，引用方零改动。值真源 `tokens.json` 的 `shadow` 节；引证见 `TOKENS-EVIDENCE.md`。
+> **A 包升级（2026-07-30）**：shadow 由单层升级为**双层复合**（柔光层 + 1px 发丝线），对标 Atlassian elevation.shadow + AntD boxShadow。旧名保留，引用方零改动。值真源 `tokens.json` 的 `shadow` 节；对标引证文件已移除。
 
 | 级别 | 参数（双层复合） | 适用对象 |
 |------|------|---------|
