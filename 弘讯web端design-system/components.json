@@ -405,7 +405,8 @@
         "switcher": "展开/收起箭头",
         "indent": "按层级缩进（每级 16px）",
         "icon": "节点图标（.tree-ico 内嵌 .ico SVG，stroke=currentColor）；每个节点（含二级子节点）都必须带；收起侧栏(.sidebar.collapsed)时只显示图标、隐藏文字与箭头",
-        "collapsed": "侧栏收起(.sidebar.collapsed)：宽 80px，节点 justify-center、只显示图标，.tree-label/.tree-sw 隐藏",
+        "collapsed": "侧栏收起(.sidebar.collapsed + .tree-collapsed)：宽 80px，只显示一级节点（二/三级隐藏），节点 justify-center；旧页无 .tree-collapsed 保持原行为",
+        "popover": "折叠态点一级（data-group）弹出二级浮层 .tree-popover；data-page 直接选中；浮层内三级缩进手风琴",
         "connector": "层级连接线（可选，N6）"
       },
       "tokens": [
@@ -436,6 +437,13 @@
           "size": 16,
           "color": "N9",
           "hover": "N10"
+        },
+        "popover": {
+          "width": "min 200 / max 260",
+          "padding": 6,
+          "title": "12px / N9",
+          "item": "36px / 14px",
+          "itemNested": "32px / 13px / 缩进 34"
         }
       },
       "states": {
@@ -461,6 +469,10 @@
         },
         "switcher.hover": {
           "color": "N10"
+        },
+        "node.branchActive": {
+          "bg": "展开 rgba(255,255,255,.08) / 折叠 rgba(255,255,255,.18)",
+          "note": "一级「当前分支」态，不是选中态；.on 仍单选。折叠态白块圆角 4"
         }
       },
       "variants": [
@@ -469,7 +481,7 @@
         "可拖拽",
         "禁用节点"
       ],
-      "referenceCss": ".tree{font-family:var(--font-cn);font-size:14px;color:var(--n10)}.tree-node{height:32px;display:flex;align-items:center;padding:0 8px;border-radius:var(--radius-base);cursor:pointer}.tree-node:hover{background:var(--n3)}.tree-node.on{background:var(--primary-dis-bg);color:var(--primary-active)}.tree-sw{width:16px;height:16px;margin-right:4px;color:var(--n9);display:inline-flex;align-items:center;justify-content:center}.tree-sw:hover{color:var(--n10)}.tree-label{flex:1}.sidebar .tree-node.on,.demo-sidebar .tree-node.on,.tree--brand .tree-node.on{background:var(--primary-active);color:var(--n1)}.sidebar .tree-node.on .tree-sw,.demo-sidebar .tree-node.on .tree-sw,.tree--brand .tree-node.on .tree-sw{color:var(--n1)}:root[data-theme=\"dark\"] .sidebar .tree-node.on,:root[data-theme=\"dark\"] .demo-sidebar .tree-node.on,:root[data-theme=\"dark\"] .tree--brand .tree-node.on{color:var(--n11)}:root[data-theme=\"dark\"] .sidebar .tree-node.on .tree-sw,:root[data-theme=\"dark\"] .demo-sidebar .tree-node.on .tree-sw,:root[data-theme=\"dark\"] .tree--brand .tree-node.on .tree-sw{color:var(--n11)}",
+      "referenceCss": ".tree{font-family:var(--font-cn);font-size:14px;color:var(--n10)}.tree-node{height:32px;display:flex;align-items:center;padding:0 8px;border-radius:var(--radius-base);cursor:pointer}.tree-node:hover{background:var(--n3)}.tree-node.on{background:var(--primary-dis-bg);color:var(--primary-active)}.tree-sw{width:16px;height:16px;margin-right:4px;color:var(--n9);display:inline-flex;align-items:center;justify-content:center}.tree-sw:hover{color:var(--n10)}.tree-label{flex:1}.sidebar .tree-node.on,.demo-sidebar .tree-node.on,.tree--brand .tree-node.on{background:var(--primary-active);color:var(--n1)}.sidebar .tree-node.on .tree-sw,.demo-sidebar .tree-node.on .tree-sw,.tree--brand .tree-node.on .tree-sw{color:var(--n1)}:root[data-theme=\"dark\"] .sidebar .tree-node.on,:root[data-theme=\"dark\"] .demo-sidebar .tree-node.on,:root[data-theme=\"dark\"] .tree--brand .tree-node.on{color:var(--n11)}:root[data-theme=\"dark\"] .sidebar .tree-node.on .tree-sw,:root[data-theme=\"dark\"] .demo-sidebar .tree-node.on .tree-sw,:root[data-theme=\"dark\"] .tree--brand .tree-node.on .tree-sw{color:var(--n11)}.sidebar .tree > .tree-node.branch-active{background:rgba(255,255,255,.08);border-radius:var(--radius-base)}.sidebar.collapsed.tree-collapsed .tree > .tree-node.branch-active:not(.on){background:rgba(255,255,255,.18)}.tree-popover{position:fixed;min-width:200px;max-width:260px;background:var(--elev-overlay-surface);border:1px solid var(--n6);border-radius:var(--radius-md);box-shadow:var(--elev-overlay-shadow);padding:6px}",
       "referenceHtml": "<div class=\"tree\"><div class=\"tree-node\"><span class=\"tree-sw\">▾</span><span class=\"tree-ico\"><svg class=\"ico\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polygon points=\"12 2 2 7 12 12 22 7 12 2\"/><polyline points=\"2 17 12 22 22 17\"/><polyline points=\"2 12 12 17 22 12\"/></svg></span><span class=\"tree-label\">注塑车间</span></div><div class=\"tree-node on tree-node--child\" data-leaf><span class=\"tree-sw\"></span><span class=\"tree-ico\"><svg class=\"ico\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"/></svg></span><span class=\"tree-label\">A 线 · 注塑机 A-01</span></div><div class=\"tree-node tree-node--child\" data-leaf><span class=\"tree-sw\"></span><span class=\"tree-ico\"><svg class=\"ico\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><rect x=\"4\" y=\"4\" width=\"16\" height=\"16\" rx=\"2\"/></svg></span><span class=\"tree-label\">B 线 · 机械手 C-07</span></div></div>",
       "ardot": {
         "libraryComponent": "Tree / 作业树（Ardot 组件库）",

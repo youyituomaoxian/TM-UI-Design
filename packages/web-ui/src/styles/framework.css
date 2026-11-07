@@ -103,6 +103,14 @@
 :root[data-theme="dark"] .tree--brand .tree-node.on .tree-ico{color:var(--n11);}
 
 
+/* 折叠态：只保留一级（2026-11-06；开关类 .tree-collapsed 保护旧页行为） */
+.sidebar.collapsed.tree-collapsed .tree > .tree-group{display:none;}
+/* 一级「当前分支」态（非选中；.on 仍单选铁律） */
+.sidebar .tree > .tree-node.branch-active{background:rgba(255,255,255,.08);border-radius:var(--radius-base);}
+.sidebar .tree > .tree-node.branch-active:hover{background:rgba(255,255,255,.16);}
+.sidebar.collapsed.tree-collapsed .tree > .tree-node.branch-active:not(.on){background:rgba(255,255,255,.18);}
+.sidebar .tree > .tree-node.on{background:var(--primary-active);color:var(--n1);}
+
 .sidebar.collapsed{width:var(--sidebar-collapsed-width);}
 .sidebar.collapsed .tree-label{display:none;} /* 折叠态隐藏菜单文字（原 display:contents 会把文字内容提升渲染、折叠后文字仍可见——2026-08-06 修复） */
 .sidebar.collapsed .tree-text,
@@ -152,3 +160,8 @@
 
 .page-title{margin:0;font-size:18px;font-weight:500;color:var(--text-1);}
 .section-title{font-size:16px;font-weight:500;color:var(--n11);margin:0 0 12px;}
+
+/* 暗色：框架=卡片色 #1E293B，与内容 #121826 差一档，靠 1px 细线分区（2026-11-06 方案 A） */
+:root[data-theme="dark"] .topbar{ border-bottom:1px solid rgba(255,255,255,.07); }
+:root[data-theme="dark"] .sidebar{ border-right:1px solid rgba(255,255,255,.07); }
+:root[data-theme="dark"] .footer{ border-top:1px solid rgba(255,255,255,.07); }

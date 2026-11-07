@@ -20,7 +20,7 @@
 2. 克隆模板（框架来源，**唯一可复制的结构**）：优先用脚手架（自动克隆 + 注入克隆凭证 meta + 修正 CSS link）：
    - Web B 端后台：`node scripts/new-page-web.js <语义名>`（克隆 `弘讯web端design-system/page-template.html`）
    - 移动端：`node scripts/new-page-mobile.js <语义名>`（克隆 `弘讯移动端design-system/page-template.html`；自由布局用 `agent-starter.html`）
-   - 克隆后**按业务定制作业树**：结构零改动（层级/图标/折叠/选中/**无 group-title 分类、顶级节点并列**，RULES §0.2 第 9 条），**节点文本、分组、选中态随当前系统定制**（禁保留示例树）
+   - 克隆后**按业务定制作业树**：结构零改动（层级/图标/选中/**无 group-title 分类、顶级节点并列**，RULES §0.2 第 9 条；折叠态浮层见 §0.2-10），**节点文本、分组、选中态随当前系统定制**（禁保留示例树）
    - 移动端**底部导航 3-5 项随需求增减**（最少 3、最多 5；登录/详情等无 BottomNav 合法，RULES §1.1b，门禁 bottomnav.count）
 3. 页面内容**从零自建**（禁参照 output/、packages/ 或任何既有页面 DOM，防风格漂移）：
    - 页面类型规格：各端 `RULES.md §1.1b`（登录/列表/详情/弹窗/看板等）
@@ -29,7 +29,7 @@
    - **字体：只用 `var(--font-cn)` / `var(--font-mono)` 栈**，禁具体字体名（宋体/微软雅黑等字符串，门禁 font.family MED；tabular-nums 仅限纯数字，中文内容会回退宋体；headless 验证字体会误判，须真实浏览器核对，RULES 字体守则）
    - 图表：`CHART-SPEC.md`（原子 SVG 自建，色走 `--chart-*`）
    - 跨端中性色契约：`CROSS-PLATFORM-COLORS.md`（N1-N10 两端对照 + 语义守则）
-   - 非默认品牌色/暗色：`brand-color-engine/`（一键生成整套配色）；**非默认品牌默认双模式**（亮 + 暗两块 :root，附录 B 亮暗双映射；顶栏已内置「暗色模式」切换按钮，RULES §0.1）
+   - 非默认品牌色/暗色：`brand-color-engine/`（一键生成整套配色）；**非默认品牌默认双模式**（亮 + 暗两块 :root，附录 B 亮暗双映射；顶栏已内置「暗色模式」切换按钮，RULES §0.1）；**暗色固定、不随品牌**（2026-11-06 方案 A）
 4. 产出落盘：**「用户项目」的 `output/`**（不是本仓库；CSS link 指向本仓库对应端 `template.css`）。
 5. 门禁（风格合规才交付）：
    - 单页：`node 弘讯web端design-system/validate-spec.js <页面.html>`（移动端同理）→ 必须 **0 HIGH**
@@ -37,7 +37,7 @@
 
 ## 存量项目审查修改（路径二）
 
-已有页面/项目按规范改造，**不走 §生成流程**——读 `GENERATION-SOP.md §② 存量项目改造 SOP`。审查目的：找出视觉不符合弘讯设计系统的地方，修改成符合弘讯设计系统的视觉。流程：先台账后修复（**双门禁都要跑**：`audit-spec.js <页面> --end web|mobile` 出台账清零硬违规，**且** `validate-spec.js <页面>` 过交付门禁——audit 通过 ≠ 可交付，validate 才拦 `class.undefined` / `framework.fingerprint` / `chart.*` / `grid.4px` / `icon.source`；再叠 `audit-rules.json` migration_dimensions D-1~D-12 逐维对照找差异）→ **P1 映射决策**（每个差异按 D 层 map_to 定「改成什么」：哪个 token / 哪个组件类 / 哪级字阶）→ 每批门禁回归。**改真源区文件必须有台账 + 用户显式拍板**（真源治理契约，双端 RULES.md 页首）。**存量页若框架落后于当前 page-template**（顶栏语言切换/作业树类名/图标库/手机壳结构），先按 `GENERATION-SOP.md §②`「框架外壳对齐」清单对齐框架，再做 token 层改造。
+已有页面/项目按规范改造，**不走 §生成流程**——读 `GENERATION-SOP.md §② 存量项目改造 SOP`。审查目的：找出视觉不符合弘讯设计系统的地方，修改成符合弘讯设计系统的视觉。流程：先台账后修复（**双门禁都要跑**：`audit-spec.js <页面> --end web|mobile` 出台账清零硬违规，**且** `validate-spec.js <页面>` 过交付门禁——audit 通过 ≠ 可交付，validate 才拦 `class.undefined` / `framework.fingerprint` / `chart.*` / `grid.4px` / `icon.source`；再叠 `audit-rules.json` migration_dimensions D-1~D-13 逐维对照找差异）→ **P1 映射决策**（每个差异按 D 层 map_to 定「改成什么」：哪个 token / 哪个组件类 / 哪级字阶）→ 每批门禁回归。**改真源区文件必须有台账 + 用户显式拍板**（真源治理契约，双端 RULES.md 页首）。**存量页若框架落后于当前 page-template**（顶栏语言切换/作业树类名/图标库/手机壳结构），先按 `GENERATION-SOP.md §②`「框架外壳对齐」清单对齐框架，再做 token 层改造。
 6. 转发/交付：生成分享版（把 `<link …template.css>` 内联为 `<style>` 全量 CSS，零外链）。
 
 ## 发现设计系统问题必须记录（单向报告流 · 2026-09-10 起）

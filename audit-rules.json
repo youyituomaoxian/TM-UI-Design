@@ -329,7 +329,7 @@
       "id": "D-11",
       "title": "暗色模式",
       "check": "页面是否有完整 [data-theme=dark] 块（亮暗双模式）；暗色骨架 --brand-surface 是否定义；顶栏暗色切换按钮是否可用；暗色下是否漏 token（切到暗色后出现白底/裸色块）",
-      "map_to": "非默认品牌走 brand-color-engine dark 模式（palDark 映射进 :root[data-theme=dark]）；默认品牌 template.css 已内置",
+      "map_to": "暗色固定一套色、不随品牌（darkBrandMode:fixed，2026-11-06）：brand-surface #1E293B + 内容 #121826；亮色才走品牌推导",
       "ref": "GENERATION-SOP 附录 B 步骤 2b + DARK-MODE.md + RULES §0.1",
       "trap": "暗色模式写死亮色值、漏双模式 :root 映射",
       "pairs": [
@@ -350,6 +350,20 @@
         {
           "bad": "卡片彩色渐变 + 多色阴影 + 彩虹标签突出精致",
           "good": "克制扁平：白底 + N 系灰阶分层，品牌色只做强调，有活力但不花哨"
+        }
+      ]
+    },
+    {
+      "id": "D-13",
+      "title": "作业树折叠态浮层",
+      "check": "侧栏折叠态是否只显一级；一级是否 data-group/data-page 分型；点分组是否弹 .tree-popover；branch-active 是否只作当前分支（非选中）",
+      "map_to": "RULES §0.2-10 + components.json#tree.popover + template.css .tree-popover/.branch-active",
+      "ref": "Web RULES §0.2-10 + components.md §3 + DARK-MODE §七",
+      "trap": "折叠态仍平铺二级 / 一级无分型 / branch-active 当 .on / 浮层被 .sidebar overflow 裁剪",
+      "pairs": [
+        {
+          "bad": "折叠后一二级图标平铺，点一级无反应",
+          "good": "折叠只显一级；点分组弹 .tree-popover；data-page 直接选中"
         }
       ]
     }

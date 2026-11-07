@@ -139,10 +139,10 @@ const SECTIONS = [
   ['tree', '树菜单 Tree', `
       <div class="side-sim">
         <div class="tree">
-          <div class="tree-node"><span class="tree-sw">▾</span><span class="tree-label">注塑车间</span></div>
-          <div class="tree-node on" style="padding-left:28px"><span class="tree-sw"></span><span class="tree-label">A 线 · 注塑机 A-01</span></div>
-          <div class="tree-node" style="padding-left:28px"><span class="tree-sw"></span><span class="tree-label">B 线 · 机械手 C-07</span></div>
-          <div class="tree-node"><span class="tree-sw">▸</span><span class="tree-label">装配车间</span></div>
+          <div class="tree-node" data-group data-key="ws1"><span class="tree-sw">▾</span><span class="tree-label">注塑车间</span></div>
+          <div class="tree-node on" data-key="a01" style="padding-left:28px"><span class="tree-sw"></span><span class="tree-label">A 线 · 注塑机 A-01</span></div>
+          <div class="tree-node" data-key="c07" style="padding-left:28px"><span class="tree-sw"></span><span class="tree-label">B 线 · 机械手 C-07</span></div>
+          <div class="tree-node" data-group data-key="ws2"><span class="tree-sw">▸</span><span class="tree-label">装配车间</span></div>
         </div>
       </div>`, '节点高32 · 主色底侧栏白字场景（side-sim 模拟侧栏）'],
   ['card', '卡片 Card', `

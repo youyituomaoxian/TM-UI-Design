@@ -40,7 +40,7 @@
 | `--primary-dis-fg` | `#A0B4C0` | `#9CA3AF` | |
 | `--select-item-bg` | `#DAEAFA` | `#23395D` | 选中项底（Tree/下拉/筛选胶囊/语言项） |
 | `--select-item-fg` | `#004A8F` | `#F1F5F9` | 选中项文字（暗色 10.56:1，2026-10-20 修 1.99:1） |
-| `--brand-surface` | `#005EAE` | `#0A2540` | 品牌深表面（如品牌区底色） |
+| `--brand-surface` | `#005EAE` | `#1E293B` | 品牌深表面（如品牌区底色） |
 
 ### 中性色 neutral（暗色为独立色阶，对齐引擎 `background.*` + 文本阶梯；**非**亮色机械反相）
 
@@ -113,7 +113,7 @@
 > 与深色内容区（`#121826`）形成强烈割裂感。
 >
 > **通用解法**：在 `:root[data-theme="dark"]` 内增加一条 CSS 规则，将结构骨架的背景
-> 从 `--primary` 切换到 `--brand-surface`（引擎 `background.brandSurface = #0A2540`，深蓝黑带品牌调）。
+> 从 `--primary` 切换到 `--brand-surface`（引擎 `background.brandSurface = #1E293B`，固定深蓝灰（暗色不随品牌））。
 
 ```css
 /* 写在 :root[data-theme="dark"] 块内 */
@@ -122,7 +122,7 @@
 
 | 元素 | 亮态背景 | 暗态背景 | Token |
 |------|----------|----------|-------|
-| 顶栏 `.topbar` | `var(--primary)` → `#005EAE` 蓝色 | `var(--brand-surface)` → `#0A2540` 深蓝黑 | 引擎 `brandSurface` |
+| 顶栏 `.topbar` | `var(--primary)` → `#005EAE` 蓝色 | `var(--brand-surface)` → `#1E293B` 深蓝黑 | 引擎 `brandSurface` |
 | 侧栏 `.sidebar` | 同上 | 同上 | 同上 |
 | 底栏 `.footer` | 同上 | 同上 | 同上 |
 
@@ -137,8 +137,8 @@
 **适用范围**：所有基于弘讯 Web 设计系统（`template.css` + `page-template.html`）生成的后台页面。
 Agent 克隆模板时自动继承此规则，无需逐页手写。
 
-**引擎来源**：`base-spec.json` → `darkDefaults.background.brandSurface = "#0A2540"`。
-此值是配色引擎根据品牌色 `#005EAE` 在暗色模式下推导的品牌表面色，**不可手改**。
+**引擎来源**：`base-spec.json` → `darkDefaults.background.brandSurface = "#1E293B"`。
+**2026-11-06 方案 A**：暗色固定一套色、**不随品牌色推导**（`darkBrandMode: "fixed"`；`derived` 仅保留旧能力）。品牌色机制仅亮色生效。
 
 ---
 
@@ -161,7 +161,7 @@ Agent 克隆模板时自动继承此规则，无需逐页手写。
   --warn:#FFA940; --warn-soft:#2E2410; --warn-fg:#1A1A1A;
   --err:#FF4D4F; --err-soft:#2A1414; --err-fg:#FFFFFF;
   --run:#22C55E; --run-soft:#0E2018; --run-fg:#FFFFFF;
-  --brand-surface:#0A2540;
+  --brand-surface:#1E293B;
   /* 投影 / Elevation */
   --shadow-card:0 8px 24px rgba(0,0,0,.35), 0 0 0 1px rgba(168,197,231,.14);
   --elev-default-surface:#1E293B; …
@@ -197,8 +197,17 @@ Agent 克隆模板时自动继承此规则，无需逐页手写。
 
 ## 六、国际对标要点（引证 16–20；原引证文件已移除）
 
-- **深灰非纯黑**：暗色页面底 `#121826`（带品牌冷调），对标 Material「Darken with grey」。
+- **深灰非纯黑**：暗色页面底 `#121826`（中性冷调，暗色不随品牌），对标 Material「Darken with grey」。
 - **elevation 暗色保留暗阴影 + 白色发丝线**，不用浅色光晕替代阴影（Material 明示）。
 - **中性色独立暗色阶**（非亮色反相），对标 Atlassian dedicated dark ramp。
 - **功能色平台/模式固定**（非机械反相），对标 Apple HIG「语义色自适应但非简单反相」+ Polaris 语义令牌分组。
 - **切换机制**：属性选择器切换 = AntD `algorithm` / Atlassian token theme / Polaris `colorScheme` 同理念。
+---
+
+## 七、暗色固定主题（2026-11-06 方案 A）
+
+- 暗色**固定一套色**，不随品牌色推导：框架 `--brand-surface: #1E293B`（= 卡片色）、内容 page `#121826`、主色固定 `#3B82F6`。
+- 框架与内容靠 1px `rgba(255,255,255,.07)` 细线分区（顶栏底 / 侧栏右 / 底栏顶）。
+- 品牌色机制**仅亮色生效**；暗色品牌识别只保留 logo / 平台名。
+- 引擎：`darkBrandMode: "fixed"`（默认）；`derived` 仅保留旧能力，不启用。
+- 门禁：`ci-local` 断言「另一品牌暗色背景全等」。

@@ -11,7 +11,7 @@
 
 1. **默认**生成弘讯品牌色 `#005EAE` 的应用页；
 2. **指定其他品牌色**时，自动推导出一套视觉协调、语义正确的应用页配色；
-3. **暗色模式**下，根据品牌色生成对应的完整暗色调色板。
+3. **暗色模式**下，输出固定暗色板（不随品牌，2026-11-06 方案 A）。
 
 本引擎把上述能力收敛为一个可调用函数 `generatePalette(brand, {mode, platform})`，
 Agent 只需读 `engine.md` + 调 `generate.js`，即可拿到可直接套用到 HTML 的调色板 JSON。
@@ -25,7 +25,7 @@ Agent 只需读 `engine.md` + 调 `generate.js`，即可拿到可直接套用到
 | 产出形态 | HTML 原型（可选同步 Ardot） | 不是规范展示页 |
 | 功能色 | **固定语义色，不随品牌推导** | 防止识别性偏低；成功/警告/错误/运行跨品牌一致 |
 | 默认 005EAE | 返回 2026 规范**原值** | HTML 2025 仅作算法来源，以 2026 规范为准 |
-| 暗色 | 完整暗色调色板 | 中性暗阶、品牌深表面、暗功能色全覆盖 |
+| 暗色 | 固定暗色板（不随品牌） | 中性暗阶 + 固定 brand-surface `#1E293B`；2026-11-06 方案 A |
 | 页面范围 | 不限类型，从零生成 | 引擎只出配色，页面结构由 Agent 决定 |
 | 落地 | 仓库根独立模块 `brand-color-engine/` | 与两套 `design-system/` 解耦 |
 
@@ -107,11 +107,10 @@ const darkMobile = generatePalette('#2E7D5B', { mode: 'dark', platform: 'mobile'
 - **功能色**：**保持固定** = `base-spec` 亮色功能色（不推导）。
 - **背景**：中性主题（page/surface/text/border）同 005EAE 亮色；`brandSurface` 用品牌色本身。
 
-### 4.4 任意品牌 暗色
-- 中性取暗阶 `neutralScale`；背景取 `darkDefaults.background`，`brandSurface` 取品牌色深色调（`adjustLightness(brand, -32)`）。
-- 主色 `default` 用品牌色本身，`hover/click` 走暗色分支。
-- 图表由对应亮色图表提亮推导（暗色下整体提亮 +15 以保可读性）。
-- 功能色保持固定 = `darkDefaults.functional[platform]`（不推导）。
+### 4.4 任意品牌 暗色（固定，不随品牌）
+- **2026-11-06 方案 A**：暗色整套固定，不随品牌推导 —— 中性取 `darkDefaults.neutralScale`，背景取 `darkDefaults.background`（`brandSurface` 固定 `#1E293B`）。
+- 主色固定 `#3B82F6`，功能色固定 `darkDefaults.functional[platform]`。
+- `darkBrandMode: "fixed"`（默认）；`"derived"` 仅保留旧品牌推导能力，不启用。
 
 > 关键不变式：**功能色（成功/警告/错误/运行）永不随品牌变化** —— 无论什么品牌、什么模式，
 > 同一平台的功能色都来自 base-spec 的固定值，保证状态语义全局可识别。

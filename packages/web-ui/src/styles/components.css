@@ -69,6 +69,23 @@
 .tree-sw{width:16px;height:16px;margin-right:4px;display:inline-flex;align-items:center;justify-content:center;opacity:.85;}
 .tree-label{flex:1;}
 
+/* 折叠态二级浮层（2026-11-06）：固定定位，避开 .sidebar{overflow:hidden} 裁剪 */
+.tree-popover{position:fixed;z-index:1200;min-width:200px;max-width:260px;background:var(--elev-overlay-surface);border:1px solid var(--n6);border-radius:var(--radius-md);box-shadow:var(--elev-overlay-shadow);padding:6px;font-family:var(--font-cn);max-height:calc(100vh - 16px);overflow-y:auto;}
+.tree-popover[hidden]{display:none;}
+.tree-popover .pop-title{font-size:12px;line-height:1;color:var(--n9);font-weight:500;padding:8px 10px 10px;white-space:nowrap;border-bottom:1px solid var(--n5);margin-bottom:4px;}
+.tree-popover .pop-item{height:36px;display:flex;align-items:center;gap:8px;padding:0 10px;border-radius:var(--radius-base);font-size:14px;color:var(--n10);cursor:pointer;white-space:nowrap;transition:background var(--motion-duration-fast),color var(--motion-duration-fast);}
+.tree-popover .pop-item:hover{background:var(--n3);}
+.tree-popover .pop-item.on{background:var(--select-item-bg);color:var(--select-item-fg);font-weight:500;}
+.tree-popover .pop-item .ico{width:16px;height:16px;flex:none;}
+.tree-popover .pop-item .pop-sw{width:12px;height:12px;margin-left:auto;color:var(--n9);display:inline-flex;align-items:center;justify-content:center;font-size:10px;transition:transform var(--motion-duration-fast);}
+.tree-popover .pop-item.is-open .pop-sw{transform:rotate(90deg);}
+.tree-popover .pop-sub{display:none;}
+.tree-popover .pop-sub.is-open{display:block;}
+.tree-popover .pop-sub .pop-item{padding-left:34px;height:32px;font-size:13px;color:var(--n9);}
+.tree-popover .pop-sub .pop-item.on{color:var(--select-item-fg);}
+/* 暗色：框架 #1E293B 与浮层同色，浮层提到 --n2 区分 */
+:root[data-theme="dark"] .tree-popover{background:var(--n2);}
+
 .tree-light .tree-node{color:var(--n10);}
 .tree-light .tree-node:hover{background:var(--n3);}
 

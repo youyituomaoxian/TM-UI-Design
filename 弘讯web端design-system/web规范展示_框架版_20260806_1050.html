@@ -834,7 +834,7 @@
           <div class="sw"><div class="sw-chip" style="background:#2563EB"></div><div class="sw-meta"><div class="sw-name">primary-active</div><div class="sw-hex">#2563EB</div></div></div>
           <div class="sw"><div class="sw-chip" style="background:#374151"></div><div class="sw-meta"><div class="sw-name">primary-dis-bg</div><div class="sw-hex">#374151</div></div></div>
           <div class="sw"><div class="sw-chip" style="background:#9CA3AF"></div><div class="sw-meta"><div class="sw-name">primary-dis-fg</div><div class="sw-hex">#9CA3AF</div></div></div>
-          <div class="sw"><div class="sw-chip" style="background:#0A2540"></div><div class="sw-meta"><div class="sw-name">brand-surface</div><div class="sw-hex">#0A2540</div><div class="sw-note">Chrome 底</div></div></div>
+          <div class="sw"><div class="sw-chip" style="background:#1E293B"></div><div class="sw-meta"><div class="sw-name">brand-surface</div><div class="sw-hex">#1E293B</div><div class="sw-note">Chrome 底</div></div></div>
           <div class="sw"><div class="sw-chip" style="background:#1E293B"></div><div class="sw-meta"><div class="sw-name">N1 表面</div><div class="sw-hex">#1E293B</div></div></div>
           <div class="sw"><div class="sw-chip" style="background:#243044"></div><div class="sw-meta"><div class="sw-name">N2 抬升</div><div class="sw-hex">#243044</div></div></div>
           <div class="sw"><div class="sw-chip" style="background:#334155"></div><div class="sw-meta"><div class="sw-name">N3 悬停</div><div class="sw-hex">#334155</div></div></div>
@@ -1081,7 +1081,11 @@ document.querySelectorAll('main .sec').forEach(function(s, i){ s.style.animation
     var moon = document.getElementById('themeIconMoon'), sun = document.getElementById('themeIconSun');
     if (moon) moon.style.display = dark ? 'none' : '';
     if (sun) sun.style.display = dark ? '' : 'none';
+    try { localStorage.setItem('hx-theme', dark ? 'dark' : 'light'); } catch(e){}
   }
+  var saved = null;
+  try { saved = localStorage.getItem('hx-theme'); } catch(e){}
+  if (saved === 'dark') apply(true);
   btn.addEventListener('click', function(){
     apply(document.documentElement.getAttribute('data-theme') !== 'dark');
   });

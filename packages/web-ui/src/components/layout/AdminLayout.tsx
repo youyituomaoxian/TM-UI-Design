@@ -3,9 +3,11 @@
  * 四维结构：顶栏72(品牌蓝白字) / 侧栏240可折叠80(作业树带图标) / 内容区自适应 / 底栏32(居中)。
  * 框架维度全部走 globals.css token（--topbar-height / --sidebar-width 等），见 framework.css。
  * 已按 Ardot 画板 701545559030003 #19:3578 校准（2026-08-01）：侧栏高 1008px。
+ * 2026-11-06：折叠态只渲染一级 + 点分组弹二级浮层（RULES §0.2-10）。
  */
 import * as React from 'react';
-import { Tree, type TreeProps } from '@/components/ui/tree';
+import { createPortal } from 'react-dom';
+import { Tree, type TreeProps, type TreeNodeData } from '@/components/ui/tree';
 import { cn } from '@/lib/utils';
 import { Icon, type IconName } from './icons';
 import '@/styles/framework.css';
@@ -15,6 +17,8 @@ export interface NavItem {
   label: string;
   icon?: IconName;
   children?: NavItem[];
+  /** 折叠态分型：group=纯分组（弹浮层）；page=可导航 */
+  nav?: 'group' | 'page';
 }
 
 export interface AdminLayoutProps {
@@ -51,8 +55,26 @@ const toTreeData = (nav: NavItem[]): TreeProps['data'] =>
         <span className="tree-text">{n.label}</span>
       </>
     ),
+    nav: n.nav,
     children: n.children ? toTreeData(n.children) : undefined,
   }));
+
+const findNav = (items: NavItem[], key: string): NavItem | undefined => {
+  for (const it of items) {
+    if (it.key === key) return it;
+    if (it.children) {
+      const found = findNav(it.children, key);
+      if (found) return found;
+    }
+  }
+  return undefined;
+};
+
+interface PopState {
+  key: string;
+  left: number;
+  top: number;
+}
 
 export const AdminLayout: React.FC<AdminLayoutProps> = ({
   title = '弘讯B端视觉规范',
@@ -70,6 +92,34 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
   children,
 }) => {
   const [collapsed, setCollapsed] = React.useState(false);
+  const [pop, setPop] = React.useState<PopState | null>(null);
+
+  const onGroupClick = (key: string, e?: React.MouseEvent) => {
+    if (!e) return;
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    setPop({ key, left: rect.right + 8, top: rect.top });
+  };
+
+  React.useEffect(() => {
+    if (!pop) return;
+    const onDocDown = (e: MouseEvent) => {
+      const el = document.querySelector('.tree-popover');
+      if (el && el.contains(e.target as Node)) return;
+      setPop(null);
+    };
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setPop(null);
+    };
+    document.addEventListener('mousedown', onDocDown);
+    document.addEventListener('keydown', onEsc);
+    return () => {
+      document.removeEventListener('mousedown', onDocDown);
+      document.removeEventListener('keydown', onEsc);
+    };
+  }, [pop]);
+
+  const popNav = pop ? findNav(nav, pop.key) : undefined;
+
   return (
     <div className="app">
       <header className="topbar">
@@ -109,17 +159,22 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
       </header>
 
       <div className="body">
-        <aside className={cn('sidebar', collapsed && 'collapsed')}>
+        <aside className={cn('sidebar', 'tree-collapsed', collapsed && 'collapsed')}>
           <Tree
             variant="sidebar"
             selectedKey={selectedKey}
             onSelect={onSelect}
             data={toTreeData(nav)}
+            collapsed={collapsed}
+            onGroupClick={onGroupClick}
           />
           <div className="sidebar-foot">
             <button
               className="collapse-btn"
-              onClick={() => setCollapsed((c) => !c)}
+              onClick={() => {
+                setCollapsed((c) => !c);
+                setPop(null);
+              }}
               title={collapsed ? '展开侧栏' : '收起侧栏'}
               aria-label={collapsed ? '展开侧栏' : '收起侧栏'}
               aria-expanded={!collapsed}
@@ -136,6 +191,28 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
           </footer>
         </div>
       </div>
+
+      {pop && popNav &&
+        createPortal(
+          <div className="tree-popover" style={{ left: pop.left, top: pop.top }} role="menu">
+            <div className="pop-title">{popNav.label}</div>
+            {(popNav.children || []).map((child) => (
+              <div
+                key={child.key}
+                className={cn('pop-item', selectedKey === child.key && 'on')}
+                role="menuitem"
+                onClick={() => {
+                  onSelect?.(child.key);
+                  setPop(null);
+                }}
+              >
+                {child.icon && <Icon name={child.icon} size={16} />}
+                <span>{child.label}</span>
+              </div>
+            ))}
+          </div>,
+          document.body
+        )}
     </div>
   );
 };

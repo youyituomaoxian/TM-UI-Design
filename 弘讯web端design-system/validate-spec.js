@@ -597,6 +597,61 @@ function checkTreeIcons(html) {
   return violations;
 }
 
+// 作业树折叠态契约（2026-11-06，RULES §0.2-10）：启用 .tree-collapsed 时一级须有 data 分型
+function checkTreeCollapsedContract(html) {
+  const violations = [];
+  const clean = stripStyleTags(stripScriptTags(html));
+  if (!/\btree-collapsed\b/.test(clean)) return violations;
+  const re = /<div\b[^>]*\bclass\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))[^>]*>/g;
+  let m, top = 0, typed = 0;
+  while ((m = re.exec(clean))) {
+    const cls = m[1] || m[2] || m[3] || '';
+    if (!/(^|\s)tree-node(\s|$)/.test(cls)) continue;
+    if (/tree-node--child/.test(cls)) continue;
+    top++;
+    if (/\bdata-group\b/.test(m[0]) || /\bdata-page\b/.test(m[0])) typed++;
+  }
+  if (top > 0 && typed === 0) {
+    violations.push({
+      line: 0, severity: 'MEDIUM', contract: 'tree.collapsed.contract',
+      sel: '.tree-collapsed .tree-node',
+      msg: '启用折叠态开关(.tree-collapsed)但 ' + top + ' 个一级节点均无 data-group/data-page 分型——折叠态无法区分「弹浮层 / 直接选中」。见 RULES.md §0.2-10'
+    });
+  }
+  return violations;
+}
+
+// 一级 branch-active 只允许出现在品牌表面（2026-11-06）
+function checkTreeBranchScope(html) {
+  const clean = stripStyleTags(stripScriptTags(html));
+  if (!/branch-active/.test(clean)) return [];
+  for (const b of extractBrandBlocks(clean)) {
+    if (/branch-active/.test(b.inner)) return [];
+  }
+  return [{
+    line: 0, severity: 'MEDIUM', contract: 'tree.branch.scope',
+    sel: '.branch-active',
+    msg: '.branch-active 是品牌表面的一级「当前分支」态，只允许出现在 .sidebar/.demo-sidebar/.tree--brand 内。见 RULES.md §0.2-10'
+  }];
+}
+
+// 作业树浮层容器顺序（2026-11-07）：容器必须出现在引用它的脚本之前，否则 getElementById 为 null
+function checkTreePopoverOrder(html) {
+  const violations = [];
+  const popPos = html.indexOf('id="treePopover"');
+  if (popPos < 0) return violations;
+  const refPos = html.indexOf("getElementById('treePopover')");
+  if (refPos < 0) return violations;
+  if (popPos > refPos) {
+    violations.push({
+      line: 0, severity: 'HIGH', contract: 'tree.popover.order',
+      sel: '#treePopover',
+      msg: '作业树浮层容器(#treePopover)出现在引用它的脚本之后——getElementById 拿到 null，点一级不会弹浮层。请把容器移到树 <script> 之前。见 RULES.md §0.2-10'
+    });
+  }
+  return violations;
+}
+
 // ===== 类名白名单门禁（根治「Agent 自造组件」；2026-08-01 新增）=====
 // 第一性原理：template.css 已是 globals+components+framework+utilities 合并的【单一真源】，
 //   HTML 页面出现 CSS 未定义的类 = Agent 脱离规范自造组件 → 必漂移。
@@ -894,6 +949,11 @@ function checkMotion(rules) {
 function stripScriptTags(html) {
   // RED-06 修复：等宽空格替换（保留换行与字符偏移），而非删除 —— 否则 <script> 之后的行号全数漂移
   return html.replace(/<script[\s\S]*?<\/script>/gi, m => m.replace(/[^\n]/g, ' '));
+}
+// 2026-11-07：剥离 <style>（同样保留换行/偏移）。作业树 DOM 检查必须先去 style，
+// 否则 CSS 里的 .branch-active 选择器会被误判为页面使用了该状态。
+function stripStyleTags(html) {
+  return html.replace(/<style[\s\S]*?<\/style>/gi, m => m.replace(/[^\n]/g, ' '));
 }
 function checkChartBox(html) {
   const violations = [];
@@ -2061,6 +2121,10 @@ function run(specPath, targetPath) {
   const surfaceV = checkSurfaceSelection(rules, varsByTheme);
   // T6：B 端后台固定框架 — 品牌表面作业树节点必须带图标（对所有页面生效）
   const iconV = checkTreeIcons(html);
+  // 作业树折叠态契约（2026-11-06，RULES §0.2-10）：tree-collapsed 页面一级须有 data 分型；branch-active 只在品牌表面
+  const treeCollapsedV = checkTreeCollapsedContract(html);
+  const treeBranchV = checkTreeBranchScope(html);
+  const treePopoverV = checkTreePopoverOrder(html);
   // 类名白名单：对照单一真源 template.css + 页面实际外链 CSS（根治自造组件）。
   // NEW-001 修复：改为「按后果分级」而非「按文件豁免」——
   //   旧策略把 page-template / agent-starter 整体豁免（又一处 fail-open：参考源恰恰最该守规）；
@@ -2154,7 +2218,7 @@ function run(specPath, targetPath) {
   const iconSrcV = checkIconSource(html, targetPath);
   // KPI 仅两版门禁（2026-08-06 定稿）：简约版（stat-num/stat-sub 独立卡、无 kpi-ico / stat-card--icon / stat-card--ring）已删除，Agent 生成简约版即 HIGH 拦截
   const kpiV = checkKpiSimple(html);
-  return violations.concat(chartSeriesV, rootV, surfaceV, iconV, whitelistV, tokenV, motionV, chartV, svgV, topbarV, dimV, btnLabelV, btnVarV, statGridV, chartFillV, chartLayoutV, chartValueV, chartBaselineV, templateSyncV, moduleSpacingV, tableMinRowV, tableAlignV, tablePagerV, tableRowStateV, cardFillV, mobileV, webAesV, wcagV, gridV, overrideV, customV, kpiV, svgVarV, scrollV, cloneV, fpV, scrollBodyV, iconSrcV, fontV, tblBudgetV);
+  return violations.concat(chartSeriesV, rootV, surfaceV, iconV, treeCollapsedV, treeBranchV, treePopoverV, whitelistV, tokenV, motionV, chartV, svgV, topbarV, dimV, btnLabelV, btnVarV, statGridV, chartFillV, chartLayoutV, chartValueV, chartBaselineV, templateSyncV, moduleSpacingV, tableMinRowV, tableAlignV, tablePagerV, tableRowStateV, cardFillV, mobileV, webAesV, wcagV, gridV, overrideV, customV, kpiV, svgVarV, scrollV, cloneV, fpV, scrollBodyV, iconSrcV, fontV, tblBudgetV);
 }
 
 // ===== 柱状图柱顶数值门禁（2026-08-06：示例页柱状图缺 .chart-v → 柱子无数据标签，门禁此前未查）=====

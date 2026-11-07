@@ -229,28 +229,28 @@
     <!-- ===== 侧栏（G9 可折叠；主侧栏 = 真实作业树 · 2026-08-12 去菜单分类） =====
          结构：无 group-title 分类，顶级 tree-node（注塑车间/设备中心/运营中心/生产管理）直接并列，
          各自内部用真实实体层级嵌套 tree-group（注塑车间 → 产线/设备）。禁止多个 .tree 并列。 -->
-    <aside class="sidebar">
+    <aside class="sidebar tree-collapsed">
       <div class="tree">
-        <div class="tree-node on" data-expand><span class="tree-sw">▾</span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 3 9 V 21 H 21 V 8 L 15 11 V 9 L 9 5 L 3 9 Z"/><path d="M 9 21 V 12 H 15 V 21"/></svg></span><span class="tree-text">注塑车间</span></div>
+        <div class="tree-node on" data-group data-key="plant" data-expand><span class="tree-sw">▾</span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 3 9 V 21 H 21 V 8 L 15 11 V 9 L 9 5 L 3 9 Z"/><path d="M 9 21 V 12 H 15 V 21"/></svg></span><span class="tree-text">注塑车间</span></div>
         <div class="tree-group">
-          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 12 6 H 4 C 3.5 6 3 6.5 3 7 V 17 C 3 17.5 3.5 18 4 18 H 12 C 12.5 18 13 17.5 13 17 V 7 C 13 6.5 12.5 6 12 6 Z"/><path d="M 19 10 H 13 V 14 H 19 V 10 Z"/><path d="M 7 13.5 C 8 13.5 8.5 13 8.5 12 C 8.5 11 8 10.5 7 10.5 C 6 10.5 5.5 11 5.5 12 C 5.5 13 6 13.5 7 13.5 Z"/><path d="M 19 12 H 21"/></svg></span><span class="tree-text">A线 · 注塑机 A-01</span></div>
-          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 3 20 L 16 20"/><path d="M 8 19.5 V 13"/><path d="M 9 9 L 15 4.5 L 17.5 8.5 V 12.5"/><path d="M 17.5 12.5 L 15 14"/><path d="M 17.5 12.5 L 20 14"/><circle cx="8" cy="11" r="2"/><path d="M 5 19 V 16"/></svg></span><span class="tree-text">B线 · 机械手 C-07</span></div>
-          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 3 21 H 21 V 7 L 15 10 V 8 L 9 4 L 3 8 V 21 Z"/><path d="M 9 21 V 13 H 15 V 21"/></svg></span><span class="tree-text">干燥机 D-03</span></div>
+          <div class="tree-node tree-node--child" data-leaf data-key="plant-a"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 12 6 H 4 C 3.5 6 3 6.5 3 7 V 17 C 3 17.5 3.5 18 4 18 H 12 C 12.5 18 13 17.5 13 17 V 7 C 13 6.5 12.5 6 12 6 Z"/><path d="M 19 10 H 13 V 14 H 19 V 10 Z"/><path d="M 7 13.5 C 8 13.5 8.5 13 8.5 12 C 8.5 11 8 10.5 7 10.5 C 6 10.5 5.5 11 5.5 12 C 5.5 13 6 13.5 7 13.5 Z"/><path d="M 19 12 H 21"/></svg></span><span class="tree-text">A线 · 注塑机 A-01</span></div>
+          <div class="tree-node tree-node--child" data-leaf data-key="plant-b"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 3 20 L 16 20"/><path d="M 8 19.5 V 13"/><path d="M 9 9 L 15 4.5 L 17.5 8.5 V 12.5"/><path d="M 17.5 12.5 L 15 14"/><path d="M 17.5 12.5 L 20 14"/><circle cx="8" cy="11" r="2"/><path d="M 5 19 V 16"/></svg></span><span class="tree-text">B线 · 机械手 C-07</span></div>
+          <div class="tree-node tree-node--child" data-leaf data-key="plant-dry"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 3 21 H 21 V 7 L 15 10 V 8 L 9 4 L 3 8 V 21 Z"/><path d="M 9 21 V 13 H 15 V 21"/></svg></span><span class="tree-text">干燥机 D-03</span></div>
         </div>
-        <div class="tree-node" data-expand><span class="tree-sw">▾</span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 19 4.5 H 5 C 4 4.5 3 5.5 3 6.5 V 14.5 C 3 15.5 4 16.5 5 16.5 H 19 C 20 16.5 21 15.5 21 14.5 V 6.5 C 21 5.5 20 4.5 19 4.5 Z"/><path d="M 6 13 H 18"/><path d="M 16 13 V 7"/><path d="M 12 13 V 10"/><path d="M 8 13 V 10"/><path d="M 8 20 H 16"/></svg></span><span class="tree-text">设备中心</span></div>
+        <div class="tree-node" data-group data-key="dev" data-expand><span class="tree-sw">▾</span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 19 4.5 H 5 C 4 4.5 3 5.5 3 6.5 V 14.5 C 3 15.5 4 16.5 5 16.5 H 19 C 20 16.5 21 15.5 21 14.5 V 6.5 C 21 5.5 20 4.5 19 4.5 Z"/><path d="M 6 13 H 18"/><path d="M 16 13 V 7"/><path d="M 12 13 V 10"/><path d="M 8 13 V 10"/><path d="M 8 20 H 16"/></svg></span><span class="tree-text">设备中心</span></div>
         <div class="tree-group">
-          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 9 4 H 7 C 6.5 4 6 4.5 6 5 V 19 C 6 19.5 6.5 20 7 20 H 9 C 9.5 20 10 19.5 10 19 V 5 C 10 4.5 9.5 4 9 4 Z"/><path d="M 17 4 H 15 C 14.5 4 14 4.5 14 5 V 19 C 14 19.5 14.5 20 15 20 H 17 C 17.5 20 18 19.5 18 19 V 5 C 18 4.5 17.5 4 17 4 Z"/></svg></span><span class="tree-text">待机设备</span></div>
-          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 12 21 C 17 21 21 17 21 12 C 21 7 17 3 12 3 C 7 3 3 7 3 12 C 3 17 7 21 12 21 Z"/><path d="M 12 8 V 13"/></svg></span><span class="tree-text">故障设备</span></div>
+          <div class="tree-node tree-node--child" data-leaf data-key="dev-idle"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 9 4 H 7 C 6.5 4 6 4.5 6 5 V 19 C 6 19.5 6.5 20 7 20 H 9 C 9.5 20 10 19.5 10 19 V 5 C 10 4.5 9.5 4 9 4 Z"/><path d="M 17 4 H 15 C 14.5 4 14 4.5 14 5 V 19 C 14 19.5 14.5 20 15 20 H 17 C 17.5 20 18 19.5 18 19 V 5 C 18 4.5 17.5 4 17 4 Z"/></svg></span><span class="tree-text">待机设备</span></div>
+          <div class="tree-node tree-node--child" data-leaf data-key="dev-fault"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 12 21 C 17 21 21 17 21 12 C 21 7 17 3 12 3 C 7 3 3 7 3 12 C 3 17 7 21 12 21 Z"/><path d="M 12 8 V 13"/></svg></span><span class="tree-text">故障设备</span></div>
         </div>
-        <div class="tree-node" data-expand><span class="tree-sw">▾</span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 12 8 V 6"/><path d="M 21 15 C 21 10 17 6 12 6 C 7 6 3 10 3 15"/><path d="M 12 15 L 16 12"/></svg></span><span class="tree-text">运营中心</span></div>
+        <div class="tree-node" data-group data-key="ops" data-expand><span class="tree-sw">▾</span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 12 8 V 6"/><path d="M 21 15 C 21 10 17 6 12 6 C 7 6 3 10 3 15"/><path d="M 12 15 L 16 12"/></svg></span><span class="tree-text">运营中心</span></div>
         <div class="tree-group">
-          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 9 3 H 4 C 3.5 3 3 3.5 3 4 V 9 C 3 9.5 3.5 10 4 10 H 9 C 9.5 10 10 9.5 10 9 V 4 C 10 3.5 9.5 3 9 3 Z"/><path d="M 20 3 H 15 C 14.5 3 14 3.5 14 4 V 9 C 14 9.5 14.5 10 15 10 H 20 C 20.5 10 21 9.5 21 9 V 4 C 21 3.5 20.5 3 20 3 Z"/><path d="M 9 14 H 4 C 3.5 14 3 14.5 3 15 V 20 C 3 20.5 3.5 21 4 21 H 9 C 9.5 21 10 20.5 10 20 V 15 C 10 14.5 9.5 14 9 14 Z"/><path d="M 20 14 H 15 C 14.5 14 14 14.5 14 15 V 20 C 14 20.5 14.5 21 15 21 H 20 C 20.5 21 21 20.5 21 20 V 15 C 21 14.5 20.5 14 20 14 Z"/></svg></span><span class="tree-text">运营总览</span></div>
-          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 4 5 V 15 C 4 15.5 4.5 16 5 16 H 19 C 19.5 16 20 15.5 20 15 V 5 C 20 4.5 19.5 4 19 4 H 5 C 4.5 4 4 4.5 4 5 Z"/><path d="M 17 8 C 17.5 8 18 7.5 18 7 C 18 6.5 17.5 6 17 6 C 16.5 6 16 6.5 16 7 C 16 7.5 16.5 8 17 8 Z"/><path d="M 6.5 13.5 L 8 11 C 8.5 10.5 9.5 10.5 10 11 L 10 11.5 C 10.5 12 11.5 12 12 11.5 L 13 10 C 13.5 9.5 14.5 9.5 15 10 L 17.5 13.5"/><path d="M 8 20 H 16"/></svg></span><span class="tree-text">实时监控</span></div>
+          <div class="tree-node tree-node--child" data-leaf data-key="ops-overview"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 9 3 H 4 C 3.5 3 3 3.5 3 4 V 9 C 3 9.5 3.5 10 4 10 H 9 C 9.5 10 10 9.5 10 9 V 4 C 10 3.5 9.5 3 9 3 Z"/><path d="M 20 3 H 15 C 14.5 3 14 3.5 14 4 V 9 C 14 9.5 14.5 10 15 10 H 20 C 20.5 10 21 9.5 21 9 V 4 C 21 3.5 20.5 3 20 3 Z"/><path d="M 9 14 H 4 C 3.5 14 3 14.5 3 15 V 20 C 3 20.5 3.5 21 4 21 H 9 C 9.5 21 10 20.5 10 20 V 15 C 10 14.5 9.5 14 9 14 Z"/><path d="M 20 14 H 15 C 14.5 14 14 14.5 14 15 V 20 C 14 20.5 14.5 21 15 21 H 20 C 20.5 21 21 20.5 21 20 V 15 C 21 14.5 20.5 14 20 14 Z"/></svg></span><span class="tree-text">运营总览</span></div>
+          <div class="tree-node tree-node--child" data-leaf data-key="ops-live"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 4 5 V 15 C 4 15.5 4.5 16 5 16 H 19 C 19.5 16 20 15.5 20 15 V 5 C 20 4.5 19.5 4 19 4 H 5 C 4.5 4 4 4.5 4 5 Z"/><path d="M 17 8 C 17.5 8 18 7.5 18 7 C 18 6.5 17.5 6 17 6 C 16.5 6 16 6.5 16 7 C 16 7.5 16.5 8 17 8 Z"/><path d="M 6.5 13.5 L 8 11 C 8.5 10.5 9.5 10.5 10 11 L 10 11.5 C 10.5 12 11.5 12 12 11.5 L 13 10 C 13.5 9.5 14.5 9.5 15 10 L 17.5 13.5"/><path d="M 8 20 H 16"/></svg></span><span class="tree-text">实时监控</span></div>
         </div>
-        <div class="tree-node" data-expand><span class="tree-sw">▾</span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 19 19 V 6 L 15 4 L 11 6 V 10 L 7 8 L 3 10 V 21 H 21"/><path d="M 11 21 V 15 H 15 V 21"/></svg></span><span class="tree-text">生产管理</span></div>
+        <div class="tree-node" data-page data-key="prod" data-expand><span class="tree-sw">▾</span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 19 19 V 6 L 15 4 L 11 6 V 10 L 7 8 L 3 10 V 21 H 21"/><path d="M 11 21 V 15 H 15 V 21"/></svg></span><span class="tree-text">生产管理</span></div>
         <div class="tree-group">
-          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 15 2 H 9 C 8.5 2 8 2.5 8 3 V 5 C 8 5.5 8.5 6 9 6 H 15 C 15.5 6 16 5.5 16 5 V 3 C 16 2.5 15.5 2 15 2 Z"/><path d="M 16 4 H 18 C 19 4 20 5 20 6 V 20 C 20 21 19 22 18 22 H 6 C 5 22 4 21 4 20 V 6 C 4 5 5 4 6 4 H 8"/><path d="M 9 12 H 15"/><path d="M 9 16 H 15"/></svg></span><span class="tree-text">工单列表</span></div>
-          <div class="tree-node tree-node--child" data-leaf><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 19 4 H 5 C 4 4 3 5 3 6 V 20 C 3 21 4 22 5 22 H 19 C 20 22 21 21 21 20 V 6 C 21 5 20 4 19 4 Z"/><path d="M 4 10 H 20"/><path d="M 8 2 V 6"/><path d="M 16 2 V 6"/><path d="M 6.5 18.5 V 12.5 L 9.5 14.5 L 12.5 12.5 V 18.5"/></svg></span><span class="tree-text">排产计划</span></div>
+          <div class="tree-node tree-node--child" data-leaf data-key="prod-order"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 15 2 H 9 C 8.5 2 8 2.5 8 3 V 5 C 8 5.5 8.5 6 9 6 H 15 C 15.5 6 16 5.5 16 5 V 3 C 16 2.5 15.5 2 15 2 Z"/><path d="M 16 4 H 18 C 19 4 20 5 20 6 V 20 C 20 21 19 22 18 22 H 6 C 5 22 4 21 4 20 V 6 C 4 5 5 4 6 4 H 8"/><path d="M 9 12 H 15"/><path d="M 9 16 H 15"/></svg></span><span class="tree-text">工单列表</span></div>
+          <div class="tree-node tree-node--child" data-leaf data-key="prod-plan"><span class="tree-sw"></span><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 19 4 H 5 C 4 4 3 5 3 6 V 20 C 3 21 4 22 5 22 H 19 C 20 22 21 21 21 20 V 6 C 21 5 20 4 19 4 Z"/><path d="M 4 10 H 20"/><path d="M 8 2 V 6"/><path d="M 16 2 V 6"/><path d="M 6.5 18.5 V 12.5 L 9.5 14.5 L 12.5 12.5 V 18.5"/></svg></span><span class="tree-text">排产计划</span></div>
         </div>
       </div>
       <div class="sidebar-foot">
@@ -274,6 +274,7 @@
 </div>
 </div>
 
+  <div class="tree-popover" id="treePopover" hidden></div>
 <script>
   // 侧栏折叠（G9）
   function toggleSidebar(){
@@ -307,29 +308,148 @@
     });
   });
 
-  // 侧栏作业树交互：父节点展开/折叠 + 单选高亮 + 叶子滚动到对应章节
+  // 侧栏作业树交互（2026-11-06）：展开/折叠 + 单选 + 折叠态二级浮层 + branch-active
   (function(){
+    var sidebar = document.querySelector('.sidebar');
     var tree = document.querySelector('.sidebar .tree');
     if(!tree) return;
-    tree.querySelectorAll('.tree-node').forEach(function(node){
-      node.addEventListener('click', function(){
-        if(node.hasAttribute('data-expand')){
-          var group = node.nextElementSibling;
-          if(group && group.classList.contains('tree-group')){
-            var collapsed = group.classList.toggle('is-collapsed');
-            var sw = node.querySelector('.tree-sw');
-            if(sw) sw.textContent = collapsed ? '▸' : '▾';
-          }
-        }
-        tree.querySelectorAll('.tree-node.on').forEach(function(n){ n.classList.remove('on'); });
-        node.classList.add('on');
-        var anchor = node.getAttribute('data-anchor');
-        if(anchor){
-          var target = document.getElementById(anchor);
-          if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+    var pop = document.getElementById('treePopover');
+    var openFor = null;
+
+    function isCollapsed(){ return sidebar && sidebar.classList.contains('collapsed'); }
+    function topOf(node){
+      if(node.classList.contains('tree-node') && node.parentElement === tree) return node;
+      var cur = node;
+      while(cur && cur !== tree){
+        if(cur.classList && cur.classList.contains('tree-group') && cur.parentElement === tree) return cur.previousElementSibling;
+        cur = cur.parentElement;
+      }
+      return null;
+    }
+    function setBranch(node){
+      tree.querySelectorAll('.tree-node.branch-active').forEach(function(n){ n.classList.remove('branch-active'); });
+      var top = node ? topOf(node) : null;
+      if(top) top.classList.add('branch-active');
+    }
+    function select(node){
+      tree.querySelectorAll('.tree-node.on').forEach(function(n){ n.classList.remove('on'); });
+      node.classList.add('on');
+      setBranch(node);
+      var anchor = node.getAttribute('data-anchor');
+      if(anchor){
+        var target = document.getElementById(anchor);
+        if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+      }
+    }
+    function closePopover(){ if(pop) pop.hidden = true; if(openFor) openFor.setAttribute('aria-expanded', 'false'); openFor = null; }
+    function buildPop(trigger){
+      var title = trigger.querySelector('.tree-text').textContent;
+      var group = trigger.nextElementSibling;
+      var html = '<div class="pop-title">' + title + '</div>';
+      if(!group || !group.classList.contains('tree-group')) return html;
+      Array.prototype.forEach.call(group.children, function(sec){
+        if(!sec.classList || !sec.classList.contains('tree-node')) return;
+        var text = sec.querySelector('.tree-text').textContent;
+        var ico = sec.querySelector('.tree-ico') ? sec.querySelector('.tree-ico').innerHTML : '';
+        var on = sec.classList.contains('on') ? ' on' : '';
+        var sub = sec.nextElementSibling;
+        var hasThird = sub && sub.classList.contains('tree-group');
+        html += '<div class="pop-item' + on + '" role="menuitem" data-key="' + (sec.getAttribute('data-key') || '') + '"' + (hasThird ? ' data-has-third' : '') + '>' + ico + '<span>' + text + '</span>' + (hasThird ? '<span class="pop-sw">▸</span>' : '') + '</div>';
+        if(hasThird){
+          html += '<div class="pop-sub">';
+          Array.prototype.forEach.call(sub.children, function(thi){
+            if(!thi.classList || !thi.classList.contains('tree-node')) return;
+            var ttext = thi.querySelector('.tree-text').textContent;
+            var tico = thi.querySelector('.tree-ico') ? thi.querySelector('.tree-ico').innerHTML : '';
+            var ton = thi.classList.contains('on') ? ' on' : '';
+            html += '<div class="pop-item' + ton + '" role="menuitem" data-key="' + (thi.getAttribute('data-key') || '') + '">' + tico + '<span>' + ttext + '</span></div>';
+          });
+          html += '</div>';
         }
       });
+      return html;
+    }
+    function openPopover(trigger){
+      if(!pop) return;
+      closePopover();
+      openFor = trigger;
+      pop.innerHTML = buildPop(trigger);
+      pop.hidden = false;
+      trigger.setAttribute('aria-haspopup', 'true');
+      trigger.setAttribute('aria-expanded', 'true');
+      pop.setAttribute('role', 'menu');
+      var sb = sidebar.getBoundingClientRect();
+      var r = trigger.getBoundingClientRect();
+      pop.style.left = (sb.right + 8) + 'px';
+      pop.style.top = r.top + 'px';
+      var pr = pop.getBoundingClientRect();
+      if(pr.bottom > window.innerHeight - 8) pop.style.top = Math.max(8, r.bottom - pr.height) + 'px';
+      if(pr.right > window.innerWidth - 8) pop.style.left = Math.max(8, sb.left - pr.width - 8) + 'px';
+      pop.querySelectorAll('.pop-item').forEach(function(item){
+        item.addEventListener('click', function(e){
+          e.stopPropagation();
+          if(item.hasAttribute('data-has-third')){
+            var sub = item.nextElementSibling;
+            if(sub && sub.classList.contains('pop-sub')){
+              var open = !sub.classList.contains('is-open');
+              sub.classList.toggle('is-open', open);
+              item.classList.toggle('is-open', open);
+            }
+            return;
+          }
+          var key = item.getAttribute('data-key');
+          var target = key ? tree.querySelector('.tree-node[data-key="' + key + '"]') : null;
+          if(target) select(target);
+          closePopover();
+        });
+      });
+    }
+
+    tree.querySelectorAll('.tree-node').forEach(function(node){
+      node.addEventListener('click', function(){
+        var isTop = node.parentElement === tree;
+        var group = node.nextElementSibling;
+        var hasGroup = group && group.classList.contains('tree-group');
+
+        if(isCollapsed() && isTop){
+          var isGroup = node.hasAttribute('data-group') || (!node.hasAttribute('data-page') && hasGroup);
+          if(isGroup && hasGroup){
+            if(openFor === node){ closePopover(); return; }
+            openPopover(node);
+            return;
+          }
+          select(node);
+          closePopover();
+          return;
+        }
+
+        if(node.hasAttribute('data-expand') && hasGroup){
+          var collapsed = group.classList.toggle('is-collapsed');
+          var sw = node.querySelector('.tree-sw');
+          if(sw) sw.textContent = collapsed ? '▸' : '▾';
+        }
+        if(!hasGroup) select(node);
+      });
     });
+
+    document.addEventListener('mousedown', function(e){
+      if(!pop || pop.hidden) return;
+      if(pop.contains(e.target)) return;
+      if(e.target.closest && e.target.closest('.tree-node')) return;
+      closePopover();
+    });
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ if(openFor) openFor.focus(); closePopover(); } });
+    window.addEventListener('resize', function(){
+      if(pop && !pop.hidden && openFor){
+        var sb = sidebar.getBoundingClientRect();
+        var r = openFor.getBoundingClientRect();
+        pop.style.left = (sb.right + 8) + 'px';
+        pop.style.top = r.top + 'px';
+      }
+    });
+
+    var onNode = tree.querySelector('.tree-node.on');
+    if(onNode) setBranch(onNode);
   })();
 
   // 组件展示交互：Select / DatePicker / Tabs / Pager / Modal / TreeCard

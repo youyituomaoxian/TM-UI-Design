@@ -296,7 +296,7 @@ TopBar        height=72   FIXED   主色底 白字
 ## 12. 暗色模式（`:root[data-theme="dark"]`）
 
 - **切换**：属性选择器（非 `.dark` 类）；值 = tokens.json dark 节（唯一值真源）。
-- **品牌区**：顶栏/侧栏/底栏 dark 下用 `--brand-surface` 深蓝黑 `#0A2540`（避免"蓝壳+黑芯"），文字 `--text-on-brand`（dark = n11 亮白，对比达标）。
+- **品牌区**：顶栏/侧栏/底栏 dark 下用 `--brand-surface` 固定 `#1E293B`（暗色不随品牌）（避免"蓝壳+黑芯"），文字 `--text-on-brand`（dark = n11 亮白，对比达标）。
 - **dark primary** `#3B82F6`（引擎快照，**不可手改**——主按钮深字/白字对比 3.68-3.98 属品牌特性，待引擎解冻调整，已记录跟踪）。
 - **功能色底** dark 变亮（suc `#34D399` 等），组件文字用 dark n1（`#1E293B` 深色）——对比 5.29~8.76 全达标。
 - **键集对称**：dark 已补 secondary `#38BDF8` 系 / link `#60A5FA` / chart 8 色（08-05）。

@@ -380,7 +380,8 @@ function resolveFunctional(brand, theme, platform) {
 function resolveBackground(brand, theme, platform) {
   if (theme === 'light') return clone(SPEC.platforms[platform].light.background);
   const bg = clone(SPEC.darkDefaults.background);
-  if (brand.toUpperCase() !== BASE_BRAND) {
+  // 2026-11-06 方案 A：暗色固定、不随品牌（darkBrandMode 默认 fixed；derived 保留旧能力）
+  if (SPEC.darkBrandMode === 'derived' && brand.toUpperCase() !== BASE_BRAND) {
     bg.brandSurface = adjustLightness(brand, -32); // 品牌深色调表面
   }
   return bg;

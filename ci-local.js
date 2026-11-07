@@ -133,6 +133,9 @@ function verifyDark(label, dir, isMobile) {
   for (const k of ['page','surface','elevated','textPrimary','textSecondary','textTertiary','border'])
     if (d.background[k] !== p.background[k]) bgOk = false;
   ok(`${label} dark.background 7 键 = 引擎`, bgOk);
+  // 2026-11-06 方案 A：暗色固定、不随品牌（darkBrandMode=fixed）
+  const alt = generatePalette('#2E7D5B', { mode: 'dark', platform });
+  ok(`${label} dark 不随品牌（另一品牌背景全等）`, JSON.stringify(alt.background) === JSON.stringify(p.background));
 }
 
 // ===== NEW-006 修复：引擎输入(base-spec.json) 与 值真源(tokens.json) 亮色图表色一致性 =====

@@ -156,7 +156,7 @@ cp 弘讯移动端design-system/page-template.html "<用户项目>/output/设备
 1. **删 demo（可执行边界）**：Web page-template 已在 `<main class="content">` 内用 `/` 明确标记全部 demo section。删除两标记之间的全部内容（stat-grid KPI 演示 / callout / swatch / 字阶 / 色板 / 组件演示等），保留 `.app` 框架外壳。**KPI 统计卡**按业务需要**重建为 `stat-card--icon` 标准版**（components.json 已登记）；禁止保留 demo 简约卡或自造 KPI 样式。
 2. **改 CSS link 为指向仓库的相对路径**（克隆自 page-template 后必须改；移动端同理；脚手架自动处理）。**相对层级按落盘目录计算**：output/ 直下层 = `../弘讯web端design-system/template.css`；output/ 子目录（如 `output/某测试/`）= `../../弘讯web端design-system/template.css`——层级写错 → CSS 加载失败（token.undefined HIGH + 表格无样式）。
 3. **注入克隆凭证 meta**（P1 门禁）：`<head>` 内加 `<meta name="x-template-clone" content="弘讯web端design-system/page-template.html">`（移动端 content 换 `弘讯移动端design-system/page-template.html`）——**脚手架已自动注入，手动克隆必须自己加**；B 端/手机壳页面缺此 meta → 门禁 `template.clone.missing` HIGH。
-4. **定制作业树 + 图标从库取（2026-08-07 拍板；2026-08-12 去菜单分类）**：作业树**结构零改动**（层级/图标/折叠/选中/**无 group-title 分类、顶级节点并列**契约，RULES §0.2），**节点文本/分组/选中态按当前系统业务定制**（禁保留制造业示例树）；页面图标一律从 `<对应端>/icons/` 取（`icons/icons.md` 索引，path 内联进 `.ico/.tree-ico/.kpi-ico` 等尺寸类，规格 viewBox 24/stroke 1.8），库缺才手写并上报（RULES §7.9③）。
+4. **定制作业树 + 图标从库取（2026-08-07 拍板；2026-08-12 去菜单分类）**：作业树**结构零改动**（层级/图标/选中/**无 group-title 分类、顶级节点并列**契约，RULES §0.2；折叠态浮层见 §0.2-10），**节点文本/分组/选中态按当前系统业务定制**（禁保留制造业示例树）；页面图标一律从 `<对应端>/icons/` 取（`icons/icons.md` 索引，path 内联进 `.ico/.tree-ico/.kpi-ico` 等尺寸类，规格 viewBox 24/stroke 1.8），库缺才手写并上报（RULES §7.9③）。
 5. **移动端底部导航（2026-08-07 收编）**：`.bottomnav` 内 `.bn-item` **3-5 个**，按业务需求增减（最少 3、最多 5，不是定死 3 个）；无 BottomNav 的页面（登录/详情等）合法不挂；home indicator 挂最后一项后。门禁 `bottomnav.count` MED 兜底（移动 RULES §1.1b）。
 6. **删 head 展示样式 `<style>` 块（2026-08-12 补；V10 补强边界 2026-08-27）**：page-template 自带展示页专用 `<style>`（`.sec/.swatch/.motion-*/.type-*/.callout/.kv/.comp-*` 等约 52 行）——业务页克隆后**删除该 `<style>` 块**（保留其后的内联 `:root` 同步副本，同步规则不变）。残留它会带来每页 27-34 条 MED 噪音（裸 font-size / grid.4px / token.undefined 隐患）。删除边界：以 `/* 仅布局/容器助手` 注释开头的 `<style>` 块。**⚠️ 只删 `<style>` 块本身——框架 `<script>` 段（多语言 i18n / 主题切换 / 折叠）一个都不许删**（订单总览实战：删 style 时连带删掉多语言 IIFE → 语言切换全页失效，门禁 `template.i18n.missing` HIGH 已拦截）。
 7. **框架 `<script>` 段禁删（V10 新增 2026-08-27）**：`</style>` 之后的全部 `<script>` 段（框架级多语言 IIFE / 亮暗切换 / 折叠交互）是**框架外壳的一部分**，与顶栏/侧栏同级，**禁止以"演示代码"为由删除**。门禁 `template.i18n.missing`（HIGH）核对 hx-lang 指纹，缺失即拦。
@@ -171,7 +171,7 @@ cp 弘讯移动端design-system/page-template.html "<用户项目>/output/设备
 | 文件名     | 自动拼 `<页面语义名>_<YYYYMMDD>_<HHmm>.html`；同日同语义名重复 → 追加 `_2`/`_3`，**绝不覆盖**                                                                                                                                   |
 | CSS 引用  | `<link rel="stylesheet" href="…/弘讯web端design-system/template.css">`（相对路径按实际位置写）                                                                                                                         |
 | 门禁      | `cd <端目录> && node validate-spec.js <用户项目路径>/output/<产出文件>.html`，期望 0 HIGH                                                                                                                               |
-| **分享版** | 交付前把 `<link …template.css>` 替换为内联 `<style>`（template.css 全量）→ `<用户项目>/output/share/<原名>_分享版.html`（零外链）。**门禁口径（2026-11-05 修订）：重建后同样跑 audit-spec + validate-spec 双跑，0 HIGH 才分发**（实测全量内联后仅余少量 class.self-defined MEDIUM 噪音，非阻断可接受） |
+| **分享版** | 交付前把 `<link …template.css>` 替换为内联 `<style>`（template.css 全量）→ `<用户项目>/output/share/<原名>_分享版.html`（零外链）。**门禁口径（2026-11-05 修订）：重建后同样跑 audit-spec + validate-spec 双跑，0 HIGH 才分发**（实测全量内联后仅余少量 class.self-defined MEDIUM 噪音，非阻断可接受）。**2026-11-07 补充**：系统内分享版重建 = 以 dev 页为源、把 `<link>` 替换为当前 `template.css` 全量；**先确认 dev 与分享版 body 一致**（不一致时先比对差异再套，如 `USAGE` 两者 body 不同，不可直接覆盖）。 |
 
 > **CSS 由 `template.css` 统一提供（不要复制 CSS）**：`:root` 变量（品牌/中性/功能/字阶/圆角/投影/motion/密度）、组件 class、布局骨架（`.app > .topbar + .body(>.sidebar+.content) + .footer`）、`[data-theme="dark"]` / `[data-density]`。色 / 尺寸 / 字重 / 圆角一律走 `:root` 变量，禁止硬编码；动效用 `var(--motion-duration-*)+var(--motion-ease-*)`，禁裸数字秒。
 
@@ -294,7 +294,7 @@ cd <端目录> && "$NODE" validate-spec.js <用户项目路径>/output/<产出�
 ### 铁律（改前必读）
 
 1. **先台账后修复**：禁止拿着门禁报错逐条手改。正确顺序 = 脚本+维度清单全量盘点 → 台账落盘 → 用户拍板 → 按批次修复。**台账即授权载体**：改真源区文件（template.css / tokens.json / components.json 等）必须有台账 + 用户显式拍板，无台账动真源 = 违规（真源治理契约，见双端 RULES.md 页首）。
-2. **归因分场景**：**外部项目迁移**（项目不是弘讯生成的——别人写的/其他 AI 生成的页面）：差异的唯一归因就是「未对齐弘讯规范」，**不存在「执行问题」**（对方没有义务执行弘讯规范），P1 的实质是**映射决策**——每个差异确定「改成什么」：这个色映射到哪个 token、这个元素映射到哪个组件类、这个字号映射到哪级字阶（按 `audit-rules.json` migration_dimensions D-1~D-12 的 map_to 执行）。**弘讯内项目自审**（项目按弘讯规范生成、有义务合规）：用归因二分法——**设计系统问题**（真源/规范缺失、token 缺口）→ 回真源修，走治理契约六步；**执行问题**（规范写了没执行）→ 直接改页面。
+2. **归因分场景**：**外部项目迁移**（项目不是弘讯生成的——别人写的/其他 AI 生成的页面）：差异的唯一归因就是「未对齐弘讯规范」，**不存在「执行问题」**（对方没有义务执行弘讯规范），P1 的实质是**映射决策**——每个差异确定「改成什么」：这个色映射到哪个 token、这个元素映射到哪个组件类、这个字号映射到哪级字阶（按 `audit-rules.json` migration_dimensions D-1~D-13 的 map_to 执行）。**弘讯内项目自审**（项目按弘讯规范生成、有义务合规）：用归因二分法——**设计系统问题**（真源/规范缺失、token 缺口）→ 回真源修，走治理契约六步；**执行问题**（规范写了没执行）→ 直接改页面。
 3. **快照/基线不许手改**：`packages/*/dist-static` 快照与 `sha256-baseline.json` 指纹是产物——真源修好后跑双包 `freeze-baseline.js` 刷新，逐条手改快照 = 白干（下次 build 覆盖）。
 4. **每批门禁回归**：每修完一批跑 `node ci-local.js`（全绿 exit 0）才算批次完成，不积攒到最后一次性验证。
 5. **遮挡类结构禁当装饰删除**（2026-09-10，11242 案例五）：修改或删除平台伪元素（`::before/::after`）前必须先查证其功能——遮挡/防穿透/占位类结构**禁止当装饰删除**（二十轮删 sticky 盖板 → 滚动穿透回归，修复成本 5 倍）；修视觉异常优先「调色对齐」而非「移除结构」。
@@ -308,6 +308,8 @@ cd <端目录> && "$NODE" validate-spec.js <用户项目路径>/output/<产出�
 | 顶栏语言切换 | `.lang-sel` 面板（简体中文 / English + 待支持语言置灰）+ `data-i18n` / `data-i18n-title` 标记 | 与模板不一致；视觉/可用性缺失 |
 | 顶栏暗色切换 | `#themeToggle`（moon/sun 双图标 + localStorage 记忆） | 无暗色入口 |
 | 作业树 | 节点文本用 `.tree-text`；**顶级节点并列、无 `.group-title` 分类**；选中态 `.on` | 旧类名真源无样式 → 标题/缩进失规范 |
+| 作业树折叠浮层 | `.tree-popover` 容器必须放在树 `<script>` **之前**；一级 `data-group/data-page` + `data-key`；`.tree-collapsed` 开关类 | 容器在脚本后 → `getElementById` 为 null，点一级不弹浮层（门禁 `tree.popover.order` 拦截） |
+| 框架指纹 | `<script>` 含 `hx-lang`（多语言）与 `hx-theme`（亮暗）指纹 | 门禁 `template.i18n.missing` 拦截；暗色无入口 |
 | 图标 | 取各端 `icons/` 内联（24×24 · 线宽 1.8 · `stroke:currentColor`） | 手绘旧图标与图标库形态不一致 |
 | 移动端手机壳 | `.stage-wrap > .phone-stage > .phone`；内含 `.m-statusbar / .navbar / .screen-scroll > .page-view / .bottomnav` | 门禁 `framework.fingerprint` 拦截 |
 | 克隆凭证 | `<meta name="x-template-clone" content="<端>design-system/page-template.html">` | 门禁 `template.clone.missing` 拦截 |
@@ -328,7 +330,7 @@ cd <端目录> && "$NODE" validate-spec.js <用户项目路径>/output/<产出�
 
 | 阶段 | 做什么 | 用什么 |
 |---|---|---|
-| **P0 盘点** | 脚本 + 维度清单全量扫描产出问题台账（脚本管硬违规零遗漏，Agent 不参与找问题） | `node audit-spec.js <页面.html> --end web\|mobile`（`--json` 出结构化台账；HIGH>0 exit 1）+ `validate-spec.js` + `audit-rules.json` **migration_dimensions D-1~D-12 逐维对照**（脚本管 M 层硬违规，agent 按 D 层逐维补找结构/语义差异） |
+| **P0 盘点** | 脚本 + 维度清单全量扫描产出问题台账（脚本管硬违规零遗漏，Agent 不参与找问题） | `node audit-spec.js <页面.html> --end web\|mobile`（`--json` 出结构化台账；HIGH>0 exit 1）+ `validate-spec.js` + `audit-rules.json` **migration_dimensions D-1~D-13 逐维对照**（脚本管 M 层硬违规，agent 按 D 层逐维补找结构/语义差异） |
 | **P1 映射决策** | 台账逐项处理：外部项目 = 映射决策（每个差异按 D 层 map_to 定「改成什么」）；弘讯内项目 = 归因二分（设计系统问题回真源六步 / 执行问题改页面） | D 层 map_to + Agent 语义判断；规则语义查 `audit-rules.json` |
 | **P2 修复** | 按批次修复：真源问题走六步流程、页面问题直接改；每批门禁回归 | `validate-spec.js` 单页 + `ci-local.js` 全量 |
 | **P3 表现层** | 截图 × 状态的表现层审查（脚本覆盖不了的运行时问题：截断/溢出/交互态/图表渲染/滚动中间态/图片可辨识度）；**审查矩阵 = 逐 tab × 逐皮 × 滚动态（默认态 + 滚动 50% 态），不接受只看默认态** | Agent 视觉审查 + 用户 @image 截图反馈（R-01~07 + H-06/H-07 对照） |
@@ -336,7 +338,7 @@ cd <端目录> && "$NODE" validate-spec.js <用户项目路径>/output/<产出�
 
 ### 审计规则真源（audit-rules.json，仓库根）
 
-- **三层覆盖 + 迁移维度**：`machine`（脚本全量召回：M-01 CSS 裸 hex / M-02 按钮状态矩阵 / M-03 状态点语义 / M-04 SVG paint / M-05 validate-spec 指针）+ `runtime`（截图×状态）+ `human`（Agent+人语义审查）+ **`migration_dimensions` D-1~D-12**（外部项目迁移的维度对照清单：框架/色彩/字阶/组件/间距栅格/圆角投影密度/动效/图标/图表/状态语义/暗色/审美——每维 check 怎么找 + map_to 改成什么 + ref 指回规范条目）。
+- **三层覆盖 + 迁移维度**：`machine`（脚本全量召回：M-01 CSS 裸 hex / M-02 按钮状态矩阵 / M-03 状态点语义 / M-04 SVG paint / M-05 validate-spec 指针）+ `runtime`（截图×状态）+ `human`（Agent+人语义审查）+ **`migration_dimensions` D-1~D-13**（外部项目迁移的维度对照清单：框架/色彩/字阶/组件/间距栅格/圆角投影密度/动效/图标/图表/状态语义/暗色/审美——每维 check 怎么找 + map_to 改成什么 + ref 指回规范条目）。
 - **「全」的保证（双向对账）**：审查清单是规范真源结构树的对偶投影——D 层每条 ref 指不回规范条目 = 伪维度（删）；规范新增条目时审查侧必须同步长出核对项（指不到 = 审查缺口，补 D 层）。
 - **豁免登记**：确属合法的例外（如展示区色板、白字约定）登记进 `exemptions`（文件+行+原因+有效期），不许改代码糊弄门禁。
 - **设计系统问题单向报告流（2026-09-10 泛化，v1.3.0 闭环补齐）**：应用侧发现的设计系统问题（漏检为其 machine 层特例）→ 复制 `templates/设计系统问题报告模板.md` 落盘**自己项目** `output/`（设计系统问题_*.md / 漏检报告_*.md），**对话内声明请用户转交**，禁碰真源。维护侧**被动消费**（不建注册表、不主动巡检——应用者反馈，不去打扰）：收到转交后走六步流程回灌 `feedback_log`（带 `report_source`，跨项目同题用 `related_reports`）+ 回执三件套（报告状态栏回写 / feedback_log / 双端 CHANGELOG），修复时列明「请回滚的应用侧临时处置清单」。合格线三判据、schema 与状态流转见上方「生成中发现设计系统问题的记录义务」与 `audit-rules.json issue_reporting`。旧「应用侧强制回灌」语义因与真源治理契约冲突已废止。
@@ -431,7 +433,7 @@ cd brand-color-engine
     --brand-surface:#020604; --brand-surface-fg:#FFFFFF; /* palDark.background.brandSurface */
   }
   ```
-  顶栏「暗色模式」按钮驱动 `<html data-theme>` 切换；template.css 暗色骨架规则（`.topbar/.sidebar/.footer → var(--brand-surface)`，framework.css 已内置）自动把骨架转深色（默认品牌深蓝黑 / 自定义品牌深品牌色）。
+  顶栏「暗色模式」按钮驱动 `<html data-theme>` 切换；template.css 暗色骨架规则（`.topbar/.sidebar/.footer → var(--brand-surface)`，framework.css 已内置）自动把骨架转深色（固定 `#1E293B`，暗色不随品牌，2026-11-06 方案 A）。
 
 #### A. 品牌色 + 中性色（两端通用）
 
@@ -495,9 +497,9 @@ cd brand-color-engine
 
 #### C. 暗色骨架深色：brand-surface（已由真源兑现）
 
-> **说明**：暗色下顶栏 / 侧栏 / 底栏（Web）/ 导航栏（移动端）的骨架背景应转**深品牌色** `--brand-surface`（默认品牌深蓝黑 `#0A2540` / 自定义品牌 = palDark.background.brandSurface），避免用亮主色。**framework.css 暗色骨架规则（`.topbar/.sidebar/.footer → var(--brand-surface)`）已内置**，页面只需在步骤 2b 暗色块里写对 `--brand-surface` 值即可，无需改组件 `background`。
+> **说明**：暗色下顶栏 / 侧栏 / 底栏（Web）/ 导航栏（移动端）的骨架背景用**固定** `--brand-surface`（Web 暗色 `#1E293B`，与卡片同色；**暗色不随品牌**，2026-11-06 方案 A），避免用亮主色。**framework.css 暗色骨架规则（`.topbar/.sidebar/.footer → var(--brand-surface)`）已内置**，页面只需在步骤 2b 暗色块里写对 `--brand-surface` 值即可，无需改组件 `background`。
 
-- 005EAE dark = `#0A2540`；任意品牌 dark = palDark.background.brandSurface（引擎直接给）。
+- 005EAE dark = `#1E293B`（固定）；任意品牌 dark 背景全等（引擎 `darkBrandMode:"fixed"`，不随品牌）。
 - 这些选择器不在门禁 contract 内，暗色只改配色，**不改组件结构规格**（尺寸 / 字重 / 圆角仍按 contract）。
 
 #### D. 不映射的变量（保留模板原值）

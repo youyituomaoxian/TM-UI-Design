@@ -140,6 +140,18 @@
 
 **状态**：节点默认(N10) · hover(底 N3)；箭头默认 N9 · hover N10。
 
+**折叠态（2026-11-06 拍板）**：`.sidebar.collapsed.tree-collapsed` 只显示一级节点，二/三级隐藏；点一级按分型弹浮层或直接选中。`.branch-active` 是一级「当前分支」态，**不是选中态**。
+
+| 项 | 规则 |
+|---|---|
+| 折叠态显隐 | `.sidebar.collapsed.tree-collapsed .tree > .tree-group{display:none}`；旧页无 `.tree-collapsed` 保持原行为（迁移开关） |
+| 一级分型 | `data-group`（分组→弹浮层）/ `data-page`（可导航→选中）；无属性时按 DOM 判断，向后兼容 |
+| `.branch-active` 展开 | `rgba(255,255,255,.08)`，hover `.16`，圆角 4 |
+| `.branch-active` 折叠 | `rgba(255,255,255,.18)`，圆角 4 |
+| 一级自身是页面 | `.on` 实底 `--primary-active` + 白字（覆盖 branch） |
+| 浮层 `.tree-popover` | min 200 / max 260；padding 6；标题 12/N9；项 36/14；三级 32/13 缩进 34；白底选中 `--select-item-bg/fg`；暗色底 `--n2` |
+| 浮层定位 | `position:fixed`，侧栏右缘 +8，底部溢出向上翻；一次只开一个；外部点击/Esc/选中后关闭 |
+
 **⚠️ 侧栏折叠按钮定位 + 滚动条（2026-08-03 裁定，真源 = template.css）**：
 
 | 项 | 规则 |

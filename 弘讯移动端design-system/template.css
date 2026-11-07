@@ -131,7 +131,7 @@
   --run:#22C55E; --run-hover:#41cd75; --run-pressed:#1ead53; --run-dis:#206448; --run-bg:#0E2018; --run-border:#22C55E;
   --run-soft-hover:#303f38; --run-soft-active:#0c1c15; --run-border-hover:#4ed17e; --run-border-active:#69d892; --run-dis-fg:#838993;
   /* 品牌深表面（暗态） */
-  --brand-surface:#0A2540;
+  --brand-surface:#1E293B;
   /* 投影（暗态双层：暗底+白色发丝线） */
   --shadow-s:0 0 4px rgba(0,0,0,0.30), 0 0 0 1px rgba(255,255,255,0.06);
   --shadow-m:0 0 8px rgba(0,0,0,0.40), 0 0 0 1px rgba(255,255,255,0.08);

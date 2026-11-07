@@ -40,7 +40,7 @@
       ...
     </header>
     <div class="body">
-      <!-- 侧栏作业树：最多 3 层，最少 1 层；第 1、2 层节点必须带 .tree-ico 图标；收起后只显示图标 -->
+      <!-- 侧栏作业树：最多 3 层，最少 1 层；第 1、2 层节点必须带 .tree-ico 图标；折叠态与浮层完整实现见 page-template.html（RULES §0.2-10） -->
       <aside class="sidebar">
         ...
         <div class="sidebar-foot">
@@ -61,7 +61,7 @@
   输入：  .input (高32 / 宽220 / 半径4)
   下拉：  .sel > .sel-trigger + .sel-panel > .sel-opt / .sel-opt.on
   日期：  .dp > .dp-trigger
-  树：    .tree > .tree-node(.on,.tree-node--child) > .tree-sw + .tree-ico > .ico + .tree-label（第 1、2 层必带 .tree-ico；收起侧栏只显示图标）
+  树：    .tree > .tree-node(.on,.tree-node--child) > .tree-sw + .tree-ico > .ico + .tree-text（第 1、2 层必带 .tree-ico；收起侧栏只显示一级；点一级弹 .tree-popover 浮层，见 RULES §0.2-10）
   标签：  .tag .tag-suc / .tag-warn / .tag-err / .tag-run / .tag-def
   表格：  table.table > thead > tr > th + tbody > tr > td
   页签：  .tabs > .tab(.active)
