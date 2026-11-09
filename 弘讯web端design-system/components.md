@@ -145,7 +145,7 @@
 | 项 | 规则 |
 |---|---|
 | 折叠态显隐 | `.sidebar.collapsed.tree-collapsed .tree > .tree-group{display:none}`；旧页无 `.tree-collapsed` 保持原行为（迁移开关） |
-| 一级分型 | `data-group`（分组→弹浮层）/ `data-page`（可导航→选中）；无属性时按 DOM 判断，向后兼容 |
+| 一级分型 | `data-group`（分组→弹浮层）/ `data-page`（可导航→选中）；**`data-page` + 子级 → 弹浮层，首项「进入本页」**（门禁 `tree.node.split` 查 `data-self`）；无属性按 DOM 兜底 |
 | `.branch-active` 展开 | `rgba(255,255,255,.08)`，hover `.16`，圆角 4 |
 | `.branch-active` 折叠 | `rgba(255,255,255,.18)`，圆角 4 |
 | 一级自身是页面 | `.on` 实底 `--primary-active` + 白字（覆盖 branch） |

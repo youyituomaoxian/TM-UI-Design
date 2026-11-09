@@ -308,8 +308,9 @@ cd <端目录> && "$NODE" validate-spec.js <用户项目路径>/output/<产出�
 | 顶栏语言切换 | `.lang-sel` 面板（简体中文 / English + 待支持语言置灰）+ `data-i18n` / `data-i18n-title` 标记 | 与模板不一致；视觉/可用性缺失 |
 | 顶栏暗色切换 | `#themeToggle`（moon/sun 双图标 + localStorage 记忆） | 无暗色入口 |
 | 作业树 | 节点文本用 `.tree-text`；**顶级节点并列、无 `.group-title` 分类**；选中态 `.on` | 旧类名真源无样式 → 标题/缩进失规范 |
-| 作业树折叠浮层 | `.tree-popover` 容器必须放在树 `<script>` **之前**；一级 `data-group/data-page` + `data-key`；`.tree-collapsed` 开关类 | 容器在脚本后 → `getElementById` 为 null，点一级不弹浮层（门禁 `tree.popover.order` 拦截） |
+| 作业树折叠浮层 | `.tree-popover` 容器必须放在树 `<script>` **之前**；一级 `data-group/data-page` + `data-key`；`.tree-collapsed` 开关类；`data-page` + 子级 → 浮层首项「进入本页」(`data-self`) | 容器在脚本后 → `getElementById` 为 null，点一级不弹浮层（门禁 `tree.popover.order` 拦截） |
 | 框架指纹 | `<script>` 含 `hx-lang`（多语言）与 `hx-theme`（亮暗）指纹 | 门禁 `template.i18n.missing` 拦截；暗色无入口 |
+| 暗色品牌覆盖（历史页迁移） | 品牌覆盖层只保留亮色 `:root`；**删除 `:root[data-theme="dark"]` 品牌段**（暗色固定、不随品牌） | 门禁 `dark.brand.override` 拦截；暗色整体偏品牌色 |
 | 图标 | 取各端 `icons/` 内联（24×24 · 线宽 1.8 · `stroke:currentColor`） | 手绘旧图标与图标库形态不一致 |
 | 移动端手机壳 | `.stage-wrap > .phone-stage > .phone`；内含 `.m-statusbar / .navbar / .screen-scroll > .page-view / .bottomnav` | 门禁 `framework.fingerprint` 拦截 |
 | 克隆凭证 | `<meta name="x-template-clone" content="<端>design-system/page-template.html">` | 门禁 `template.clone.missing` 拦截 |

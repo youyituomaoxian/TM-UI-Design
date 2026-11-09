@@ -3,6 +3,47 @@
 > 本文件为 `CHANGELOG.md` 滚动归档（2026-09-22 建立，加载纪律 SSOT A-2）：主文件只保留近期条目，更早条目**原样移入**此处，未做任何内容修改。
 > 切割线（滚动更新）：web 归档 `[1.9.36]` 及更早。新条目一律写主文件顶部；超限时由 roll-changelog.js 自动滚动。
 
+## [1.9.40] — 2026-10-20 · 表格行选中态落地（方案 D：已选 = 复选框 + 底 / 当前 = 左条）
+
+- **tokens.json**：新增 `colors.selection`（亮 `rowBg #DAEAFA` / `rowBar #005EAE` / `checkboxBorder #949494` / `checkboxCheck #FFFFFF`；暗 `#23395D` / `#3B82F6` / `#94A3B8` / `#FFFFFF`）→ `map-tokens.js` 发射 `--row-selected-bg` / `--row-current-bar` / `--cbx-border` / `--cbx-check-fg`（亮暗双段）；`DESIGN-TOKENS.md` 增 §2.8。
+- **components.css**：`.table tbody tr.is-selected`（底 + `:hover` 保底，防同权重覆盖）、`.table tbody tr.is-current>td:first-child`（2px 左条，`padding-left:14px` 与边框合计 16 不位移）、`.row-key` 600；新增 `.cbx` 复选框（16×16 / 边框 3.03:1 / 勾选主色底 + 白勾 / `:focus-visible` 环 / 禁用态）+ `th.ck/td.ck` 列宽 40。
+- **components.json**：`table.states` 增 `row.selected`（bg + nonColorCue）与 `row.current`（bar + weight），组件新增 `checkbox`（22 个）；`components.md` 镜像同步（含表格行态说明）。
+- **规范**：RULES §3.3 重写为「已选 / 当前」双态表 + selectable 默认关 + 标识列 `.row-key` + **表格内禁 N9 次级文字**（任何行底色击穿 4.5）；§3.6 注明表格行不适用单选语义。移动端 RULES §3.3 补口径注释（双端不统一）。
+- **门禁**（validate-spec）：新增 `table.row.selected.cue`（已选行无 `.cbx`/checkbox → MED，1.4.1 颜色单信号）与 `table.row.state.classname`（`tr` 用 `.sel/.cur/.hov/.on/.col/.sheet` 通用短名 → MED，实测撞组件类整行塌陷）。
+- **page-template.html**：内联 `:root` 同步 4 个新变量（`template.root.sync`）。
+- **验证**：反例页命中 2 条新 MED、正例页 0 违反；`ci-local` 全绿（项数以输出为准）。
+
+---
+
+## [1.9.39] — 2026-10-20 · 跨智能体交接制度（HANDOFF 活文档 + 每轮更新铁律）
+
+- `HANDOFF.md` 重构为活文档（现状快照 / 未决事项 / 命令 / 权限 / 更新记录 ≤10 轮），取代 2026-09-23「HANDOFF 冻结」决议。
+- 更新铁律入 `AGENTS.md` 顶部 + `GENERATION-SOP.md §0`：任何 Agent 任何轮次结束未更新 HANDOFF = 本轮未完成。
+- **真源区未改**（template.css / tokens.json / components.json / 门禁脚本零改动），本轮仅动流程文档。
+
+---
+
+## [1.9.38] — 2026-10-10 · 门禁复盘遗留拍板落地（T-6 三档登记 / T-7 结案 / T-8 治理约束）
+
+- **T-6（RED-002 三档）**：check-sync 新增检查三「真源未覆盖类登记闭环」——Web 真源 282 类中 vendor 未覆盖 163 类原「从不比对即静默通过」，现须全部登记 vendor-coverage.json（tokenProjection 豁免 30 / gaps 真缺口 133），未登记 → FAIL。负向验证：删登记项 / 登记真源缺失均 exit 1，恢复回绿。
+- **T-7 结案**：Mobile vendor 同构段 0 类定性「不适用」（mn-* Taro 组件层自有命名空间，设计如此，非遗漏），check-sync 输出 ⏭️ 非 ⚠️，不阻断、不读作一致。
+- **T-8 治理约束**：check-size.js 新增规则 4——阈值上调须 CHANGELOG 留痕 + 复盘轮内用户追认，归位治理优先于调阈值。
+- **阈值重测留痕（T-8 口径，已追认 2026-10-10）**：check-sync.js 10900→13000（检查三落码实测 11997 + 8% 档）；check-size.js 6200→7500（注释+登记实测 6478 + 15% 档）；新登记 vendor-coverage.json 4000。
+- **回归**：ci-local 100 pass / 0 fail；本轮仅动门禁/工具层，真源 CSS/JSON/HTML 未动。
+
+---
+
+## [1.9.37] — 2026-09-23 · 消费应用侧报告 DS-20260923-01 核验回执：修复 page-template.html 畸形 `:root` 块
+
+- **修复内容**：删除 `page-template.html` 第 111–114 行的畸形块——L111 孤立 `:root` + L112–114 缩进重复的密度声明（`:root[data-density=compact/comfortable/spacious]`）。该块自仓库首个提交 `5aca169`（2026-08-06 init）即存在，属历史导入携带缺陷。
+- **定性修正（维护侧核验）**：非应用侧报告所称「4 行纯死代码」，实为 **1 条死规则 + 2 条活着的重复声明**——L111 与 L112 合成后代选择器 `:root :root[…]` 永不命中；L113/L114 各自独立成合法命中规则（取值与 L108/L109 正确块重复）。严重级维持 P2（无功能/视觉/门禁影响）。
+- **影响面**：仓内 12 个历史产物 + 应用侧克隆页共 13 处同构命中（模板克隆传播）——本次只修真源模板，存量产物不回改（历史快照纪律）。
+- **门禁未削弱**：核验实测 `extractRootScopeVars` 对畸形块不采信（投毒 token 不可见），无假阴性放行。
+- **回归验证**：删除后模板 `root[data-density]` 仅正确块 3 处、无孤立 `:root` 行、`<style>` 配对完整；ci-local 全绿（100 pass / 0 fail，项数以输出为准）。
+- **冻结指纹刷新**：page-template.html 在 web-ui `sha256-baseline.json` 冻结清单内，已跑 `freeze-baseline.js` 刷新（含此前批 2/3 未提交的 validate-spec.js 指纹一并归位）。
+
+---
+
 ## [1.9.36] — 2026-09-23 · 监督闭环修复批（SUP-20260923-0855 audit · T-E2/E3/F1/F2）
 
 - **词典交付通道修复（ISSUE-02）**：.gitignore 改嵌套负向链（`**/.workbuddy/*` 逐级放行 `skills/tm-design-system/` 全目录）——vocabulary.json 此前被 `**/.workbuddy/` 目录级忽略，推送后 SKILL §2 指针在消费者侧悬空；验证 check-ignore 不再命中、嵌套子项目 .workbuddy 仍忽略。

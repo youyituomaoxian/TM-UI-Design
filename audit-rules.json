@@ -356,14 +356,14 @@
     {
       "id": "D-13",
       "title": "作业树折叠态浮层",
-      "check": "侧栏折叠态是否只显一级；一级是否 data-group/data-page 分型；点分组是否弹 .tree-popover；branch-active 是否只作当前分支（非选中）",
+      "check": "侧栏折叠态是否只显一级；一级是否 data-group/data-page 分型（data-page 有子级须浮层含 data-self 自身入口）；点分组是否弹 .tree-popover；branch-active 是否只作当前分支（非选中）",
       "map_to": "RULES §0.2-10 + components.json#tree.popover + template.css .tree-popover/.branch-active",
       "ref": "Web RULES §0.2-10 + components.md §3 + DARK-MODE §七",
       "trap": "折叠态仍平铺二级 / 一级无分型 / branch-active 当 .on / 浮层被 .sidebar overflow 裁剪",
       "pairs": [
         {
           "bad": "折叠后一二级图标平铺，点一级无反应",
-          "good": "折叠只显一级；点分组弹 .tree-popover；data-page 直接选中"
+          "good": "折叠只显一级；点分组弹浮层；data-page 无子级直接选中，有子级弹浮层首项「进入本页」"
         }
       ]
     }
@@ -443,73 +443,5 @@
     "feedback_log_contract": "每条条目：date / source / report_source（来源报告路径）/ related_reports（可选数组，跨项目同题去重，G8）/ findings / attribution；回执结论一并写入 findings 或 attribution。",
     "scattered_clause_collation": "本制度统一收口各端散落的『上报维护者』条款：图标库缺（RULES §7.9③）/ 自造组件成熟形态补库（§7.9/§10.10）/ token 缺新值（§10.10）/ 门禁误报与真源 bug 上报（GENERATION-SOP 附录）——均按本制度记录与反馈，报告格式与通道不再各说各话"
   },
-  "feedback_log": [
-    {
-      "date": "2026-09-10",
-      "source": "维护侧消费应用侧报告 DS-20260910-01（第三轮·报告 §10 自愈结论复核）——维护侧主动实测定级，非应用侧提请",
-      "report_source": "I:/workbuddy/弘讯设计系统应用/output/设计系统问题_20260910_01_M06口径.md",
-      "findings": [
-        "题 3（P1 · 维护侧自发现）归因：M-06 严重级分层「实现与真源脱钩」——audit-spec.js 对自维护 CSS 套用了 M-01 的 inPalette 分层（色板内→MEDIUM），但 M-06 真源只定义 frozen(dist) 一条降级路径、谓词明写自维护层「维持 HIGH 口径」，且同一行代码判 MEDIUM 却输出「自维护合规层维持 HIGH 口径」文案 → 实现与规则自相矛盾。属设计系统问题（真源缺分层声明 + 实现私自套用他规则语义），无执行缺口",
-        "影响面（实测）：11242-designer-preview page_dashboard.html 报「HIGH 0」，实际 tm-ui-design.css L163/L183 的 color:#94a3b8（色板内裸 hex 引用行）应为 HIGH → 应用侧 0 HIGH 结论建立在错判上；凡自维护 CSS 中色板内颜色写成裸 hex 者均被漏放",
-        "修法（用户拍板方案 A · 对齐 M-01 口径）：① audit-spec.js M-06 文案拆三分支并与判级一致（冻结 dist→MEDIUM 信息级 / 自维护·色板内→MEDIUM「合法色但必须改用 var(--token)」/ 自维护·自造色→HIGH「须映射 token 或回 tokens.json」）；② audit-rules.json M-06 predicate 补色板内外分层声明、severity 字段三分；③ 真源 v1.4.0 → v1.4.1",
-        "回归样例（新增，供后续防回归）：自维护 CSS 写 color:#94A3B8（∈web 色板 dark.colors.neutral.N8）→ 期望 MEDIUM css.asset.hex 且文案为「色板内·须改 var」；写 background:#070B12（∉色板）→ 期望 HIGH css.asset.hex；两者判级不得因所在文件（<style> vs <link> CSS）而不同",
-        "报告 §3 根因描述勘误：报告称根因是「掩码正则 :root\\s*\\{[^}]*\\} 不覆盖 :root:not(...){...} 条件根块」——v1.4.0 实测不成立（条件根块内 --bg-deep:#070b12 → MEDIUM css.vardef.hex 正确、引用行 → HIGH 正确）。css.vardef.hex 判定为**行级谓词（属性名以 -- 开头）**，先于掩码生效，掩码非必经路径；两处掩码（页面 L136 / 引用 CSS L345）均无需改。该根因系应用侧在 v1.3.1 旧版下的推断、未在 v1.4.0 复测，已更正"
-      ],
-      "attribution": "题 3 为设计系统问题（真源谓词未声明分层 + 实现私自套用 M-01 语义 + 判级文案自相矛盾）。**回执**：真源 v1.4.0 → v1.4.1；audit-spec.js M-06 文案与判级对齐；本 feedback_log 条目；双端 CHANGELOG 1.9.30 / 1.14.17。**对应用侧结论的影响**：方案 A 下 11242 的「2 项 MEDIUM」判级**结论有效、无需回改**（色板内 MEDIUM 与 M-01 一致），但其「2 项 MEDIUM 可接受口径保留」的理由须更正为「色板内合法色→MEDIUM 应改 var」，而非「色板内无对应 var 故保留」；§10 其余处置（token 化收敛、纯 :root 块下沉）依然合规，无需回滚。"
-    },
-    {
-      "date": "2026-09-10",
-      "source": "维护侧消费应用侧合格报告 DS-20260910-01（M-06 口径 ×2 题）——单向报告流首份实战回灌",
-      "report_source": "I:/workbuddy/弘讯设计系统应用/output/设计系统问题_20260910_01_M06口径.md",
-      "findings": [
-        "题 1（P1 · 规则语义缺口）→ audit-rules v1.4.0 吸收：新增子契约 `css.vardef.hex`（M-01/M-06 共用）——声明属性名以 `--` 开头者为色板本体、判 MEDIUM 清单级不阻断；根因是原豁免绑在 `:root`/`[data-theme]` **选择器**上（绑错维度），换作用域（`.scope{--x:#hex}`）即误报，自维护层陷入「定义违规、引用违规、平台无 token」死锁。修法比报告建议更进一步：统一以**属性名**判定，M-01 页面侧同步（避免双规则口径不一致），不只是 M-06",
-        "题 2（P1 · 脚本复述版本号）→ 吸收且扩展：`audit-spec.js` 横幅（L368）与 `--json` 输出的 `ruleset` 字段**均**改为从 `audit-rules.json $meta.version` 动态读取（报告只发现横幅一处，JSON 侧仍硬编码 v1.0.0，已一并修）——与 §0 SSOT 表「交付线不复述数字」同一条原则",
-        "回归样例（报告 §9）实测通过：定义行 → MEDIUM `css.vardef.hex`；引用行 → 维持 HIGH `css.asset.hex`；横幅/JSON 版本随真源（现 v1.4.0）。应用侧因此可达 0 HIGH（147 处引用收敛为 var() + 定义行转 MEDIUM 清单），其拟定豁免预案可撤"
-      ],
-      "attribution": "两条均为规则缺口（设计系统问题）：① M-01/M-06 词谓语义缺口（豁免维度错配：选择器 → 应为属性名）；② 脚本显示层复述版本号（违反 SSOT）。无执行缺口。**回执**：报告状态栏已回写『已修复』+ 结论；真源 v1.3.1 → v1.4.0；双端 CHANGELOG 1.9.29 / 1.14.16；`audit-spec.js` 已修并回归验证。**临时处置**：报告 §10 的豁免预案（定义行按 exemptions 登记）**无需执行**——新口径下定义行自然降为 MEDIUM，豁免可撤。"
-    },
-    {
-      "date": "2026-09-10",
-      "source": "维护侧消费应用侧结构化漏检报告（11242-designer-preview 存量迁移审计，P0–P3 全流程 + 用户截图反馈 6 单）",
-      "report_source": "I:/workbuddy/弘讯设计系统应用/output/漏检报告与制度修正_给维护者_20260910.md",
-      "findings": [
-        "案例一 dist 面板头渐变起点 #fff 暗皮露白顶 → M-01 扩展：渐变色标点参与判定，白字豁免在色标点内不适用（机器层）",
-        "案例二 dist 分页条 background:#fff 白底横条（页面源码 0 裸 hex 假阴性）→ 新增 M-06 引用 CSS 资产扫描：冻结 dist 降级 MEDIUM 硬编码清单，自维护合规层维持 HIGH（机器层）",
-        "案例三 分页条 v-if 空态不渲染 → 新增 R-06 data.present 有数据态保证（运行时层）",
-        "案例四 mix-blend-mode:multiply 暗卡乘黑不可见 → 新增 R-07 image.legibility 图片可辨识度（运行时层）",
-        "案例五 二十轮删 sticky 盖板滚动穿透 + 案例七 内滚改造 sticky 偏移×2 → 新增 R-05 scroll.midstate 滚动中间态检查 + SOP §② 布局改动专项回归清单 + 遮挡类结构铁律（运行时层 + 流程护栏）",
-        "案例六 页级滚动条贴窗口右缘（整页滚动误读）→ 新增 H-07 ux.visual.semantics 人审兜底 + H-06 审查矩阵升级逐 tab×逐皮×滚动态（人审层）",
-        "回灌执行自检：M-06 上线即反抓移动端真源 template.css L147 预览壳 body 自造色 #1b1f26 → 行内 data-audit-exempt 标记 + exemptions 登记（预览壳舞台色非页面语义）；L679 color:#0F172A 为 2026-08-07 暗色无障碍刻意值（4.85:1），色板内 MEDIUM 留 P1 映射决策",
-        "制度冲突实证收口：应用侧克隆内 `audit-rules.json` 出现未提交的真源改动（自行登记 11242 page_dashboard.html FOUC 启动色 #0a0e17 豁免）——旧 change_policy 要求无写权角色回灌所致的越权写入。维护侧拍板**吸收进真源 exemptions**（内容合法：与 dist --bg-deep 同值、用户已拍板），应用侧回滚本地改动后从 GitHub 拉取；后续同类一律走单向报告流，禁止应用侧再改真源",
-        "制度：change_policy 旧语义要求无真源写权的应用侧强制回灌，与真源治理契约冲突 → 修正为单向报告流（应用侧只报告，维护侧执行回灌，feedback_log 新增 report_source 字段）"
-      ],
-      "attribution": "规则缺口为主（M-01 渐变盲区 / 扫描范围缺口 M-06 / 运行时状态集与维度缺口 R-05~07 / 人审清单缺口 H-06~07）+ 制度缺口（change_policy 角色权限矛盾）+ 流程缺口（SOP 遮挡结构铁律与布局回归清单缺失）；无执行缺口——应用侧现场修复均已按当时规范完成，漏检源于体系本身无此规则"
-    },
-    {
-      "date": "2026-09-09",
-      "source": "存量改造审计体系立项复盘",
-      "findings": [
-        "按钮状态矩阵无机器规则 → 新增 M-02 btn.state.matrix",
-        "idle/机器状态语义色无白名单规则 → 新增 M-03 status.dot.unknown",
-        "KPI 图标色无规则 → 归入 R-04（静态误报率高，走表现层）+ M-01 覆盖其 hex 部分",
-        "记忆中『SVG paint 未扫描』经核实已过时（M-04 已于 2026-08-03 落地）→ 修正认知，登记指针"
-      ],
-      "attribution": "规则缺口 3 条（M-01/M-02/M-03 补齐）；执行缺口为流程性（单遍整体审查 → 已由 P0-P4 流程替代）"
-    },
-    {
-      "date": "2026-09-23",
-      "source": "维护侧消费应用侧报告 DS-20260923-01 核验回执（page-template.html 畸形 :root 块）——应用侧报告定性修正后由维护侧执行",
-      "report_source": "H:/global-workspace/反馈/设计系统问题_20260923_01_核验回执.md",
-      "findings": [
-        "page-template.html L111-114 含畸形 :root 块（L111 孤立 :root + L112-114 缩进重复密度声明）——postcss/chromium 实测：L111-112 合成后代选择器 :root :root[data-density=compact] 永不命中（1 条死规则）；L113/114 各自独立成合法命中规则（2 条活的重复声明，取值 44/52 与 L108/109 重复）",
-        "定性修正：非「4 行纯死代码」，而是「1 条死规则 + 2 条活着的重复声明」——根因描述精确化，严重级维持 P2（无功能/视觉/门禁影响）",
-        "根因：缺陷自仓库首个提交 5aca169（2026-08-06 init）即存在，属历史导入携带，非后续 Edit 残留",
-        "影响面：仓内 12 个历史产物 + I: 应用侧克隆页共 13 处同构命中（模板克隆传播）",
-        "门禁未削弱：extractRootScopeVars 对畸形块不采信（投毒 token 不可见），无假阴性放行",
-        "处置（本回执）→ 维护者六步执行：删除 L111-114（保留 L107-109 正确块），L115 为 </style>、L116 为 <style>，勿按报告 §8「111-116」执行",
-        "报告制度小缺口（可选回灌）：issue_reporting.report_schema.required 的「建议归层」枚举缺「模板源/脚手架文件」层，模板源缺陷被迫借用「文档/门禁脚本」层"
-      ],
-      "attribution": "设计系统问题（真源模板历史缺陷 + 报告制度归层枚举缺口）；无执行问题"
-    }
-  ]
+  "feedback_log": []
 }

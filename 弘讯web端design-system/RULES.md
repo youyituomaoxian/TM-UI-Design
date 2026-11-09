@@ -98,6 +98,8 @@
 10. **折叠态浮层（2026-11-06 拍板）**：侧栏折叠（`.sidebar.collapsed` + 新增开关类 `.tree-collapsed`）时只保留**一级节点**，二/三级隐藏；点一级：
     - 纯分组（`data-group`，自身无页面）→ 右侧弹二级浮层（`.tree-popover`）；浮层内含三级时用缩进手风琴；
     - 可导航（`data-page`，自身有页面）→ 直接选中，不弹浮层；
+    - **自身页 + 子级（`data-page` 且后跟 `.tree-group`）→ 弹浮层，浮层首项「进入本页」（`data-self`）**，其余为二级菜单（2026-11-09）；
+- **分型约束（2026-11-09 修订）**：有子级的一级一律弹浮层；`data-page` 有子级时浮层须含 `data-self` 自身入口（门禁 `tree.node.split`）；纯 `data-page` 仅无子级一级页。
     - 存量节点无上述属性时按 DOM 判断（后跟 `.tree-group` 视为分组），向后兼容。
     - 浮层必须 `position:fixed` 或 portal 到 body（`.sidebar{overflow:hidden}` 会裁剪）；一次只开一个；点击外部 / Esc / 选中项后关闭；`aria-haspopup`/`aria-expanded` + 焦点归还。
     - 浮层选中（白底表面）用 `--select-item-bg/fg`；暗色下浮层底用 `--n2`（框架 `#1E293B` 与浮层同色需区分）。

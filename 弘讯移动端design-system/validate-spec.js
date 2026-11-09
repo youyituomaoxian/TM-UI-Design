@@ -648,6 +648,8 @@ function checkScrollHeight(selfCss) {
 // 豁免：page-template.html（克隆源）+ 规范展示页（*规范展示* / *_框架版* / 展示页测试）
 function isFrameworkExempt(targetPath) {
   const base = path.basename(targetPath);
+  /* 2026-11-07：docs/examples 是生成器产出的规范示例（非用户交付页），不按交付门禁要求克隆凭证/指纹 */
+  if (/(^|[\\/])docs[\\/]examples[\\/]/.test(targetPath)) return true;
   return /^(page-template\.html|USAGE\.html|.*规范展示.*|.*_框架版.*|.*展示页测试.*)$/.test(base);
 }
 function checkTemplateCloneMeta(html, targetPath) {
@@ -688,6 +690,38 @@ function checkFrameworkFingerprint(html, targetPath) {
   if (seq.every(i => i >= 0) && !(seq[0] < seq[1] && seq[1] < seq[2] && seq[2] < seq[3])) {
     violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'framework.fingerprint', sel: 'structure',
       msg: '移动端手机壳框架结构顺序异常——应为 .phone > .m-statusbar + .navbar + .screen-scroll(>.page-view) + .bottomnav。自搭框架层级错位会被拦截。见移动 RULES §8.1' });
+  }
+  return violations;
+}
+
+// 暗色品牌覆盖（2026-11-07）：方案 A 暗色固定、不随品牌——dark 块出现品牌推导值即报
+function checkDarkBrandOverride(html) {
+  const violations = [];
+  const noScript = stripScriptTags(html);
+  const re = /:root\[data-theme="dark"\]\{([\s\S]*?)\}/g;
+  let m;
+  while ((m = re.exec(noScript))) {
+    const block = m[1];
+    const bs = /--brand-surface:\s*([^;]+)/.exec(block);
+    if (bs) {
+      const v = bs[1].trim();
+      if (!/#1E293B/i.test(v) && !/27\.95% 0\.0368 260\.03/.test(v) && !/var\(--n1\)/.test(v)) {
+        violations.push({
+          line: 0, severity: 'HIGH', contract: 'dark.brand.override', sel: ':root[data-theme="dark"] --brand-surface',
+          msg: '暗色品牌表面非固定值（' + v.slice(0, 40) + '）——方案 A 暗色固定 #1E293B、不随品牌；历史品牌页删暗色覆盖段。见 DARK-MODE §七'
+        });
+      }
+    }
+    const pr = /--primary:\s*([^;]+)/.exec(block);
+    if (pr) {
+      const v = pr[1].trim();
+      if (!/#3B82F6/i.test(v) && !/62\.31% 0\.1880 259\.81/.test(v) && !/var\(--brand\)/.test(v)) {
+        violations.push({
+          line: 0, severity: 'HIGH', contract: 'dark.brand.override', sel: ':root[data-theme="dark"] --primary',
+          msg: '暗色主色非固定值（' + v.slice(0, 40) + '）——方案 A 暗色主色固定 #3B82F6；历史品牌页删暗色覆盖段。见 DARK-MODE §七'
+        });
+      }
+    }
   }
   return violations;
 }
@@ -1341,7 +1375,8 @@ function run(specPath, targetPath) {
   const templateSyncV = checkTemplateRootSync(html, canonicalCss);
   // HTML 结构配对门禁（2026-08-06）：div 开闭配对 + bottomnav 父链必须是 .phone
   const structV = checkHtmlStructure(html);
-  return violations.concat(chartSeriesV, rootV, tokenV, motionV, whitelistV, svgV, wcagV, gridV, overrideV, customV, chartV, chartStretchV, chartEdgeV, chartLayoutV, templateSyncV, structV, scrollV, cloneV, fpV, iconSrcV, bnCountV, fontV);
+  const darkBrandV = checkDarkBrandOverride(html);
+  return violations.concat(chartSeriesV, rootV, tokenV, motionV, whitelistV, svgV, wcagV, gridV, overrideV, customV, chartV, chartStretchV, chartEdgeV, chartLayoutV, templateSyncV, structV, darkBrandV, scrollV, cloneV, fpV, iconSrcV, bnCountV, fontV);
 }
 
 // ===== HTML 结构配对门禁（2026-08-06：展示页测试多 1 个 </div> 把 .phone 提前闭合 → bottomnav 被挤出手机壳，门禁此前未拦截）=====

@@ -347,6 +347,11 @@
       var group = trigger.nextElementSibling;
       var html = '<div class="pop-title">' + title + '</div>';
       if(!group || !group.classList.contains('tree-group')) return html;
+      // 2026-11-09：data-page + 子级 → 浮层首项「进入本页」（自身页入口）
+      if(trigger.hasAttribute('data-page')){
+        var selfIco = trigger.querySelector('.tree-ico') ? trigger.querySelector('.tree-ico').innerHTML : '';
+        html += '<div class="pop-item pop-self" role="menuitem" data-self data-key="' + (trigger.getAttribute('data-key') || '') + '">' + selfIco + '<span>进入 ' + title + '</span></div>';
+      }
       Array.prototype.forEach.call(group.children, function(sec){
         if(!sec.classList || !sec.classList.contains('tree-node')) return;
         var text = sec.querySelector('.tree-text').textContent;
@@ -388,6 +393,11 @@
       pop.querySelectorAll('.pop-item').forEach(function(item){
         item.addEventListener('click', function(e){
           e.stopPropagation();
+          if(item.hasAttribute('data-self')){
+            select(trigger);
+            closePopover();
+            return;
+          }
           if(item.hasAttribute('data-has-third')){
             var sub = item.nextElementSibling;
             if(sub && sub.classList.contains('pop-sub')){
@@ -412,8 +422,9 @@
         var hasGroup = group && group.classList.contains('tree-group');
 
         if(isCollapsed() && isTop){
-          var isGroup = node.hasAttribute('data-group') || (!node.hasAttribute('data-page') && hasGroup);
-          if(isGroup && hasGroup){
+          var isPage = node.hasAttribute('data-page');
+          var isGroup = node.hasAttribute('data-group');
+          if(hasGroup && (isPage || isGroup)){
             if(openFor === node){ closePopover(); return; }
             openPopover(node);
             return;

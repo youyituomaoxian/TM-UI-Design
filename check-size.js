@@ -26,7 +26,8 @@ const LIMITS = [
   ['CROSS-PLATFORM-COLORS.md', 2500],
   ['标准提示词模板.md', 5800],
   // 2026-11-06：新增 D-13 作业树折叠态浮层维度，实测 28697，28600 → 29000。
-  ['audit-rules.json', 29000],
+  ['audit-rules.json', 24000],
+  ['audit-rules-feedback-archive.json', 7500],
   // 2026-11-06：暗色固定主题「不随品牌」断言，ci-local 实测 18014，17800 → 18200。
   ['ci-local.js', 18200],
   ['gate-capture.js', 5200], // VERDICT-A（2026-10-08）：门禁子进程结果捕获真源（退出码=权威判据）
@@ -45,10 +46,10 @@ const LIMITS = [
   ['roll-changelog.js', 5600],
   ['HANDOFF.md', 12200, true],
   // Web 端
-  ['弘讯web端design-system/RULES.md', 51600],
+  ['弘讯web端design-system/RULES.md', 53000],  // 2026-11-09：§0.2-10 三态分型 + 拆分子文档前的缓冲（见 HANDOFF §4）
   ['弘讯web端design-system/MASTER.md', 22200],
   ['弘讯web端design-system/DESIGN-TOKENS.md', 15600],
-  ['弘讯web端design-system/components.md', 16800],
+  ['弘讯web端design-system/components.md', 17900],  // 2026-11-09：§3 三态分型说明,
   ['弘讯web端design-system/components.json', 77200],
   // 2026-10-30 用户追认：62000 → 64500。login v2 新增 ~3.2k 样式；实测 554 条规则零重复、无安全可回收冗余，
   //   按「不影响现有系统优先」调阈值而非压缩产物（依据见 web CHANGELOG 1.9.46）。
@@ -57,7 +58,7 @@ const LIMITS = [
   ['弘讯web端design-system/tokens.json', 13300],
   // 2026-11-06：折叠态浮层 JS + data-group/data-key 契约实测 38611，36000 → 40000。
   ['弘讯web端design-system/page-template.html', 40000],
-  ['弘讯web端design-system/validate-spec.js', 113000],
+  ['弘讯web端design-system/validate-spec.js', 113800],  // 2026-11-07：新增 tree.node.split / dark.brand.override 门禁
   ['弘讯web端design-system/agent-starter.html', 4400],
   ['弘讯web端design-system/README.md', 4600],
   // 2026-11-06：暗色固定主题条目，11000 → 11500。

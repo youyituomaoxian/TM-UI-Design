@@ -618,6 +618,14 @@ function checkTreeCollapsedContract(html) {
       msg: '启用折叠态开关(.tree-collapsed)但 ' + top + ' 个一级节点均无 data-group/data-page 分型——折叠态无法区分「弹浮层 / 直接选中」。见 RULES.md §0.2-10'
     });
   }
+  // 2026-11-09：data-page + 子级允许，但浮层必须含自身入口 data-self（否则折叠态进不去自身页）
+  const pageWithGroup = /class="[^"]*tree-node[^"]*"[^>]*\bdata-page\b[^>]*>[\s\S]*?<\/div>\s*<div[^>]*class="[^"]*tree-group/;
+  if (pageWithGroup.test(clean) && !/data-self/.test(html)) {
+    violations.push({
+      line: 0, severity: 'HIGH', contract: 'tree.node.split', sel: '.tree-node[data-page]',
+      msg: '一级节点 data-page 带 tree-group 子级，但浮层缺自身入口——折叠态点它会弹浮层，必须首项「进入本页」(data-self)。见 RULES §0.2-10'
+    });
+  }
   return violations;
 }
 
@@ -648,6 +656,54 @@ function checkTreePopoverOrder(html) {
       sel: '#treePopover',
       msg: '作业树浮层容器(#treePopover)出现在引用它的脚本之后——getElementById 拿到 null，点一级不会弹浮层。请把容器移到树 <script> 之前。见 RULES.md §0.2-10'
     });
+  }
+  return violations;
+}
+
+// 作业树半迁移（2026-11-07）
+function checkTreeCollapsedPartial(html) {
+  const violations = [];
+  const clean = stripStyleTags(stripScriptTags(html));
+  if (!/class="[^"]*\bsidebar\b[^"]*"/.test(clean)) return violations;
+  if (!clean.includes('tree-group')) return violations;
+  const hasPopover = clean.includes('id="treePopover"') || clean.includes('openPopover');
+  if (!hasPopover) return violations;
+  if (/class="[^"]*\btree-collapsed\b[^"]*"/.test(clean)) return violations;
+  violations.push({
+    line: 0, severity: 'HIGH', contract: 'tree.collapsed.partial', sel: '.sidebar',
+    msg: '有作业树浮层但 <aside class="sidebar"> 缺 tree-collapsed——折叠时二级仍显示。三件套：.tree-collapsed + .tree-popover + 浮层 JS。见 RULES §0.2-10'
+  });
+  return violations;
+}
+
+// 暗色品牌覆盖（2026-11-07）
+function checkDarkBrandOverride(html) {
+  const violations = [];
+  const noScript = stripScriptTags(html);
+  const re = /:root\[data-theme="dark"\]\{([\s\S]*?)\}/g;
+  let m;
+  while ((m = re.exec(noScript))) {
+    const block = m[1];
+    const bs = /--brand-surface:\s*([^;]+)/.exec(block);
+    if (bs) {
+      const v = bs[1].trim();
+      if (!/#1E293B/i.test(v) && !/27\.95% 0\.0368 260\.03/.test(v) && !/var\(--n1\)/.test(v)) {
+        violations.push({
+          line: 0, severity: 'HIGH', contract: 'dark.brand.override', sel: ':root[data-theme="dark"] --brand-surface',
+          msg: '暗色品牌表面非固定值（' + v.slice(0, 40) + '）——方案 A 暗色固定 #1E293B、不随品牌；历史品牌页删暗色覆盖段。见 DARK-MODE §七'
+        });
+      }
+    }
+    const pr = /--primary:\s*([^;]+)/.exec(block);
+    if (pr) {
+      const v = pr[1].trim();
+      if (!/#3B82F6/i.test(v) && !/62\.31% 0\.1880 259\.81/.test(v) && !/var\(--brand\)/.test(v)) {
+        violations.push({
+          line: 0, severity: 'HIGH', contract: 'dark.brand.override', sel: ':root[data-theme="dark"] --primary',
+          msg: '暗色主色非固定值（' + v.slice(0, 40) + '）——方案 A 暗色主色固定 #3B82F6；历史品牌页删暗色覆盖段。见 DARK-MODE §七'
+        });
+      }
+    }
   }
   return violations;
 }
@@ -1787,6 +1843,8 @@ function checkScrollHeight(selfCss) {
 // 缺 meta → HIGH template.clone.missing（自搭框架 / 未走克隆流程的产出）
 function isFrameworkExempt(targetPath) {
   const base = path.basename(targetPath);
+  /* 2026-11-07：docs/examples 是生成器产出的规范示例（非用户交付页），不按交付门禁要求克隆凭证/指纹 */
+  if (/(^|[\\/])docs[\\/]examples[\\/]/.test(targetPath)) return true;
   return /^(page-template\.html|USAGE\.html|.*规范展示.*|.*_框架版.*|.*展示页测试.*)$/.test(base);
 }
 function checkTemplateCloneMeta(html, targetPath) {
@@ -2125,6 +2183,8 @@ function run(specPath, targetPath) {
   const treeCollapsedV = checkTreeCollapsedContract(html);
   const treeBranchV = checkTreeBranchScope(html);
   const treePopoverV = checkTreePopoverOrder(html);
+  const treePartialV = checkTreeCollapsedPartial(html);
+  const darkOverrideV = checkDarkBrandOverride(html);
   // 类名白名单：对照单一真源 template.css + 页面实际外链 CSS（根治自造组件）。
   // NEW-001 修复：改为「按后果分级」而非「按文件豁免」——
   //   旧策略把 page-template / agent-starter 整体豁免（又一处 fail-open：参考源恰恰最该守规）；
@@ -2218,7 +2278,7 @@ function run(specPath, targetPath) {
   const iconSrcV = checkIconSource(html, targetPath);
   // KPI 仅两版门禁（2026-08-06 定稿）：简约版（stat-num/stat-sub 独立卡、无 kpi-ico / stat-card--icon / stat-card--ring）已删除，Agent 生成简约版即 HIGH 拦截
   const kpiV = checkKpiSimple(html);
-  return violations.concat(chartSeriesV, rootV, surfaceV, iconV, treeCollapsedV, treeBranchV, treePopoverV, whitelistV, tokenV, motionV, chartV, svgV, topbarV, dimV, btnLabelV, btnVarV, statGridV, chartFillV, chartLayoutV, chartValueV, chartBaselineV, templateSyncV, moduleSpacingV, tableMinRowV, tableAlignV, tablePagerV, tableRowStateV, cardFillV, mobileV, webAesV, wcagV, gridV, overrideV, customV, kpiV, svgVarV, scrollV, cloneV, fpV, scrollBodyV, iconSrcV, fontV, tblBudgetV);
+  return violations.concat(chartSeriesV, rootV, surfaceV, iconV, treeCollapsedV, treeBranchV, treePopoverV, treePartialV, darkOverrideV, whitelistV, tokenV, motionV, chartV, svgV, topbarV, dimV, btnLabelV, btnVarV, statGridV, chartFillV, chartLayoutV, chartValueV, chartBaselineV, templateSyncV, moduleSpacingV, tableMinRowV, tableAlignV, tablePagerV, tableRowStateV, cardFillV, mobileV, webAesV, wcagV, gridV, overrideV, customV, kpiV, svgVarV, scrollV, cloneV, fpV, scrollBodyV, iconSrcV, fontV, tblBudgetV);
 }
 
 // ===== 柱状图柱顶数值门禁（2026-08-06：示例页柱状图缺 .chart-v → 柱子无数据标签，门禁此前未查）=====

@@ -183,13 +183,13 @@ ${webCss}
             <table class="table">
               <thead><tr><th>设备</th><th>状态</th><th class="num">负载</th><th class="num">产量</th><th>最近告警</th><th>操作</th></tr></thead>
               <tbody>
-                <tr><td>注塑机 A-01</td><td><span class="status-dot"><i class="dot-run"></i>运行中</span></td><td class="num">72%</td><td class="num">1,860</td><td><span class="tag tag-def">无</span></td><td><button class="btn btn-sm btn-secondary">详情</button></td></tr>
-                <tr><td>机械手 C-07</td><td><span class="status-dot"><i class="dot-ok"></i>正常</span></td><td class="num">41%</td><td class="num">625</td><td><span class="tag tag-warn">温度过高</span></td><td><button class="btn btn-sm btn-secondary">详情</button></td></tr>
-                <tr><td>输送带 D-02</td><td><span class="status-dot"><i class="dot-err"></i>故障</span></td><td class="num">—</td><td class="num">0</td><td><span class="tag tag-err">堵转</span></td><td><button class="btn btn-sm btn-secondary">详情</button></td></tr>
-                <tr><td>注塑机 A-03</td><td><span class="status-dot"><i class="dot-warn"></i>维护</span></td><td class="num">—</td><td class="num">320</td><td><span class="tag tag-suc">已排程</span></td><td><button class="btn btn-sm btn-secondary">详情</button></td></tr>
-                <tr><td>注塑机 A-05</td><td><span class="status-dot"><i class="dot-run"></i>运行中</span></td><td class="num">66%</td><td class="num">1,120</td><td><span class="tag tag-def">无</span></td><td><button class="btn btn-sm btn-secondary">详情</button></td></tr>
-                <tr><td>机械手 C-08</td><td><span class="status-dot"><i class="dot-ok"></i>正常</span></td><td class="num">35%</td><td class="num">480</td><td><span class="tag tag-def">无</span></td><td><button class="btn btn-sm btn-secondary">详情</button></td></tr>
-                <tr><td>注塑机 A-06</td><td><span class="status-dot"><i class="dot-warn"></i>维护</span></td><td class="num">—</td><td class="num">210</td><td><span class="tag tag-suc">已排程</span></td><td><button class="btn btn-sm btn-secondary">详情</button></td></tr>
+                <tr><td>注塑机 A-01</td><td><span class="status-dot"><i class="dot-run"></i>运行中</span></td><td class="num">72%</td><td class="num">1,860</td><td><span class="badge badge-muted">无</span></td><td><button class="btn btn-sm btn-secondary">详情</button></td></tr>
+                <tr><td>机械手 C-07</td><td><span class="status-dot"><i class="dot-ok"></i>正常</span></td><td class="num">41%</td><td class="num">625</td><td><span class="badge badge-warn">温度过高</span></td><td><button class="btn btn-sm btn-secondary">详情</button></td></tr>
+                <tr><td>输送带 D-02</td><td><span class="status-dot"><i class="dot-err"></i>故障</span></td><td class="num">—</td><td class="num">0</td><td><span class="badge badge-err">堵转</span></td><td><button class="btn btn-sm btn-secondary">详情</button></td></tr>
+                <tr><td>注塑机 A-03</td><td><span class="status-dot"><i class="dot-warn"></i>维护</span></td><td class="num">—</td><td class="num">320</td><td><span class="badge badge-suc">已排程</span></td><td><button class="btn btn-sm btn-secondary">详情</button></td></tr>
+                <tr><td>注塑机 A-05</td><td><span class="status-dot"><i class="dot-run"></i>运行中</span></td><td class="num">66%</td><td class="num">1,120</td><td><span class="badge badge-muted">无</span></td><td><button class="btn btn-sm btn-secondary">详情</button></td></tr>
+                <tr><td>机械手 C-08</td><td><span class="status-dot"><i class="dot-ok"></i>正常</span></td><td class="num">35%</td><td class="num">480</td><td><span class="badge badge-muted">无</span></td><td><button class="btn btn-sm btn-secondary">详情</button></td></tr>
+                <tr><td>注塑机 A-06</td><td><span class="status-dot"><i class="dot-warn"></i>维护</span></td><td class="num">—</td><td class="num">210</td><td><span class="badge badge-suc">已排程</span></td><td><button class="btn btn-sm btn-secondary">详情</button></td></tr>
               </tbody>
             </table>
             <div class="pager"><span class="pg">‹</span><span class="pg active">1</span><span class="pg">2</span><span class="pg">3</span><span class="pg">›</span><span class="pg-tot">共 142 条 · 29 页</span></div>
@@ -420,11 +420,10 @@ ${mobCss}
 </html>`;
 }
 
-// ========== 品牌覆盖块（非 005EAE 页注入「亮 + 暗」双 :root，2026-08-12 双模式） ==========
+// ========== 品牌覆盖块（非 005EAE 页只覆盖亮色 :root；暗色固定不随品牌，2026-11-06 方案 A）==========
 function brandCover(brand, platform) {
   const light = generatePalette(brand, { mode: 'light', platform });
-  const dark = generatePalette(brand, { mode: 'dark', platform });
-  function vars(pal, isDark) {
+  function vars(pal) {
     const v = {
       '--primary': pal.primary.default,
       '--primary-hover': pal.primary.hover,
@@ -432,10 +431,9 @@ function brandCover(brand, platform) {
       '--primary-dis-bg': pal.primary.disabledBg,
       '--primary-dis-fg': pal.primary.disabledFg
     };
-    if (isDark) v['--brand-surface'] = pal.background.brandSurface;
     return Object.entries(v).map(([k, val]) => `  ${k}: ${val};`).join('\n');
   }
-  return `<style>\n:root{\n${vars(light, false)}\n}\n:root[data-theme="dark"]{\n${vars(dark, true)}\n}\n</style>`;
+  return `<style>\n:root{\n${vars(light)}\n}\n</style>`;
 }
 
 // ========== 生成 6 个页面 ==========
@@ -457,6 +455,6 @@ for (const j of jobs) {
     html = html.replace('</head>', cover + '</head>');
   }
   fs.writeFileSync(j.dir + j.file, html, 'utf8');
-  console.log('已生成:', j.dir.split('design-system/')[0].slice(-2) + '/' + j.file, '(' + html.length + 'B)');
+  console.log('已生成:', j.file, '(' + html.length + 'B)');
 }
 console.log('6 个示例页生成完成');

@@ -211,3 +211,4 @@ Agent 克隆模板时自动继承此规则，无需逐页手写。
 - 品牌色机制**仅亮色生效**；暗色品牌识别只保留 logo / 平台名。
 - 引擎：`darkBrandMode: "fixed"`（默认）；`derived` 仅保留旧能力，不启用。
 - 门禁：`ci-local` 断言「另一品牌暗色背景全等」。
+- **历史品牌页迁移（2026-11-07）**：2026-11-03 及更早用 `derived` 模式生成的品牌页，其品牌覆盖层含 `:root[data-theme="dark"]{ --primary:<品牌>; --brand-surface:<品牌深色>; ... }` 整段。迁移时**删除该暗色段**，只保留亮色品牌覆盖；暗色回落到 `template.css` 固定值。门禁 `dark.brand.override` 拦截残留。

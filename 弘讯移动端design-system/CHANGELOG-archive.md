@@ -3,6 +3,33 @@
 > 本文件为 `CHANGELOG.md` 滚动归档（2026-09-22 建立，加载纪律 SSOT A-2）：主文件只保留近期条目，更早条目**原样移入**此处，未做任何内容修改。
 > 切割线（滚动更新）：mobile 归档 `[1.14.18]` 及更早。新条目一律写主文件顶部；超限时由 roll-changelog.js 自动滚动。
 
+## [1.14.21] — 2026-09-23 · M-07 节拍预算 + Design Read 停等（与 Web 1.9.34 对称）
+
+- **audit-rules.json v1.6.0**：新增 M-07 `motion.beat.budget`（一页最多一个 heavy 动效；页面内 animation 声明唯一 name 去重 >1 即超，`<link>` CSS 与 transition 不计）。
+- **audit-spec.js 实现**：checkMotionBeat 挂载（正反例实测：多动画测试页报 HIGH / page-template 零误报）。
+- **GENERATION-SOP §①**：新增步骤 1.6 Design Read 停等确认（生成前输出设计读，停等用户确认）。
+- **验证**：check-size 通过；ci-local 全绿（项数以输出为准）。
+- **误报修正（同日）**：首版 M-07 对内联真源 CSS 的分享版产物误报 15 条 HIGH——模板真源动画名集合白名单化（buildTemplateMotionNames），预算只管页面自加动画；audit-spec 阈值 20,400→22,000（功能增长，六步留痕）。正反例三层复测通过。
+
+---
+
+## [1.14.20] — 2026-09-23 · D 层 trap+pairs + 口语→术语词典（与 Web 1.9.33 对称）
+
+- **audit-rules.json v1.5.0**：D-1~D-12 每维新增 trap（最常犯错误）+ pairs（正误对照，12 维 14 对）——审查与生成共用对照语料。
+- **语汇词典**：tm-design-system skill data/vocabulary.json（24 词条，口语→弘讯组件/规范落点）；SKILL.md §2 加按需检索指针（不整份进上下文）。
+- **check-size**：audit-rules.json 阈值 25,600 → 28,600（合法内容增长，六步留痕）。
+- **验证**：ci-local 全绿（项数以输出为准）。
+
+---
+
+## [1.14.19] — 2026-09-22 · 文档体积门禁 check-size 接入 ci-local（与 Web 1.9.32 对称）
+
+- **check-size.js 新增**：真源文件字符限额（阈值 = 实测现值 + 分级余量）+ 清单封闭防膨胀转移（未登记新文件即阻断）+ 剩余空间 <2% 预警。移动端 RULES / MASTER / DESIGN-TOKENS / components / template.css / tokens / page-template / validate-spec / CHANGELOG 等全部入清单。
+- **ci-local.js 挂载**：check-sync 后新增阻断段；门禁基线相应 +1。
+- **验证**：`node check-size.js` 通过（0 FAIL）；ci-local 全绿（项数以输出为准）。
+
+---
+
 ## [1.14.18] — 2026-09-22 · 加载纪律（批 2a）：基线治理（与 Web 1.9.31 对称）
 
 > 背景：同 Web 端 [1.9.31]——监督实战暴露「以记忆/旧值代替实测」缺口，批 2a 三项治理落地。
