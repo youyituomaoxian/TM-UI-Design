@@ -1055,3 +1055,7 @@ body{margin:0;font-family:var(--font-cn);font-size:14px;color:var(--n10);backgro
 
 
 .col-op{text-align:right;}
+
+
+.table-placeholder{pointer-events:none;}
+.table-placeholder td{color:var(--n8);}

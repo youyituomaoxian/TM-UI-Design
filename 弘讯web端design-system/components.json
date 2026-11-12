@@ -822,7 +822,7 @@
       "id": "table",
       "name": "表格 Table",
       "category": "数据展示",
-      "summary": "表头高48、N2底、字重500；行高44、单元左右16、底边 N6。",
+      "summary": "表头高44、N2底、字重500；行高44、单元左右16、底边 N6。",
       "anatomy": {
         "header": "表头",
         "row": "数据行",
@@ -844,7 +844,7 @@
         "headerBg": "N2",
         "headerWeight": 500,
         "cellPaddingX": 16,
-        "fontSize": 13
+        "fontSize": 14
       },
       "states": {
         "header": {
@@ -873,15 +873,15 @@
         "带状态点",
         "分页表"
       ],
-      "referenceCss": ".table{width:100%;border-collapse:collapse;font-size:13px}.table th{height:48px;background:var(--n2);text-align:left;padding:0 16px;color:var(--n10);font-weight:500}.table td{height:var(--density-row-height);padding:0 16px;border-bottom:1px solid var(--n6);color:var(--n10)}.table tbody tr:hover{background:var(--n3)}.table--fixed{table-layout:fixed}",
+      "referenceCss": ".table{width:100%;border-collapse:collapse;font-size:14px}.table th{height:44px;background:var(--n2);text-align:left;padding:0 16px;color:var(--n10);font-weight:500}.table td{height:var(--density-row-height);padding:0 16px;border-bottom:1px solid var(--n6);color:var(--n10)}.table tbody tr:hover{background:var(--n3)}.table--fixed{table-layout:fixed}",
       "referenceHtml": "<table class=\"table\"><thead><tr><th>设备</th><th>状态</th><th>负载</th></tr></thead><tbody><tr><td>注塑机 A-01</td><td>运行中</td><td>72%</td></tr></tbody></table>",
       "ardot": {
         "libraryComponent": "Table（Ardot 组件库）",
-        "variantMapping": "th 对应 Ardot table-header 变体(高48/N2/字重500)；td 对应 Ardot table-cell(高44/左右16)。",
-        "notes": "表头高48、N2底、字重500；行高44、单元左右16、底边 N6。hover 行用 N3。勿表头字重≠500 或底非 N2。"
+        "variantMapping": "th 对应 Ardot table-header 变体(高44/N2/字重500)；td 对应 Ardot table-cell(高44/左右16)。",
+        "notes": "表头高44、N2底、字重500；行高44、单元左右16、底边 N6。hover 行用 N3。勿表头字重≠500 或底非 N2。"
       },
       "do": [
-        "表头高48/N2底/字重500",
+        "表头高44/N2底/字重500",
         "行高44/单元左右16",
         "hover 行 N3"
       ],
@@ -2171,6 +2171,24 @@
           ],
           "severity": "HIGH",
           "note": "表头 th 必须显式 font-family:var(--font-cn)（2026-10-20：表头改 14px/500，与数据同级；字体家族仍锁死防回退宋体）"
+        }
+      ]
+    },
+    {
+      "id": "table.placeholder",
+      "component": "table",
+      "selector": [
+        ".table-placeholder"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "pointer-events",
+          "expect": [
+            "none"
+          ],
+          "severity": "HIGH",
+          "note": "minRow 空数据占位行禁 hover（RULES §4.4 第 4 条）。行高由 .table td 继承 --density-row-height，占位提示文案走 N8。2026-11-12 沉淀真源 utilities.css 并 build 进 template.css，修复 DS-20261112-02。"
         }
       ]
     }

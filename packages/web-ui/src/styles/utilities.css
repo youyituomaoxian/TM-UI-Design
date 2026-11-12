@@ -233,3 +233,9 @@
 
 /* 操作列右对齐工具类（2026-08-24 沉淀真源：表格末列操作按钮贴右，消除"右边没撑满"视觉空当） */
 .col-op{text-align:right;}
+
+/* 表格空数据占位行（RULES §4.4 第 4 条 minRow 契约 · 2026-11-12 沉淀真源，修复 DS-20261112-02）：
+   无内容、保持行高（继承 .table td 的 --density-row-height）、pointer-events:none 禁 hover。
+   「无数据」等占位提示文案走 N8 次级色。 */
+.table-placeholder{pointer-events:none;}
+.table-placeholder td{color:var(--n8);}

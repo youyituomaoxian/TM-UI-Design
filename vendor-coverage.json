@@ -31,7 +31,8 @@
   "t-label",
   "t-link",
   "t-mono",
-  "t-overline"
+  "t-overline",
+  "table-placeholder"
  ],
  "gaps": [
   "app",

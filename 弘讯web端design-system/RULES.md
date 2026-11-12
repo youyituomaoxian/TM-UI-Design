@@ -201,7 +201,7 @@ START: 我要做什么类型的页面？
 
 #### 列表页（必含区块：筛选 + 表格 + 分页）
 - **布局变体（自由选择，非固定）**：A 顶部筛选条 + 全宽表格（筛选项 ≤4）/ B 左筛选卡 303 + 右侧表格（筛选项多/常驻）/ C 工具栏 + 折叠筛选 + 表格（高级筛选）。下表为变体 B 的基准结构，变体 A/C 保持必含区块与组件规格即可：
-- 内容区结构（变体 B）：Breadcrumb 条 32（N5 底）→ 左侧筛选卡（宽 303，白底 Shadow-Card，内部表单项 itemSpacing 8）→ 工具栏（操作按钮区 56 + 搜索/批量区 48）→ 表格卡（表头 48 / 行 44 / 分页器 44）。
+- 内容区结构（变体 B）：Breadcrumb 条 32（N5 底）→ 左侧筛选卡（宽 303，白底 Shadow-Card，内部表单项 itemSpacing 8）→ 工具栏（操作按钮区 56 + 搜索/批量区 48）→ 表格卡（表头 44 / 行 44 / 分页器 44）。
 - 表格 / 分页规格走 `components.json` 的 `table` / `pager` 契约（数值列 th.num↔td.num 右对齐），勿自造。
 - **数据范围筛选组件（V9 新增 2026-08-27）**：本月/本季度/自定义这类**数据范围 / 快速过滤**用真源 **`.filter-chip`**（互斥胶囊，选中加 `.on`）——**禁用页签 `.tabs/.tab`**（tabs 是导航页签语义；真源曾缺此组件致各页各造：辅机总览自造 ord-chip、订单总览误用页签）。
 - **宽表列宽预算（V10 新增 2026-08-27，订单总览实战：11 列合计 1328px vs 容器 1120px 常态溢出）**：**≥8 列或含宽内容列（进度条/按钮组/双行单元格）的宽表必须 `.table--fixed` + 全部 th 显式 `width` 百分比（合计 = 100%）**，禁裸 `table-layout:auto` 放任 min-content 溢出；fixed 下长文本单元格配 `overflow:hidden;text-overflow:ellipsis;white-space:nowrap`（自造/工具类）；确需横向滚动的超宽表在 `.table-wrap` 内滚动并给表格 `min-width`。列宽预算方法：容器宽 ÷ 列数定基准，操作/勾选列收紧（≤10%），内容主列放宽。`.table--fixed` 用 `border-collapse:separate;border-spacing:0`（collapse + 百分比列宽在 Chromium 有幻影 2px scrollWidth）。**行内浮层菜单（操作 ⋯ 下拉）禁 absolute 展开**——overflow:auto 容器内会被撑宽出滚动条，用 **fixed 定位**（JS 按按钮坐标计算）或挂载到 body。**滚动条红线（显式化 2026-08-27，用户拍板；条款源头见常见问题表「表格超过 12 列」行）**：**≤12 列的表格必须在列宽预算内消化、禁止出现横向滚动条**（内容展示页滚动条破坏视觉统一），纵向同理（行数用分页控制，真源 minRow+pager）；仅 >12 列的超宽表允许 `.table-wrap` 横向滚动。**表格内徽章/标签组必须用真源 `.badge-row` 容器（gap 8，td 场景 margin 清零）**，禁裸 span 堆叠（无间距）；`.table td` 垂直 padding = 8（单行行高仍 44 不变，多行内容行高自适应时保上下呼吸）。- **控件圆角统一**：按钮/输入/下拉触发器等 32 高控件用 `--radius-control`（6）；容器（卡片/弹窗）8；徽章/标签等小元件 4；不用异形圆角。
@@ -465,7 +465,7 @@ START: 我要做什么类型的页面？
 
 **⚠️ 字体回退陷阱**：`.num` 的 `font-variant-numeric:tabular-nums` **只用于数据单元格**——表头 `th.num` 必须 `font-variant-numeric:normal`（真源已写死，契约锁定；中文表头遇衬线字体系统会回退宋体，事故细节见 CHANGELOG）。
 
-**表头/数据字体规范（2026-08-06 定稿）**：**表头与数据必须区分**（不得统一字号）——`.table th`：`font-family:var(--font-cn)` 显式 + `font-size:13px` + `font-weight:500`（全表头内部统一黑体）；`.table td`：`font-family:var(--font-cn)` 显式 + `font-size:14px`（数据统一，与表头区分）。th/td **显式 font-family 锁定黑体家族**，字体特性回退只能在黑体家族内发生、绝不落宋体。契约 `table.head.font` 校验 th 的 font-family 为 var(--font-cn)。
+**表头/数据字体规范（2026-08-06 定稿；2026-10-20 修订：表头与数据同级 14px，靠字重 500 区分层级；2026-11-12 文档对齐契约，修复 DS-20261112-01）**：`.table th`：`font-family:var(--font-cn)` 显式 + `font-size:14px` + `font-weight:500`（全表头内部统一黑体）；`.table td`：`font-family:var(--font-cn)` 显式 + `font-size:14px`（与表头同字号，层级靠字重区分）。th/td **显式 font-family 锁定黑体家族**，字体特性回退只能在黑体家族内发生、绝不落宋体。契约 `table.head` 校验 th 高 44/字号 14/字重 500/N2 底；`table.head.font` 校验 th 的 font-family 为 var(--font-cn)。
 
 **字体守则（2026-08-07 扩充，防衬线回退）**：
 - **字体只用 token 栈**：`var(--font-cn)`（黑体：思源黑体 → 微软雅黑，Windows 兜底已补）/ `var(--font-mono)`。页面自造 CSS **禁写具体字体名**（`宋体`/`SimSun`/`微软雅黑`/`Microsoft YaHei`/`Helvetica` 等字符串直接进 font-family 即违规）——门禁 `font.family` MED 兜底。
@@ -664,7 +664,7 @@ START: 我要做什么类型的页面？
 - [ ] 字号 ≥ 12px，正文 ≥ 14px
 - [ ] 表格表头 = **44px** / 行高 = **44px**
 - [ ] **选中态过了 §3.6 表面自检**：品牌蓝底容器（侧栏 / 作业树 / 品牌底列表）内的选中 = `#004A8F` 实底 + 白字 + 白箭头（**无左白条**，2026-07-31 裁定取消左强调条）；白底容器内的选中 = `#DAEAFA` 底 + `#004A8F` 字。**禁止在品牌蓝底上用 `#DAEAFA` 浅 chip**
-- [ ] **交付前门禁**：跑 `node validate-spec.js <页面.html>` → **0 HIGH 违反**才许交付（脚本自动核验按钮字重400/圆角8、输入高32、表头48字重500、标签高22、页签激活字重500、分页24圆钮、状态点10、Web 禁 `#10B981` 等）
+- [ ] **交付前门禁**：跑 `node validate-spec.js <页面.html>` → **0 HIGH 违反**才许交付（脚本自动核验按钮字重400/圆角8、输入高32、表头44字重500、标签高22、页签激活字重500、分页24圆钮、状态点10、Web 禁 `#10B981` 等）
 
 ### [软] Should Have（推荐满足）
 
@@ -710,7 +710,7 @@ TopBar         height=72   FIXED   主色底 白字
 | **G3** | 所有颜色来自变量集；Web 功能色用 `#389E0D`/`#FA8C16`/`#F5222D`，**严禁移动端 `#10B981`** | 两套成功绿色语义混用破坏一致性 |
 | **G4** | 内容区用 24 列栅格 + gap 16，卡片宽度走栅格而非硬编码 px | 响应式断点下自动重排 |
 | **G5** | 插入卡片/表格实例后**立即复核实际宽高**，确认未超父容器 | Ardot 插入不继承父宽，易静默撑大 |
-| **G6** | 表格表头固定 48px；行高 44px；分页器 44px；Tab 32px | 行高不一致显杂乱 |
+| **G6** | 表格表头固定 44px；行高 44px；分页器 44px；Tab 32px | 行高不一致显杂乱 |
 | **G7** | 变体更新用 `componentProperties` 包装：`U(id, {"componentProperties": {"属性 1": "悬停"}})` | 直接传键值对无效 |
 
 ### [硬] 6.3 防溢出/错位生成检查清单（Must-Check）
@@ -719,7 +719,7 @@ TopBar         height=72   FIXED   主色底 白字
 - [ ] 侧边栏菜单文字 = 白 `#FFFFFF`
 - [ ] 内容区背景 = `#F5F7FB`，卡片白底阴影圆角 8
 - [ ] 卡片宽度走 24 列栅格，未写死超大 px
-- [ ] 表格表头/行 = 48px；分页器 = 44px；Tab = 32px
+- [ ] 表格表头/行 = 44px；分页器 = 44px；Tab = 32px
 - [ ] 无元素宽高超出父容器（横向滚动仅在表格多列时启用）
 - [ ] 内容防溢出三件套（2026-08-06 补强，缺一即溢出）：① Grid/Flex 子项（`.grid12 > .col-*`、`.stat-grid` 卡等）带 `min-width:0` 防内容撑破；② 文本类容器（`.alert-desc`、`.card-body` 内长文本）带 `overflow-wrap:anywhere` 防长串撑破；③ 徽章/标签行 `.badge-row` 必须 `flex-wrap:wrap` 防不换行横向溢出
 - [ ] 所有 HEX 来自 DESIGN-TOKENS.md（无 `#10B981` 等移动端值）
