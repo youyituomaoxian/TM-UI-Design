@@ -291,6 +291,16 @@ try {
 } catch (e) { sizeOk = false; }
 ok('check-size：真源文件体积限额 + 清单封闭（未登记新文件即阻断）', sizeOk);
 
+// ===== 规范可达性 check-reach（索引 / 引用 / 加载预算 · 2026-11-12 P0）=====
+// 目的：不测「文件多大」，只测「规范能不能被准确读到」——索引 0 漂移 + 引用 0 断链 + 加载集 ≤ 预算。
+console.log(`\n▶ 规范可达性 check-reach（索引 / 引用 / 加载预算 · 阻断）`);
+let reachOk = false;
+try {
+  execSync(`"${NODE}" "${path.join(ROOT, 'check-reach.js')}"`, { stdio: 'inherit' });
+  reachOk = true;
+} catch (e) { reachOk = false; }
+ok('check-reach：索引 0 漂移 + 引用 0 断链 + 加载集 ≤ 预算（阻断）', reachOk);
+
 // RED-003 扩展：output/ 历史归档扫描（信息性，不阻断）——展示历史产物规范漂移趋势，不追溯交付。
 console.log(`\n▶ output/ 历史归档门禁覆盖扫描（RED-003-ext · 信息性，不阻断）`);
 const outDir = path.join(ROOT, 'output');

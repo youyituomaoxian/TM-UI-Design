@@ -792,6 +792,25 @@ function checkBottomnavCount(html, targetPath) {
   return violations;
 }
 
+// ===== 页面区域门禁（2026-11-12，RULES §9.6）：首页范式（首焦/金刚/瓷片）必须有列表区 =====
+// 只查"首页范式"页面；登录/详情等无 hero/kingkong/porcelain 的页面不查。导航栏存在时须有透明状态栏。
+function checkPageRegions(html, targetPath) {
+  const violations = [];
+  const base = path.basename(targetPath);
+  if (/(规范展示|_框架版|展示页测试|^USAGE\.html$)/.test(base)) return violations;
+  const noScript = stripScriptTags(html);
+  const home = /class="[^"]*(m-hero|m-kingkong|m-porcelain)/.test(noScript);
+  if (home && !/class="[^"]*(mlist|mcard|m-list|m-card)/.test(noScript)) {
+    violations.push({ line: 0, src: 'html', severity: 'MEDIUM', contract: 'page.regions', sel: 'html',
+      msg: '首页范式（含首焦/金刚/瓷片区）缺少列表区（.mlist/.mcard）——RULES §9.6 铁律：首页 ≥3 区域且列表区必带' });
+  }
+  if (/class="navbar/.test(noScript) && !/class="m-statusbar/.test(noScript)) {
+    violations.push({ line: 0, src: 'html', severity: 'MEDIUM', contract: 'page.regions', sel: 'navbar',
+      msg: '导航栏存在但缺少透明状态栏 .m-statusbar——RULES §9.6 铁律：导航栏上必须透明 StatusBar（非独立白条）' });
+  }
+  return violations;
+}
+
 // ===== RED-018 上报侧（2026-08-01，与 Web 端同步）：引用未定义 CSS 变量 =====
 // 这是确凿的真实缺陷（该声明在浏览器/小程序中直接失效），此前是门禁的完全盲区：
 //   resolve 把它悄悄变成残缺串，expectToken 分支更是遇 var( 就 continue 放行。
@@ -1365,6 +1384,8 @@ function run(specPath, targetPath) {
   const iconSrcV = checkIconSource(html, targetPath);
   // 底部导航项数门禁（2026-08-07，RULES §1.1b）：.bn-item 须 3-5 个（MED）
   const bnCountV = checkBottomnavCount(html, targetPath);
+  // 页面区域门禁（2026-11-12，RULES §9.6）：首页范式须有列表区；导航栏须有透明状态栏（MED）
+  const regionV = checkPageRegions(html, targetPath);
   // 图表门禁（CHART-SPEC §7，2026-08-06）：容器缺失 / 移动端禁 none 拉伸 / 内容贴 viewBox 右缘
   const chartV = checkChartBox(html);
   const chartStretchV = checkChartSvgStretch(html);
@@ -1376,7 +1397,7 @@ function run(specPath, targetPath) {
   // HTML 结构配对门禁（2026-08-06）：div 开闭配对 + bottomnav 父链必须是 .phone
   const structV = checkHtmlStructure(html);
   const darkBrandV = checkDarkBrandOverride(html);
-  return violations.concat(chartSeriesV, rootV, tokenV, motionV, whitelistV, svgV, wcagV, gridV, overrideV, customV, chartV, chartStretchV, chartEdgeV, chartLayoutV, templateSyncV, structV, darkBrandV, scrollV, cloneV, fpV, iconSrcV, bnCountV, fontV);
+  return violations.concat(chartSeriesV, rootV, tokenV, motionV, whitelistV, svgV, wcagV, gridV, overrideV, customV, chartV, chartStretchV, chartEdgeV, chartLayoutV, templateSyncV, structV, darkBrandV, scrollV, cloneV, fpV, iconSrcV, bnCountV, regionV, fontV);
 }
 
 // ===== HTML 结构配对门禁（2026-08-06：展示页测试多 1 个 </div> 把 .phone 提前闭合 → bottomnav 被挤出手机壳，门禁此前未拦截）=====

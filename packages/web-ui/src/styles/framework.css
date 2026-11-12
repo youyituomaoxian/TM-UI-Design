@@ -139,6 +139,8 @@
 .footer--between{justify-content:space-between;}
 
 
+/* 分层页头紧凑变体（DS-20261112-04 回灌）：标题行→tab 行 12 */
+.page-head--compact{margin-bottom:var(--space-md);}
 .page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px;}
 .page-actions{display:inline-flex;gap:8px;flex-wrap:wrap;margin-top:var(--space-base);}
 

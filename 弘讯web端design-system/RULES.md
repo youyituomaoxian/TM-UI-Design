@@ -4,17 +4,17 @@
 > 供 AI Agent / 开发者做 UI 决策时查阅
 > **平台**: Web / B端 / 后台管理系统（Ant Design 风格）
 
-> **⚠️ 跨端守则（2026-08-13 更新）：移动端冻结已解除（2026-08-06 用户拍板，恢复可修改）。**
+> **⚠️ 跨端守则（更新）：移动端冻结已解除（用户拍板，恢复可修改）。**
 > 改 Web 若涉及移动端（共享 token / 组件体系 / validate-spec 对称改动 / 两端联动规则），
 > **仍应先提醒用户拍板**，不静默改动两端联动资产。
 
-> **🏛️ 真源治理契约（2026-09-10 增补 · 用户拍板「分级治理」）**
+> **🏛️ 真源治理契约（增补 · 用户拍板「分级治理」）**
 > 一句话：**消费只读，演进留痕；谁碰真源，谁走六步。** 角色不由人名定义，由行为定义——改「真源区」任何文件即进入维护者流程。
 
 | 角色 | 允许动的文件 | 约束 |
 |---|---|---|
 | **使用者**（页面/项目/Agent 默认） | 自建页面 HTML/CSS、output/ 产物、外部项目仓库 | 交付物 validate-spec 0 HIGH；**禁改真源**（页面覆写真源由 `css.override` HIGH 门禁机器化拦截） |
-| **维护者**（系统演进，含被显式指派的 Agent） | 真源区：本目录 `template.css` / `tokens.json` / `components.json` / `validate-spec.js` / `RULES.md` / `MASTER.md` / `DESIGN-TOKENS.md` / `page-template.html` / `icons/` / `scripts/`；跨端 `packages/*/src/styles/components.css`（W1 层，与真源同构）；仓库根 `ci-local.js` / `audit-spec.js` / `audit-rules.json` / `check-sync.js` / `check-size.js` / `gate-capture.js` / `roll-changelog.js` / `vendor-coverage.json`（检查三登记真源） | 六步流程（见下） |
+| **维护者**（系统演进，含被显式指派的 Agent） | 真源区：本目录 `template.css` / `tokens.json` / `components.json` / `validate-spec.js` / `RULES.md` / `MASTER.md` / `DESIGN-TOKENS.md` / `page-template.html` / `icons/` / `scripts/`；跨端 `packages/*/src/styles/components.css`（W1 层，与真源同构）；仓库根 `ci-local.js` / `audit-spec.js` / `audit-rules.json` / `check-sync.js` / `check-size.js` / `check-reach.js` / `sync-index.js` / `gate-map.json` / `gate-capture.js` / `roll-changelog.js` / `vendor-coverage.json`（检查三登记真源） | 六步流程（见下） |
 | **冻结区** | 各包 `sha256-baseline.json` 清单内文件 | 改动即 HIGH；确需演进须显式 `freeze-baseline` 并在 CHANGELOG 说明 |
 
 **维护者六步流程**（每步留痕，缺步 = 违规）：
@@ -41,25 +41,26 @@
 - §7.9 页面级自造类守则（组合 → 变体 → 自造，值全落 token）⚠️ 必读
 - §9 图表结果约束 8 条（页面含图表时读；真源 = 根 CHART-SPEC.md）
 - 布局决策 6 问（任务 / 优先级 / 关系 / 倾向 / 论证 / 高度；定义见 GENERATION-SOP 步骤 5 自查表）
+- 按需检索（[软]，不列为缺读事故）：§0.3 §1 §1.1 §1.2 §1.1c §2.2 §3.2 §3.4 §3.6 §5 §6.2 §6.4
 
 ---
 
 ## 章节索引（加载纪律 · 2026-09-10 新增）
 
-> 全文 **约 47k 字符**——**别整份加载**。按当前任务只读命中章节（Grep 标题 / Read offset 取段），**[软] 章节必读、[硬] 章节按需检索**（门禁兜底）。
+> 全文 **约 52k 字符**——**别整份加载**。按当前任务只读命中章节（Grep 标题 / Read offset 取段），**[软] 章节必读、[硬] 章节按需检索**（门禁兜底）。
 
 | 章 | 字符 | 何时读 |
 |---|---|---|
-| [硬] 0. B 端后台固定框架 | 7.2k | 判定是否套框架（判定必读） |
-| [软] 1. 组件选择决策树 | 7.8k | 选组件时 · 必读 |
-| [硬] 2. 禁止清单 | 1.0k | 生成前自查 · 简读 |
-| [硬] 3. 组件状态机 | 7.5k | 写/改按钮·输入态时 |
-| [硬] 4. 间距与布局速查 | 6.5k | 布局时 |
-| [硬] 5. 生成检查清单 | 1.1k | 交付前 |
+| [硬] 0. B 端后台固定框架 | 8.3k | 判定是否套框架（判定必读） |
+| [软] 1. 组件选择决策树 | 10.5k | 选组件时 · 必读 |
+| [硬] 2. 禁止清单 | 0.9k | 生成前自查 · 简读 |
+| [硬] 3. 组件状态机 | 8.5k | 写/改按钮·输入态时 |
+| [硬] 4. 间距与布局速查 | 6.4k | 布局时 |
+| [软] 5. 生成检查清单 | 1.1k | 交付前 |
 | [硬] 6. 布局黄金法则 | 1.8k | 布局时 · 必读 |
-| [软] 7. 布局美学规范 | 5.9k | 排版/留白/层级 · 必读 |
+| [软] 7. 布局美学规范 | 6.6k | 排版/留白/层级 · 必读 |
 | [硬] 8. 动效与交互 | 1.3k | 生成即携带 |
-| [软] 9. 图表自建范式 | 4.3k | 含图表时（真源 CHART-SPEC.md） |
+| [软] 9. 图表自建范式 | 4.2k | 含图表时（真源 CHART-SPEC.md） |
 
 > 机器资产（`components.json` 71k / `template.css` 54k / `validate-spec.js` 107k）**不通读**——由门禁与构建消费；单点事实源见 `GENERATION-SOP.md §0`。
 
@@ -73,33 +74,37 @@
 
 | 区域 | 高度/宽度 | 强制项 |
 |---|---|---|
-| 顶栏 Topbar | 高 **72** | 品牌蓝底、白字；**左：logo（高度 32 固定、宽度自适应、占位符待替换为项目 logo）+ 平台名 + 副标题**；**右：首页、用户名、修改密码、退出登录、全屏、暗色模式、语言**（暗色按钮 = 纯图标、与全屏/退出交互一致；语言 = 框架级多语言下拉，2026-08-12 拍板） |
+| 顶栏 Topbar | 高 **72** | 品牌蓝底、白字；**左：logo（SVG·高 32 宽自适应·白标，§0.1a）+ 平台名 + 副标题**；**右：首页、用户名、修改密码、退出登录、全屏、暗色模式、语言**（暗色按钮 = 纯图标、与全屏/退出交互一致；语言 = 框架级多语言下拉，2026-08-12 拍板） |
 | 侧边栏 Sidebar | 宽 **240**，可折叠至 **80** | 作业树/导航树（**无菜单分类标题，顶级节点直接并列**，2026-08-12 去分类），**第一层与第二层节点必须带图标**，第三层可不带；收起时**只显示一级图标**（二/三级隐藏，点一级弹二级浮层，2026-11-06）；**折叠按钮固定在右下角（不随菜单多少移动），作业树滚动条隐藏** |
 | 内容区 Content | 自适应 | 卡片/表格/表单，沿用组件库 |
 | 底栏 Footer | 高 **32** | 版权/系统信息**居中**显示 |
+
+### [硬] 0.1a 品牌 logo 规范（M-08）
+
+- **一律 SVG**：真源 `assets/logo/`（asset-logo-brand.svg 彩标·浅底 / asset-logo-brand-white.svg 白标·蓝底）；禁 PNG/JPG；SVG 须带 viewBox，锁高宽自适应。尺寸：顶栏 **32** 宽自适应（白标）/ 登录 **40**（彩标）/ 方标 **64×64**（logo_64.svg）。取用：`<img>` 引真源，禁自造/改色，PNG 仅限 favicon。门禁 `logo.asset.*` HIGH（M-08）。
 
 ### [硬] 0.2 框架硬性规则（不可违反）
 
 1. **顶栏结构固定**：从左到右必须是 `平台 logo` → `平台名称（大字）` + `副标题（小字）` → `spacer` → `首页` | `用户名` | `修改密码` | `退出登录` | `全屏` | `暗色模式` | `语言`（`.lang-sel` 下拉：简体中文/English 可切换，日本語/한국어/Deutsch/Français/Русский/Español 置灰待支持；框架级双语字典 data-i18n 切换 + localStorage `hx-lang` 记忆；2026-08-12 拍板）。不得擅自增加中间主导航或改变顺序。
 2. **作业树层级**：最多 **3 层**，最少 **1 层**；**第一层和第二层节点必须带图标**（`.tree-ico` 内嵌 `.ico` SVG，`stroke=currentColor`），第三层可不带；收起侧栏（`.sidebar.collapsed`）时**只显示一级图标**（二/三级隐藏、文字与箭头隐藏），点一级按 §0.2-10 弹浮层。
-   - **DOM 契约（2026-08-04 补强，防折叠态文字泄漏）**：文字节点**必须**用 `<span class="tree-text">`，**禁止**用 `class="tree-label"` 当文字容器——否则折叠态 CSS `.sidebar.collapsed .tree-text{display:none}` 命中不到，文字会在 80px 侧栏里换行泄漏。React 参考实现可把 `.tree-ico` + `.tree-text` 包在 `.tree-label` 里再用 `display:contents` 让图标参与 flex 居中，但叶子文字本身仍是 `.tree-text`。HTML 预览页与参考实现页统一此契约。
-3. **选中态不用左侧白色强调条** —— 靠「实底 + 白字 + 字重 500」三重表达（2026-07-31 领导裁定取消左强调条，避免与折叠态图标居中打架）。
+   - **DOM 契约（补强，防折叠态文字泄漏）**：文字节点**必须**用 `<span class="tree-text">`，**禁止**用 `class="tree-label"` 当文字容器——否则折叠态 CSS `.sidebar.collapsed .tree-text{display:none}` 命中不到，文字会在 80px 侧栏里换行泄漏。React 参考实现可把 `.tree-ico` + `.tree-text` 包在 `.tree-label` 里再用 `display:contents` 让图标参与 flex 居中，但叶子文字本身仍是 `.tree-text`。HTML 预览页与参考实现页统一此契约。
+3. **选中态不用左侧白色强调条** —— 靠「实底 + 白字 + 字重 500」三重表达（领导裁定取消左强调条，避免与折叠态图标居中打架）。
 4. **底栏文字居中**：`弘讯B端视觉规范 · page-template.html · 所有视觉特征取自 template.css / tokens.json 真源` 必须居中，不要左对齐或右对齐。
 5. 顶栏 72 / 侧栏 240（折叠 80）/ 底栏 32 的尺寸与品牌蓝底白字不可改。
-6. **折叠按钮固定右下角 + 滚动条隐藏**（2026-08-03 裁定）：
+6. **折叠按钮固定右下角 + 滚动条隐藏**（裁定）：
    - 折叠按钮（`.sidebar-foot > .collapse-btn`）**固定在侧栏右下角**，`flex-shrink:0` + 高 44px + `z-index:2`（始终在作业树之上），**不随作业菜单多少改变位置**。
    - 作业树（`.sidebar .tree`）单独占 `flex:1 1 auto; min-height:0; overflow-y:auto` 滚动区，**菜单再多只在侧栏高度内截断/滚动，红线下方不显示**。
    - 滚动条**视觉隐藏**但保留滚动行为：`.sidebar .tree{scrollbar-width:none;-ms-overflow-style:none}` + `.sidebar .tree::-webkit-scrollbar{width:0;height:0;display:none}`（兼容 Chrome/Safari/FF/Edge）。
    - 折叠态（`.sidebar.collapsed`）按钮 44×44 与 `.tree-node` 同高（44px）→ **与作业树图标自然垂直居中**；`.tree` 底部 padding 归零紧贴按钮。
-7. **单树导航（2026-08-03 拍板）**：仅左侧作业树承载模块导航；顶栏内容白名单 = 品牌区（logo/平台名/副标题）| 工具区（首页/管理员/修改密码/退出登录/全屏）；**禁止在顶栏增加模块级菜单/tab**（如 运营中心/生产管理 挂顶栏 → 门禁 `topbar.nav-menu` HIGH）。`.topbar-link` 类已废弃（framework.css L63 deprecated），生成页禁用。
-8. **侧栏信息架构（2026-08-12 去菜单分类）**：平级一级模块**直接并列顶级 tree-node**（如 注塑车间 / 设备中心 / 运营中心 / 生产管理），**禁止 group-title 菜单分类标题**（克隆源已删，生成页不得新增）；禁止把平级模块嵌套成某中心的 `tree-node` 子项（层级错误 + 双导航根源）。
-   - **结构契约（2026-08-04 补强，2026-08-12 去分类）**：全部顶级节点**收进【单一 `.tree` 滚动区】**（`<div class="tree">` 内直接放顶级 `<div class="tree-node">`），**禁止多个 `.tree` 并列**——`.sidebar .tree` 是 `flex:1 1 auto`（flex-grow），多个 `.tree` 会平分剩余空间撑大间距。
-9. **作业树业务定制（2026-08-07 拍板）**：作业树**结构**是框架契约（层级≤3 / 一二级带图标 / 折叠 / 选中态 / **顶级节点并列、无 group-title 分类** / DOM 契约零改动）；**节点文本、分组、选中态是业务内容**——克隆 page-template 后按当前系统的模块结构定制（增删分组/节点、改文本、把 `.on` 选中态移到当前页所在节点），**禁止保留示例树**（示例树是制造业演示，不是通用骨架）。节点图标从 `icons/` 取（见 §7.9 图标守则）；折叠态浮层与 data 分型见 §0.2-10。
-10. **折叠态浮层（2026-11-06 拍板）**：侧栏折叠（`.sidebar.collapsed` + 新增开关类 `.tree-collapsed`）时只保留**一级节点**，二/三级隐藏；点一级：
+7. **单树导航（拍板）**：仅左侧作业树承载模块导航；顶栏内容白名单 = 品牌区（logo/平台名/副标题）| 工具区（首页/管理员/修改密码/退出登录/全屏）；**禁止在顶栏增加模块级菜单/tab**（如 运营中心/生产管理 挂顶栏 → 门禁 `topbar.nav-menu` HIGH）。`.topbar-link` 类已废弃（framework.css L63 deprecated），生成页禁用。
+8. **侧栏信息架构（去菜单分类）**：平级一级模块**直接并列顶级 tree-node**（如 注塑车间 / 设备中心 / 运营中心 / 生产管理），**禁止 group-title 菜单分类标题**（克隆源已删，生成页不得新增）；禁止把平级模块嵌套成某中心的 `tree-node` 子项（层级错误 + 双导航根源）。
+   - **结构契约（补强，2026-08-12 去分类）**：全部顶级节点**收进【单一 `.tree` 滚动区】**（`<div class="tree">` 内直接放顶级 `<div class="tree-node">`），**禁止多个 `.tree` 并列**——`.sidebar .tree` 是 `flex:1 1 auto`（flex-grow），多个 `.tree` 会平分剩余空间撑大间距。
+9. **作业树业务定制（拍板）**：作业树**结构**是框架契约（层级≤3 / 一二级带图标 / 折叠 / 选中态 / **顶级节点并列、无 group-title 分类** / DOM 契约零改动）；**节点文本、分组、选中态是业务内容**——克隆 page-template 后按当前系统的模块结构定制（增删分组/节点、改文本、把 `.on` 选中态移到当前页所在节点），**禁止保留示例树**（示例树是制造业演示，不是通用骨架）。节点图标从 `icons/` 取（见 §7.9 图标守则）；折叠态浮层与 data 分型见 §0.2-10。
+10. **折叠态浮层（拍板）**：侧栏折叠（`.sidebar.collapsed` + 新增开关类 `.tree-collapsed`）时只保留**一级节点**，二/三级隐藏；点一级：
     - 纯分组（`data-group`，自身无页面）→ 右侧弹二级浮层（`.tree-popover`）；浮层内含三级时用缩进手风琴；
     - 可导航（`data-page`，自身有页面）→ 直接选中，不弹浮层；
-    - **自身页 + 子级（`data-page` 且后跟 `.tree-group`）→ 弹浮层，浮层首项「进入本页」（`data-self`）**，其余为二级菜单（2026-11-09）；
-- **分型约束（2026-11-09 修订）**：有子级的一级一律弹浮层；`data-page` 有子级时浮层须含 `data-self` 自身入口（门禁 `tree.node.split`）；纯 `data-page` 仅无子级一级页。
+    - **自身页 + 子级（`data-page` 且后跟 `.tree-group`）→ 弹浮层，浮层首项「进入本页」（`data-self`）**，其余为二级菜单（）；
+- **分型约束（修订）**：有子级的一级一律弹浮层；`data-page` 有子级时浮层须含 `data-self` 自身入口（门禁 `tree.node.split`）；纯 `data-page` 仅无子级一级页。
     - 存量节点无上述属性时按 DOM 判断（后跟 `.tree-group` 视为分组），向后兼容。
     - 浮层必须 `position:fixed` 或 portal 到 body（`.sidebar{overflow:hidden}` 会裁剪）；一次只开一个；点击外部 / Esc / 选中项后关闭；`aria-haspopup`/`aria-expanded` + 焦点归还。
     - 浮层选中（白底表面）用 `--select-item-bg/fg`；暗色下浮层底用 `--n2`（框架 `#1E293B` 与浮层同色需区分）。
@@ -122,7 +127,7 @@
 **判定信号清单（命中即判 B 端后台）**：包含「管理/控制台/后台/运维/配置」语义；有左侧导航树 + 顶部系统名栏 + 底部版权；面向内部运营/设备/工单操作；使用 Ant Design 风格组件库。
 **反信号（判非 B 端）**：对外营销、品牌展示、纯数据可视化大屏、无后台框架语义。
 
-> **⚠️ 规范边界（2026-08-04 拍板）**：本设计系统是**视觉规范**——职责到「视觉规格 + HTML 预览」为止，回答「页面长什么样」（色板/间距/字阶/组件形态/状态/布局节奏）；**上线实现（平台/框架/产物格式）由使用者决定**，规范不替使用者选技术栈。下列组件库 / 脚手架为**参考实现（可选）**：恰好采用 React / Taro 技术栈的使用者可直接复用；异栈（Vue/Flutter/原生…）使用者照 `tokens.json` / 组件规格 / 预览稿自行实现，视觉效果一致。
+> **⚠️ 规范边界（拍板）**：本设计系统是**视觉规范**——职责到「视觉规格 + HTML 预览」为止，回答「页面长什么样」（色板/间距/字阶/组件形态/状态/布局节奏）；**上线实现（平台/框架/产物格式）由使用者决定**，规范不替使用者选技术栈。下列组件库 / 脚手架为**参考实现（可选）**：恰好采用 React / Taro 技术栈的使用者可直接复用；异栈（Vue/Flutter/原生…）使用者照 `tokens.json` / 组件规格 / 预览稿自行实现，视觉效果一致。
 > - **参考实现（可选）**：Web `packages/web-ui`（`@techmation/web-ui`，shadcn/ui 33 件 + Tailwind）——React 组件库；移动端 `packages/mobile-ui`（`@techmation/mobile-ui`，NutUI-React-Taro + Taro 4.2.1）——Taro/小程序/App 组件库。二者 CSS 真源 = `packages/web-ui/src/styles/{globals,components,framework,utilities}.css`（四件手写，N=1，`npm run build:template` 合并生成 template.css）。
 > - **HTML 视觉预览（规范交付物）**：`弘讯web端design-system/template.css` 及 `.html` 原型页用于 Agent 快速验证、设计师对照、门禁演示，**是视觉规格的呈现载体，不是上线文件**（仓库根 `output/` 仅历史归档，新产出落用户项目 output/）。预览页 link `template.css`，**只可使用其中已定义的类**（validate-spec.js 类名白名单门禁拦截自造组件）。
 > - **参考实现路径（可选，仅同栈使用者）**：React 页从脚手架 `packages/web-ui/src/templates/BizAdminPage.tsx`（`AdminLayout` 固定框架 + `@techmation/web-ui` 真实组件）生成，命令 `node packages/web-ui/scripts/new-page-react.js <PageName>`，**禁止基于 template.css 自搓组件**；Taro 页从 `packages/mobile-ui/scripts/new-page-mobile.js <PageName>` 生成。预览页与参考实现**统一遵守**本 RULES 的 DOM 契约 / 类名白名单。
@@ -137,7 +142,7 @@
 > - 布局：`.row` `.row-tight` `.row-between` `.col` `.mt` `.mt-sm` `.mt-lg` `.mb`
 > - 栅格：`.grid12` + `.col-3/4/5/6/7/8/9/12`（≤1200px 自动堆叠为 12 列满宽）
 > - 标题：`.page-title` `.section-title`
-> - 指标卡：`.stat-grid`（容器）+ **KPI 两版（2026-08-06 用户拍板：标准版 = 图标卡，环形版保留需时使用）**：标准版 `.stat-card--icon`（KPI 图标卡——左浅底高圆角图标块 kpi-ico--lg 48×48 · radius-lg 16 + 右上大数字 stat-num + 底部行 stat-foot（标题左 stat-sub / 变化量右 stat-delta，贴图标底部对齐；变化量 12px 500 ↑=run 绿 ↓=err 红）——布局基准 = 回滚点 20260806_Web完成态 展示页）；环形版 `.stat-card--ring`（左环 64 + ring-info label/num/trend，需时使用）。**禁简约 stat-num+stat-sub 独立卡**（门禁 kpi.simple.forbidden HIGH 拦截）
+> - 指标卡：`.stat-grid`（容器）+ **KPI 两版（用户拍板：标准版 = 图标卡，环形版保留需时使用）**：标准版 `.stat-card--icon`（KPI 图标卡——左浅底高圆角图标块 kpi-ico--lg 48×48 · radius-lg 16 + 右上大数字 stat-num + 底部行 stat-foot（标题左 stat-sub / 变化量右 stat-delta，贴图标底部对齐；变化量 12px 500 ↑=run 绿 ↓=err 红）——布局基准 = 回滚点 20260806_Web完成态 展示页）；环形版 `.stat-card--ring`（左环 64 + ring-info label/num/trend，需时使用）。**禁简约 stat-num+stat-sub 独立卡**（门禁 kpi.simple.forbidden HIGH 拦截）
 > - **金额类 KPI 列数/字号守则（V12-A2 新增 2026-08-28，订单总览V2 实战：8 卡等分卡宽 130px 装不下 ¥3,486@28px mono，数字盒被压到 34px 换行截断 + 标签逐字竖排）**：stat-num--lg（28px mono）渲染「¥12,345」约需 110–120px，加图标块后**单卡最小可用宽 ≈ 170px**——**含金额/大数值主值的 KPI 行 ≤6 列**（1440 基准，col 单卡 ≥180px）；7–8 列等分场景金额主值降 `stat-num--md` 或改「数值+单位分离」（`¥920` 与 `万` 分设两行/两元素）；**卡宽 <160px 时 stat-sub 标签会逐字竖排**（CJK 无断词点），同样触发本条降档。
 > - KPI 图标：`.kpi-ico`（+ `--lg` 尺寸，+ `--primary/--run/--warn/--neutral` 语义底色）。SVG 走 `currentColor`，**禁止在 `<svg>` 上写颜色**
 > - KPI 环（环形版需时使用）：`.ring`（64 svg 圆环，dashoffset = 163.4 × (1−%)）+ `.ring-val` + `.ring-fg--primary/run/warn/err/secondary`
@@ -178,14 +183,25 @@ START: 我要做什么类型的页面？
    └─→ §1.1b 详情页规格（键值对 + 参数表 + 日志时间轴）
 ```
 
-### [软] 1.1b 页面类型规格（2026-08-06：pages/ 已删除并入本节 ⚠️ 必读）
+### [软] 1.1b 页面类型规格（pages/ 已删除并入本节 ⚠️ 必读）
 
 > 页面级布局与专属规则（从原 `pages/*.md` 提炼的真增量，2026-08-06 并入）。
 > 组件尺寸 / 色值 / 状态一律以 `components.json` + `template.css` 为准；本节只记「页面级结构与页面专属规则」，不重复组件规格。
 
-> **⚠️ 构图开放性（2026-08-12 用户拍板）**：**框架层（顶栏/侧栏/底栏）与组件层锁死，页面构图层开放**。本节「必含区块」保证内容完整性底线；**区块的排列 / 占比 / 构图由 Agent 按「布局决策 6 问」+「布局模式库」（GENERATION-SOP 步骤 5）自由选择**，禁把本节结构理解为唯一固定范式。门禁只保组件一致性 / 对齐 / 防溢出，不锁页面构图。
-> **面包屑铁律（2026-08-12，2026-08-13 补层级）**：**有明确父级路径的页面必带面包屑条**（32 N5 底，RULES §6.1）；**面包屑层级必须与左侧作业树导航路径一致**（顶级节点 → 子级 → 当前页；去分类后**无「分类级」**——如「注塑车间 / 注塑机参数看板」，**禁把并列的顶级节点拼成父级**，如「设备中心 / 注塑车间」是错的）；仅顶级入口页（无父级，如运营总览 / 看板首页）可无——由「是否有父级路径」判定；`data-page` 一级页面（如生产管理）同属此例外，面包屑只有一级。
+> **⚠️ 构图开放性（用户拍板）**：**框架层（顶栏/侧栏/底栏）与组件层锁死，页面构图层开放**。本节「必含区块」保证内容完整性底线；**区块的排列 / 占比 / 构图由 Agent 按「布局决策 6 问」+「布局模式库」（GENERATION-SOP 步骤 5）自由选择**，禁把本节结构理解为唯一固定范式。门禁只保组件一致性 / 对齐 / 防溢出，不锁页面构图。
+> **面包屑铁律（补层级）**：**有明确父级路径的页面必带面包屑条**（32 高无底纯文本，2026-11-12 拍板固定形式，RULES §6.1）；**面包屑层级必须与左侧作业树导航路径一致**（顶级节点 → 子级 → 当前页；去分类后**无「分类级」**——如「注塑车间 / 注塑机参数看板」，**禁把并列的顶级节点拼成父级**，如「设备中心 / 注塑车间」是错的）；仅顶级入口页（无父级，如运营总览 / 看板首页）可无——由「是否有父级路径」判定；`data-page` 一级页面（如生产管理）同属此例外，面包屑只有一级。
 > 同框架多样化示范：`output/布局多样化测试/`（工单列表=顶筛+全宽表 / 设备监控看板=KPI 2×2+图告混排 / 生产分析=图表主导+侧摘要 / 设备详情=左右分栏）。
+
+#### 内页页头结构（两层 tab 方案 B 拍板）⚠️ 必读
+
+内页页头两形态，按是否分层选型：
+
+- **基础形态（无 tab）**：面包屑 → 页标题 `.page-title`（18/500）+ 操作区 `.page-actions` 右上 → 内容。间距走真源默认（16）。
+- **分层形态（一/二级 tab）**：① 面包屑 → ② 页标题 18/500（随一级 tab 激活项联动）→ ③ 一级 tab 行 = `.tabs`（32/13/下划线）左 + `.page-actions` 右**同行底部对齐**（真源 `.tab-row`）→ ④ 二级 tab `.seg` 分段器（高 30/item 26/字 12/选中 primary 实底白字，门禁 seg.size/seg.active）→ ⑤ 内容卡片。
+
+**分层页头紧凑间距**：面包屑→标题 8 → tab 行 12 → 二级 16 → 卡片 16；真源变体 `.breadcrumb--compact`/`.page-head--compact` 直引免覆写。
+
+**红线**：① tab 最多两层，二级必挂一级下；② 一、二级 tab 均为标题类、在卡片外，卡片只装内容（二级禁进卡片）；③ `.seg` = 内容视图切换，数据过滤仍走 `.filter-chip`（V9 边界），禁混用。
 
 #### 登录页（独立页，不套后台框架；2026-10-30 v2）
 - 版式：≥1200 分栏 58/42；左 `.login-hero`（纯装饰：`<img alt="">` + 父级 `aria-hidden`），右 `.login-panel` 居中 `.login-col`。
@@ -201,19 +217,20 @@ START: 我要做什么类型的页面？
 
 #### 列表页（必含区块：筛选 + 表格 + 分页）
 - **布局变体（自由选择，非固定）**：A 顶部筛选条 + 全宽表格（筛选项 ≤4）/ B 左筛选卡 303 + 右侧表格（筛选项多/常驻）/ C 工具栏 + 折叠筛选 + 表格（高级筛选）。下表为变体 B 的基准结构，变体 A/C 保持必含区块与组件规格即可：
-- 内容区结构（变体 B）：Breadcrumb 条 32（N5 底）→ 左侧筛选卡（宽 303，白底 Shadow-Card，内部表单项 itemSpacing 8）→ 工具栏（操作按钮区 56 + 搜索/批量区 48）→ 表格卡（表头 44 / 行 44 / 分页器 44）。
+- 内容区结构（变体 B）：Breadcrumb 条 32（无底纯文本）→ 左侧筛选卡（宽 303，白底 Shadow-Card，内部表单项 itemSpacing 8）→ 工具栏（操作按钮区 56 + 搜索/批量区 48）→ 表格卡（表头 44 / 行 44 / 分页器 44）。
+- **表格承载形态（拍板）**：列表页/详情页表格一律**卡片式承载**——变体 A 的「全宽表格」= 全宽卡片（白底 + Shadow-Card + 圆角 8，与变体 B 表格卡同规格，不在 grid12 内不强制 .card--fill）；**禁裸表格**（无卡片直接铺页面底上）。密度需求一律用 行高 44 / 分页 / 列宽预算消化，不用「去卡片包装」换密度。
 - 表格 / 分页规格走 `components.json` 的 `table` / `pager` 契约（数值列 th.num↔td.num 右对齐），勿自造。
 - **数据范围筛选组件（V9 新增 2026-08-27）**：本月/本季度/自定义这类**数据范围 / 快速过滤**用真源 **`.filter-chip`**（互斥胶囊，选中加 `.on`）——**禁用页签 `.tabs/.tab`**（tabs 是导航页签语义；真源曾缺此组件致各页各造：辅机总览自造 ord-chip、订单总览误用页签）。
 - **宽表列宽预算（V10 新增 2026-08-27，订单总览实战：11 列合计 1328px vs 容器 1120px 常态溢出）**：**≥8 列或含宽内容列（进度条/按钮组/双行单元格）的宽表必须 `.table--fixed` + 全部 th 显式 `width` 百分比（合计 = 100%）**，禁裸 `table-layout:auto` 放任 min-content 溢出；fixed 下长文本单元格配 `overflow:hidden;text-overflow:ellipsis;white-space:nowrap`（自造/工具类）；确需横向滚动的超宽表在 `.table-wrap` 内滚动并给表格 `min-width`。列宽预算方法：容器宽 ÷ 列数定基准，操作/勾选列收紧（≤10%），内容主列放宽。`.table--fixed` 用 `border-collapse:separate;border-spacing:0`（collapse + 百分比列宽在 Chromium 有幻影 2px scrollWidth）。**行内浮层菜单（操作 ⋯ 下拉）禁 absolute 展开**——overflow:auto 容器内会被撑宽出滚动条，用 **fixed 定位**（JS 按按钮坐标计算）或挂载到 body。**滚动条红线（显式化 2026-08-27，用户拍板；条款源头见常见问题表「表格超过 12 列」行）**：**≤12 列的表格必须在列宽预算内消化、禁止出现横向滚动条**（内容展示页滚动条破坏视觉统一），纵向同理（行数用分页控制，真源 minRow+pager）；仅 >12 列的超宽表允许 `.table-wrap` 横向滚动。**表格内徽章/标签组必须用真源 `.badge-row` 容器（gap 8，td 场景 margin 清零）**，禁裸 span 堆叠（无间距）；`.table td` 垂直 padding = 8（单行行高仍 44 不变，多行内容行高自适应时保上下呼吸）。- **控件圆角统一**：按钮/输入/下拉触发器等 32 高控件用 `--radius-control`（6）；容器（卡片/弹窗）8；徽章/标签等小元件 4；不用异形圆角。
 - **空数据必须用 `.empty`**：图标 48 + 标题 14/500 + 说明 12 + 至多 1 个主操作；禁止留白表格或各页自造空态。步骤条 `.steps`、时间线 `.timeline`、键值对 `.descriptions` 同理复用真源。
 - **图标描边按尺寸**：`viewBox 24` 下 16px→2.2 / 20px→2.0 / 24px→1.8；小图标禁止沿用 1.8（1x 屏发虚）。
-**徽章不折行**：`.badge` 为定高 22 + `white-space:nowrap` + `text-overflow:ellipsis`（2026-10-20），列宽不足时显示省略号，**禁靠折行**；放不下按「2 个 + +N」收敛。
+**徽章不折行**：`.badge` 为定高 22 + `white-space:nowrap` + `text-overflow:ellipsis`（），列宽不足时显示省略号，**禁靠折行**；放不下按「2 个 + +N」收敛。
 - **徽章收敛 +N（V10-B2 用户拍板 b，2026-08-27）**：窄列（≤10%）徽章超过 2 个时最多显 2 个 + +N 徽章（title 悬停看全，详情抽屉有完整清单）——行高统一双行节奏；选配窄列 badge 竖排（每 badge 宽 > 列内容宽）是 11 列预算下的信息密度物理形态，非缺陷。
-- **分页器规则（2026-08-12 定稿）**：列表表格（tbody > 5 行）**必带完整 `.pager`**（‹ 1 2 3 › 共 N 条，门禁 `table.pager.required` HIGH）；**≤5 行的短表格**（明细 / 最近 N 条）尾部**统一显示「共 N 条」总览文本**（复用 `.pager` 容器内 `.pg-tot`，与分页器视觉对齐，禁留白、禁自造文案样式）；详情页参数表等明细表豁免。分页器必须紧跟所属表格（本表格后、下一表格前）。
+- **分页器规则（定稿）**：列表表格（tbody > 5 行）**必带完整 `.pager`**（‹ 1 2 3 › 共 N 条，门禁 `table.pager.required` HIGH）；**≤5 行的短表格**（明细 / 最近 N 条）尾部**统一显示「共 N 条」总览文本**（复用 `.pager` 容器内 `.pg-tot`，与分页器视觉对齐，禁留白、禁自造文案样式）；详情页参数表等明细表豁免。分页器必须紧跟所属表格（本表格后、下一表格前）。
 
 #### 详情页（必含区块：基础信息 + 参数 + 日志）
 - **布局变体**：A 纵向堆叠（面包屑→标题→键值对→参数表→时间轴，下为基准）/ B 左右分栏（左 7 信息 + 右 5 日志，示范：output/布局多样化测试/设备详情）/ C 页签分组。
-- 面包屑 32（N5 底，`›` 分隔）+ 返回 `.btn-text`；页面标题 H1 28/36 Medium + 右上 `.btn-lg` 操作按钮。
+- 面包屑 32（无底纯文本，`›` 分隔）+ 返回 `.btn-text`；页面标题 H1 28/36 Medium + 右上 `.btn-lg` 操作按钮。
 - 基础信息卡 = 键值对网格：label 120 宽 / 行高 40 / label Body2 13 N9 / value Body1 14 N10 / padding 16。
 - 运行参数卡 = `.table`（表头 44 / 行 44），状态列 `.status-dot` + `.badge`（运行 `--run` / 正常 `--suc` / 警告 `--warn` / 故障 `--err`；Web 禁 `#10B981`）。
 - 操作日志卡 = 时间轴：每条 = 时间戳(Body2 13 N9) + 操作人 + 动作(Body1 14 N10)，itemSpacing 12；时间轴圆点 8×8（未激活 N6 边框 + N1 底 / 当前 primary 实底）；连接线 1px N6。
@@ -345,10 +362,10 @@ START: 我要做什么类型的页面？
 └─ 文本链接                             .t-link      14px / 22px  Regular  色 var(--link)
 ```
 
-**用类不用裸值（2026-08-03 拍板）**：文本字号一律 `.t-*` class，**禁裸 `font-size`**（哪怕值合法——13px 是合法 `body2`，但必须写 `class="t-body2"`，裸 `font-size:13px` 绕过类体系即违规）。字阶口径：12 字号键 + Mono = 13 级（`.t-display`/`.t-h1`…`.t-link` + `.t-mono`），勿混。
+**用类不用裸值（拍板）**：文本字号一律 `.t-*` class，**禁裸 `font-size`**（哪怕值合法——13px 是合法 `body2`，但必须写 `class="t-body2"`，裸 `font-size:13px` 绕过类体系即违规）。字阶口径：12 字号键 + Mono = 13 级（`.t-display`/`.t-h1`…`.t-link` + `.t-mono`），勿混。
 
 
-### [软] 1.1c 页面 species 正交维度 + register 口径（2026-09-23 新增 · C-3/C-4）
+### [软] 1.1c 页面 species 正交维度 + register 口径（新增 · C-3/C-4）
 
 **页面 species（正交维度，非新页面类型）**：`<body data-species="…">` 声明本页数据密度物种，与 §1.1b 页面类型**正交组合**（列表 / 详情 / 看板 × species），不新增平行页型（防物种爆炸）：
 
@@ -366,9 +383,6 @@ START: 我要做什么类型的页面？
 - **B 端工具页（本规范全域）= `product` register**：表现力压低、信息密度拉高——即既有「克制扁平 + 灰阶分层 + 品牌色只做强调」哲学的显式登记，不引入新旋钮、零行为变更。
 - **Brand Visual Kit（海报 / 易拉宝 / PPT / 文化物料）= `brand` register**：允许表现力（渐变 / 大字 / 视觉隐喻），以设计哲学与概念约束替代固定模板；**brand register 手法带回 B 端工具页 = §2 禁止清单违规**。
 
----
-
-## [硬] 2. 禁止清单 Anti-Patterns
 ---
 
 ## [硬] 2. 禁止清单 Anti-Patterns
@@ -410,7 +424,7 @@ START: 我要做什么类型的页面？
 | Active | `主色点击` `#004A8F` | `#FFFFFF` | ✅ | 鼠标按下 |
 | Disabled | `主色禁用填充` `#DAEAFA` | `主色禁用文字` `#A0B4C0` | ❌ | 权限不足/未填完 |
 
-#### 场景矩阵（2026-08-03 拍板：动作语义决定 class）
+#### 场景矩阵（拍板：动作语义决定 class）
 
 | 动作语义 | class | 示例 |
 |---------|-------|------|
@@ -420,7 +434,7 @@ START: 我要做什么类型的页面？
 
 **铁律：同一列表、同一动作，必须同一样式**（「处理」按钮要么全 `btn-primary`、要么全 `btn-secondary`，不得混用；已终结态统一转 `tag-suc`/`tag-def`，不再是 `btn-primary`/`btn-secondary`）。拿不准 → 主操作语义优先，默认 `btn-primary`。
 
-### [硬] 3.2 输入框 Input States
+### [软] 3.2 输入框 Input States
 
 | 状态 | 边框颜色 | 文字/光圈 | 说明 |
 |------|---------|----------|------|
@@ -430,7 +444,7 @@ START: 我要做什么类型的页面？
 
 ### [硬] 3.3 表格行 Table Row States
 
-**选中态只有一种视觉：底色 + 2px 左条**（2026-10-20 v2 用户拍板，取代上一版「已选/当前双态」）。选择方式分两种，选中后的行态视觉相同：
+**选中态只有一种视觉：底色 + 2px 左条**（v2 用户拍板，取代上一版「已选/当前双态」）。选择方式分两种，选中后的行态视觉相同：
 
 | 表格类型 | 触发方式 | 选中行视觉 | 未选中行点击 |
 |------|------|------|------|
@@ -445,7 +459,7 @@ START: 我要做什么类型的页面？
 - **表格内禁 N9 次级文字**：N9 `#6C757D` 对白仅 4.69，任何行底色都会击穿 4.5——次级信息用 **13px + N10** 区分。
 - **行态类名**：`.is-selected`；`tr` 上禁用 `.sel/.cur/.hov/.on/.col/.sheet` 等通用短名（会撞组件类，门禁 `table.row.state.classname`）。
 
-### [硬] 3.3b 表格列对齐语义（2026-08-06 补强）⚠️ 必读
+### [硬] 3.3b 表格列对齐语义（补强）⚠️ 必读
 
 **列对齐由列语义决定，表头必须与数据同对齐**（门禁 `table.align` HIGH 强制）：
 
@@ -454,26 +468,26 @@ START: 我要做什么类型的页面？
 | 文本列（工单号/产品/机台/备注/时间） | 左对齐 | th/td 默认（无需类） |
 | 数值列（数量/金额/百分比/计数/产能） | **右对齐** | **th 与 td 都加 `.num`**（`.num{text-align:right;font-variant-numeric:tabular-nums}` 真源） |
 | 状态列（tag/badge/状态灯） | 左对齐 | 默认 |
-| 操作列（按钮/链接） | 左对齐 | 默认；如需按钮贴右边缘用真源 `.col-op{text-align:right}`（2026-08-24 沉淀 utilities.css）|
+| 操作列（按钮/链接） | 左对齐 | 默认；如需按钮贴右边缘用真源 `.col-op{text-align:right}`（沉淀 utilities.css）|
 | 进度列（progress 条） | 左对齐 | 默认（条左起，th 跟随） |
 
 **门禁双向校验**：① 任一数据单元格 `td.num` → 对应列表头必须 `th.num`；② 表头 `th.num` → 该列所有数据 `td` 必须带 `num`。违反即 HIGH（表头与数据错位）。数值列数字用 `tabular-nums` 等宽对齐（千分位对齐）。
 
-**列宽分配（2026-08-26 V7）**：`.table` 默认 `table-layout:auto`，浏览器会把剩余宽度大量倾斜给最长文本列（如「项目」列吃到 67% 挤压其余列）。**多列短内容表格（≥5 列）用 `.table--fixed{table-layout:fixed}` opt-in 变体**——fixed 下按首行 `th` 显式 `width` 分配、无宽度列等宽均分；长文本列对 `th` 设 width 百分比（如 30%）、操作列建议 ≤12%。
+**列宽分配（V7）**：`.table` 默认 `table-layout:auto`，浏览器会把剩余宽度大量倾斜给最长文本列（如「项目」列吃到 67% 挤压其余列）。**多列短内容表格（≥5 列）用 `.table--fixed{table-layout:fixed}` opt-in 变体**——fixed 下按首行 `th` 显式 `width` 分配、无宽度列等宽均分；长文本列对 `th` 设 width 百分比（如 30%）、操作列建议 ≤12%。
 
 **⚠️ 特异性陷阱**：`.table th` 的 `text-align:left` 特异性高于 `.num` 的 `right`——仅给 th 加 `num` 类不会右对齐。**必须由真源 `.table th.num{text-align:right}` 显式覆盖**（契约 `table.head.num-align` HIGH 锁定该规则值）。
 
 **⚠️ 字体回退陷阱**：`.num` 的 `font-variant-numeric:tabular-nums` **只用于数据单元格**——表头 `th.num` 必须 `font-variant-numeric:normal`（真源已写死，契约锁定；中文表头遇衬线字体系统会回退宋体，事故细节见 CHANGELOG）。
 
-**表头/数据字体规范（2026-08-06 定稿；2026-10-20 修订：表头与数据同级 14px，靠字重 500 区分层级；2026-11-12 文档对齐契约，修复 DS-20261112-01）**：`.table th`：`font-family:var(--font-cn)` 显式 + `font-size:14px` + `font-weight:500`（全表头内部统一黑体）；`.table td`：`font-family:var(--font-cn)` 显式 + `font-size:14px`（与表头同字号，层级靠字重区分）。th/td **显式 font-family 锁定黑体家族**，字体特性回退只能在黑体家族内发生、绝不落宋体。契约 `table.head` 校验 th 高 44/字号 14/字重 500/N2 底；`table.head.font` 校验 th 的 font-family 为 var(--font-cn)。
+**表头/数据字体规范（定稿；2026-10-20 修订：表头与数据同级 14px，靠字重 500 区分层级；2026-11-12 文档对齐契约，修复 DS-20261112-01）**：`.table th`：`font-family:var(--font-cn)` 显式 + `font-size:14px` + `font-weight:500`（全表头内部统一黑体）；`.table td`：`font-family:var(--font-cn)` 显式 + `font-size:14px`（与表头同字号，层级靠字重区分）。th/td **显式 font-family 锁定黑体家族**，字体特性回退只能在黑体家族内发生、绝不落宋体。契约 `table.head` 校验 th 高 44/字号 14/字重 500/N2 底；`table.head.font` 校验 th 的 font-family 为 var(--font-cn)。
 
-**字体守则（2026-08-07 扩充，防衬线回退）**：
+**字体守则（扩充，防衬线回退）**：
 - **字体只用 token 栈**：`var(--font-cn)`（黑体：思源黑体 → 微软雅黑，Windows 兜底已补）/ `var(--font-mono)`。页面自造 CSS **禁写具体字体名**（`宋体`/`SimSun`/`微软雅黑`/`Microsoft YaHei`/`Helvetica` 等字符串直接进 font-family 即违规）——门禁 `font.family` MED 兜底。
 - **tabular-nums 仅限纯数字单元格**：`font-variant-numeric:tabular-nums` 只用于**无中文混排**的数据（纯数字/纯数值列）；中文表头与中英混合内容一律 `normal`（数字特性会触发浏览器找支持等宽数字的字体 → 中文环境回退宋体衬线）。
 - **mono 栈中文兜底（V9 修复 2026-08-27，订单总览「万」字宋体事故）**：`--font-mono` 栈尾已追加 `'Source Han Sans CN', '思源黑体'`——mono 场景的**中文字符**（KPI 单位「万」、JS 拼接文案）不再落 monospace 泛型（Windows = 宋体），自动落黑体；数字/符号仍走西文等宽。修复前根因：栈尾只有 `monospace` 泛型，中文无字形命中 → 宋体。
 - **字体验证须知（headless 误判陷阱）**：headless Chrome **无用户系统中文字体**，`computed font-family` 与 CSS 文本检查都会**误判「字体已改/已生效」**——字体改动必须用**真实浏览器（用户系统）渲染**核对；Agent 报告「字体已修」须附真实浏览器截图，不以 computed style / CSS 文本为准（th.num 衬线事故同源，2026-08-06 CHANGELOG）。
 
-### [硬] 3.4 Tag 状态
+### [软] 3.4 Tag 状态
 
 | 状态 | 背景色 | 文字色 |
 |------|--------|--------|
@@ -484,7 +498,7 @@ START: 我要做什么类型的页面？
 
 ### [硬] 3.5 状态指示灯 Status Light
 
-> **语义（2026-08-05 对抗审查 D02 修正）**：机器状态用 run/中性灰/err 独立语义（**不用 suc/warn**，那是功能状态）；状态点须配文字（纯色不得单独传信息，WCAG）；**灰阶深灰递进**（n9/n10/n11 on 白 4.69/10.35/11.42 全达标，禁 n5/n6 浅灰不可见）。类名见 template.css `.dot-*`。
+> **语义（对抗审查 D02 修正）**：机器状态用 run/中性灰/err 独立语义（**不用 suc/warn**，那是功能状态）；状态点须配文字（纯色不得单独传信息，WCAG）；**灰阶深灰递进**（n9/n10/n11 on 白 4.69/10.35/11.42 全达标，禁 n5/n6 浅灰不可见）。类名见 template.css `.dot-*`。
 
 | 状态 | 类 | 颜色 | 含义 |
 |------|------|------|------|
@@ -496,16 +510,16 @@ START: 我要做什么类型的页面？
 | 成功（功能）| `.dot-ok` | `--suc` `#389E0D` | 操作成功 |
 | 预警（功能）| `.dot-warn` | `--warn` `#FA8C16` | 功能预警 |
 
-### [硬] 3.6 表面感知：选中态按底色分治 ⚠️ 必读
+### [软] 3.6 表面感知：选中态按底色分治 ⚠️ 必读
 
 **规则：任何"选中/激活"样式，先判断组件坐在什么表面上，再选配色。同一个组件在两种表面上是两套值，不是一套。**
 
 | 组件所在表面 | 选中底 | 选中字 | 强调条(已取消) | 图标/箭头 |
 |---|---|---|---|---|
 | **白底 / 内容表面**（卡片、内容区、抽屉、下拉、Tree） | `--select-item-bg`（亮 `#DAEAFA` / 暗 `#23395D`） | `--select-item-fg`（亮 `#004A8F` / 暗 `#F1F5F9`） | 无（靠实底+字重 500 表达） | 同选中字色 |
-| **品牌色表面**（`.sidebar` 侧栏 240 / `.demo-sidebar` / `.tree--brand` 等品牌蓝底容器） | `#004A8F`（`--primary-active` 实底） | `#FFFFFF`（`--n1`） | 无（2026-07-31 领导裁定取消） | `#FFFFFF` |
+| **品牌色表面**（`.sidebar` 侧栏 240 / `.demo-sidebar` / `.tree--brand` 等品牌蓝底容器） | `#004A8F`（`--primary-active` 实底） | `#FFFFFF`（`--n1`） | 无（领导裁定取消） | `#FFFFFF` |
 
-**为什么必须分治**：白底表面已改用专用 `--select-item-bg/fg`（2026-10-20；暗色 #23395D+#F1F5F9 = 10.56:1，修掉旧实现暗色 1.99:1），不再借用 `--primary-dis-bg`。它放在白底上因为足够浅、只做"轻高亮"才成立；一旦放到品牌蓝底(`#005EAE`)上，它变成整屏最亮的一块，视觉上读作"一块逃出来的禁用块"，而不是"当前选中项"。品牌底上的选中必须比底色**更深**（`#004A8F`）+ 白字，才能既是品牌色、又是选中语义。
+**为什么必须分治**：白底表面已改用专用 `--select-item-bg/fg`（；暗色 #23395D+#F1F5F9 = 10.56:1，修掉旧实现暗色 1.99:1），不再借用 `--primary-dis-bg`。它放在白底上因为足够浅、只做"轻高亮"才成立；一旦放到品牌蓝底(`#005EAE`)上，它变成整屏最亮的一块，视觉上读作"一块逃出来的禁用块"，而不是"当前选中项"。品牌底上的选中必须比底色**更深**（`#004A8F`）+ 白字，才能既是品牌色、又是选中语义。
 
 **DON'T**
 - ❌ 在品牌蓝底侧栏里用 `#DAEAFA` 浅 chip 当选中
@@ -518,7 +532,7 @@ START: 我要做什么类型的页面？
 
 适用组件：Tree 作业树、侧栏菜单项、垂直 Tab、品牌底上的列表项。**表格行不适用本节**，表格选中态见 §3.3（底 + 2px 左条，单选/多选视觉一致）。落地 CSS 见 `components.json#tree.referenceCss` 与 `template.css` 中 `.sidebar .tree-node.on` 一组。
 
-### [硬] 3.7 组件 DOM 契约（2026-08-04 补强）⚠️ 必读
+### [硬] 3.7 组件 DOM 契约（补强）⚠️ 必读
 
 以下三条为**机器可校验的 DOM 契约**，validate-spec 已落地同名门禁，违反即报：
 
@@ -569,7 +583,7 @@ START: 我要做什么类型的页面？
 | 栅格 | 24 列 | Ant Grid |
 | 断点 | 576/768/992/1200/1600 | sm/md/lg/xl/xxl |
 
-### [硬] 4.3 跨模块间距（2026-08-04 补强）⚠️ 必读
+### [硬] 4.3 跨模块间距（补强）⚠️ 必读
 
 **规则**（已落真源 utilities.css）：
 
@@ -586,21 +600,21 @@ START: 我要做什么类型的页面？
 - 页面 `<style>` **禁止**把 `.stat-grid` / `.grid12` 的 `margin-bottom` 覆盖为 `< 16px`（门禁 `layout.module-spacing` / `layout.grid12-margin` MEDIUM 会拦）。
 - 页面若需微调模块间距，用模板工具类 `.mt/.mt-sm/.mt-lg/.mb`，不直接改容器 margin。
 
-### [硬] 4.4 Grid 列内卡片高度对齐 + 表格空数据占位（2026-08-04 补强）⚠️ 必读
+### [硬] 4.4 Grid 列内卡片高度对齐 + 表格空数据占位（补强）⚠️ 必读
 
 **规则**（已落真源 utilities.css）：
 
 1. **`col-*` 是弹性容器**：`.col-3/4/5/6/7/8/9/12` 一律 `display:flex;flex-direction:column;gap:var(--space-base)`（grid item 身份不变，内部转 flex column，col 内多卡片间距 16px 由 col 自身 gap 接管）。
 2. **col 内卡片一律 `flex:1` 平分 col 高度**（模板 `.col-* > .card{flex:1;min-height:0}`）：单卡片 = 撑满 col 高度；多卡片 = 平分。内容超高的卡片由 `min-height:auto` 保底不被压缩（高卡片决定 col 高度，矮卡片 stretch 对齐底部）。
-3. **图表/列表卡片配 `.card--fill`**（`flex column` + `.card-body{flex:1;min-height:0}`）：`card-body` 内的内容容器（`.donut-wrap` / `.chart-box` / `.table-wrap`）须 `flex:1` 吃掉剩余高度，杜绝"卡片撑满但内部内容悬空"。**弹性填充型图表容器 `.chart-box--flex`（2026-08-24）须配合 `.card--fill` + `.col-*` 环境才生效**（`.card:has(.chart-box--flex) .card-body{display:flex}` 组合）——脱离该组合单独使用 `.chart-box--flex` 不产生弹性拉伸；环形/迷你图用 `.chart-box--ring`，**不要**加 `.chart-box--flex`（会被全局 :has 拉高）。**V8（2026-08-27）**：`.chart-box--ring` 已带 `height:auto` 与基类 `.chart-box` 的 320 canvas 锚点**彻底解耦**——与基类连用安全（误挂不再产生 320 定高大空白；辅机总览页实战踩坑：160 环装 320 容器实测上下各空 77/83px）。**V8b 弹性吸收守则（2026-08-27，同页二次实战沉淀）**：等高行内**一切图表内容容器必须弹性**（`flex:1 1 auto` + `min-height` 保底），**禁止定高**（定高 = 矮卡底部死白的根源）——SVG 拉伸型折线用 `.chart-box--flex`（+ 页面级 `--chart-height` 覆盖压行高保底）、HTML flex 柱状区用 `flex:1;min-height:Npx`、环形卡用「环上 + 图例纵排下」布局让内容自然填满（环 SVG 必须保留固定等宽高属性保证**正圆不拉伸**，禁 preserveAspectRatio=none）。`.card-body--center` **降级为文字类卡片兜底**，图表卡禁用（居中只是均分死白，不消灭死白——85px 居中空仍违反内边距语义，2026-08-27 用户拍板）。**V9 细则（2026-08-27，订单总览实战：metric-row 被拉到 356px 死白）**：弹性**吸收者只能是图表本体**（`.chart-box--flex` 或图表区容器）——图例行 `.chart-legend`、汇总行 `.metric-row` 一律 `flex-shrink:0` 定自然高，**禁 flex:1**（吸收职责错位 = 死白从图表转移到汇总行，性质不变）。
+3. **图表/列表卡片配 `.card--fill`**（`flex column` + `.card-body{flex:1;min-height:0}`）：`card-body` 内的内容容器（`.donut-wrap` / `.chart-box` / `.table-wrap`）须 `flex:1` 吃掉剩余高度，杜绝"卡片撑满但内部内容悬空"。**弹性填充型图表容器 `.chart-box--flex`（）须配合 `.card--fill` + `.col-*` 环境才生效**（`.card:has(.chart-box--flex) .card-body{display:flex}` 组合）——脱离该组合单独使用 `.chart-box--flex` 不产生弹性拉伸；环形/迷你图用 `.chart-box--ring`，**不要**加 `.chart-box--flex`（会被全局 :has 拉高）。**V8（）**：`.chart-box--ring` 已带 `height:auto` 与基类 `.chart-box` 的 320 canvas 锚点**彻底解耦**——与基类连用安全（误挂不再产生 320 定高大空白；辅机总览页实战踩坑：160 环装 320 容器实测上下各空 77/83px）。**V8b 弹性吸收守则（同页二次实战沉淀）**：等高行内**一切图表内容容器必须弹性**（`flex:1 1 auto` + `min-height` 保底），**禁止定高**（定高 = 矮卡底部死白的根源）——SVG 拉伸型折线用 `.chart-box--flex`（+ 页面级 `--chart-height` 覆盖压行高保底）、HTML flex 柱状区用 `flex:1;min-height:Npx`、环形卡用「环上 + 图例纵排下」布局让内容自然填满（环 SVG 必须保留固定等宽高属性保证**正圆不拉伸**，禁 preserveAspectRatio=none）。`.card-body--center` **降级为文字类卡片兜底**，图表卡禁用（居中只是均分死白，不消灭死白——85px 居中空仍违反内边距语义，2026-08-27 用户拍板）。**V9 细则（订单总览实战：metric-row 被拉到 356px 死白）**：弹性**吸收者只能是图表本体**（`.chart-box--flex` 或图表区容器）——图例行 `.chart-legend`、汇总行 `.metric-row` 一律 `flex-shrink:0` 定自然高，**禁 flex:1**（吸收职责错位 = 死白从图表转移到汇总行，性质不变）。
 4. **表格空数据占位（min-row 契约）**：表格数据行数 < 8 行时，渲染到 **8 行**（`minRow=8`，行高 44px）——不足部分用空占位行 `<tr class="table-placeholder"><td colspan="N">&nbsp;</td></tr>`（无内容、保持行高、`pointer-events:none` 禁 hover）。数据为 0 时同样渲染 8 行占位 + 首行提示「无数据」。门禁 `layout.table-minrow`（MEDIUM）核对 JS 渲染模板是否含 minRow 常量。
 5. **适用**：机器列表、告警列表、工单列表、环形图/折线图/柱状图等图表卡片，及一切在 `.grid12 > .col-*` 内的卡片；**不适用**：详情弹窗表单、非 grid12 列的独立卡片。门禁 `card.fill-in-grid`（MEDIUM）核对 col-* 直接子 .card 是否缺 `.card--fill`。
 
-**落地参照**：机器群览页（2026-08-04 修订；示范文件已移除，规格以本条为准）——机器列表/环形图/折线图/告警速览/换模计划五张卡片全部 `.card--fill`，`.donut-wrap/.chart-box--sm/.table-wrap--h` 各 `flex:1`，JS `MIN_ROW=8` 表格占位。
+**落地参照**：机器群览页（修订；示范文件已移除，规格以本条为准）——机器列表/环形图/折线图/告警速览/换模计划五张卡片全部 `.card--fill`，`.donut-wrap/.chart-box--sm/.table-wrap--h` 各 `flex:1`，JS `MIN_ROW=8` 表格占位。
 
-### [硬] 4.4b 卡片高度诉求：定高卡 vs 弹性卡（2026-08-07 补强）⚠️ 必读
+### [硬] 4.4b 卡片高度诉求：定高卡 vs 弹性卡（补强）⚠️ 必读
 
-> 事故背景：趋势大图卡（弹性）与报警列表卡（仅 max-height）并排 → 行等高把报警卡拉伸成空洞（2026-08-07 注塑机看板）。根因 = 滚动卡未显式定高，被 `col-* > .card{flex:1}` 行等高弹性拉伸。
+> 事故背景：趋势大图卡（弹性）与报警列表卡（仅 max-height）并排 → 行等高把报警卡拉伸成空洞（注塑机看板）。根因 = 滚动卡未显式定高，被 `col-* > .card{flex:1}` 行等高弹性拉伸。
 
 **按内容确定方式把卡片分两类**：
 
@@ -616,7 +630,7 @@ START: 我要做什么类型的页面？
 3. **滚动容器不定高 → 门禁 `scroll.container.height`（MEDIUM）拦截**（页面自造滚动类无 height/固定 max-height 即报）。
 4. `.card-body--scroll{max-height:100%}` 是「弹性滚动」语义（配合 `card--fill` 弹性吸收），仅适用于弹性卡内部；定高卡内部滚动用 `.scroll-fixed`。
 
-**示例**：趋势卡（弹性，`.chart-box--flex` 吸收）+ 报警卡（定高，`<div class="card-body scroll-fixed">`）并排 → 报警卡恒高 320px 滚动，不被行高拉伸。弹性图表卡用 `.chart-box--flex`（2026-08-24 收窄：仅填充型图表弹性，环形/迷你图不再被全局 `:has(.chart-box)` 拉高）。
+**示例**：趋势卡（弹性，`.chart-box--flex` 吸收）+ 报警卡（定高，`<div class="card-body scroll-fixed">`）并排 → 报警卡恒高 320px 滚动，不被行高拉伸。弹性图表卡用 `.chart-box--flex`（收窄：仅填充型图表弹性，环形/迷你图不再被全局 `:has(.chart-box)` 拉高）。
 
 **滚动列表条数无界禁令（V12-A5 新增 2026-08-28，订单总览V2 实战：预警卡裸渲染 20 条告警把等高行撑到 1152px，同排环形卡被拉出 ~930px 死白）**：等高行内任何「条目数不定」的列表卡（预警/消息/动态/日志）**必须套 `.scroll-fixed` 定高滚动**（或显式 height/max-height），并只渲染窗口内条目（建议 ≤6 条全量 + 其余进抽屉/详情页）；**禁裸渲染无界条目**——行高由最长卡决定，非弹性兄弟卡（环形/迷你图）无法吸收，只会留死白。
 
@@ -650,7 +664,7 @@ START: 我要做什么类型的页面？
 
 ---
 
-## [硬] 5. Agent 生成 UI 时的检查清单
+## [软] 5. Agent 生成 UI 时的检查清单
 
 ### [硬] Must Have（必须满足）
 
@@ -701,7 +715,7 @@ TopBar         height=72   FIXED   主色底 白字
 └─ Footer       height=32   FIXED   主色底 白字
 ```
 
-### [硬] 6.2 七条铁律
+### [软] 6.2 七条铁律
 
 | # | 铁律 | 原因 |
 |---|------|------|
@@ -721,10 +735,10 @@ TopBar         height=72   FIXED   主色底 白字
 - [ ] 卡片宽度走 24 列栅格，未写死超大 px
 - [ ] 表格表头/行 = 44px；分页器 = 44px；Tab = 32px
 - [ ] 无元素宽高超出父容器（横向滚动仅在表格多列时启用）
-- [ ] 内容防溢出三件套（2026-08-06 补强，缺一即溢出）：① Grid/Flex 子项（`.grid12 > .col-*`、`.stat-grid` 卡等）带 `min-width:0` 防内容撑破；② 文本类容器（`.alert-desc`、`.card-body` 内长文本）带 `overflow-wrap:anywhere` 防长串撑破；③ 徽章/标签行 `.badge-row` 必须 `flex-wrap:wrap` 防不换行横向溢出
+- [ ] 内容防溢出三件套（补强，缺一即溢出）：① Grid/Flex 子项（`.grid12 > .col-*`、`.stat-grid` 卡等）带 `min-width:0` 防内容撑破；② 文本类容器（`.alert-desc`、`.card-body` 内长文本）带 `overflow-wrap:anywhere` 防长串撑破；③ 徽章/标签行 `.badge-row` 必须 `flex-wrap:wrap` 防不换行横向溢出
 - [ ] 所有 HEX 来自 DESIGN-TOKENS.md（无 `#10B981` 等移动端值）
 
-### [硬] 6.4 关键认知（写进 Agent 记忆）
+### [软] 6.4 关键认知（写进 Agent 记忆）
 
 > **Web 功能色 ≠ 移动端功能色**。B端对齐 Ant Design：成功 `#389E0D`、警告 `#FA8C16`、错误 `#F5222D`。
 > 移动端成功绿 `#10B981` 仅用于小程序/iOS/Android，**禁止**进入 Web 系统。
@@ -735,7 +749,7 @@ TopBar         height=72   FIXED   主色底 白字
 > 最后更新: 2026-08-03 | 基于 Ardot `【20260731】弘讯B端视觉系统V3.0` 提取 + 人工审核
 
 
-## [软] 7. 布局美学规范（2026-08-04 新增 · 本地化改写自 ui-ux-pro-max 审美规则）⚠️ 必读
+## [软] 7. 布局美学规范（新增 · 本地化改写自 ui-ux-pro-max 审美规则）⚠️ 必读
 
 > **来源**：与移动端 §10 同源——抽取 ui-ux-pro-max 中适用于 B 端后台的审美规则，改写进弘讯 Web 语境。
 > **不抽取**：Touch/a11y（B 端键鼠场景）、动效（M1-M5）、图表（chart 规范）、字体配对/行业色板（弘讯已定品牌色 + Source Han Sans）。
@@ -790,7 +804,7 @@ TopBar         height=72   FIXED   主色底 白字
 | 背景层次 | n1 卡 / n2-4 区 / n5-6 分隔 |
 | 禁止 | AI 粉紫渐变 / 霓虹色 / 满屏单一功能色 |
 
-### [软] 7.5b WCAG 2.0 前景/背景色使用（2026-08-05，与移动端 §10.3b 对称）
+### [软] 7.5b WCAG 2.0 前景/背景色使用（与移动端 §10.3b 对称）
 
 > **标准**（WCAG 2.0）：普通文字 ≥ **4.5:1**（AA）/ 7:1（AAA）；大文本（≥24px 或 ≥18.66px 粗体）与图形/UI 组件 ≥ **3:1**；纯色不得单独传达信息。
 
@@ -837,7 +851,7 @@ TopBar         height=72   FIXED   主色底 白字
 
 ---
 
-### [软] 7.9 页面级自造类守则（2026-08-06 拍板修订 v2：与移动端 §10.10 对称·解禁视觉属性·禁覆写真源·门禁落地）⚠️ 必读
+### [软] 7.9 页面级自造类守则（拍板修订 v2：与移动端 §10.10 对称·解禁视觉属性·禁覆写真源·门禁落地）⚠️ 必读
 
 > **平衡原则：Agent 可以自造（含视觉属性），但必须引用现有原子 token——禁止产生新的裸值。**
 > 自造前先自问：我引用的每个值，是否都落在现有 token 上？
@@ -873,7 +887,7 @@ TopBar         height=72   FIXED   主色底 白字
 **③ 自造底线（即使自造也必须守）**
 
 - 颜色必须 `var(--*)` 禁裸 hex · 文字必须 `.t-*` 禁裸 font-size · 动效必须 `var(--motion-duration-*)` 禁裸秒
-- **自维护色板定义出口（2026-09-10 吸收 DS-20260910-01）**：确需自建色板（项目视觉体系超出 token 覆盖）时，**定义行** `--x: <hex>` 不计入「裸 hex 用法」违规（判 `css.vardef.hex` **MEDIUM 清单级**，保持可见供映射决策）；**引用处仍必须 `var(--x)`**——定义本体与颜色用法分离，hex 不得直接写在 background/color 里。定义行须能在 P1 说清映射理由，确需长期保留走 `exemptions` 按块登记或回 `tokens.json`。**引用行判级分两档（与页面 `<style>` 同口径，2026-09-10 v1.4.1）**：色值 **∈ token 色板 → MEDIUM**（合法色，但必须改 `var()` 引用，禁字面量防漂移）｜**∉ 色板 → HIGH**（自造色，须映射 token 或走 brand-color-engine 回 `tokens.json`）——同一色值不得因写在 `<style>` 还是 `<link>` CSS 里而判级不同
+- **自维护色板定义出口（吸收 DS-20260910-01）**：确需自建色板（项目视觉体系超出 token 覆盖）时，**定义行** `--x: <hex>` 不计入「裸 hex 用法」违规（判 `css.vardef.hex` **MEDIUM 清单级**，保持可见供映射决策）；**引用处仍必须 `var(--x)`**——定义本体与颜色用法分离，hex 不得直接写在 background/color 里。定义行须能在 P1 说清映射理由，确需长期保留走 `exemptions` 按块登记或回 `tokens.json`。**引用行判级分两档（与页面 `<style>` 同口径，2026-09-10 v1.4.1）**：色值 **∈ token 色板 → MEDIUM**（合法色，但必须改 `var()` 引用，禁字面量防漂移）｜**∉ 色板 → HIGH**（自造色，须映射 token 或走 brand-color-engine 回 `tokens.json`）——同一色值不得因写在 `<style>` 还是 `<link>` CSS 里而判级不同
 - **4px 网格**：所有 px 值 %4==0（**含 calc 内**）
 - **禁覆写真源组件类**（`.btn`/`.table`/`.card`/`.badge`/`.tabs` 等 template.css 组件）——需调整用变体/组合/上报维护者
 - 语义命名（`.stat-card`，禁 `.a1`/`.box1`）· **禁 `t-` 前缀**（保留给正式组件）· 禁与真源类重名
@@ -885,7 +899,7 @@ TopBar         height=72   FIXED   主色底 白字
 - 原子已补齐（图表色 8 / 间距 7 档 / 字阶 13 级 / soft 色 / 图标 84），自造前必须确认现有原子不可用
 - 原子确实不足 → 走「上报维护者」通道，**不自造原子**
 
-**⑤ 门禁口径（2026-08-06 P2 落地，两端 validate-spec.js 已实现）**
+**⑤ 门禁口径（P2 落地，两端 validate-spec.js 已实现）**
 
 - 自造布局/视觉类（值全 token）= 规范内合法扩展，`class.self-defined` MED 可接受（非违规）
 - **覆写真源组件类 → HIGH `css.override`**（checkOverride）
@@ -893,11 +907,11 @@ TopBar         height=72   FIXED   主色底 白字
 - 自造类**裸 font-size → MED `text.layer-custom`**（checkCustomProps）
 - 裸 hex / 裸动效秒 = 既有门禁 HIGH/MED，必须修
 
-**③ 图标来源守则（2026-08-07 拍板）⚠️ 必读**
+**③ 图标来源守则（拍板）⚠️ 必读**
 
 > 图标库：`弘讯web端design-system/icons/`（185 个，2026-08-14 图标库换新后；分类明细见 `icons/icons.md`）；移动端同源（`弘讯移动端design-system/icons/`，184 个）。
 > **图标数声明义务（RED-009，2026-10-10）**：本文件与 MASTER.md **必须**在图标库语境写明图标总数声明（如上「185 个」），且数字须与 `icons/` 目录实际 SVG 数一致。ci-local P0-1 机器断言：无声明或数字不符 = FAIL——「删掉声明」不再是绕过计数漂移检查的路径。
-> 统一规格：viewBox 24×24 · linecap/linejoin round · fill none · currentColor。**描边按渲染尺寸**（2026-10-20）：16px→2.2 / 20px→2.0 / 24px→1.8，由 `.ico/.btn-ico/.tree-ico/.kpi-ico` 的 CSS 统一覆盖，SVG 源文件保持 `stroke-width=1.8` 作为 24px 基准。
+> 统一规格：viewBox 24×24 · linecap/linejoin round · fill none · currentColor。**描边按渲染尺寸**（）：16px→2.2 / 20px→2.0 / 24px→1.8，由 `.ico/.btn-ico/.tree-ico/.kpi-ico` 的 CSS 统一覆盖，SVG 源文件保持 `stroke-width=1.8` 作为 24px 基准。
 
 1. **页面图标一律从 `icons/` 取**：打开 `icons/icons.md` 索引表找到语义图标，把对应 `.svg` 的 **path 内联**进尺寸类（`.ico` 16 / `.btn-ico` 16 / `.tree-ico` 16 / `.kpi-ico` 20 / `.kpi-ico--lg` 24）。
 2. **禁止手写库内已有的图标**（如首页/用户/退出/全屏/返回/警告/温度——库都有）；禁止照抄 page-template 之外页面（克隆页框架图标已来自库）。
@@ -906,7 +920,7 @@ TopBar         height=72   FIXED   主色底 白字
 
 ---
 
-## [硬] 8. 动效与交互自动添加（2026-08-06 拍板：页面生成即携带交互）⚠️ 必读
+## [硬] 8. 动效与交互自动添加（拍板：页面生成即携带交互）⚠️ 必读
 
 > **原则：静态可读 + 动态可感。生成 HTML 页面时必须自动添加与组件语义匹配的动效与交互，
 > 不得输出无反馈的「死」页面。** 动效值一律走 motion token（MASTER §5.2：`--motion-duration-instant/fast/normal/slow` + 5 种 ease），交互 JS 随页面一起生成（参照 page-template / 展示页脚本段）。
@@ -942,14 +956,14 @@ TopBar         height=72   FIXED   主色底 白字
 
 ---
 
-## [软] 9. 图表自建范式（2026-08-07 重构：「样式 + 结果约束」——实现放开，结果锁死）⚠️ 必读
+## [软] 9. 图表自建范式（重构：「样式 + 结果约束」——实现放开，结果锁死）⚠️ 必读
 
 > **完整真源 = 仓库根 CHART-SPEC.md**（含通用决策流程 / 结果约束清单 / 两端差异 / 门禁口径 / 扩展类型指引 / 附录 A 点按脚本）。本节约为 Web 端内联摘要，冲突以 CHART-SPEC 为准。
-> **实物示范 = 展示页 #chart-demo section**（2026-08-07 多类型×多尺寸自适应，识图全过）
+> **实物示范 = 展示页 #chart-demo section**（多类型×多尺寸自适应，识图全过）
 
-**① 实现放开（2026-08-07 拍板，替代固定 viewBox/尺寸/数据量）**
+**① 实现放开（拍板，替代固定 viewBox/尺寸/数据量）**
 
-- 图表**不设组件、不锁实现**：尺寸、数据量、坐标方式（HTML flex 柱 / SVG polyline + HTML 点 / 定尺寸方形 SVG 环）**Agent 按容器自适应自选**——不再固定 viewBox 400×160、折线 ≥8 点、柱状 12 根等实现级断言。图表容器高度走 **`--chart-height` token**（默认 320px，可密度/场景覆盖），弹性填充型图表用 `.chart-box--flex`（2026-08-24）。**2026-08-26（V6）**：`.chart-svg--fill` 已带 `aspect-ratio:16/9` 兜底；`.chart-box--flex` 前置条件=**确定高度容器**——auto 高度链（如 `.card--fill` 内）禁用弹性类，须用定高 `.chart-box`，否则 SVG `height:100%` 无基准回退 viewBox 1:1 爆炸。
+- 图表**不设组件、不锁实现**：尺寸、数据量、坐标方式（HTML flex 柱 / SVG polyline + HTML 点 / 定尺寸方形 SVG 环）**Agent 按容器自适应自选**——不再固定 viewBox 400×160、折线 ≥8 点、柱状 12 根等实现级断言。图表容器高度走 **`--chart-height` token**（默认 320px，可密度/场景覆盖），弹性填充型图表用 `.chart-box--flex`（）。**2026-08-26（V6）**：`.chart-svg--fill` 已带 `aspect-ratio:16/9` 兜底；`.chart-box--flex` 前置条件=**确定高度容器**——auto 高度链（如 `.card--fill` 内）禁用弹性类，须用定高 `.chart-box`，否则 SVG `height:100%` 无基准回退 viewBox 1:1 爆炸。
 - 环形/圆形图**禁 preserveAspectRatio="none"**（圆变椭圆）——定尺寸方形 SVG 居中，中心文字 HTML 绝对定位。
 - SVG 拉伸区**禁放一切需保形元素**——**文字与数据点圆标均不得写入 `preserveAspectRatio="none"` 的 SVG**（非等比拉伸会把圆拉成椭圆、文字变形；辅机总览实战：r=1.6 圆点实测被拉成 10.9×8.7 椭圆）。轴标签 / 数值 / 图例 / **数据点**一律 HTML 叠层（数据点 = absolute 定位 span，left/top 百分比与 polyline points 同源，8px 正圆）；SVG 属性 stroke/fill 一律 style="var(--chart-*)"（禁裸 hex：svg.paint.non-palette HIGH；禁未定义 var：token.svg-var HIGH）。
 
@@ -965,22 +979,22 @@ TopBar         height=72   FIXED   主色底 白字
 6. **多系列必配图例**：双系列柱/折线/多段环均有图例；单系列可省。
 7. **颜色只用信息化图表色 --chart-***（见 ③）。
 8. **图表不溢出卡片**：图表容器高度自定，禁止内容溢出卡片。
-9. **网格线水平范围限于绘图区**：网格线两侧为 y 轴刻度标签留白（≥20），不贯穿标签区；y 轴刻度与网格线同高对齐但水平错开（刻度在留白区、网格线在绘图区）——**禁网格线贯穿到图表左右边缘贴卡边**（2026-08-07 执行上报补齐）。
-10. **折线纵向占满（2026-08-24 新增）**：折线数据 y 范围纵向覆盖 **≥ viewBox 高度 70%**、上下留白对称（差 ≤15%）——禁"数据集中一条带 + 下方大片空白"。门禁 chart.line.vertical（MED）兜底。
+9. **网格线水平范围限于绘图区**：网格线两侧为 y 轴刻度标签留白（≥20），不贯穿标签区；y 轴刻度与网格线同高对齐但水平错开（刻度在留白区、网格线在绘图区）——**禁网格线贯穿到图表左右边缘贴卡边**（执行上报补齐）。
+10. **折线纵向占满（新增）**：折线数据 y 范围纵向覆盖 **≥ viewBox 高度 70%**、上下留白对称（差 ≤15%）——禁"数据集中一条带 + 下方大片空白"。门禁 chart.line.vertical（MED）兜底。
 
-**③ 色彩契约（2026-08-07 强化：系列色只能用 --chart-*）**
+**③ 色彩契约（强化：系列色只能用 --chart-*）**
 
 - **系列数据色（柱/条/线/环段/点）一律 --chart-* token**（Web 8 色：tech-blue/data-cyan/smart-cyan/fresh-green/vivid-orange/alert-red/wisdom-purple/modern-pink）——**禁通用语义色（--primary/--suc/--warn/--err）做系列色**（门禁 chart.series.color MED 建议）；**禁裸 hex**（HIGH）。
 - **辅助线例外**：网格线用中性 --n4 级、目标线可用 --warn（虚线辅助语义）——仅限非数据系列元素。
 - 同页 ≤5 个系列色；**同系列数据色统一**（禁最高值强调色）；分组柱状图两系列用两色区分（如 tech-blue + data-cyan）。
 - 图例用 .chart-legend / .legend-item + .legend-dot（圆点）/ .legend-line（线段，可 --dash）。
 
-**④ 默认交互与动画（2026-08-06，所有信息化图表默认即带）**
+**④ 默认交互与动画（所有信息化图表默认即带）**
 
 - 图形动画类（真源默认，Agent 给图形元素挂类即得）：柱 .chart-bar（底部升起）、横向条 .chart-hbar（左侧生长）、折线 .chart-line（描边生长）、环 .chart-ring-anim（放大淡入）——时长全走 motion token。
 - **数据点 .chart-dot 延迟出现**（animation-delay: var(--motion-duration-slow)，线画完才淡入）——防「点漂移」错位。
 - **图形元素悬停（hover 目标是数据元素本身，非整卡；表现 = 阴影 + 微动画 + 颜色强调 三合一）**：柱/条上浮 2px + brightness(1.12) + drop-shadow；圆点放大 1.7×；折线加粗 3.5；环段微膨胀 1.04×——均走 fast token。**禁整卡 hover 浮起**；柱/条进入动画 fill-mode 须用 backwards（both 会锁死 transform 挡住 hover 上浮）。
-- **数据悬停阴影层级**：一律 drop-shadow(var(--shadow-data-hover))（单阴影 token，card/row-hover 级轻弥散）——**禁 float/modal 级**。暗色 --shadow-data-hover 已补（2026-08-07）。
+- **数据悬停阴影层级**：一律 drop-shadow(var(--shadow-data-hover))（单阴影 token，card/row-hover 级轻弥散）——**禁 float/modal 级**。暗色 --shadow-data-hover 已补（）。
 - 环状图分段数据：中心常显主段数值，悬停环段切换对应段数值（Web）；移动端点按段（附录 A 脚本）。
 
 **⑤ 门禁口径**

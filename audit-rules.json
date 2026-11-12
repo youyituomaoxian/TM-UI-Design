@@ -1,8 +1,8 @@
 {
   "$meta": {
     "title": "弘讯设计系统 · 审计规则真源（audit-rules）",
-    "version": "1.6.1",
-    "updated": "2026-09-23",
+    "version": "1.6.2",
+    "updated": "2026-11-12",
     "purpose": "存量项目按弘讯设计系统改造时的单一审计真源。RULES.md 管生成语义（怎么写），本文件管审计语义（怎么查）：每条规则声明 判定谓词 / 严重级 / 可判定性 / 修复策略。机器类规则由 audit-spec.js 与 validate-spec.js 执行，运行时类由截图×状态验证，语义类由 agent+人审查。三层互补，缺一不可。",
     "scope_note": "⚠️ 两种审查场景，归因逻辑不同（2026-09-10 用户澄清）：① 弘讯内项目缺陷审计（项目有义务合规）→ 用 P1 归因二分法（设计系统问题 or 执行问题）+ machine_rules 违规检测；② 外部项目迁移改造（项目不是弘讯生成的，审查目的=找出视觉不符合处并改成符合）→ 归因只有一种『未对齐弘讯规范』，决策点=映射到什么（哪个 token/组件类/字阶），用 migration_dimensions 维度对照清单逐层盘点。两层规则互补：M 层抓硬违规（迁移时同样要清零），D 层管维度映射。",
     "change_policy": "新增规则必须经『设计系统问题报告』进入，执行**单向报告流**（2026-09-10 用户拍板，替代旧『应用侧强制回灌』语义——旧语义要求无真源写权的角色执行写入，与真源治理契约冲突；**同日二次拍板全量泛化**：报告流的输入**不只是审计漏检**，应用侧在从零生成（SOP §①）/ 存量改造（§②）/ 日常使用中发现的任何被归因为**设计系统问题**的发现（真源/规范缺失、token/组件/图标缺口、门禁漏洞、文档缺陷）均按 `issue_reporting` 制度记录并可反馈；审计漏检是本制度的 machine 层特例。执行问题（规范已写、执行跑偏）不进报告——应用侧直接改页面）：① **应用侧义务 = 归因 + 记录 + 按严重级提请转交**：先归因二分，设计系统问题落盘自己项目 `output/设计系统问题_*.md`（schema 见 issue_reporting），并在对话内声明请用户转交，禁碰真源；② **维护侧义务 = 被动消费报告并回灌**（2026-09-10 用户拍板：应用者反馈，不去打扰——不建应用项目注册表、不主动巡检）：收到用户转交的报告（或被 @）时，走维护者六步流程登记进本文件 feedback_log（条目必须带 report_source 字段记录来源报告路径，跨项目同题用 related_reports，保持双向对账闭环）与对应规则层，并产出回执三件套（报告状态栏回写 + feedback_log + 双端 CHANGELOG）；③ 维护者自己的维护会话可直接回灌。**规范-审查双向对账（2026-09-10 用户拍板，『全』的保证机制）**：migration_dimensions 每条必须带 ref 指回规范条目（指不回=伪维度，删）；规范真源新增条目（新 token section / 新组件 / 新 RULES 章节 / 新专项 spec）时，审查侧必须同步长出核对项（指不到=审查缺口，补 D 层）。审查清单是规范真源结构树的对偶投影，『全』随规范演进持续保证，不靠一次性经验枚举。"
@@ -85,6 +85,16 @@
       "predicate": "页面内自声明的唯一 animation-name 去重计数 > 1 即超预算：animation 简写取第一个标识符；逗号多值逐个计数；none/inherit/initial/unset 不计；@keyframes 定义行不算引用；transition 不计（hover 微交互非 heavy 入场）。模板白名单（2026-09-23 误报修正）：命中对应端 template.css 真源动画名集合的引用不计预算——分享版产物内联真源 CSS 时 M1–M5 动画属合法存在，预算只管页面自加动画；白名单双源（2026-09-23 监督 ISSUE-01）：animation 声明名 ∪ @keyframes 定义名——规范 shimmer/toast-in/toast-out 等只定义未引用的动画不漏收",
       "fix": "删多余自加动画（AI 生成页典型病：全元素 fade-in-up 入场）；保留至多一个 heavy 动效；规范动效只用 template.css 的 M1–M5 类",
       "implemented_in": "audit-spec.js（2026-09-23）"
+    },
+    {
+      "id": "M-08",
+      "contract": "logo.asset.format / logo.asset.missing",
+      "title": "品牌 logo 一律 SVG 真源资产、锁高宽自适应（2026-11-12 新增）",
+      "severity": "HIGH",
+      "scope": "页面内 src 含 logo 的 <img>（.topbar-logo / .login-logo 等）；展示页/_框架版/USAGE 豁免；data: URI 跳过",
+      "predicate": "src 非 .svg → HIGH（位图无法锁比例、缩放失真）；src 指向 assets/logo/ 不存在的文件 → HIGH。尺寸由 template.css 锁定（顶栏高 32 白标 / Web 登录高 40 彩标 / 移动登录 64×64），页面禁自写宽高覆盖。真源 = assets/logo/（asset-logo-brand.svg 彩标 / asset-logo-brand-white.svg 白标 / logo_64.svg 方标）",
+      "fix": "改引 assets/logo/ 真源 SVG（带 viewBox）；尺寸交给容器类（.topbar-logo .ico 高 32 宽 auto），禁内联宽高、禁自造 logo 文件",
+      "implemented_in": "validate-spec.js（Web 端 2026-11-12；移动端 64×64 方标 logo_64.svg 已入库）"
     }
   ],
   "runtime_checks": [
@@ -443,5 +453,13 @@
     "feedback_log_contract": "每条条目：date / source / report_source（来源报告路径）/ related_reports（可选数组，跨项目同题去重，G8）/ findings / attribution；回执结论一并写入 findings 或 attribution。",
     "scattered_clause_collation": "本制度统一收口各端散落的『上报维护者』条款：图标库缺（RULES §7.9③）/ 自造组件成熟形态补库（§7.9/§10.10）/ token 缺新值（§10.10）/ 门禁误报与真源 bug 上报（GENERATION-SOP 附录）——均按本制度记录与反馈，报告格式与通道不再各说各话"
   },
-  "feedback_log": []
+  "feedback_log": [
+    {
+      "date": "2026-11-12",
+      "source": "机器群览弘讯化重设计（用户项目）",
+      "report_source": "H:/global-workspace/设计系统/output/设计系统问题_20261112_04.md",
+      "findings": "分层页头紧凑间距拍板（面包屑→标题 8/标题行→tab 行 12，RULES §1.1b）未回灌真源：.breadcrumb margin-bottom=--space-base(16)、.page-head margin-bottom=16px，页面照规范覆写即触发 css.override HIGH，照规范与 0 HIGH 门禁互斥。",
+      "attribution": "设计系统问题（拍板未回灌真源）。修法=方案 b 真源紧凑变体：.breadcrumb--compact(--space-sm 8)+.page-head--compact(--space-md 12)，基础形态默认 16 不变；已按维护者六步回灌，ci-local 全绿。"
+    }
+  ]
 }

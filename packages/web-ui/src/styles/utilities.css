@@ -234,6 +234,17 @@
 /* 操作列右对齐工具类（2026-08-24 沉淀真源：表格末列操作按钮贴右，消除"右边没撑满"视觉空当） */
 .col-op{text-align:right;}
 
+/* ── 两层 tab 内页页头（2026-11-12 方案 B 拍板沉淀，RULES §1.1b 内页页头结构）── */
+/* 一级 tab 行：.tabs 左 + .page-actions 右同行底部对齐；行底线由本类提供，内层 .tabs 去 border 防双线，tab 下划线压行底线 */
+.tab-row{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1px solid var(--n6);gap:16px;}
+.tab-row .tabs{border-bottom:none;}
+.tab-row .tabs .tab{margin-bottom:-1px;}
+/* 二级 tab 分段器：容器 N3 底胶囊高30（item 26/字12），选中 primary 实底白字 500。语义=内容视图切换，数据过滤走 .filter-chip 禁混用 */
+.seg{display:inline-flex;gap:2px;height:30px;padding:2px;background:var(--n3);border-radius:15px;}
+.seg .item{height:26px;padding:0 14px;display:flex;align-items:center;font-size:12px;color:var(--n10);cursor:pointer;border-radius:13px;transition:color var(--motion-duration-fast) var(--motion-ease-out),background var(--motion-duration-fast) var(--motion-ease-out);}
+.seg .item:hover{color:var(--primary);}
+.seg .item.active{background:var(--primary);color:var(--text-on-brand);font-weight:500;}
+
 /* 表格空数据占位行（RULES §4.4 第 4 条 minRow 契约 · 2026-11-12 沉淀真源，修复 DS-20261112-02）：
    无内容、保持行高（继承 .table td 的 --density-row-height）、pointer-events:none 禁 hover。
    「无数据」等占位提示文案走 N8 次级色。 */

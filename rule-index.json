@@ -1,0 +1,1562 @@
+{
+  "generated": "2026-11-12",
+  "note": "生成物 · 由 sync-index.js 维护；禁止手改（check-reach 会判 FAIL）",
+  "files": {
+    "web": "弘讯web端design-system/RULES.md",
+    "mobile": "弘讯移动端design-system/RULES.md"
+  },
+  "rules": [
+    {
+      "id": "web-0",
+      "end": "web",
+      "section": "0",
+      "level": 2,
+      "hard": "硬",
+      "title": "B 端后台固定框架（Agent 判定必读 ⚠️）",
+      "line": 69,
+      "chars": 8278,
+      "read": "on-demand",
+      "gate": [
+        "D-1"
+      ]
+    },
+    {
+      "id": "web-0.1",
+      "end": "web",
+      "section": "0.1",
+      "level": 3,
+      "hard": "硬",
+      "title": "框架固定结构（四维）",
+      "line": 73,
+      "chars": 498,
+      "read": "on-demand",
+      "gate": [
+        "D-11"
+      ]
+    },
+    {
+      "id": "web-0.1a",
+      "end": "web",
+      "section": "0.1a",
+      "level": 3,
+      "hard": "硬",
+      "title": "品牌 logo 规范（M-08）",
+      "line": 82,
+      "chars": 289,
+      "read": "on-demand",
+      "gate": [
+        "logo.asset.format",
+        "logo.asset.missing"
+      ]
+    },
+    {
+      "id": "web-0.2",
+      "end": "web",
+      "section": "0.2",
+      "level": 3,
+      "hard": "硬",
+      "title": "框架硬性规则（不可违反）",
+      "line": 86,
+      "chars": 3207,
+      "read": "on-demand",
+      "gate": [
+        "D-13"
+      ]
+    },
+    {
+      "id": "web-0.3",
+      "end": "web",
+      "section": "0.3",
+      "level": 3,
+      "hard": "软",
+      "title": "Agent 判定流程",
+      "line": 113,
+      "chars": 4135,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "web-1",
+      "end": "web",
+      "section": "1",
+      "level": 2,
+      "hard": "软",
+      "title": "组件选择决策树",
+      "line": 160,
+      "chars": 10489,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "web-1.1",
+      "end": "web",
+      "section": "1.1",
+      "level": 3,
+      "hard": "软",
+      "title": "页面级组件选型",
+      "line": 162,
+      "chars": 378,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "web-1.1b",
+      "end": "web",
+      "section": "1.1b",
+      "level": 3,
+      "hard": "软",
+      "title": "页面类型规格（pages/ 已删除并入本节 ⚠️ 必读）",
+      "line": 186,
+      "chars": 6495,
+      "read": "must",
+      "gate": null
+    },
+    {
+      "id": "web-1.2",
+      "end": "web",
+      "section": "1.2",
+      "level": 3,
+      "hard": "软",
+      "title": "组件粒度选型",
+      "line": 254,
+      "chars": 488,
+      "read": "on-demand",
+      "gate": [
+        "H-02"
+      ]
+    },
+    {
+      "id": "web-1.3",
+      "end": "web",
+      "section": "1.3",
+      "level": 3,
+      "hard": "硬",
+      "title": "色彩选择决策树",
+      "line": 290,
+      "chars": 1011,
+      "read": "on-demand",
+      "gate": [
+        "M-01",
+        "token.undefined"
+      ]
+    },
+    {
+      "id": "web-1.4",
+      "end": "web",
+      "section": "1.4",
+      "level": 3,
+      "hard": "硬",
+      "title": "字号选择决策树",
+      "line": 344,
+      "chars": 1192,
+      "read": "on-demand",
+      "gate": [
+        "font.family",
+        "text.layer"
+      ]
+    },
+    {
+      "id": "web-1.1c",
+      "end": "web",
+      "section": "1.1c",
+      "level": 3,
+      "hard": "软",
+      "title": "页面 species 正交维度 + register 口径（新增 · C-3/C-4）",
+      "line": 368,
+      "chars": 906,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "web-2",
+      "end": "web",
+      "section": "2",
+      "level": 2,
+      "hard": "硬",
+      "title": "禁止清单 Anti-Patterns",
+      "line": 388,
+      "chars": 950,
+      "read": "on-demand",
+      "gate": [
+        "D-2",
+        "D-3"
+      ]
+    },
+    {
+      "id": "web-2.1",
+      "end": "web",
+      "section": "2.1",
+      "level": 3,
+      "hard": "硬",
+      "title": "❌ 绝对禁止",
+      "line": 390,
+      "chars": 606,
+      "read": "on-demand",
+      "gate": [
+        "M-01",
+        "M-03"
+      ]
+    },
+    {
+      "id": "web-2.2",
+      "end": "web",
+      "section": "2.2",
+      "level": 3,
+      "hard": "软",
+      "title": "⚠️ 不推荐",
+      "line": 404,
+      "chars": 314,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "web-3",
+      "end": "web",
+      "section": "3",
+      "level": 2,
+      "hard": "硬",
+      "title": "组件状态机",
+      "line": 416,
+      "chars": 8501,
+      "read": "on-demand",
+      "gate": [
+        "D-13"
+      ]
+    },
+    {
+      "id": "web-3.1",
+      "end": "web",
+      "section": "3.1",
+      "level": 3,
+      "hard": "硬",
+      "title": "按钮 Button States",
+      "line": 418,
+      "chars": 800,
+      "read": "on-demand",
+      "gate": [
+        "M-02",
+        "R-01"
+      ]
+    },
+    {
+      "id": "web-3.2",
+      "end": "web",
+      "section": "3.2",
+      "level": 3,
+      "hard": "软",
+      "title": "输入框 Input States",
+      "line": 437,
+      "chars": 235,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "web-3.3",
+      "end": "web",
+      "section": "3.3",
+      "level": 3,
+      "hard": "硬",
+      "title": "表格行 Table Row States",
+      "line": 445,
+      "chars": 1023,
+      "read": "on-demand",
+      "gate": [
+        "table.row.selected.cue",
+        "table.row.state.classname"
+      ]
+    },
+    {
+      "id": "web-3.3b",
+      "end": "web",
+      "section": "3.3b",
+      "level": 3,
+      "hard": "硬",
+      "title": "表格列对齐语义（补强）⚠️ 必读",
+      "line": 462,
+      "chars": 2429,
+      "read": "on-demand",
+      "gate": [
+        "table.align",
+        "th.col"
+      ]
+    },
+    {
+      "id": "web-3.4",
+      "end": "web",
+      "section": "3.4",
+      "level": 3,
+      "hard": "软",
+      "title": "Tag 状态",
+      "line": 490,
+      "chars": 191,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "web-3.5",
+      "end": "web",
+      "section": "3.5",
+      "level": 3,
+      "hard": "硬",
+      "title": "状态指示灯 Status Light",
+      "line": 499,
+      "chars": 610,
+      "read": "on-demand",
+      "gate": [
+        "M-03"
+      ]
+    },
+    {
+      "id": "web-3.6",
+      "end": "web",
+      "section": "3.6",
+      "level": 3,
+      "hard": "软",
+      "title": "表面感知：选中态按底色分治 ⚠️ 必读",
+      "line": 513,
+      "chars": 1308,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "web-3.7",
+      "end": "web",
+      "section": "3.7",
+      "level": 3,
+      "hard": "硬",
+      "title": "组件 DOM 契约（补强）⚠️ 必读",
+      "line": 535,
+      "chars": 1888,
+      "read": "on-demand",
+      "gate": [
+        "class.undefined",
+        "components.json",
+        "css.override"
+      ]
+    },
+    {
+      "id": "web-4",
+      "end": "web",
+      "section": "4",
+      "level": 2,
+      "hard": "硬",
+      "title": "间距与布局规范速查",
+      "line": 555,
+      "chars": 6392,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "web-4.1",
+      "end": "web",
+      "section": "4.1",
+      "level": 3,
+      "hard": "硬",
+      "title": "核心间距 Token",
+      "line": 557,
+      "chars": 233,
+      "read": "on-demand",
+      "gate": [
+        "grid.4px"
+      ]
+    },
+    {
+      "id": "web-4.2",
+      "end": "web",
+      "section": "4.2",
+      "level": 3,
+      "hard": "硬",
+      "title": "固定布局常量",
+      "line": 569,
+      "chars": 418,
+      "read": "on-demand",
+      "gate": [
+        "grid.4px"
+      ]
+    },
+    {
+      "id": "web-4.3",
+      "end": "web",
+      "section": "4.3",
+      "level": 3,
+      "hard": "硬",
+      "title": "跨模块间距（补强）⚠️ 必读",
+      "line": 586,
+      "chars": 1051,
+      "read": "on-demand",
+      "gate": [
+        "grid.4px"
+      ]
+    },
+    {
+      "id": "web-4.4",
+      "end": "web",
+      "section": "4.4",
+      "level": 3,
+      "hard": "硬",
+      "title": "Grid 列内卡片高度对齐 + 表格空数据占位（补强）⚠️ 必读",
+      "line": 603,
+      "chars": 2156,
+      "read": "on-demand",
+      "gate": [
+        "grid.4px",
+        "scroll.container.height"
+      ]
+    },
+    {
+      "id": "web-4.4b",
+      "end": "web",
+      "section": "4.4b",
+      "level": 3,
+      "hard": "硬",
+      "title": "卡片高度诉求：定高卡 vs 弹性卡（补强）⚠️ 必读",
+      "line": 615,
+      "chars": 1231,
+      "read": "on-demand",
+      "gate": [
+        "scroll.container.height"
+      ]
+    },
+    {
+      "id": "web-4.4c",
+      "end": "web",
+      "section": "4.4c",
+      "level": 3,
+      "hard": "硬",
+      "title": "首屏预算守则（V11 新增 2026-08-27，订单总览实战：核心图表被视口底边拦腰切 53%）⚠️ 必读",
+      "line": 637,
+      "chars": 1282,
+      "read": "on-demand",
+      "gate": [
+        "grid.4px",
+        "scroll.container.height"
+      ]
+    },
+    {
+      "id": "web-5",
+      "end": "web",
+      "section": "5",
+      "level": 2,
+      "hard": "软",
+      "title": "Agent 生成 UI 时的检查清单",
+      "line": 667,
+      "chars": 1138,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "web-6",
+      "end": "web",
+      "section": "6",
+      "level": 2,
+      "hard": "硬",
+      "title": "Web 布局黄金法则（必读）",
+      "line": 701,
+      "chars": 1777,
+      "read": "on-demand",
+      "gate": [
+        "D-5",
+        "H-05"
+      ]
+    },
+    {
+      "id": "web-6.1",
+      "end": "web",
+      "section": "6.1",
+      "level": 3,
+      "hard": "硬",
+      "title": "布局骨架",
+      "line": 706,
+      "chars": 308,
+      "read": "on-demand",
+      "gate": [
+        "framework.fingerprint",
+        "template.clone.missing",
+        "template.root.sync"
+      ]
+    },
+    {
+      "id": "web-6.2",
+      "end": "web",
+      "section": "6.2",
+      "level": 3,
+      "hard": "软",
+      "title": "七条铁律",
+      "line": 718,
+      "chars": 582,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "web-6.3",
+      "end": "web",
+      "section": "6.3",
+      "level": 3,
+      "hard": "硬",
+      "title": "防溢出/错位生成检查清单（Must-Check）",
+      "line": 730,
+      "chars": 519,
+      "read": "on-demand",
+      "gate": [
+        "grid.4px",
+        "layout.inline.dimension",
+        "scroll.container.height"
+      ]
+    },
+    {
+      "id": "web-6.4",
+      "end": "web",
+      "section": "6.4",
+      "level": 3,
+      "hard": "软",
+      "title": "关键认知（写进 Agent 记忆）",
+      "line": 741,
+      "chars": 273,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "web-7",
+      "end": "web",
+      "section": "7",
+      "level": 2,
+      "hard": "软",
+      "title": "布局美学规范（新增 · 本地化改写自 ui-ux-pro-max 审美规则）⚠️ 必读",
+      "line": 752,
+      "chars": 6617,
+      "read": "must",
+      "gate": null
+    },
+    {
+      "id": "web-7.1",
+      "end": "web",
+      "section": "7.1",
+      "level": 3,
+      "hard": "软",
+      "title": "审美总则（工控美学三原则）",
+      "line": 759,
+      "chars": 236,
+      "read": "must",
+      "gate": null
+    },
+    {
+      "id": "web-7.2",
+      "end": "web",
+      "section": "7.2",
+      "level": 3,
+      "hard": "软",
+      "title": "构图（B 端看板/列表/详情页面）",
+      "line": 765,
+      "chars": 338,
+      "read": "must",
+      "gate": null
+    },
+    {
+      "id": "web-7.3",
+      "end": "web",
+      "section": "7.3",
+      "level": 3,
+      "hard": "软",
+      "title": "层次（字阶 + 对比度）",
+      "line": 777,
+      "chars": 332,
+      "read": "must",
+      "gate": null
+    },
+    {
+      "id": "web-7.4",
+      "end": "web",
+      "section": "7.4",
+      "level": 3,
+      "hard": "软",
+      "title": "密度留白",
+      "line": 788,
+      "chars": 231,
+      "read": "must",
+      "gate": null
+    },
+    {
+      "id": "web-7.5",
+      "end": "web",
+      "section": "7.5",
+      "level": 3,
+      "hard": "软",
+      "title": "色彩克制",
+      "line": 798,
+      "chars": 175,
+      "read": "must",
+      "gate": null
+    },
+    {
+      "id": "web-7.5b",
+      "end": "web",
+      "section": "7.5b",
+      "level": 3,
+      "hard": "软",
+      "title": "WCAG 2.0 前景/背景色使用（与移动端 §10.3b 对称）",
+      "line": 807,
+      "chars": 817,
+      "read": "must",
+      "gate": null
+    },
+    {
+      "id": "web-7.6",
+      "end": "web",
+      "section": "7.6",
+      "level": 3,
+      "hard": "软",
+      "title": "视觉反馈与层级",
+      "line": 825,
+      "chars": 305,
+      "read": "must",
+      "gate": null
+    },
+    {
+      "id": "web-7.7",
+      "end": "web",
+      "section": "7.7",
+      "level": 3,
+      "hard": "软",
+      "title": "反廉价清单（Anti-Patterns，生成后自查）",
+      "line": 835,
+      "chars": 360,
+      "read": "must",
+      "gate": null
+    },
+    {
+      "id": "web-7.8",
+      "end": "web",
+      "section": "7.8",
+      "level": 3,
+      "hard": "软",
+      "title": "生成后视觉自检闭环（必做）",
+      "line": 846,
+      "chars": 209,
+      "read": "must",
+      "gate": null
+    },
+    {
+      "id": "web-7.9",
+      "end": "web",
+      "section": "7.9",
+      "level": 3,
+      "hard": "软",
+      "title": "页面级自造类守则（拍板修订 v2：与移动端 §10.10 对称·解禁视觉属性·禁覆写真源·门禁落地）⚠️ 必读",
+      "line": 854,
+      "chars": 3329,
+      "read": "must",
+      "gate": [
+        "D-8"
+      ]
+    },
+    {
+      "id": "web-8",
+      "end": "web",
+      "section": "8",
+      "level": 2,
+      "hard": "硬",
+      "title": "动效与交互自动添加（拍板：页面生成即携带交互）⚠️ 必读",
+      "line": 923,
+      "chars": 1262,
+      "read": "on-demand",
+      "gate": [
+        "M-07"
+      ]
+    },
+    {
+      "id": "web-9",
+      "end": "web",
+      "section": "9",
+      "level": 2,
+      "hard": "软",
+      "title": "图表自建范式（重构：「样式 + 结果约束」——实现放开，结果锁死）⚠️ 必读",
+      "line": 959,
+      "chars": 4223,
+      "read": "must",
+      "gate": null
+    },
+    {
+      "id": "mobile-1",
+      "end": "mobile",
+      "section": "1",
+      "level": 2,
+      "hard": "软",
+      "title": "组件选择决策树",
+      "line": 72,
+      "chars": 7632,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-1.1",
+      "end": "mobile",
+      "section": "1.1",
+      "level": 3,
+      "hard": "软",
+      "title": "页面级组件选型",
+      "line": 74,
+      "chars": 512,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-1.1b",
+      "end": "mobile",
+      "section": "1.1b",
+      "level": 3,
+      "hard": "软",
+      "title": "页面类型规格（2026-08-06：pages/*.md 已删除并入本节 ⚠️ 必读）",
+      "line": 104,
+      "chars": 2771,
+      "read": "must",
+      "gate": [
+        "D-1"
+      ]
+    },
+    {
+      "id": "mobile-1.1c",
+      "end": "mobile",
+      "section": "1.1c",
+      "level": 3,
+      "hard": "软",
+      "title": "页面 species 正交维度 + register 口径（2026-09-23 新增 · C-3/C-4）",
+      "line": 156,
+      "chars": 835,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-1.2",
+      "end": "mobile",
+      "section": "1.2",
+      "level": 3,
+      "hard": "软",
+      "title": "组件粒度选型",
+      "line": 175,
+      "chars": 1055,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-1.3",
+      "end": "mobile",
+      "section": "1.3",
+      "level": 3,
+      "hard": "硬",
+      "title": "色彩选择决策树",
+      "line": 230,
+      "chars": 1163,
+      "read": "on-demand",
+      "gate": [
+        "M-01",
+        "token.undefined"
+      ]
+    },
+    {
+      "id": "mobile-1.4",
+      "end": "mobile",
+      "section": "1.4",
+      "level": 3,
+      "hard": "软",
+      "title": "字号选择决策树",
+      "line": 280,
+      "chars": 716,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-2",
+      "end": "mobile",
+      "section": "2",
+      "level": 2,
+      "hard": "硬",
+      "title": "禁止清单 Anti-Patterns",
+      "line": 320,
+      "chars": 1144,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-2.1",
+      "end": "mobile",
+      "section": "2.1",
+      "level": 3,
+      "hard": "硬",
+      "title": "❌ 绝对禁止",
+      "line": 322,
+      "chars": 755,
+      "read": "on-demand",
+      "gate": [
+        "M-01",
+        "M-03"
+      ]
+    },
+    {
+      "id": "mobile-2.2",
+      "end": "mobile",
+      "section": "2.2",
+      "level": 3,
+      "hard": "软",
+      "title": "⚠️ 不推荐",
+      "line": 336,
+      "chars": 359,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-3",
+      "end": "mobile",
+      "section": "3",
+      "level": 2,
+      "hard": "硬",
+      "title": "组件状态机",
+      "line": 348,
+      "chars": 5709,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-3.1",
+      "end": "mobile",
+      "section": "3.1",
+      "level": 3,
+      "hard": "硬",
+      "title": "按钮 Button States",
+      "line": 350,
+      "chars": 945,
+      "read": "on-demand",
+      "gate": [
+        "M-02"
+      ]
+    },
+    {
+      "id": "mobile-3.2",
+      "end": "mobile",
+      "section": "3.2",
+      "level": 3,
+      "hard": "软",
+      "title": "输入框 Input States",
+      "line": 382,
+      "chars": 980,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-3.3",
+      "end": "mobile",
+      "section": "3.3",
+      "level": 3,
+      "hard": "软",
+      "title": "列表项 List Item States",
+      "line": 414,
+      "chars": 502,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-3.4",
+      "end": "mobile",
+      "section": "3.4",
+      "level": 3,
+      "hard": "软",
+      "title": "Tag 标签状态",
+      "line": 426,
+      "chars": 360,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-3.5",
+      "end": "mobile",
+      "section": "3.5",
+      "level": 3,
+      "hard": "硬",
+      "title": "组件 DOM 契约（移动端版，2026-08-04 补强）⚠️ 必读",
+      "line": 436,
+      "chars": 2905,
+      "read": "on-demand",
+      "gate": [
+        "class.undefined",
+        "components.json",
+        "css.override"
+      ]
+    },
+    {
+      "id": "mobile-4",
+      "end": "mobile",
+      "section": "4",
+      "level": 2,
+      "hard": "硬",
+      "title": "间距与布局规范速查",
+      "line": 488,
+      "chars": 5594,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-4.1",
+      "end": "mobile",
+      "section": "4.1",
+      "level": 3,
+      "hard": "硬",
+      "title": "核心间距 Token",
+      "line": 490,
+      "chars": 348,
+      "read": "on-demand",
+      "gate": [
+        "grid.4px"
+      ]
+    },
+    {
+      "id": "mobile-4.2",
+      "end": "mobile",
+      "section": "4.2",
+      "level": 3,
+      "hard": "硬",
+      "title": "固定布局常量",
+      "line": 501,
+      "chars": 452,
+      "read": "on-demand",
+      "gate": [
+        "grid.4px"
+      ]
+    },
+    {
+      "id": "mobile-4.3",
+      "end": "mobile",
+      "section": "4.3",
+      "level": 3,
+      "hard": "硬",
+      "title": "HTML 预览结构契约（手机壳，2026-08-04）",
+      "line": 516,
+      "chars": 3918,
+      "read": "on-demand",
+      "gate": [
+        "html.structure.body",
+        "html.structure.pairing",
+        "template.root.sync"
+      ]
+    },
+    {
+      "id": "mobile-4.4",
+      "end": "mobile",
+      "section": "4.4",
+      "level": 3,
+      "hard": "硬",
+      "title": "HTML 预览交互演示清单（必读，2026-08-04 新增）",
+      "line": 540,
+      "chars": 855,
+      "read": "on-demand",
+      "gate": [
+        "html.structure.body",
+        "html.structure.bottomnav"
+      ]
+    },
+    {
+      "id": "mobile-5",
+      "end": "mobile",
+      "section": "5",
+      "level": 2,
+      "hard": "软",
+      "title": "平台差异对照表",
+      "line": 560,
+      "chars": 1376,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-6",
+      "end": "mobile",
+      "section": "6",
+      "level": 2,
+      "hard": "软",
+      "title": "数据字段映射表",
+      "line": 583,
+      "chars": 1656,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-6.1",
+      "end": "mobile",
+      "section": "6.1",
+      "level": 3,
+      "hard": "软",
+      "title": "设备领域实体",
+      "line": 585,
+      "chars": 1456,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-6.2",
+      "end": "mobile",
+      "section": "6.2",
+      "level": 3,
+      "hard": "软",
+      "title": "列表 → 详情页数据传递",
+      "line": 625,
+      "chars": 181,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-7",
+      "end": "mobile",
+      "section": "7",
+      "level": 2,
+      "hard": "软",
+      "title": "Agent 生成 UI 时的检查清单",
+      "line": 638,
+      "chars": 1133,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-8",
+      "end": "mobile",
+      "section": "8",
+      "level": 2,
+      "hard": "硬",
+      "title": "屏幕自动布局黄金法则（防溢出必读）",
+      "line": 678,
+      "chars": 2331,
+      "read": "on-demand",
+      "gate": [
+        "D-7"
+      ]
+    },
+    {
+      "id": "mobile-8.1",
+      "end": "mobile",
+      "section": "8.1",
+      "level": 3,
+      "hard": "硬",
+      "title": "屏幕搭建骨架（Screen Assembly Skeleton）",
+      "line": 682,
+      "chars": 699,
+      "read": "on-demand",
+      "gate": [
+        "grid.4px",
+        "scroll.container.height"
+      ]
+    },
+    {
+      "id": "mobile-8.2",
+      "end": "mobile",
+      "section": "8.2",
+      "level": 3,
+      "hard": "硬",
+      "title": "七条铁律",
+      "line": 698,
+      "chars": 771,
+      "read": "on-demand",
+      "gate": [
+        "grid.4px"
+      ]
+    },
+    {
+      "id": "mobile-8.3",
+      "end": "mobile",
+      "section": "8.3",
+      "level": 3,
+      "hard": "硬",
+      "title": "防溢出生成检查清单（Must-Check，生成后逐项过）",
+      "line": 710,
+      "chars": 526,
+      "read": "on-demand",
+      "gate": [
+        "grid.4px",
+        "scroll.container.height"
+      ]
+    },
+    {
+      "id": "mobile-8.4",
+      "end": "mobile",
+      "section": "8.4",
+      "level": 3,
+      "hard": "软",
+      "title": "关键认知（写进 Agent 记忆）",
+      "line": 721,
+      "chars": 265,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-9",
+      "end": "mobile",
+      "section": "9",
+      "level": 2,
+      "hard": "硬",
+      "title": "组件体系规格（2026-08-04 按 Design System 参考图补齐）⚠️ 必读",
+      "line": 732,
+      "chars": 6893,
+      "read": "on-demand",
+      "gate": [
+        "D-4",
+        "D-9"
+      ]
+    },
+    {
+      "id": "mobile-9.1",
+      "end": "mobile",
+      "section": "9.1",
+      "level": 3,
+      "hard": "软",
+      "title": "按钮体系（图2「按钮 / Button」参考）",
+      "line": 736,
+      "chars": 633,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-9.2",
+      "end": "mobile",
+      "section": "9.2",
+      "level": 3,
+      "hard": "软",
+      "title": "标签体系（图2 标签参考）",
+      "line": 751,
+      "chars": 400,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-9.3",
+      "end": "mobile",
+      "section": "9.3",
+      "level": 3,
+      "hard": "软",
+      "title": "弹窗体系（图3「弹窗 / Dialog」参考）",
+      "line": 764,
+      "chars": 619,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-9.4",
+      "end": "mobile",
+      "section": "9.4",
+      "level": 3,
+      "hard": "软",
+      "title": "导航体系（图4「导航 / Navigation」参考）",
+      "line": 775,
+      "chars": 650,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-9.5",
+      "end": "mobile",
+      "section": "9.5",
+      "level": 3,
+      "hard": "软",
+      "title": "列表卡片体系（图1 + 图5 参考）",
+      "line": 788,
+      "chars": 782,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-9.6",
+      "end": "mobile",
+      "section": "9.6",
+      "level": 3,
+      "hard": "硬",
+      "title": "页面区域划分（App 首页范式，2026-08-04 新增）⚠️ 必读",
+      "line": 801,
+      "chars": 1746,
+      "read": "on-demand",
+      "gate": [
+        "page.regions"
+      ]
+    },
+    {
+      "id": "mobile-9.7",
+      "end": "mobile",
+      "section": "9.7",
+      "level": 3,
+      "hard": "软",
+      "title": "图表布局规范（2026-08-07 重构：「样式 + 结果约束」——实现放开，结果锁死）⚠️ 必读",
+      "line": 825,
+      "chars": 1912,
+      "read": "must",
+      "gate": [
+        "D-9"
+      ]
+    },
+    {
+      "id": "mobile-10",
+      "end": "mobile",
+      "section": "10",
+      "level": 2,
+      "hard": "软",
+      "title": "布局美学规范（2026-08-04 新增 · 本地化改写自 ui-ux-pro-max 审美规则）⚠️ 必读",
+      "line": 854,
+      "chars": 10623,
+      "read": "must",
+      "gate": [
+        "D-12"
+      ]
+    },
+    {
+      "id": "mobile-10.0",
+      "end": "mobile",
+      "section": "10.0",
+      "level": 3,
+      "hard": "软",
+      "title": "排版四原则总纲（Robin Williams《写给大家看的设计书》，2026-08-05 引入）⚠️ 必读",
+      "line": 860,
+      "chars": 606,
+      "read": "must",
+      "gate": null
+    },
+    {
+      "id": "mobile-10.1",
+      "end": "mobile",
+      "section": "10.1",
+      "level": 3,
+      "hard": "软",
+      "title": "审美总则（工控美学三原则）",
+      "line": 873,
+      "chars": 213,
+      "read": "must",
+      "gate": null
+    },
+    {
+      "id": "mobile-10.2",
+      "end": "mobile",
+      "section": "10.2",
+      "level": 3,
+      "hard": "软",
+      "title": "构图（首屏分区 + 区域占比）",
+      "line": 879,
+      "chars": 296,
+      "read": "must",
+      "gate": null
+    },
+    {
+      "id": "mobile-10.3",
+      "end": "mobile",
+      "section": "10.3",
+      "level": 3,
+      "hard": "软",
+      "title": "层次（文字语义类，2026-08-04 升级：哪里改用什么层级）",
+      "line": 890,
+      "chars": 1107,
+      "read": "must",
+      "gate": null
+    },
+    {
+      "id": "mobile-10.3b",
+      "end": "mobile",
+      "section": "10.3b",
+      "level": 3,
+      "hard": "软",
+      "title": "前景/背景色使用（2026-08-05 终态：审美优先，WCAG 2.0 仅参考）",
+      "line": 917,
+      "chars": 1444,
+      "read": "must",
+      "gate": null
+    },
+    {
+      "id": "mobile-10.4",
+      "end": "mobile",
+      "section": "10.4",
+      "level": 3,
+      "hard": "软",
+      "title": "密度与留白",
+      "line": 946,
+      "chars": 1253,
+      "read": "must",
+      "gate": [
+        "D-5"
+      ]
+    },
+    {
+      "id": "mobile-10.5",
+      "end": "mobile",
+      "section": "10.5",
+      "level": 3,
+      "hard": "软",
+      "title": "色彩克制",
+      "line": 971,
+      "chars": 200,
+      "read": "must",
+      "gate": null
+    },
+    {
+      "id": "mobile-10.6",
+      "end": "mobile",
+      "section": "10.6",
+      "level": 3,
+      "hard": "软",
+      "title": "视觉反馈与层级（本地化自 ui-ux-pro-max Interaction/Stacking 类）",
+      "line": 980,
+      "chars": 1025,
+      "read": "must",
+      "gate": [
+        "D-7"
+      ]
+    },
+    {
+      "id": "mobile-10.7",
+      "end": "mobile",
+      "section": "10.7",
+      "level": 3,
+      "hard": "软",
+      "title": "审美基调参数（V/D/M，2026-08-04 本地化自 ui-pipeline 阶段 1，不引入外部 skill）",
+      "line": 1006,
+      "chars": 583,
+      "read": "must",
+      "gate": null
+    },
+    {
+      "id": "mobile-10.8",
+      "end": "mobile",
+      "section": "10.8",
+      "level": 3,
+      "hard": "软",
+      "title": "反廉价清单（Anti-Patterns，生成后自查）",
+      "line": 1018,
+      "chars": 364,
+      "read": "must",
+      "gate": null
+    },
+    {
+      "id": "mobile-10.9",
+      "end": "mobile",
+      "section": "10.9",
+      "level": 3,
+      "hard": "软",
+      "title": "生成后视觉自检闭环（必做）",
+      "line": 1029,
+      "chars": 267,
+      "read": "must",
+      "gate": null
+    },
+    {
+      "id": "mobile-10.10",
+      "end": "mobile",
+      "section": "10.10",
+      "level": 3,
+      "hard": "软",
+      "title": "页面级自造类守则（2026-08-06 拍板修订 v2：解禁视觉属性·禁覆写真源·门禁落地）⚠️ 必读",
+      "line": 1042,
+      "chars": 2961,
+      "read": "must",
+      "gate": null
+    },
+    {
+      "id": "mobile-11",
+      "end": "mobile",
+      "section": "11",
+      "level": 2,
+      "hard": "硬",
+      "title": "组件级样例表（2026-08-04 新增 · 提取自 antd-mobile + WeUI 观感基准）⚠️ 必读",
+      "line": 1110,
+      "chars": 5097,
+      "read": "on-demand",
+      "gate": [
+        "D-10"
+      ]
+    },
+    {
+      "id": "mobile-11.1",
+      "end": "mobile",
+      "section": "11.1",
+      "level": 3,
+      "hard": "软",
+      "title": "按钮（对照 antd-mobile Button）",
+      "line": 1115,
+      "chars": 256,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-11.2",
+      "end": "mobile",
+      "section": "11.2",
+      "level": 3,
+      "hard": "软",
+      "title": "标签 Tag（对照 antd-mobile Tag + WeUI）",
+      "line": 1125,
+      "chars": 234,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-11.3",
+      "end": "mobile",
+      "section": "11.3",
+      "level": 3,
+      "hard": "软",
+      "title": "列表（对照 WeUI Cells + antd-mobile List）",
+      "line": 1133,
+      "chars": 247,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-11.4",
+      "end": "mobile",
+      "section": "11.4",
+      "level": 3,
+      "hard": "软",
+      "title": "卡片 Card（对照 WeUI 极简观感）",
+      "line": 1141,
+      "chars": 265,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-11.5",
+      "end": "mobile",
+      "section": "11.5",
+      "level": 3,
+      "hard": "软",
+      "title": "输入框 Input（对照 antd-mobile Input）",
+      "line": 1150,
+      "chars": 182,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-11.6",
+      "end": "mobile",
+      "section": "11.6",
+      "level": 3,
+      "hard": "软",
+      "title": "弹窗 Dialog（对照 antd-mobile Dialog + WeUI）",
+      "line": 1157,
+      "chars": 217,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-11.7",
+      "end": "mobile",
+      "section": "11.7",
+      "level": 3,
+      "hard": "软",
+      "title": "字阶（对照 antd-mobile 10 级）",
+      "line": 1165,
+      "chars": 328,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-11.8",
+      "end": "mobile",
+      "section": "11.8",
+      "level": 3,
+      "hard": "软",
+      "title": "色彩应用理念（吸收 antd-mobile + WeUI，**不改现有颜色层级和值**）",
+      "line": 1176,
+      "chars": 1138,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-11.9",
+      "end": "mobile",
+      "section": "11.9",
+      "level": 3,
+      "hard": "软",
+      "title": "新增组件（2026-08-04 精细化补全，对齐 antd-mobile/WeUI）",
+      "line": 1191,
+      "chars": 652,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-11.10",
+      "end": "mobile",
+      "section": "11.10",
+      "level": 3,
+      "hard": "软",
+      "title": "对齐精细化铁律（2026-08-04 用户\"标签文字居中\"反馈）",
+      "line": 1201,
+      "chars": 559,
+      "read": "on-demand",
+      "gate": null
+    },
+    {
+      "id": "mobile-11.11",
+      "end": "mobile",
+      "section": "11.11",
+      "level": 3,
+      "hard": "硬",
+      "title": "状态点语义（2026-08-05 拍板①：机器状态独立语义）",
+      "line": 1215,
+      "chars": 836,
+      "read": "on-demand",
+      "gate": [
+        "D-10",
+        "M-03"
+      ]
+    }
+  ],
+  "loadPlans": {
+    "generate-web": {
+      "budget": 40000,
+      "items": [
+        {
+          "file": "AGENTS.md",
+          "whole": true
+        },
+        {
+          "file": "GENERATION-SOP.md",
+          "from": "## ① ",
+          "to": "## ② "
+        },
+        {
+          "file": "弘讯web端design-system/RULES.md",
+          "section": "1.1b"
+        },
+        {
+          "file": "弘讯web端design-system/RULES.md",
+          "section": "7"
+        },
+        {
+          "file": "弘讯web端design-system/RULES.md",
+          "section": "9"
+        },
+        {
+          "file": "弘讯web端design-system/tokens.json",
+          "jsonPath": "colors"
+        }
+      ]
+    },
+    "generate-mobile": {
+      "budget": 40000,
+      "items": [
+        {
+          "file": "AGENTS.md",
+          "whole": true
+        },
+        {
+          "file": "GENERATION-SOP.md",
+          "from": "## ① ",
+          "to": "## ② "
+        },
+        {
+          "file": "弘讯移动端design-system/RULES.md",
+          "section": "1.1b"
+        },
+        {
+          "file": "弘讯移动端design-system/RULES.md",
+          "section": "10"
+        },
+        {
+          "file": "弘讯移动端design-system/RULES.md",
+          "section": "9.7"
+        },
+        {
+          "file": "弘讯移动端design-system/tokens.json",
+          "jsonPath": "colors"
+        }
+      ]
+    }
+  }
+}

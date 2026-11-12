@@ -1097,7 +1097,7 @@
       "id": "breadcrumb",
       "name": "面包屑 Breadcrumb",
       "category": "导航",
-      "summary": "32px 高、N5 底条带、› 分隔；item N9/当前 N11；下方间距 16（页头组内 BASE 档，2026-08-12 由 LG 24 降档）。",
+      "summary": "32px 高、无底纯文本条（2026-11-12 拍板固定形式，取消 N5 底）、› 分隔；item N9/当前 N11；下方间距 16（页头组内 BASE 档）；分层页头紧凑档用 .breadcrumb--compact（下间距 8）。",
       "anatomy": {
         "bar": "面包屑条",
         "item": "层级项",
@@ -1105,19 +1105,17 @@
         "current": "当前页"
       },
       "tokens": [
-        "--n5",
         "--n8",
         "--n9",
         "--n11",
-        "--radius-base",
-        "--space-base"
+        "--space-base",
+        "--space-sm"
       ],
       "sizing": {
         "height": 32,
         "fontSize": 14,
-        "paddingH": 12,
-        "marginBottom": 16,
-        "radius": "base"
+        "paddingH": 0,
+        "marginBottom": 16
       },
       "states": {
         "item.default": {
@@ -1131,17 +1129,19 @@
         }
       },
       "variants": [
-        "基础（N5 底条带）"
+        "基础（无底纯文本）",
+        "compact（分层页头，下间距 8）"
       ],
-      "referenceCss": ".breadcrumb{display:flex;align-items:center;gap:8px;height:32px;padding:0 12px;background:var(--n5);border-radius:var(--radius-base);font-size:14px;font-family:var(--font-cn);margin-bottom:var(--space-base)}.breadcrumb-item{color:var(--n9);cursor:pointer}.breadcrumb-item[aria-current=\"page\"]{color:var(--n11);cursor:default}.breadcrumb-sep{color:var(--n8)}",
+      "referenceCss": ".breadcrumb{display:flex;align-items:center;gap:8px;height:32px;font-size:14px;font-family:var(--font-cn);margin-bottom:var(--space-base)}.breadcrumb--compact{margin-bottom:var(--space-sm)}.breadcrumb-item{color:var(--n9);cursor:pointer}.breadcrumb-item[aria-current=\"page\"]{color:var(--n11);cursor:default}.breadcrumb-sep{color:var(--n8)}",
       "referenceHtml": "<nav class=\"breadcrumb\"><span class=\"breadcrumb-item\">生产监控</span><span class=\"breadcrumb-sep\">›</span><span class=\"breadcrumb-item\" aria-current=\"page\">设备台账</span></nav>",
       "do": [
-        "32 高 / N5 底 / › 分隔",
+        "32 高 / 无底纯文本（2026-11-12 固定形式）/ › 分隔",
+        "分层页头紧凑间距用 .breadcrumb--compact（下 8，DS-20261112-04 回灌）",
         "当前页 aria-current=page",
         "下方间距 --space-base 16（页头组内档）"
       ],
       "dont": [
-        "无底色纯文本导航",
+        "加底色/边框/圆角胶囊（固定纯文本形式，2026-11-12 拍板）",
         "margin 用 --space-lg（模块间档，页头组内应 --space-base）"
       ]
     },
@@ -1475,6 +1475,65 @@
       "scope": "web",
       "rules": [],
       "notes": "2026-10-20 新增：详情页键值对；自适应列 min 240、行高 40、label 96/13/N9、value 14/N10 省略号。"
+    },
+    {
+      "id": "seg",
+      "name": "分段器 Segmented",
+      "category": "导航",
+      "summary": "两层 tab 内页二级切换：容器 N3 底胶囊高30、item 26/字12；选中 primary 实底白字 500。",
+      "anatomy": {
+        "container": "胶囊容器",
+        "item": "分段项",
+        "active": "选中项"
+      },
+      "tokens": [
+        "--n3",
+        "--n10",
+        "--primary",
+        "--text-on-brand"
+      ],
+      "sizing": {
+        "height": 30,
+        "itemHeight": 26,
+        "fontSize": 12,
+        "radius": 15
+      },
+      "states": {
+        "default": {
+          "text": "N10"
+        },
+        "hover": {
+          "text": "primary"
+        },
+        "active": {
+          "bg": "primary",
+          "text": "text-on-brand(白)",
+          "weight": 500
+        }
+      },
+      "variants": [
+        "基础"
+      ],
+      "referenceCss": ".seg{display:inline-flex;gap:2px;height:30px;padding:2px;background:var(--n3);border-radius:15px}.seg .item{height:26px;padding:0 14px;display:flex;align-items:center;font-size:12px;color:var(--n10);cursor:pointer;border-radius:13px}.seg .item.active{background:var(--primary);color:var(--text-on-brand);font-weight:500}",
+      "referenceHtml": "<div class=\"seg\"><div class=\"item active\">温度曲线</div><div class=\"item\">压力曲线</div><div class=\"item\">能耗曲线</div></div>",
+      "do": [
+        "容器高30/item26/字12",
+        "选中 primary 实底+白字 500",
+        "hover primary 字"
+      ],
+      "dont": [
+        "用于数据范围过滤（走 .filter-chip）",
+        "放进内容卡片内部（二级 tab 是标题类，在卡片外）",
+        "选中底色非 primary"
+      ],
+      "note": "2026-11-12 新增（两层 tab 方案 B 拍板）：内页页头分层形态的二级 tab。语义=内容视图切换，与 .filter-chip（数据过滤）形态同族但语义互斥，禁混用。布局见 RULES §1.1b 内页页头结构 / .tab-row。",
+      "motion": {
+        "transition": {
+          "property": "color",
+          "duration": "fast",
+          "easing": "ease-out"
+        }
+      }
     }
   ],
   "contract": [
@@ -2189,6 +2248,44 @@
           ],
           "severity": "HIGH",
           "note": "minRow 空数据占位行禁 hover（RULES §4.4 第 4 条）。行高由 .table td 继承 --density-row-height，占位提示文案走 N8。2026-11-12 沉淀真源 utilities.css 并 build 进 template.css，修复 DS-20261112-02。"
+        }
+      ]
+    },
+    {
+      "id": "seg.size",
+      "component": "seg",
+      "selector": [
+        ".seg"
+      ],
+      "scope": "web",
+      "exclude": [
+        ".item"
+      ],
+      "rules": [
+        {
+          "prop": "height",
+          "expect": 30,
+          "severity": "HIGH"
+        }
+      ]
+    },
+    {
+      "id": "seg.active",
+      "component": "seg",
+      "selector": [
+        ".seg .item.active"
+      ],
+      "scope": "web",
+      "rules": [
+        {
+          "prop": "font-weight",
+          "expect": 500,
+          "severity": "HIGH"
+        },
+        {
+          "prop": "background",
+          "expectToken": true,
+          "severity": "MEDIUM"
         }
       ]
     }

@@ -1,0 +1,36 @@
+{
+  "note": "人工确认的 章节 → 门禁 映射（2026-11-12）。只放 [硬] 叶子节；validate 规则名必须真实存在于对应端 validate-spec.js（check-reach 会验死映射）；audit 规则 id（M-/H-/D-/R-）由 audit-rules.json 校验。",
+  "web": {
+    "0.1a": ["logo.asset.format", "logo.asset.missing"],
+    "1.3": ["M-01", "token.undefined"],
+    "1.4": ["font.family", "text.layer"],
+    "2.1": ["M-01", "M-03"],
+    "3.3": ["table.row.selected.cue", "table.row.state.classname"],
+    "3.3b": ["table.align", "th.col"],
+    "3.5": ["M-03"],
+    "3.7": ["class.undefined", "css.override", "components.json"],
+    "4.1": ["grid.4px"],
+    "4.2": ["grid.4px"],
+    "4.3": ["grid.4px"],
+    "4.4": ["grid.4px", "scroll.container.height"],
+    "4.4b": ["scroll.container.height"],
+    "4.4c": ["scroll.container.height", "grid.4px"],
+    "6.1": ["framework.fingerprint", "template.clone.missing", "template.root.sync"],
+    "6.3": ["grid.4px", "scroll.container.height", "layout.inline.dimension"],
+    "8": ["M-07"]
+  },
+  "mobile": {
+    "1.3": ["M-01", "token.undefined"],
+    "2.1": ["M-01", "M-03"],
+    "3.1": ["M-02"],
+    "3.5": ["class.undefined", "css.override", "components.json"],
+    "4.1": ["grid.4px"],
+    "4.2": ["grid.4px"],
+    "4.3": ["html.structure.body", "html.structure.pairing", "template.root.sync"],
+    "4.4": ["html.structure.body", "html.structure.bottomnav"],
+    "8.1": ["scroll.container.height", "grid.4px"],
+    "8.2": ["grid.4px"],
+    "8.3": ["scroll.container.height", "grid.4px"],
+    "9.6": ["page.regions"]
+  }
+}

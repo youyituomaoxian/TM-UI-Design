@@ -346,7 +346,9 @@
 
 
 /* Breadcrumb 条（RULES §1.1b 规格：32 高 · N5 底 · › 分隔；下方间距 --space-base 16 页头组内档，2026-08-12 由 LG 24 降档） */
-.breadcrumb{display:flex;align-items:center;gap:8px;height:32px;padding:0 12px;background:var(--n5);border-radius:var(--radius-base);font-size:14px;font-family:var(--font-cn);margin-bottom:var(--space-base);}
+/* 分层页头紧凑变体（2026-11-12 拍板 8/12/16/16，DS-20261112-04 回灌）：面包屑→标题 8 */
+.breadcrumb--compact{margin-bottom:var(--space-sm);}
+.breadcrumb{display:flex;align-items:center;gap:8px;height:32px;font-size:14px;font-family:var(--font-cn);margin-bottom:var(--space-base);}
 .breadcrumb-item{color:var(--n9);cursor:pointer;}
 .breadcrumb-item[aria-current="page"]{color:var(--n11);cursor:default;}
 .breadcrumb-sep{color:var(--n8);}

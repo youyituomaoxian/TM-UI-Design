@@ -33,7 +33,7 @@
 4. 产出落盘：**「用户项目」的 `output/`**（不是本仓库；CSS link 指向本仓库对应端 `template.css`）。
 5. 门禁（风格合规才交付）：
    - 单页：`node 弘讯web端design-system/validate-spec.js <页面.html>`（移动端同理）→ 必须 **0 HIGH**
-   - 全链路：`node ci-local.js` → 必须全绿 **0 fail**（2026-09-10 起，含 audit 增量审计 + check-sync 一致性 + check-size 体积/清单封闭；项数以脚本实际输出为准）
+   - 全链路：`node ci-local.js` → 必须全绿 **0 fail**（2026-09-10 起，含 audit 增量审计 + check-sync 一致性 + check-size 体积/清单封闭 + check-reach 可达性；项数以脚本实际输出为准）
 
 ## 存量项目审查修改（路径二）
 
@@ -46,7 +46,7 @@
 
 ## 阅读策略（必读：按需读规范，禁止通读）
 
-> **加载预算：一次任务规范文本 ≤ 35k 字符**（2026-09-10 新增，纪律全表见 `GENERATION-SOP.md §0`：必读 3 项 / 不通读清单 / 章节索引 / 单点事实源 SSOT）。
+> **加载预算：一次任务（含入口）≤ 40k 字符**（2026-09-10 新增；并计入 AGENTS，纪律全表见 `GENERATION-SOP.md §0`：必读 3 项 / 不通读清单 / 章节索引 / 单点事实源 SSOT）。
 
 - **必读 3 项**：① `GENERATION-SOP.md` §①（存量改造读 §②）；② 对应端 `RULES.md` **命中章节**（按该文件页首「章节索引」挑；[软] 必读 / [硬] 按需，门禁兜底）；③ 对应端 `tokens.json` 的 `colors` 段（另：本 AGENTS.md 流程 + `§1.1b` 页面类型段按类型检索）。
 - **按需检索（用到才读）**：`CHART-SPEC.md`（含图表）｜`audit-rules.json`（审查/回灌/`issue_reporting`）｜`DESIGN-TOKENS.md`、`MASTER.md`（按章）｜SOP §③ 附录（按场景）。

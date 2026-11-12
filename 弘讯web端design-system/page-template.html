@@ -160,7 +160,7 @@
   .comp-title{font-size:14px;font-weight:500;color:var(--n11);margin-bottom:4px;}
   .comp-tokens{font-size:11px;color:var(--n8);font-family:var(--font-mono);margin-bottom:12px;}
   /* 7A（2026-08-03）：内联裸 px 尺寸合规化——尺寸进页面自身 <style>，inline style 禁裸 px（门禁 layout.inline.dimension） */
-  .topbar-logo .ico{width:32px;height:32px;}
+  .topbar-logo .ico{width:auto;height:32px;}
   .dp-panel .row{margin-bottom:8px;}
 </style>
 </head>
@@ -171,11 +171,9 @@
   <!-- 结构（左→右）：logo + 平台名 + 副标题 | spacer | 首页 / 用户名 / 修改密码 / 退出登录 / 全屏 -->
   <header class="topbar">
     <div class="topbar-brand">
-      <!-- logo 占位符（高度 32 固定、宽度自适应）：后期替换为项目 logo（img 或 svg），保持 .topbar-logo 容器不变 -->
+      <!-- 品牌 logo（RULES §0.1a：SVG 强制·高 32 宽自适应；品牌蓝底用白标版，assets/logo/ 真源取用，门禁 M-08） -->
       <span class="topbar-logo">
-        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
-        </svg>
+        <img class="ico" src="assets/logo/asset-logo-brand-white.svg" alt="Techmation">
       </span>
       <div class="topbar-titles">
         <span class="topbar-title">弘讯设计系统</span>

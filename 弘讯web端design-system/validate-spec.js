@@ -1970,6 +1970,27 @@ function checkIconSource(html, targetPath) {
   return violations;
 }
 
+// ===== 品牌 logo 资产门禁（2026-11-12，M-08）：一律 assets/logo/ SVG 真源、锁高宽自适应 =====
+// 位图禁用（RULES §0.1a）；展示页/_框架版/USAGE 豁免，data: URI 跳过。
+function checkLogoAsset(html, targetPath) {
+  const violations = [];
+  if (/(规范展示|_框架版|展示页测试|^USAGE\.html$)/.test(path.basename(targetPath))) return violations;
+  for (const m of stripScriptTags(html).matchAll(/<img[^>]*src=["']([^"']*logo[^"']*)["']/gi)) {
+    const src = m[1];
+    if (/^data:/i.test(src) || /logout/i.test(src)) continue;
+    if (!/\.svg(\?|#|$)/i.test(src)) {
+      violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'logo.asset.format', sel: 'img',
+        msg: `品牌 logo 引用位图 ${src}——logo 一律 SVG（必须带 viewBox 才能锁高宽自适应），从 assets/logo/ 真源取用（品牌蓝底白标 asset-logo-brand-white.svg 高 32 / 浅底彩标 asset-logo-brand.svg 高 40），PNG/JPG 仅限 favicon。见 RULES §0.1a / audit-rules M-08` });
+      continue;
+    }
+    const p = path.join(__dirname, src.replace(/^(\.\.\/)+/, '').split(/[?#]/)[0]);
+    if (!fs.existsSync(p)) {
+      violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'logo.asset.missing', sel: 'img',
+        msg: `logo 引用的 SVG 资产不存在：${src}——请从 assets/logo/ 真源取用（asset-logo-brand.svg 彩标 / asset-logo-brand-white.svg 白标），禁止自造 logo 文件。见 RULES §0.1a / audit-rules M-08` });
+    }
+  }
+  return violations;
+}
 // ===== SVG 绘制属性门禁（任务书 S，2026-08-03）：stroke=/fill=/stop-color= 裸 hex 必须走 token =====
 // 分级与 forbidNonTokenHex 语义一致（领导拍板）：
 //   非调色板色（自造色）→ HIGH 阻断；调色板内色值（值对但没走 var）→ MEDIUM 提示。
@@ -2276,9 +2297,10 @@ function run(specPath, targetPath) {
   const scrollBodyV = inlineClone ? [] : checkScrollGlobalBody(html, selfCss);
   // 图标来源门禁（2026-08-07，阶段 3）：内联 SVG path 未命中 icons/ 库 → MED（展示页/USAGE 豁免）
   const iconSrcV = checkIconSource(html, targetPath);
+  const logoV = checkLogoAsset(html, targetPath);
   // KPI 仅两版门禁（2026-08-06 定稿）：简约版（stat-num/stat-sub 独立卡、无 kpi-ico / stat-card--icon / stat-card--ring）已删除，Agent 生成简约版即 HIGH 拦截
   const kpiV = checkKpiSimple(html);
-  return violations.concat(chartSeriesV, rootV, surfaceV, iconV, treeCollapsedV, treeBranchV, treePopoverV, treePartialV, darkOverrideV, whitelistV, tokenV, motionV, chartV, svgV, topbarV, dimV, btnLabelV, btnVarV, statGridV, chartFillV, chartLayoutV, chartValueV, chartBaselineV, templateSyncV, moduleSpacingV, tableMinRowV, tableAlignV, tablePagerV, tableRowStateV, cardFillV, mobileV, webAesV, wcagV, gridV, overrideV, customV, kpiV, svgVarV, scrollV, cloneV, fpV, scrollBodyV, iconSrcV, fontV, tblBudgetV);
+  return violations.concat(chartSeriesV, rootV, surfaceV, iconV, treeCollapsedV, treeBranchV, treePopoverV, treePartialV, darkOverrideV, whitelistV, tokenV, motionV, chartV, svgV, topbarV, dimV, btnLabelV, btnVarV, statGridV, chartFillV, chartLayoutV, chartValueV, chartBaselineV, templateSyncV, moduleSpacingV, tableMinRowV, tableAlignV, tablePagerV, tableRowStateV, cardFillV, mobileV, webAesV, wcagV, gridV, overrideV, customV, kpiV, svgVarV, scrollV, cloneV, fpV, scrollBodyV, iconSrcV, logoV, fontV, tblBudgetV);
 }
 
 // ===== 柱状图柱顶数值门禁（2026-08-06：示例页柱状图缺 .chart-v → 柱子无数据标签，门禁此前未查）=====

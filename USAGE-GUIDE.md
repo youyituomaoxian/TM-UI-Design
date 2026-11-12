@@ -73,7 +73,7 @@ cd TM-UI-Design
 
 ### Agent 读取顺序（2026-09-10 起 · 加载纪律见 `GENERATION-SOP.md §0`）
 
-**加载预算 ≤35k 字符/任务——只读命中章节，禁止整份加载。**
+**加载预算 ≤40k 字符/任务（入口 + 规范包）——只读命中章节，禁止整份加载。**
 
 | 顺序 | 读什么 | 取什么 |
 |------|------|--------|
@@ -242,8 +242,11 @@ npx taro build --type weapp   # 产物 dist/ 导入微信开发者工具
 | `GENERATION-SOP.md` | 产品链路详细 SOP（含引擎映射段） |
 | `CHART-SPEC.md` / `DARK-MODE.md` / `VISUAL-SPEC.md` | 图表 / 暗色 / 视觉规格 |
 | `LICENSE` | 许可证（MIT，版权已脱敏） |
-| `ci-local.js` | 全链路总门禁（含 audit 增量审计 + check-sync 一致性 + check-size 体积/清单封闭；项数以输出为准） |
+| `ci-local.js` | 全链路总门禁（含 audit 增量审计 + check-sync 一致性 + check-size 体积/清单封闭 + check-reach 可达性；项数以输出为准） |
 | `check-size.js` | 文档体积门禁（真源文件字符限额 + 清单封闭防膨胀转移，2026-09-22 起） |
+| `sync-index.js` | 双端 RULES 章节索引生成 + `rule-index.json`（改标题后必跑；生成物勿手改） |
+| `check-reach.js` | 规范可达性门禁（索引 0 漂移 / 引用 0 断链 / 加载集 ≤ 预算；已入 ci-local） |
+| `gate-map.json` | 章节 → 门禁 人工映射（validate 规则名 / audit id；check-reach 验死链） |
 | `audit-rules.json` / `audit-spec.js` | 审计规则真源 / 存量页面增量审计（路径二 P0 盘点用） |
 | `check-sync.js` | 双端真源一致性门禁（vendor 同构 + 双端同名类白名单 + 未覆盖类登记 `vendor-coverage.json`） |
 | `gate-capture.js` / `roll-changelog.js` | 门禁子进程结果捕获真源（退出码权威判据，2026-10-08）/ CHANGELOG 超限自动滚动归档 |

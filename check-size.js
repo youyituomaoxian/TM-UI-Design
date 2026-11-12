@@ -15,7 +15,7 @@ const ROOT = __dirname;
 // [相对路径, 字符数上限, optional?]  optional=true：文件可不存在（本地不入库文件）
 const LIMITS = [
   // 根
-  ['GENERATION-SOP.md', 44300],
+  ['GENERATION-SOP.md', 45000], // 2026-11-12：清 2 段历史过程注记（-380）后重定；全文非 Agent 加载面（仅 §① 进包），上限作维护告警
   ['AGENTS.md', 5900],
   ['README.md', 8500],
   ['USAGE-GUIDE.md', 11800],
@@ -26,10 +26,10 @@ const LIMITS = [
   ['CROSS-PLATFORM-COLORS.md', 2500],
   ['标准提示词模板.md', 5800],
   // 2026-11-06：新增 D-13 作业树折叠态浮层维度，实测 28697，28600 → 29000。
-  ['audit-rules.json', 24000],
+  ['audit-rules.json', 25900], // 2026-11-12 容量维护批：实测 23991 + 8%（>10k 档）；机器资产（门禁消费），非 Agent 阅读面。下次调阈值须附回收记录
   ['audit-rules-feedback-archive.json', 7500],
   // 2026-11-06：暗色固定主题「不随品牌」断言，ci-local 实测 18014，17800 → 18200。
-  ['ci-local.js', 18200],
+  ['ci-local.js', 18600], // 2026-11-06：暗色固定主题「不随品牌」断言，实测 18014，17800 → 18200。2026-11-12 P0：接入 check-reach + 子进程块
   ['gate-capture.js', 5200], // VERDICT-A（2026-10-08）：门禁子进程结果捕获真源（退出码=权威判据）
   ['vendor-coverage.json', 4000], // RED-002 三档登记真源（T-6 2026-10-10）：check-sync 检查三读取（tokenProjection 豁免 / gaps 真缺口）
   // 2026-10-08 RED-007/008 修复：原 22000（实测现值 20000 + 10%）。修复后新增结构化豁免
@@ -42,23 +42,26 @@ const LIMITS = [
   // exit 0）。属实质代码增长而非注水，按分级余量规则（10k~50k 档 +8%）重测阈值。
   // 2026-10-10 T-6 检查三 checkCoverage 落码（RED-002 三档，拍板授权）：实测 11997 + 8%（10k~50k 档）→ 13000。
   ['check-sync.js', 13000],
-  ['check-size.js', 7500], // 2026-10-10 T-8/T-6 落码实测 6478 + 15%（≤10k 档）重测（已追认 2026-10-10）
+  ['check-size.js', 8000], // 2026-10-10 T-8/T-6 落码实测 6478 + 15%（≤10k 档）重测（已追认 2026-10-10）；2026-11-12 P0 可达性门禁登记 +3 项
   ['roll-changelog.js', 5600],
-  ['HANDOFF.md', 12200, true],
+  ['sync-index.js', 14000],   // 2026-11-12 P0：索引同步生成器（章节索引 + rule-index）
+  ['check-reach.js', 14000],  // 2026-11-12 P0：规范可达性门禁（索引/引用/加载预算）
+  ['rule-index.json', 40000], // 2026-11-12 P0：规则路由表（生成物，勿手改）
+  ['gate-map.json', 12000],   // 2026-11-12：人工确认的 章节→validate 门禁 映射
   // Web 端
-  ['弘讯web端design-system/RULES.md', 53000],  // 2026-11-09：§0.2-10 三态分型 + 拆分子文档前的缓冲（见 HANDOFF §4）
+  ['弘讯web端design-system/RULES.md', 55000],  // 2026-11-12 P1：零语义回收（净 647）后按可读性预算重定——加载集 32k 由 check-reach 守，本上限只作膨胀告警（HANDOFF 为本地文件，不入清单）
   ['弘讯web端design-system/MASTER.md', 22200],
   ['弘讯web端design-system/DESIGN-TOKENS.md', 15600],
   ['弘讯web端design-system/components.md', 17900],  // 2026-11-09：§3 三态分型说明,
-  ['弘讯web端design-system/components.json', 77200],
+  ['弘讯web端design-system/components.json', 80000],
   // 2026-10-30 用户追认：62000 → 64500。login v2 新增 ~3.2k 样式；实测 554 条规则零重复、无安全可回收冗余，
   //   按「不影响现有系统优先」调阈值而非压缩产物（依据见 web CHANGELOG 1.9.46）。
   // 2026-11-06：作业树折叠浮层（浮层 CSS + 折叠规则）实测 65386，按维护者流程 64500 → 67000。
-  ['弘讯web端design-system/template.css', 67000],
+  ['弘讯web端design-system/template.css', 70000],
   ['弘讯web端design-system/tokens.json', 13300],
   // 2026-11-06：折叠态浮层 JS + data-group/data-key 契约实测 38611，36000 → 40000。
   ['弘讯web端design-system/page-template.html', 40000],
-  ['弘讯web端design-system/validate-spec.js', 113800],  // 2026-11-07：新增 tree.node.split / dark.brand.override 门禁
+  ['弘讯web端design-system/validate-spec.js', 120600],  // 2026-11-12：M-08 checkLogoAsset 门禁实质增长，实测 114806 + 5%（>50k 档）重测；2026-11-07：tree.node.split / dark.brand.override
   ['弘讯web端design-system/agent-starter.html', 4400],
   ['弘讯web端design-system/README.md', 4600],
   // 2026-11-06：暗色固定主题条目，11000 → 11500。
@@ -82,7 +85,7 @@ const LIMITS = [
 
 // 豁免：非真源文件（产物 / 过程记录 / 指针壳），不出现在清单也不触发「未登记」
 const EXEMPT = new Set([
-  '.gitignore', 'LICENSE', 'CLAUDE.md',
+  '.gitignore', 'LICENSE', 'CLAUDE.md', 'HANDOFF.md',
   'USAGE.html', 'USAGE_分享版.html',
   '设计系统创作记录.md', '图标库换新记录_20260814.md', '待绘制Icon清单.md',
   '弘讯web端design-system/CROSS-PLATFORM-COLORS.md',

@@ -35,8 +35,12 @@
 ├── audit-spec.js                   # 存量页面增量审计（M-01~03/M-06，--end web|mobile，HIGH>0 exit 1）
 ├── check-sync.js                   # 双端真源一致性门禁（vendor↔template 同构 + 双端同名类白名单比对 + 未覆盖类登记闭环）
 ├── templates/                      # 应用侧可复制模板（设计系统问题报告模板.md — issue_reporting 制度的 template_file）
-├── ci-local.js                     # 全链路自检（全绿 exit 0，含 audit + check-sync + check-size 阻断；项数以输出为准）
+├── ci-local.js                     # 全链路自检（全绿 exit 0，含 audit + check-sync + check-size + check-reach 阻断；项数以输出为准）
 ├── check-size.js                   # 文档体积门禁（真源文件字符限额 + 清单封闭防膨胀转移，2026-09-22）
+├── sync-index.js                   # 双端 RULES 章节索引生成 + rule-index.json（改标题后必跑，生成物勿手改）
+├── check-reach.js                  # 规范可达性门禁（索引 0 漂移 / 引用 0 断链 / 加载集 ≤ 预算，已入 ci-local）
+├── rule-index.json                 # 规则路由表（生成物，由 sync-index.js 维护）
+├── gate-map.json                   # 章节 → 门禁 人工映射（check-reach 验死链）
 ├── roll-changelog.js               # CHANGELOG 自动滚动归档（主文件超限滚最旧条目入 archive，2026-09-23）
 ├── gate-capture.js                 # 门禁子进程结果捕获真源（退出码权威 + 文件 fd 捕获，VERDICT-A 修复 2026-10-08）
 ├── vendor-coverage.json            # check-sync 检查三登记真源（RED-002 三档：tokenProjection 豁免 / gaps 真缺口，2026-10-10）
