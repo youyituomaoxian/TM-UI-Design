@@ -2,10 +2,10 @@
   "$meta": {
     "title": "弘讯设计系统 · 审计规则真源（audit-rules）",
     "version": "1.8.0",
-    "updated": "2026-11-12",
+    "updated": "2026-11-13",
     "purpose": "存量项目按弘讯设计系统改造时的单一审计真源。RULES.md 管生成语义（怎么写），本文件管审计语义（怎么查）：每条规则声明 判定谓词 / 严重级 / 可判定性 / 修复策略。机器类规则由 audit-spec.js 与 validate-spec.js 执行，运行时类由截图×状态验证，语义类由 agent+人审查。三层互补，缺一不可。",
-    "scope_note": "⚠️ 两种审查场景，归因逻辑不同（2026-09-10 用户澄清）：① 弘讯内项目缺陷审计（项目有义务合规）→ 用 P1 归因二分法（设计系统问题 or 执行问题）+ machine_rules 违规检测；② 外部项目迁移改造（项目不是弘讯生成的，审查目的=找出视觉不符合处并改成符合）→ 归因只有一种『未对齐弘讯规范』，决策点=映射到什么（哪个 token/组件类/字阶），用 migration_dimensions 维度对照清单逐层盘点。两层规则互补：M 层抓硬违规（迁移时同样要清零），D 层管维度映射。",
-    "change_policy": "新增规则必须经『设计系统问题报告』进入，执行**单向报告流**（2026-09-10 用户拍板，替代旧『应用侧强制回灌』语义——旧语义要求无真源写权的角色执行写入，与真源治理契约冲突；**同日二次拍板全量泛化**：报告流的输入**不只是审计漏检**，应用侧在从零生成（SOP §①）/ 存量改造（§②）/ 日常使用中发现的任何被归因为**设计系统问题**的发现（真源/规范缺失、token/组件/图标缺口、门禁漏洞、文档缺陷）均按 `issue_reporting` 制度记录并可反馈；审计漏检是本制度的 machine 层特例。执行问题（规范已写、执行跑偏）不进报告——应用侧直接改页面）：① **应用侧义务 = 归因 + 记录 + 按严重级提请转交**：先归因二分，设计系统问题落盘自己项目 `output/设计系统问题_*.md`（schema 见 issue_reporting），并在对话内声明请用户转交，禁碰真源；② **维护侧义务 = 被动消费报告并回灌**（2026-09-10 用户拍板：应用者反馈，不去打扰——不建应用项目注册表、不主动巡检）：收到用户转交的报告（或被 @）时，走维护者六步流程登记进本文件 feedback_log（条目必须带 report_source 字段记录来源报告路径，跨项目同题用 related_reports，保持双向对账闭环）与对应规则层，并产出回执三件套（报告状态栏回写 + feedback_log + 双端 CHANGELOG）；③ 维护者自己的维护会话可直接回灌。**规范-审查双向对账（2026-09-10 用户拍板，『全』的保证机制）**：migration_dimensions 每条必须带 ref 指回规范条目（指不回=伪维度，删）；规范真源新增条目（新 token section / 新组件 / 新 RULES 章节 / 新专项 spec）时，审查侧必须同步长出核对项（指不到=审查缺口，补 D 层）。审查清单是规范真源结构树的对偶投影，『全』随规范演进持续保证，不靠一次性经验枚举。"
+    "scope_note": "⚠️ 两种审查场景，归因逻辑不同（2026-09-10 澄清）：① 弘讯内项目缺陷审计 → P1 归因二分（设计系统问题 / 执行问题）+ machine_rules 检测；② 外部项目迁移改造 → 归因只有『未对齐弘讯规范』，决策点 = 映射到什么（token / 组件类 / 字阶），用 migration_dimensions 逐层盘点。M 层抓硬违规（迁移同样清零），D 层管维度映射。",
+    "change_policy": "新增规则必须经『设计系统问题报告』进入，执行**单向报告流**（2026-09-10 拍板，替代旧『应用侧强制回灌』；输入不限于审计漏检：从零生成 / 存量改造 / 日常使用中任何归因为**设计系统问题**的发现——真源/规范缺失、token/组件/图标缺口、门禁漏洞、文档缺陷——均按 `issue_reporting` 记录；审计漏检是 machine 层特例。执行问题不进报告，应用侧直接改页面）：① **应用侧** = 归因 + 记录 + 按严重级提请转交，落盘自己项目 `output/设计系统问题_*.md`（schema 见 issue_reporting），禁碰真源；② **维护侧** = 被动消费并回灌：收到报告或被 @ 时走维护者六步，登记 feedback_log（必带 report_source，跨项目同题用 related_reports）并出回执三件套（报告状态栏 + feedback_log + 双端 CHANGELOG）；③ 维护者自己的维护会话可直接回灌。**规范-审查双向对账**：migration_dimensions 每条须带 ref 指回规范条目（指不回 = 伪维度，删）；规范新增条目时审查侧须同步长出核对项（指不到 = 审查缺口，补 D 层）——审查清单是规范结构树的对偶投影，『全』随演进保证。"
   },
   "layers": {
     "machine": "脚本全量召回（零漏检）。判定谓词完全可静态判定。audit-spec.js 覆盖增量审计规则，validate-spec.js 覆盖生成门禁规则。",
@@ -19,7 +19,7 @@
       "title": "CSS 裸 hex 字面量必须 token 化",
       "severity": "HIGH(非色板)/MEDIUM(色板内应改引用)",
       "scope": "目标 HTML 的 <style> 块 + inline style（script 剥离后）+ 渐变色标点（2026-09-10 扩展）",
-      "predicate": "出现 #RGB/#RRGGBB/#RRGGBBAA 字面量：∉ token 色板(toksens.json 全量 hex 叶子+白名单) → HIGH（自造色）；∈ 色板 → MEDIUM（合法色但必须改用 var(--token) 引用）。**渐变色标点（2026-09-10）**：linear-gradient/radial-gradient(...) 色标点内的 hex 同样参与判定，且白字豁免（#FFF）在色标点内不适用——渐变定义的是面/边界不是文字（11242 案例一：dist 面板头 linear-gradient(180deg,#fff 0%,var(--n2) 100%) 暗皮下露白顶，只查 backgroundColor 永远抓不到）。**色板定义行（2026-09-10 DS-20260910-01 题 1 吸收）**：声明属性名以 `--` 开头者（如 `.scope{--bg-deep:#hex}`）为**色板本体非用法** → 判 `css.vardef.hex` MEDIUM 清单级（不阻断，但须可见：核对能否映射弘讯 token / 回 tokens.json / exemptions 按块登记），不再判 HIGH——原实现把豁免绑在 `:root`/`[data-theme]` 选择器上（绑错维度），换作用域即误报「定义也违规、引用也违规」死锁；白字豁免在定义行照旧生效（防噪声）",
+      "predicate": "出现 #RGB/#RRGGBB/#RRGGBBAA：∉ token 色板 → HIGH（自造色）；∈ 色板 → MEDIUM（合法色须 `var()`）。**渐变色标点**：linear/radial-gradient 内 hex 同判，且白字豁免在色标点内不适用（渐变定义面/边界非文字；11242 案例一：dist 面板头渐变露白顶，只查 backgroundColor 抓不到）。**色板定义行**：属性名以 `--` 开头为**色板本体非用法** → `css.vardef.hex` MEDIUM（不阻断但须可见：能否映射 token / 回 tokens.json / exemptions 登记），不判 HIGH（原绑 `:root`/`[data-theme]` 属绑错维度，换作用域即误报死锁）；白字豁免在定义行照旧生效。",
       "exempt": [
         ":root{...} 与 [data-theme]{...} 令牌定义/投影区",
         "含 swatch 类或 data-audit-exempt 的行（色板展示区）",
@@ -72,7 +72,7 @@
       "title": "页面 <link> 引用的本地 CSS 资产纳入裸 hex 扫描（2026-09-10 新增）",
       "severity": "HIGH(自维护·自造色)/MEDIUM(自维护·色板内应改引用)/MEDIUM(冻结 dist 产物·硬编码清单)",
       "scope": "目标 HTML <link rel=stylesheet> 引用的本地 .css 文件（http(s) 外链不扫；同文件多引用去重）",
-      "predicate": "引用 CSS 内出现裸 hex：白字豁免仅适用于 color: 声明（文字白约定）；background/border 等面性声明中的 #fff 同样违规（11242 案例二：dist 分页条 background:#fff 白底横条，页面源码 0 裸 hex 是假阴性——脏值在被 <link> 引用的冻结 CSS 里）。**色板定义行出口（2026-09-10 DS-20260910-01 题 1 吸收）**：声明属性名以 `--` 开头者（`--x: <hex>`）判 `css.vardef.hex` **MEDIUM 清单级**、不判 HIGH——自维护合规层由此获得合法自建色板路径（定义可见 + 引用仍须 var()）；其余声明：路径含 dist / dist-static / vendor / node_modules / build → 冻结产物，降级 MEDIUM『dist 硬编码清单』供映射决策（dist 不可改，修法只能走合规层覆盖）；其余（如 tm-ui-design.css 等应用侧自维护合规层）按**色板内外分层**（2026-09-10 DS-20260910-01 题 3 吸收，与 M-01 同口径，防同一色值因所在文件不同而判级不一致）：∈ token 色板 → MEDIUM（合法色，但必须改用 var(--token) 引用，防漂移）；∉ 色板 → HIGH（自造色，须映射 token 或走 brand-color-engine 回 tokens.json）。**判级必须与文案一致**——v1.4.0 实现对色板内判 MEDIUM 却输出「维持 HIGH 口径」文案，属实现与规则自相矛盾（本次修正）",
+      "predicate": "引用 CSS 内出现裸 hex：白字豁免仅适用于 `color:`（文字白约定）；background/border 等面性声明的 #fff 同样违规（11242 案例二：冻结 CSS 里 `background:#fff` 白底横条 → 页面源码 0 裸 hex 属假阴性）。**色板定义行出口**：声明属性名以 `--` 开头（`--x: <hex>`）判 `css.vardef.hex` **MEDIUM 清单级**、不判 HIGH（合法自建色板路径：定义可见 + 引用仍须 `var()`）；其余声明：路径含 dist / dist-static / vendor / node_modules / build → 冻结产物，降级 MEDIUM『dist 硬编码清单』；其余（应用侧自维护合规层）按**色板内外分层**（与 M-01 同口径）：∈ token 色板 → MEDIUM（合法色须 `var()`）；∉ 色板 → HIGH（自造色，映射 token 或走 brand-color-engine）。**判级必须与文案一致**（v1.4.0 曾实现与文案矛盾，已修）。",
       "fix": "自维护 CSS 改 var(--token)；冻结 dist 缺陷禁止手改 dist——在页面/合规层用同优先级覆盖规则修正，并在台账登记映射决策",
       "implemented_in": "audit-spec.js（2026-09-10）"
     },
@@ -82,7 +82,7 @@
       "title": "节拍预算——一页最多一个 heavy 动效（2026-09-23 新增，finesse 借鉴 C-5）",
       "severity": "HIGH(超出预算的每个多余动画一条)",
       "scope": "目标 HTML 内 <style> 与 inline style 中的 animation / animation-name 声明；<link> 引用 CSS 不扫（template.css 规范动效属合法微交互，不计预算）",
-      "predicate": "页面内自声明的唯一 animation-name 去重计数 > 1 即超预算：animation 简写取第一个标识符；逗号多值逐个计数；none/inherit/initial/unset 不计；@keyframes 定义行不算引用；transition 不计（hover 微交互非 heavy 入场）。模板白名单（2026-09-23 误报修正）：命中对应端 template.css 真源动画名集合的引用不计预算——分享版产物内联真源 CSS 时 M1–M5 动画属合法存在，预算只管页面自加动画；白名单双源（2026-09-23 监督 ISSUE-01）：animation 声明名 ∪ @keyframes 定义名——规范 shimmer/toast-in/toast-out 等只定义未引用的动画不漏收",
+      "predicate": "页面内自声明的唯一 animation-name 去重计数 > 1 即超预算：animation 简写取第一个标识符；逗号多值逐个计数；none/inherit/initial/unset 不计；@keyframes 定义行不算引用；transition 不计（hover 微交互非 heavy 入场）。模板白名单：命中对应端 template.css 真源动画名的引用不计预算——分享版内联真源 CSS 时 M1–M5 属合法存在，预算只管页面自加动画；白名单双源（2026-09-23 监督 ISSUE-01）：animation 声明名 ∪ @keyframes 定义名，规范 shimmer/toast-in/toast-out 等只定义未引用的不漏收。",
       "fix": "删多余自加动画（AI 生成页典型病：全元素 fade-in-up 入场）；保留至多一个 heavy 动效；规范动效只用 template.css 的 M1–M5 类",
       "implemented_in": "audit-spec.js（2026-09-23）"
     },
@@ -470,15 +470,15 @@
         "建议回归样例（维护侧据此做夹具验证；无则写『无』）"
       ]
     },
-    "report_quality_bar": "报告合格线三判据（2026-09-10 拍板，见 output/设计系统问题报告制度_缺口复盘清单_20260910.md 问答 2）：① 读懂 = 根因定位到真源文件:行 / 规则 id / token 名，**且根因须为复测所得、注明所测 audit-rules.json 版本**（2026-09-10 DS-20260910-01 教训：§3 根因凭代码阅读推断而未复测，误将当版已修的问题写成现存缺口 → 维护侧须勘误，浪费一轮往返）；② 能修 = 最小复现片段 + 建议规则文本（或建议 token 值 / 组件契约）；③ 能验 = 建议回归样例。三项缺任一时报告降级为『线索』——维护侧须回问应用侧补齐，不得凭猜修复。**维护侧回执后**：应用侧若再次定性同一问题，须按回执版本复测；实测与推断不一致时以实测为准并在正文注明。",
+    "report_quality_bar": "报告合格线三判据（2026-09-10 拍板）：① **读懂** = 根因定位到真源文件:行 / 规则 id / token 名，且须为复测所得、注明所测 audit-rules.json 版本（DS-20260910-01 教训：凭阅读推断误报已修问题 → 维护侧勘误浪费一轮）；② **能修** = 最小复现片段 + 建议规则文本（或 token 值 / 组件契约）；③ **能验** = 建议回归样例。缺任一降级为『线索』，维护侧须回问补齐，不得凭猜修复。维护侧回执后：应用侧再定性同一问题须按回执版本复测，实测与推断不一致以实测为准并注明。",
     "channel": "反馈通道（2026-09-10 用户拍板：无直连维护者通道，可接受）：① 产出报告落盘自己项目 output/；② **在对话内显式声明**（模板话术：『这是设计系统 P0 问题，报告已落盘 <绝对路径>，请转交维护者』）由用户转交；③ **不尝试**直连维护者（无权限，禁发明通道/禁自动提交真源仓库）",
     "severity_policy": {
       "P0": "真源错误 / 门禁漏洞 / 阻断生成 → 当次会话即时产出报告 + 对话内声明转交",
       "P1": "规范歧义 / token / 组件 / 图标缺口 → 攒批（每 2 周或攒满 5 条）后在对话内一次性声明转交",
       "P2": "文档措辞 / 改进建议 → 攒批可选，随下次转交一并提交"
     },
-    "consumption_model": "**被动消费（2026-09-10 用户拍板：应用者反馈，不去打扰）**——不建应用项目注册表、不做主动巡检、不建定期扫描自动化；维护侧只在两种时机消费：① 用户转交报告（或被 @）时；② 维护者自己的维护会话开场时顺手检查本次是否携带报告。应用侧请勿主动打扰维护者。**分发口径（2026-09-10 用户拍板）**：下游团队 / 应用侧的唯一真源来源 = **从 GitHub 拉取**（`youyituomaoxian/TM-UI-Design`）；维护侧不做跨项目文件巡检与对齐，规范更新由维护者推送后在群内通知拉取。",
-    "maintainer_duty": "收到转交报告后：走维护者六步流程（登记 → 改真源 → 双端同步 → 门禁全绿 ci-local → 刷指纹 → CHANGELOG）回灌对应层，feedback_log 条目带 report_source（多项目同题用 related_reports 数组）；**回执三件套**：① 报告文件状态栏回写一行（维护者对该文件**状态栏**的唯一写权，正文仍属应用侧）；② feedback_log 条目；③ 双端 CHANGELOG。**仲裁规则**：维护者可改归属（设计系统问题 ↔ 执行问题）但必须写明理由，理由进回执。**临时处置回收**：修复真源时若发现应用侧存在同类临时覆盖，必须在回执中列明『请回滚的应用侧临时处置清单』。",
+    "consumption_model": "**被动消费（2026-09-10 拍板：应用者反馈，不去打扰）**——不建项目注册表、不做主动巡检与定期扫描；维护侧只在两时机消费：① 用户转交报告（或被 @）；② 维护会话开场顺手检查是否携带报告。应用侧勿主动打扰维护者。**分发口径**：下游唯一真源来源 = 从 GitHub 拉取（`youyituomaoxian/TM-UI-Design`）；维护侧不做跨项目巡检，更新推送后群内通知拉取。",
+    "maintainer_duty": "收到报告后：走维护者六步（登记 → 改真源 → 双端同步 → 门禁全绿 ci-local → 刷指纹 → CHANGELOG）回灌对应层，feedback_log 带 report_source（多项目同题用 related_reports）；**回执三件套**：① 报告文件状态栏回写一行（维护者只写状态栏，正文属应用侧）；② feedback_log 条目；③ 双端 CHANGELOG。**仲裁**：维护者可改归属但须写明理由，理由进回执。**临时处置回收**：修真源时若发现应用侧有同类临时覆盖，回执中列明『请回滚清单』。",
     "feedback_log_contract": "每条条目：date / source / report_source（来源报告路径）/ related_reports（可选数组，跨项目同题去重，G8）/ findings / attribution；回执结论一并写入 findings 或 attribution。",
     "scattered_clause_collation": "本制度统一收口各端散落的『上报维护者』条款：图标库缺（RULES §7.9③）/ 自造组件成熟形态补库（§7.9/§10.10）/ token 缺新值（§10.10）/ 门禁误报与真源 bug 上报（GENERATION-SOP 附录）——均按本制度记录与反馈，报告格式与通道不再各说各话"
   },
