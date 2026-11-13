@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>弘讯设计系统 · 表格规范展示</title>
-<link rel="stylesheet" href="template.css">
+<link rel="stylesheet" href="template.css?v=sticky-20261113">
 <style>
 html,body{margin:0;padding:0}
 body{background:var(--n4);color:var(--text-1);font-family:var(--font-cn)}
@@ -36,7 +36,7 @@ body{background:var(--n4);color:var(--text-1);font-family:var(--font-cn)}
 <header class="spec-head">
   <div>
     <h1 class="spec-title">表格规范展示</h1>
-    <p class="spec-sub">弘讯 B 端设计系统 · 表格规范可视化：表头 44 / 行高 44（固定）· 悬停 · 单选 · 多选 · 排序 · 分页 · 空态 · 占位行 · 全宽表格 · 卡片表格</p>
+    <p class="spec-sub">弘讯 B 端设计系统 · 表格规范可视化：表头 44 / 行高 44（固定）· 悬停 · 单选 · 多选 · 排序 · 分页 · 空态 · 占位行 · 全宽表格 · 卡片表格 · 横向滚动（>12 列）· 纵向滚动（定高）· 表头跟随</p>
   </div>
   <div class="spec-actions">
     <button type="button" class="btn btn-secondary" id="tsEmpty">切换空态</button>
@@ -159,6 +159,42 @@ body{background:var(--n4);color:var(--text-1);font-family:var(--font-cn)}
               <div class="card-head"><span class="card-title">宁波分厂 · 最近 5 条</span></div>
               <div class="card-body" style="padding:0">
                 <div class="table-wrap"><table class="table" id="tsCardB"><thead><tr><th style="width:40%">机器</th><th class="num" style="width:30%">产量</th><th style="width:30%">状态</th></tr></thead><tbody><tr><td>PG-1503</td><td class="num">1,237</td><td><span class="status-dot"><i class="dot-idle"></i>待机</span></td></tr></tbody></table></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card ts-sec">
+        <div class="card-head"><span class="card-title">⑩ 超宽表横向滚动（>12 列 · .table-wrap）</span><span class="card-head-meta t-caption">红线：≤12 列必须在列宽预算内消化、禁横向滚动条；仅 >12 列超宽表允许 .table-wrap 横向滚动 + 表格 min-width</span></div>
+        <div class="card-body">
+          <div class="table-wrap"><table class="table table--fixed" id="tsScrollH" style="min-width:1560px"><thead><tr>
+            <th style="width:9%">订单号</th><th style="width:7%">机器</th><th style="width:7%">组织</th><th style="width:7%">状态</th><th style="width:7%">级别</th><th class="num" style="width:8%">当日产量</th><th style="width:9%">达成率</th><th class="num" style="width:8%">昨日产量</th><th class="num" style="width:8%">累计产量</th><th class="num" style="width:7%">开机时长</th><th class="num" style="width:8%">主轴温度</th><th style="width:7%">班次</th><th style="width:8%">操作</th>
+          </tr></thead><tbody></tbody></table></div>
+        </div>
+      </section>
+
+      <section class="card ts-sec">
+        <div class="card-head"><span class="card-title">⑪ 纵向滚动（定高卡 · .card-body scroll-fixed）</span><span class="card-head-meta t-caption">默认纵向走分页（minRow + pager，禁无界裸渲染）；等高行列表卡 / 定高卡内部滚动用 .scroll-fixed（320px 定高）或 .card-body--scroll（配合 card--fill 弹性吸收）。**注意：本节为滚动原语基线（表头随行滚走）——实际业务长列表必须叠加 .table--sticky 固定表头，见⑫**</span></div>
+        <div class="card-body scroll-fixed" style="padding:0">
+          <div class="table-wrap"><table class="table" id="tsScrollV"><thead><tr><th style="width:18%">订单号</th><th style="width:14%">机器</th><th style="width:14%">组织</th><th style="width:16%">状态</th><th style="width:16%">级别</th><th class="num" style="width:12%">当日产量</th><th style="width:10%">达成率</th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </section>
+
+      <section class="card ts-sec">
+        <div class="card-head"><span class="card-title">⑫ 表头跟随（定高卡长列表 · .table--sticky）</span><span class="card-head-meta t-caption">左右对照：同步滚动两卡，左（无 sticky）表头随行滚走，右（.table--sticky）表头停留。sticky 表格禁中间再套 .table-wrap（overflow:auto 截断 sticky 生效范围）；禁页面级 sticky（分页红线）</span></div>
+        <div class="card-body">
+          <div class="ts-grid">
+            <div class="card ts-sec" style="margin:0">
+              <div class="card-head"><span class="card-title">对照 · 无 sticky</span></div>
+              <div class="card-body scroll-fixed" style="padding:0">
+                <table class="table" id="tsStickyOff"><thead><tr><th style="width:18%">订单号</th><th style="width:14%">机器</th><th style="width:14%">组织</th><th style="width:16%">状态</th><th style="width:16%">级别</th><th class="num" style="width:12%">当日产量</th><th style="width:10%">达成率</th></tr></thead><tbody></tbody></table>
+              </div>
+            </div>
+            <div class="card ts-sec" style="margin:0">
+              <div class="card-head"><span class="card-title">示例 · .table--sticky</span></div>
+              <div class="card-body scroll-fixed" style="padding:0">
+                <table class="table table--sticky" id="tsSticky"><thead><tr><th style="width:18%">订单号</th><th style="width:14%">机器</th><th style="width:14%">组织</th><th style="width:16%">状态</th><th style="width:16%">级别</th><th class="num" style="width:12%">当日产量</th><th style="width:10%">达成率</th></tr></thead><tbody></tbody></table>
               </div>
             </div>
           </div>
@@ -334,6 +370,48 @@ body{background:var(--n4);color:var(--text-1);font-family:var(--font-cn)}
   if (eb) eb.addEventListener('click', function () {
     var tb = document.querySelector('#tsPage tbody'); if (tb) tb.hidden = !tb.hidden;
   });
+
+// ⑩/⑪ 滚动示例渲染
+(function () {
+  var S = { run: ['运行', 'dot-run'], idle: ['待机', 'dot-idle'], offline: ['离线', 'dot-offline'], alarm: ['告警', 'dot-alarm'] };
+  var L = { err: ['紧急', 'badge-err'], warn: ['重要', 'badge-warn'], none: ['提示', 'badge-info'] };
+  function dot(st) { var x = S[st] || S.run; return '<span class="status-dot"><i class="' + x[1] + '"></i>' + x[0] + '</span>'; }
+  function lvl(lv) { var x = L[lv] || L.none; return '<span class="badge ' + x[1] + '">' + x[0] + '</span>'; }
+  function bar(v) { return '<div class="ts-progress"><i style="width:' + v + '%"></i></div>'; }
+  function rows(n) {
+    var out = [], sts = ['run', 'run', 'idle', 'alarm', 'offline', 'run', 'run', 'idle', 'alarm', 'run'];
+    var lvs = ['none', 'warn', 'err', 'warn', 'none', 'err', 'none', 'warn', 'warn', 'none'];
+    var orgs = ['弘设汇', '宁波分厂', '苏州分厂'];
+    var shifts = ['早班', '中班', '夜班'];
+    for (var i = 0; i < n; i++) {
+      var m = 1502 + i, rate = 62 + (i * 37) % 38, out1 = 1180 + i * 37, yd = 1100 + i * 41;
+      out.push({ id: 'IM-2026-' + (101 + i), m: 'PG-' + m, org: orgs[i % 3], st: sts[i % 10], lv: lvs[i % 10], o: out1, y: yd, c: 52000 + i * 311, h: (6 + i % 6) + 'h' + (20 + i % 4) + 'm', t: (38 + i % 9) + '.' + (i % 10), sh: shifts[i % 3], r: rate });
+    }
+    return out;
+  }
+  // ⑩ 14 列超宽表（13 数据列 + 操作）
+  var H = rows(10).map(function (r) {
+    return '<tr><td>' + r.id + '</td><td>' + r.m + '</td><td>' + r.org + '</td><td>' + dot(r.st) + '</td><td>' + lvl(r.lv) + '</td>'
+      + '<td class="num">' + r.o.toLocaleString() + '</td><td>' + bar(r.r) + '</td>'
+      + '<td class="num">' + r.y.toLocaleString() + '</td><td class="num">' + r.c.toLocaleString() + '</td>'
+      + '<td class="num">' + r.h + '</td><td class="num">' + r.t + ' ℃</td><td>' + r.sh + '</td>'
+      + '<td class="ts-ops"><button type="button" class="btn btn-text">详情</button><button type="button" class="btn btn-text">日志</button></td></tr>';
+  }).join('');
+  document.querySelector('#tsScrollH tbody').innerHTML = H;
+  // ⑪ 定高纵向滚动（12 行 > 320px 可视高度）
+  var V = rows(12).map(function (r) {
+    return '<tr><td>' + r.id + '</td><td>' + r.m + '</td><td>' + r.org + '</td><td>' + dot(r.st) + '</td><td>' + lvl(r.lv) + '</td>'
+      + '<td class="num">' + r.o.toLocaleString() + '</td><td>' + bar(r.r) + '</td></tr>';
+  }).join('');
+  document.querySelector('#tsScrollV tbody').innerHTML = V;
+  // ⑫ sticky 表头（定高卡 20 行，滚动时表头跟随）
+  var K = rows(20).map(function (r) {
+    return '<tr><td>' + r.id + '</td><td>' + r.m + '</td><td>' + r.org + '</td><td>' + dot(r.st) + '</td><td>' + lvl(r.lv) + '</td>'
+      + '<td class="num">' + r.o.toLocaleString() + '</td><td>' + bar(r.r) + '</td></tr>';
+  }).join('');
+  document.querySelector('#tsStickyOff tbody').innerHTML = K;
+  document.querySelector('#tsSticky tbody').innerHTML = K;
+})();
 })();
 </script>
 </body>

@@ -108,6 +108,7 @@
 .cbx[aria-disabled="true"]{border-color:var(--n6);background:var(--n3);color:var(--n8);cursor:not-allowed;}
 .cbx svg{width:11px;height:11px;display:block;opacity:0;}
 .cbx[aria-checked="true"] svg,.cbx.is-indeterminate svg{opacity:1;}
+.table--sticky thead th{position:sticky;top:0;z-index:5;} /* 2026-11-13 立项：表头跟随（.table--sticky 修饰类）。仅限容器内滚动（.scroll-fixed/.card-body--scroll/.table-wrap），禁页面级 sticky（分页红线）；可与 .table--fixed 组合双向滚动；th 自带 --table-header-bg 不透明底满足 sticky 前提 */
 .table th.ck,.table td.ck{width:40px;padding-right:0;}.table--fixed{table-layout:fixed;border-collapse:separate;border-spacing:0;} /* V10 补：separate 治 collapse + 百分比列宽的 Chromium 幻影 2px scrollWidth（td 全部 ≤100% 仍出横向滚动条）；本表边框仅 border-bottom，separate+spacing:0 视觉无差 */ /* V7 修复（2026-08-26）：列宽分配可控（opt-in）。fixed 下按首行 th 显式 width 分配、无宽度列等宽均分，避免 auto 布局把剩余宽度全给最长文本列（「项目」列 67% 挤压其余列）；长文本列对 th 设 width 百分比（如 30%）、操作列建议 ≤12% */
 
 .table-wrap{width:100%;overflow:auto;}
@@ -115,7 +116,7 @@
 .card-body.table-wrap:has(.pager){padding-bottom:0;} /* 有分页条：底部由 .pager margin 提供（保证分页条上下对称居中） */
 
 .tabs{display:flex;gap:4px;border-bottom:1px solid var(--n6);height:32px;align-items:flex-end;}
-.tabs .tab{height:32px;display:flex;align-items:center;font-size:13px;color:var(--text-3);
+.tabs .tab{height:32px;display:flex;align-items:center;font-size:14px;color:var(--text-3);
   cursor:pointer;border-bottom:2px solid transparent;padding:0 12px;
   transition:color var(--motion-duration-fast) var(--motion-ease-out);}
 .tabs .tab.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:500;}

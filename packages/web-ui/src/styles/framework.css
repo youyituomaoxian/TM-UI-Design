@@ -127,11 +127,17 @@
 
 /* V10（2026-08-27 用户拍板）：content 纵向滚动条统一细样式/悬停加深——与侧栏树「滚动条视觉隐藏」条款同族，长列表页滚动条不破坏视觉统一 */
 .content{flex:1;min-width:0;background:var(--n4);padding:var(--space-md) var(--density-content-padding) var(--density-content-padding);overflow:auto;
-  scrollbar-width:thin;scrollbar-color:var(--n6) transparent;}
+  scrollbar-width:thin;scrollbar-color:var(--n5) transparent;}
 .content::-webkit-scrollbar{width:8px;height:8px;}
 .content::-webkit-scrollbar-track{background:transparent;}
-.content::-webkit-scrollbar-thumb{background:var(--n6);border-radius:4px;}
-.content::-webkit-scrollbar-thumb:hover{background:var(--n7);}
+.content::-webkit-scrollbar-thumb{background:var(--n5);border-radius:4px;}
+.content::-webkit-scrollbar-thumb:hover{background:var(--n6);}
+/* 滚动条统一（2026-11-13 拍板）：滚动容器统一浅色滚动条（thumb n5，hover n6）；.table-wrap/.card-body--scroll/.scroll-fixed 原无自定义样式吃浏览器默认深灰 */
+.table-wrap,.card-body--scroll,.scroll-fixed{scrollbar-width:thin;scrollbar-color:var(--n5) transparent;}
+.table-wrap::-webkit-scrollbar,.card-body--scroll::-webkit-scrollbar,.scroll-fixed::-webkit-scrollbar{width:8px;height:8px;}
+.table-wrap::-webkit-scrollbar-track,.card-body--scroll::-webkit-scrollbar-track,.scroll-fixed::-webkit-scrollbar-track{background:transparent;}
+.table-wrap::-webkit-scrollbar-thumb,.card-body--scroll::-webkit-scrollbar-thumb,.scroll-fixed::-webkit-scrollbar-thumb{background:var(--n5);border-radius:4px;}
+.table-wrap::-webkit-scrollbar-thumb:hover,.card-body--scroll::-webkit-scrollbar-thumb:hover,.scroll-fixed::-webkit-scrollbar-thumb:hover{background:var(--n6);}
 
 
 .footer{height:var(--footer-height);background:var(--primary);color:var(--text-on-brand);flex-shrink:0;
@@ -142,8 +148,8 @@
 /* 分层页头紧凑变体（DS-20261112-04 回灌）：标题行→tab 行 12 */
 
 .page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-base);gap:12px;}
-.page-head.page-head--compact{margin-bottom:var(--space-sm);}
-.page-actions{display:inline-flex;gap:8px;flex-wrap:wrap;margin-top:var(--space-base);}
+.page-head.page-head--compact{margin-bottom:var(--space-xs);}
+.page-actions{display:inline-flex;gap:8px;flex-wrap:wrap;}/*D4 2026-11-13:原margin-top 16为纵向堆叠遗留,横排页头撑行48px,移除*/
 
 
 :root[data-theme="dark"]{--text-on-brand:var(--n11);}

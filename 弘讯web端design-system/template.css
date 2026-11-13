@@ -261,6 +261,7 @@
 .cbx[aria-disabled="true"]{border-color:var(--n6);background:var(--n3);color:var(--n8);cursor:not-allowed;}
 .cbx svg{width:11px;height:11px;display:block;opacity:0;}
 .cbx[aria-checked="true"] svg,.cbx.is-indeterminate svg{opacity:1;}
+.table--sticky thead th{position:sticky;top:0;z-index:5;}/*2026-11-13:表头跟随,仅容器内滚动(.scroll-fixed/.card-body--scroll/.table-wrap),禁页面级;可组合.table--fixed*/
 .table th.ck,.table td.ck{width:40px;padding-right:0;}.table--fixed{table-layout:fixed;border-collapse:separate;border-spacing:0;}  
 
 .table-wrap{width:100%;overflow:auto;}
@@ -268,7 +269,7 @@
 .card-body.table-wrap:has(.pager){padding-bottom:0;} 
 
 .tabs{display:flex;gap:4px;border-bottom:1px solid var(--n6);height:32px;align-items:flex-end;}
-.tabs .tab{height:32px;display:flex;align-items:center;font-size:13px;color:var(--text-3);
+.tabs .tab{height:32px;display:flex;align-items:center;font-size:14px;color:var(--text-3);
   cursor:pointer;border-bottom:2px solid transparent;padding:0 12px;
   transition:color var(--motion-duration-fast) var(--motion-ease-out);}
 .tabs .tab.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:500;}
@@ -763,11 +764,17 @@ body{margin:0;font-family:var(--font-cn);font-size:14px;color:var(--n10);backgro
 
 
 .content{flex:1;min-width:0;background:var(--n4);padding:var(--space-md) var(--density-content-padding) var(--density-content-padding);overflow:auto;
-  scrollbar-width:thin;scrollbar-color:var(--n6) transparent;}
+  scrollbar-width:thin;scrollbar-color:var(--n5) transparent;}
 .content::-webkit-scrollbar{width:8px;height:8px;}
 .content::-webkit-scrollbar-track{background:transparent;}
-.content::-webkit-scrollbar-thumb{background:var(--n6);border-radius:4px;}
-.content::-webkit-scrollbar-thumb:hover{background:var(--n7);}
+.content::-webkit-scrollbar-thumb{background:var(--n5);border-radius:4px;}
+.content::-webkit-scrollbar-thumb:hover{background:var(--n6);}
+/* 滚动条统一（2026-11-13 拍板）：滚动容器统一浅色滚动条（thumb n5，hover n6）；.table-wrap/.card-body--scroll/.scroll-fixed 原无自定义样式吃浏览器默认深灰 */
+.table-wrap,.card-body--scroll,.scroll-fixed{scrollbar-width:thin;scrollbar-color:var(--n5) transparent;}
+.table-wrap::-webkit-scrollbar,.card-body--scroll::-webkit-scrollbar,.scroll-fixed::-webkit-scrollbar{width:8px;height:8px;}
+.table-wrap::-webkit-scrollbar-track,.card-body--scroll::-webkit-scrollbar-track,.scroll-fixed::-webkit-scrollbar-track{background:transparent;}
+.table-wrap::-webkit-scrollbar-thumb,.card-body--scroll::-webkit-scrollbar-thumb,.scroll-fixed::-webkit-scrollbar-thumb{background:var(--n5);border-radius:4px;}
+.table-wrap::-webkit-scrollbar-thumb:hover,.card-body--scroll::-webkit-scrollbar-thumb:hover,.scroll-fixed::-webkit-scrollbar-thumb:hover{background:var(--n6);}
 
 
 .footer{height:var(--footer-height);background:var(--primary);color:var(--text-on-brand);flex-shrink:0;
@@ -778,8 +785,8 @@ body{margin:0;font-family:var(--font-cn);font-size:14px;color:var(--n10);backgro
 
 
 .page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-base);gap:12px;}
-.page-head.page-head--compact{margin-bottom:var(--space-sm);}
-.page-actions{display:inline-flex;gap:8px;flex-wrap:wrap;margin-top:var(--space-base);}
+.page-head.page-head--compact{margin-bottom:var(--space-xs);}
+.page-actions{display:inline-flex;gap:8px;flex-wrap:wrap;}/*D4 2026-11-13:原margin-top 16为纵向堆叠遗留,横排页头撑行48px,移除*/
 
 
 :root[data-theme="dark"]{--text-on-brand:var(--n11);}
@@ -822,7 +829,8 @@ body{margin:0;font-family:var(--font-cn);font-size:14px;color:var(--n10);backgro
 .stat-grid--6{grid-template-columns:repeat(6,1fr);}
 .stat-grid--8{grid-template-columns:repeat(8,1fr);}
 
-.grid12 .card,.stat-grid .card,.stat-grid--5 .card,.stat-grid--6 .card,.stat-grid--8 .card{margin-bottom:0;}
+.grid12 .card,.stat-grid .card,.stat-grid--5 .card,.stat-grid--6 .card,.stat-grid--8 .card,.card-grid>.card{margin-bottom:0;}
+.card-grid{display:grid;gap:var(--space-base);}/*D5 2026-11-13:卡片网格通用容器,行距走 gap,子卡 margin 归零*/
 
 
 .stat-grid .card,.stat-grid--5 .card,.stat-grid--6 .card,.stat-grid--8 .card{transition:transform var(--motion-duration-fast) var(--motion-ease-out),box-shadow var(--motion-duration-fast) var(--motion-ease-out);}

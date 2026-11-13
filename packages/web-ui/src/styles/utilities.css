@@ -5,7 +5,8 @@
 .stat-grid--6{grid-template-columns:repeat(6,1fr);}
 .stat-grid--8{grid-template-columns:repeat(8,1fr);}
 
-.grid12 .card,.stat-grid .card,.stat-grid--5 .card,.stat-grid--6 .card,.stat-grid--8 .card{margin-bottom:0;}
+.grid12 .card,.stat-grid .card,.stat-grid--5 .card,.stat-grid--6 .card,.stat-grid--8 .card,.card-grid>.card{margin-bottom:0;}
+.card-grid{display:grid;gap:var(--space-base);}/*D5 2026-11-13:卡片网格通用容器,行距走 gap,子卡 margin 归零*/
 
 /* 栅格卡悬停交互（2026-08-06 §8：KPI 卡/卡片 hover 浮起 2px + 阴影提升 float，动效走 token） */
 .stat-grid .card,.stat-grid--5 .card,.stat-grid--6 .card,.stat-grid--8 .card{transition:transform var(--motion-duration-fast) var(--motion-ease-out),box-shadow var(--motion-duration-fast) var(--motion-ease-out);}

@@ -83,7 +83,7 @@
       "hard": "软",
       "title": "组件选择决策树",
       "line": 160,
-      "chars": 11308,
+      "chars": 12124,
       "read": "on-demand",
       "gate": null
     },
@@ -107,7 +107,7 @@
       "hard": "软",
       "title": "页面类型规格（pages/ 已删除并入本节 ⚠️ 必读）",
       "line": 186,
-      "chars": 7314,
+      "chars": 7994,
       "read": "must",
       "gate": null
     },
@@ -118,7 +118,7 @@
       "level": 3,
       "hard": "软",
       "title": "组件粒度选型",
-      "line": 266,
+      "line": 267,
       "chars": 488,
       "read": "on-demand",
       "gate": [
@@ -132,7 +132,7 @@
       "level": 3,
       "hard": "硬",
       "title": "色彩选择决策树",
-      "line": 302,
+      "line": 303,
       "chars": 1011,
       "read": "on-demand",
       "gate": [
@@ -147,8 +147,8 @@
       "level": 3,
       "hard": "硬",
       "title": "字号选择决策树",
-      "line": 356,
-      "chars": 1192,
+      "line": 357,
+      "chars": 1328,
       "read": "on-demand",
       "gate": [
         "font.family",
@@ -162,7 +162,7 @@
       "level": 3,
       "hard": "软",
       "title": "页面 species 正交维度 + register 口径（新增 · C-3/C-4）",
-      "line": 380,
+      "line": 383,
       "chars": 906,
       "read": "on-demand",
       "gate": null
@@ -174,7 +174,7 @@
       "level": 2,
       "hard": "硬",
       "title": "禁止清单 Anti-Patterns",
-      "line": 400,
+      "line": 403,
       "chars": 950,
       "read": "on-demand",
       "gate": [
@@ -189,7 +189,7 @@
       "level": 3,
       "hard": "硬",
       "title": "❌ 绝对禁止",
-      "line": 402,
+      "line": 405,
       "chars": 606,
       "read": "on-demand",
       "gate": [
@@ -204,7 +204,7 @@
       "level": 3,
       "hard": "软",
       "title": "⚠️ 不推荐",
-      "line": 416,
+      "line": 419,
       "chars": 314,
       "read": "on-demand",
       "gate": null
@@ -216,7 +216,7 @@
       "level": 2,
       "hard": "硬",
       "title": "组件状态机",
-      "line": 428,
+      "line": 431,
       "chars": 8501,
       "read": "on-demand",
       "gate": [
@@ -230,7 +230,7 @@
       "level": 3,
       "hard": "硬",
       "title": "按钮 Button States",
-      "line": 430,
+      "line": 433,
       "chars": 800,
       "read": "on-demand",
       "gate": [
@@ -245,7 +245,7 @@
       "level": 3,
       "hard": "软",
       "title": "输入框 Input States",
-      "line": 449,
+      "line": 452,
       "chars": 235,
       "read": "on-demand",
       "gate": null
@@ -257,7 +257,7 @@
       "level": 3,
       "hard": "硬",
       "title": "表格行 Table Row States",
-      "line": 457,
+      "line": 460,
       "chars": 1023,
       "read": "on-demand",
       "gate": [
@@ -272,7 +272,7 @@
       "level": 3,
       "hard": "硬",
       "title": "表格列对齐语义（补强）⚠️ 必读",
-      "line": 474,
+      "line": 477,
       "chars": 2429,
       "read": "on-demand",
       "gate": [
@@ -287,7 +287,7 @@
       "level": 3,
       "hard": "软",
       "title": "Tag 状态",
-      "line": 502,
+      "line": 505,
       "chars": 191,
       "read": "on-demand",
       "gate": null
@@ -299,7 +299,7 @@
       "level": 3,
       "hard": "硬",
       "title": "状态指示灯 Status Light",
-      "line": 511,
+      "line": 514,
       "chars": 610,
       "read": "on-demand",
       "gate": [
@@ -313,7 +313,7 @@
       "level": 3,
       "hard": "软",
       "title": "表面感知：选中态按底色分治 ⚠️ 必读",
-      "line": 525,
+      "line": 528,
       "chars": 1308,
       "read": "on-demand",
       "gate": null
@@ -325,7 +325,7 @@
       "level": 3,
       "hard": "硬",
       "title": "组件 DOM 契约（补强）⚠️ 必读",
-      "line": 547,
+      "line": 550,
       "chars": 1888,
       "read": "on-demand",
       "gate": [
@@ -341,7 +341,7 @@
       "level": 2,
       "hard": "硬",
       "title": "间距与布局规范速查",
-      "line": 567,
+      "line": 570,
       "chars": 7087,
       "read": "on-demand",
       "gate": null
@@ -353,7 +353,7 @@
       "level": 3,
       "hard": "硬",
       "title": "核心间距 Token",
-      "line": 569,
+      "line": 572,
       "chars": 233,
       "read": "on-demand",
       "gate": [
@@ -367,7 +367,7 @@
       "level": 3,
       "hard": "硬",
       "title": "固定布局常量",
-      "line": 581,
+      "line": 584,
       "chars": 418,
       "read": "on-demand",
       "gate": [
@@ -381,7 +381,7 @@
       "level": 3,
       "hard": "硬",
       "title": "跨模块间距（补强）⚠️ 必读",
-      "line": 598,
+      "line": 601,
       "chars": 1062,
       "read": "on-demand",
       "gate": [
@@ -395,7 +395,7 @@
       "level": 3,
       "hard": "硬",
       "title": "Grid 列内卡片高度对齐 + 表格空数据占位（补强）⚠️ 必读",
-      "line": 615,
+      "line": 618,
       "chars": 2156,
       "read": "on-demand",
       "gate": [
@@ -410,7 +410,7 @@
       "level": 3,
       "hard": "硬",
       "title": "卡片高度诉求：定高卡 vs 弹性卡（补强）⚠️ 必读",
-      "line": 627,
+      "line": 630,
       "chars": 1231,
       "read": "on-demand",
       "gate": [
@@ -424,7 +424,7 @@
       "level": 3,
       "hard": "硬",
       "title": "首屏预算守则（V11 新增 2026-08-27，订单总览实战：核心图表被视口底边拦腰切 53%）⚠️ 必读",
-      "line": 649,
+      "line": 652,
       "chars": 1966,
       "read": "on-demand",
       "gate": [
@@ -439,7 +439,7 @@
       "level": 2,
       "hard": "软",
       "title": "Agent 生成 UI 时的检查清单",
-      "line": 684,
+      "line": 687,
       "chars": 1138,
       "read": "on-demand",
       "gate": null
@@ -451,7 +451,7 @@
       "level": 2,
       "hard": "硬",
       "title": "Web 布局黄金法则（必读）",
-      "line": 718,
+      "line": 721,
       "chars": 1777,
       "read": "on-demand",
       "gate": [
@@ -466,7 +466,7 @@
       "level": 3,
       "hard": "硬",
       "title": "布局骨架",
-      "line": 723,
+      "line": 726,
       "chars": 308,
       "read": "on-demand",
       "gate": [
@@ -482,7 +482,7 @@
       "level": 3,
       "hard": "软",
       "title": "七条铁律",
-      "line": 735,
+      "line": 738,
       "chars": 582,
       "read": "on-demand",
       "gate": null
@@ -494,7 +494,7 @@
       "level": 3,
       "hard": "硬",
       "title": "防溢出/错位生成检查清单（Must-Check）",
-      "line": 747,
+      "line": 750,
       "chars": 519,
       "read": "on-demand",
       "gate": [
@@ -510,7 +510,7 @@
       "level": 3,
       "hard": "软",
       "title": "关键认知（写进 Agent 记忆）",
-      "line": 758,
+      "line": 761,
       "chars": 273,
       "read": "on-demand",
       "gate": null
@@ -522,7 +522,7 @@
       "level": 2,
       "hard": "软",
       "title": "布局美学规范（新增 · 本地化改写自 ui-ux-pro-max 审美规则）⚠️ 必读",
-      "line": 769,
+      "line": 772,
       "chars": 6617,
       "read": "must",
       "gate": null
@@ -534,7 +534,7 @@
       "level": 3,
       "hard": "软",
       "title": "审美总则（工控美学三原则）",
-      "line": 776,
+      "line": 779,
       "chars": 236,
       "read": "must",
       "gate": null
@@ -546,7 +546,7 @@
       "level": 3,
       "hard": "软",
       "title": "构图（B 端看板/列表/详情页面）",
-      "line": 782,
+      "line": 785,
       "chars": 338,
       "read": "must",
       "gate": null
@@ -558,7 +558,7 @@
       "level": 3,
       "hard": "软",
       "title": "层次（字阶 + 对比度）",
-      "line": 794,
+      "line": 797,
       "chars": 332,
       "read": "must",
       "gate": null
@@ -570,7 +570,7 @@
       "level": 3,
       "hard": "软",
       "title": "密度留白",
-      "line": 805,
+      "line": 808,
       "chars": 231,
       "read": "must",
       "gate": null
@@ -582,7 +582,7 @@
       "level": 3,
       "hard": "软",
       "title": "色彩克制",
-      "line": 815,
+      "line": 818,
       "chars": 175,
       "read": "must",
       "gate": null
@@ -594,7 +594,7 @@
       "level": 3,
       "hard": "软",
       "title": "WCAG 2.0 前景/背景色使用（与移动端 §10.3b 对称）",
-      "line": 824,
+      "line": 827,
       "chars": 817,
       "read": "must",
       "gate": null
@@ -606,7 +606,7 @@
       "level": 3,
       "hard": "软",
       "title": "视觉反馈与层级",
-      "line": 842,
+      "line": 845,
       "chars": 305,
       "read": "must",
       "gate": null
@@ -618,7 +618,7 @@
       "level": 3,
       "hard": "软",
       "title": "反廉价清单（Anti-Patterns，生成后自查）",
-      "line": 852,
+      "line": 855,
       "chars": 360,
       "read": "must",
       "gate": null
@@ -630,7 +630,7 @@
       "level": 3,
       "hard": "软",
       "title": "生成后视觉自检闭环（必做）",
-      "line": 863,
+      "line": 866,
       "chars": 209,
       "read": "must",
       "gate": null
@@ -642,7 +642,7 @@
       "level": 3,
       "hard": "软",
       "title": "页面级自造类守则（拍板修订 v2：与移动端 §10.10 对称·解禁视觉属性·禁覆写真源·门禁落地）⚠️ 必读",
-      "line": 871,
+      "line": 874,
       "chars": 3329,
       "read": "must",
       "gate": [
@@ -656,7 +656,7 @@
       "level": 2,
       "hard": "硬",
       "title": "动效与交互自动添加（拍板：页面生成即携带交互）⚠️ 必读",
-      "line": 940,
+      "line": 943,
       "chars": 1262,
       "read": "on-demand",
       "gate": [
@@ -670,7 +670,7 @@
       "level": 2,
       "hard": "软",
       "title": "图表自建范式（重构：「样式 + 结果约束」——实现放开，结果锁死）⚠️ 必读",
-      "line": 976,
+      "line": 979,
       "chars": 4223,
       "read": "must",
       "gate": null

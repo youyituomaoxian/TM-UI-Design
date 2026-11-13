@@ -1,8 +1,37 @@
 # 弘讯B端视觉系统 · Web 端设计系统更新日志（归档）
 
 > 本文件为 `CHANGELOG.md` 滚动归档（2026-09-22 建立，加载纪律 SSOT A-2）：主文件只保留近期条目，更早条目**原样移入**此处，未做任何内容修改。
-> 切割线（滚动更新）：web 归档 `[USAGE 使用指南内容同步]` 及更早。新条目一律写主文件顶部；超限时由 roll-changelog.js 自动滚动。
+> 切割线（滚动更新）：web 归档 `[表格占位行真源化 + 表头口径清漂]` 及更早。新条目一律写主文件顶部；超限时由 roll-changelog.js 自动滚动。
 
+## [表格占位行真源化 + 表头口径清漂] — 2026-11-12 · DS-20261112-01/02 消费
+- **表格承载形态拍板（方案 1 堵灰区）**：RULES §1.1b 新增条款——列表页/详情页表格一律卡片式承载，变体 A「全宽表格」=全宽卡片（白底+Shadow-Card+圆角 8），**禁裸表格**；密度用 行高/分页/列宽预算消化。零新增组件，门禁不变。
+- **DS-02（组件缺口）**：RULES §4.4 第 4 条定义的 minRow 占位行 `tr.table-placeholder` 落地真源——utilities.css 新增 `.table-placeholder{pointer-events:none}`（td 提示文案 N8）并 build 进 template.css（L1060）；components.json 契约数组登记 `table.placeholder`（pointer-events=none，HIGH）；vendor-coverage.json tokenProjection 登记（31 项）。应用侧 `表格规范展示.html` 页内临时定义已回滚，validate-spec + audit-spec 双跑 0 HIGH。
+- **DS-01（文档口径冲突）**：2026-10-20 表头改版（14px/44px）未同步人读文档——RULES §3.3b L468（13px→14px、删「不得统一字号」旧原则句）、§1.1b L204 / §2.1 G6 L713 / 交付清单 L722 / 门禁说明 L667（表头 48→44）；components.json 弃用 table 条目 summary/sizing.fontSize/referenceCss/ardot.variantMapping/notes/do 六处 48→44、13→14。文档现与契约 `table.head`（44/14/500/N2）完全一致。
+- 验证：ci-local **102 pass / 0 fail** 全绿（含 check-sync 检查三新类登记）；修复样例红→绿双向复测通过（DS-01 样例 A/B 依据契约现值成立、样例 C grep 旧值清零）。
+
+---
+## [作业树 · 自身页+子级 折叠态] — 2026-11-09
+- 新增第三分型：`data-page` + 子级 → 折叠弹浮层，首项「进入本页」(`data-self`)；page-template JS/CSS（`.pop-self`）；RULES §0.2-10 / components.md/json / SOP 同步；门禁 `tree.node.split` 改为「data-page+子级须含 data-self」；示例页恢复该分型。
+
+---
+## [门禁：折叠半迁移 + 暗色品牌覆盖] — 2026-11-07
+- 新增 `tree.collapsed.partial`、`dark.brand.override`（双端）、`tree.popover.order`；`gen-examples` 品牌覆盖只留亮色 + `.tag→.badge`；历史品牌页清理 2387aa ×4。
+
+---
+## [暗色固定主题] — 2026-11-06 · 暗色不随品牌（方案 A）
+- `darkBrandMode:"fixed"`：暗色 background 固定、不随品牌推导（`derived` 保留旧能力）；`--brand-surface` `#0A2540 → #1E293B`（= 卡片色），内容 `#121826`，主色固定 `#3B82F6`；框架三边 1px `.07` 分区线；双端 tokens / globals / template 重生成；DARK-MODE / SOP / VISUAL-SPEC 同步；ci-local 加「换品牌暗色不变」断言。
+
+---
+## [作业树折叠浮层 P1-P7] — 2026-11-06 · 折叠态只显一级 + 二级浮层
+- RULES §0.2-10；折叠态只显一级（`.tree-collapsed` 兼容旧页）；`.tree-popover` 浮层；`.branch-active` 展开 8% / 折叠 18%；`data-group/data-page/data-key`；page-template JS；tree.tsx `collapsed`/`onGroupClick`；AdminLayout 浮层；check-size 调阈。validate 0 HIGH + tsc 通过。
+
+---
+## [文档死链与口径清漂] — 2026-11-05 · 说明文档对齐现行规范
+
+- 登记说明文档（根 + 双端）机检漂移，修 15 处：①死链——TOKENS-EVIDENCE.md（文件已移除，9 处引证改「对标引证文件已移除」）、web RULES 机器群览页示范、mobile RULES dashboard.md §2、components.md design-system-showcase :root 改指 template.css、CHART-SPEC 两处已移除测试文件标注（ci-chart-interaction.js 属 §9 待办登记，保留）；②口径——团队使用指南「模板 ×7」更正「两级通用+4 专用」；GENERATION-SOP 分享版口径改「重建后 audit-spec + validate-spec 双跑 0 HIGH 分发」。
+- 真值核对：图标 web 185 / 移动 184、版本 1.9.46 / 1.14.28 一致；USAGE-GUIDE 所引 packages 脚本实测存在，未改。ci-local 100 pass / 0 fail。
+
+---
 ## [USAGE 使用指南内容同步] — 2026-11-05 · 提示词逻辑对齐现行 SOP / 审计口径
 
 - USAGE.html（dev + 两份 USAGE_分享版）提示词内容同步到当前真源口径：审计卡完整版改「audit-spec 台账 + D-1~D-12 逐维对照 → 逐项映射决策 → 分批修复 → validate-spec 双跑收口」（旧版仅 validate 逐条修，已废止）；迁移卡完整版改「SOP §② 五阶段（P0 台账 → P1 映射 → P2 修复 → P3 截图审查 → P4 收口）」；完整版提示词统一补 SOP §0 加载纪律（≤35k 只读命中章节）与问题上报口径（templates/设计系统问题报告模板.md）。
