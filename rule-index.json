@@ -83,7 +83,7 @@
       "hard": "软",
       "title": "组件选择决策树",
       "line": 160,
-      "chars": 12124,
+      "chars": 12203,
       "read": "on-demand",
       "gate": null
     },
@@ -107,7 +107,7 @@
       "hard": "软",
       "title": "页面类型规格（pages/ 已删除并入本节 ⚠️ 必读）",
       "line": 186,
-      "chars": 7994,
+      "chars": 8073,
       "read": "must",
       "gate": null
     },

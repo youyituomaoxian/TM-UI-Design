@@ -145,10 +145,11 @@
 .footer--between{justify-content:space-between;}
 
 
-/* 分层页头紧凑变体（DS-20261112-04 回灌）：标题行→tab 行 12 */
+/* 分层页头紧凑变体（DS-20261112-04 回灌；2026-11-13 拍板：基础形态页头行→内容 12，紧跟 .tab-row 的分层形态标题→tab 行 4） */
 
 .page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-base);gap:12px;}
-.page-head.page-head--compact{margin-bottom:var(--space-xs);}
+.page-head.page-head--compact{margin-bottom:var(--space-md);}/*2026-11-13 拍板:基础形态页头行→内容 = md12,与框架→标题( content padding-top md)相等*/
+.page-head.page-head--compact:has(+ .tab-row){margin-bottom:var(--space-xs);}/*分层形态:标题→一级 tab 行 xs4(拍板保留)*/
 .page-actions{display:inline-flex;gap:8px;flex-wrap:wrap;}/*D4 2026-11-13:原margin-top 16为纵向堆叠遗留,横排页头撑行48px,移除*/
 
 

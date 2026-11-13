@@ -9,6 +9,11 @@
 - GENERATION-SOP 步骤 2 新增第 4 条双原则：**层级逻辑优先选字阶**（档位跟信息层级角色走，唯一入口 RULES §1.4；典型错位 = 一级 tab 落辅助档 / 内页标题误用模块标题档）+ **亲密性原则定间距**（间距是分组语义非装饰节奏，取值唯一入口 RULES §4.1；观感与数值不符先查渲染根因再动数值）。
 - 来源：机器群览标题降级 + 间距排查案例复盘（用户拍板沉淀）。RULES/MASTER/template.css 机制本轮未改动（D1–D4 字阶/间距迁移另行拍板），本条为生成流程原则。
 
+## [页头行上下间距相等：compact 默认 md12，分层形态 :has 保持 xs4] — 2026-11-13
+- 用户实测拍板：基础形态页头行→内容间距应与框架→标题相等（原 compact xs4 < content padding-top md12，上下不均）。
+- 真源：.page-head--compact margin-bottom xs→**md12**；新增 .page-head--compact:has(+ .tab-row) 保持分层形态 **xs4**（原 D3 拍板不回退）。RULES §1.1b 口径同步。
+- 重建/template.css 副本 + 4 分享版重内联同步。
+
 ## [分享版快照重建 ×6 + 页头口径收尾（t-h1 → .page-title）] — 2026-11-13
 - **内联真源重建**：重建 4 分享版（login / machine_alarm / machine_group / status_report）+ web规范展示_框架版_分享版 + USAGE_分享版——内联块替换为当前 template.css（tabs 14 / .card-grid / .table--sticky / 滚动条 n5 全部带入），机器群览分享版挂 .card-grid。
 - **页头口径收尾**：machine_alarm / status_report 两 dev 页与三分享版页头 `t-h1` → `.page-title`（RULES §1.4 内页例外补漏改面）；4 dev 页 template.css 缓存指纹 bump v=20261113。
