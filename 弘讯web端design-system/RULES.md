@@ -47,15 +47,15 @@
 
 ## 章节索引（加载纪律 · 2026-09-10 新增）
 
-> 全文 **约 52k 字符**——**别整份加载**。按当前任务只读命中章节（Grep 标题 / Read offset 取段），**[软] 章节必读、[硬] 章节按需检索**（门禁兜底）。
+> 全文 **约 54k 字符**——**别整份加载**。按当前任务只读命中章节（Grep 标题 / Read offset 取段），**[软] 章节必读、[硬] 章节按需检索**（门禁兜底）。
 
 | 章 | 字符 | 何时读 |
 |---|---|---|
-| [硬] 0. B 端后台固定框架 | 8.3k | 判定是否套框架（判定必读） |
-| [软] 1. 组件选择决策树 | 10.5k | 选组件时 · 必读 |
+| [硬] 0. B 端后台固定框架 | 8.0k | 判定是否套框架（判定必读） |
+| [软] 1. 组件选择决策树 | 11.3k | 选组件时 · 必读 |
 | [硬] 2. 禁止清单 | 0.9k | 生成前自查 · 简读 |
 | [硬] 3. 组件状态机 | 8.5k | 写/改按钮·输入态时 |
-| [硬] 4. 间距与布局速查 | 6.4k | 布局时 |
+| [硬] 4. 间距与布局速查 | 7.1k | 布局时 |
 | [软] 5. 生成检查清单 | 1.1k | 交付前 |
 | [硬] 6. 布局黄金法则 | 1.8k | 布局时 · 必读 |
 | [软] 7. 布局美学规范 | 6.6k | 排版/留白/层级 · 必读 |
@@ -127,23 +127,23 @@
 **判定信号清单（命中即判 B 端后台）**：包含「管理/控制台/后台/运维/配置」语义；有左侧导航树 + 顶部系统名栏 + 底部版权；面向内部运营/设备/工单操作；使用 Ant Design 风格组件库。
 **反信号（判非 B 端）**：对外营销、品牌展示、纯数据可视化大屏、无后台框架语义。
 
-> **⚠️ 规范边界（拍板）**：本设计系统是**视觉规范**——职责到「视觉规格 + HTML 预览」为止，回答「页面长什么样」（色板/间距/字阶/组件形态/状态/布局节奏）；**上线实现（平台/框架/产物格式）由使用者决定**，规范不替使用者选技术栈。下列组件库 / 脚手架为**参考实现（可选）**：恰好采用 React / Taro 技术栈的使用者可直接复用；异栈（Vue/Flutter/原生…）使用者照 `tokens.json` / 组件规格 / 预览稿自行实现，视觉效果一致。
-> - **参考实现（可选）**：Web `packages/web-ui`（`@techmation/web-ui`，shadcn/ui 33 件 + Tailwind）——React 组件库；移动端 `packages/mobile-ui`（`@techmation/mobile-ui`，NutUI-React-Taro + Taro 4.2.1）——Taro/小程序/App 组件库。二者 CSS 真源 = `packages/web-ui/src/styles/{globals,components,framework,utilities}.css`（四件手写，N=1，`npm run build:template` 合并生成 template.css）。
+> **⚠️ 规范边界（拍板）**：本设计系统是**视觉规范**——职责到「视觉规格 + HTML 预览」为止，回答「页面长什么样」（色板/间距/字阶/组件形态/状态/布局节奏）；**上线实现（平台/框架/产物格式）由使用者决定**，规范不替使用者选技术栈。下列组件库 / 脚手架为**参考实现（可选）**：同栈可直接复用；异栈照 `tokens.json`/组件规格/预览稿自行实现，视觉一致。
+> - **参考实现（可选）**：Web `packages/web-ui`（`@techmation/web-ui`，shadcn/ui 33 件 + Tailwind）；移动 `packages/mobile-ui`（`@techmation/mobile-ui`，NutUI-React-Taro + Taro 4.2.1）。CSS 真源 = `packages/web-ui/src/styles/{globals,components,framework,utilities}.css`（四件手写，`npm run build:template` 合并生成 template.css）。
 > - **HTML 视觉预览（规范交付物）**：`弘讯web端design-system/template.css` 及 `.html` 原型页用于 Agent 快速验证、设计师对照、门禁演示，**是视觉规格的呈现载体，不是上线文件**（仓库根 `output/` 仅历史归档，新产出落用户项目 output/）。预览页 link `template.css`，**只可使用其中已定义的类**（validate-spec.js 类名白名单门禁拦截自造组件）。
-> - **参考实现路径（可选，仅同栈使用者）**：React 页从脚手架 `packages/web-ui/src/templates/BizAdminPage.tsx`（`AdminLayout` 固定框架 + `@techmation/web-ui` 真实组件）生成，命令 `node packages/web-ui/scripts/new-page-react.js <PageName>`，**禁止基于 template.css 自搓组件**；Taro 页从 `packages/mobile-ui/scripts/new-page-mobile.js <PageName>` 生成。预览页与参考实现**统一遵守**本 RULES 的 DOM 契约 / 类名白名单。
+> - **参考实现路径（仅同栈）**：React 页用 `node packages/web-ui/scripts/new-page-react.js <PageName>`（脚手架 `BizAdminPage.tsx`，`AdminLayout` + 真实组件），**禁基于 template.css 自搓组件**；Taro 页用 `node packages/mobile-ui/scripts/new-page-mobile.js <PageName>`。预览页与参考实现**统一遵守** DOM 契约 / 类名白名单。
 >
 > **框架维度真源**：框架外壳唯一真源 = `packages/web-ui/src/styles/framework.css`（G8 固定滚动 / G9 折叠 / 品牌表面树选中 / 暗色 chrome），维度变量（72/240/80/32）来自 `globals.css` token。已按 Ardot 旧文件 `701545559030003` 画板 `19:3578`「框架布局」校准：侧栏高 **1008px**（顶栏下方至底部）。
 >
-> **📌 待后续修改（已记录）**：画板中底栏位于侧栏右侧（宽 1680px），当前 HTML 结构仍用与 `.body` 平级的全宽底栏。因改动涉及全部既有 HTML 页面 DOM 结构，**暂不推进**，后续统一调整时提醒并执行。
+> **📌 待后续修改（已记录）**：画板中底栏位于侧栏右侧（宽 1680px），当前 HTML 结构仍用与 `.body` 平级的全宽底栏。涉及全部既有页面 DOM，**暂不推进**，后续统一调整时执行。
 >
-> **参考样例**：`packages/web-ui/src/demo/pages/CncDashboard.tsx`（复刻 cnc 看板，`npm run build` 端到端验证）；`npm run dev` 指向该样例。HTML 起手 Clone 源 = `弘讯web端design-system/page-template.html`（link template.css，已 0 违反）。
+> **参考样例**：`packages/web-ui/src/demo/pages/CncDashboard.tsx`（`npm run dev` 指向它，`npm run build` 端到端验证）；HTML 起手 Clone 源 = `page-template.html`（link template.css，0 违反）。
 >
 > **页面拼装工具类清单（utilities.css，Agent 必须优先复用，不得自造）**：
 > - 布局：`.row` `.row-tight` `.row-between` `.col` `.mt` `.mt-sm` `.mt-lg` `.mb`
 > - 栅格：`.grid12` + `.col-3/4/5/6/7/8/9/12`（≤1200px 自动堆叠为 12 列满宽）
 > - 标题：`.page-title` `.section-title`
 > - 指标卡：`.stat-grid`（容器）+ **KPI 两版（用户拍板：标准版 = 图标卡，环形版保留需时使用）**：标准版 `.stat-card--icon`（KPI 图标卡——左浅底高圆角图标块 kpi-ico--lg 48×48 · radius-lg 16 + 右上大数字 stat-num + 底部行 stat-foot（标题左 stat-sub / 变化量右 stat-delta，贴图标底部对齐；变化量 12px 500 ↑=run 绿 ↓=err 红）——布局基准 = 回滚点 20260806_Web完成态 展示页）；环形版 `.stat-card--ring`（左环 64 + ring-info label/num/trend，需时使用）。**禁简约 stat-num+stat-sub 独立卡**（门禁 kpi.simple.forbidden HIGH 拦截）
-> - **金额类 KPI 列数/字号守则（V12-A2 新增 2026-08-28，订单总览V2 实战：8 卡等分卡宽 130px 装不下 ¥3,486@28px mono，数字盒被压到 34px 换行截断 + 标签逐字竖排）**：stat-num--lg（28px mono）渲染「¥12,345」约需 110–120px，加图标块后**单卡最小可用宽 ≈ 170px**——**含金额/大数值主值的 KPI 行 ≤6 列**（1440 基准，col 单卡 ≥180px）；7–8 列等分场景金额主值降 `stat-num--md` 或改「数值+单位分离」（`¥920` 与 `万` 分设两行/两元素）；**卡宽 <160px 时 stat-sub 标签会逐字竖排**（CJK 无断词点），同样触发本条降档。
+> - **金额类 KPI 列数/字号守则（V12-A2 2026-08-28：8 卡等分 130px 装不下 ¥3,486@28px，数字换行截断）**：stat-num--lg（28px mono）渲染「¥12,345」约需 110–120px，加图标块后**单卡最小可用宽 ≈ 170px**——**含金额/大数值主值的 KPI 行 ≤6 列**（1440 基准，col 单卡 ≥180px）；7–8 列等分场景金额主值降 `stat-num--md` 或改「数值+单位分离」（`¥920` 与 `万` 分设两行/两元素）；**卡宽 <160px 时 stat-sub 标签会逐字竖排**（CJK 无断词点），同样触发本条降档。
 > - KPI 图标：`.kpi-ico`（+ `--lg` 尺寸，+ `--primary/--run/--warn/--neutral` 语义底色）。SVG 走 `currentColor`，**禁止在 `<svg>` 上写颜色**
 > - KPI 环（环形版需时使用）：`.ring`（64 svg 圆环，dashoffset = 163.4 × (1−%)）+ `.ring-val` + `.ring-fg--primary/run/warn/err/secondary`
 > - 图表：`.chart-wrap` `.chart-svg` `.chart-grid` `.chart-axis` `.chart-value` `.chart-caption` `.chart-legend`（+ `--list`）`.legend-item` `.legend-dot` `.legend-line`（+ `--dash`）`.legend-val`
@@ -189,23 +189,35 @@ START: 我要做什么类型的页面？
 > 组件尺寸 / 色值 / 状态一律以 `components.json` + `template.css` 为准；本节只记「页面级结构与页面专属规则」，不重复组件规格。
 
 > **⚠️ 构图开放性（用户拍板）**：**框架层（顶栏/侧栏/底栏）与组件层锁死，页面构图层开放**。本节「必含区块」保证内容完整性底线；**区块的排列 / 占比 / 构图由 Agent 按「布局决策 6 问」+「布局模式库」（GENERATION-SOP 步骤 5）自由选择**，禁把本节结构理解为唯一固定范式。门禁只保组件一致性 / 对齐 / 防溢出，不锁页面构图。
-> **面包屑铁律（补层级）**：**有明确父级路径的页面必带面包屑条**（32 高无底纯文本，2026-11-12 拍板固定形式，RULES §6.1）；**面包屑层级必须与左侧作业树导航路径一致**（顶级节点 → 子级 → 当前页；去分类后**无「分类级」**——如「注塑车间 / 注塑机参数看板」，**禁把并列的顶级节点拼成父级**，如「设备中心 / 注塑车间」是错的）；仅顶级入口页（无父级，如运营总览 / 看板首页）可无——由「是否有父级路径」判定；`data-page` 一级页面（如生产管理）同属此例外，面包屑只有一级。
+> **面包屑已停用（2026-11-12 用户拍板）**：页面头**不渲染面包屑**，直接「页标题 + 右上操作区」；存量逐批移除，`.breadcrumb` 仅兼容、新页禁新增。
 > 同框架多样化示范：`output/布局多样化测试/`（工单列表=顶筛+全宽表 / 设备监控看板=KPI 2×2+图告混排 / 生产分析=图表主导+侧摘要 / 设备详情=左右分栏）。
 
 #### 内页页头结构（两层 tab 方案 B 拍板）⚠️ 必读
 
 内页页头两形态，按是否分层选型：
 
-- **基础形态（无 tab）**：面包屑 → 页标题 `.page-title`（18/500）+ 操作区 `.page-actions` 右上 → 内容。间距走真源默认（16）。
-- **分层形态（一/二级 tab）**：① 面包屑 → ② 页标题 18/500（随一级 tab 激活项联动）→ ③ 一级 tab 行 = `.tabs`（32/13/下划线）左 + `.page-actions` 右**同行底部对齐**（真源 `.tab-row`）→ ④ 二级 tab `.seg` 分段器（高 30/item 26/字 12/选中 primary 实底白字，门禁 seg.size/seg.active）→ ⑤ 内容卡片。
+- **基础形态（无 tab）**：页标题 `.page-title`（18/500）+ 操作区 `.page-actions` 右上 → 内容（**无面包屑**，间距走真源默认 16）。
+- **分层形态（一/二级 tab）**：① 页标题 18/500（随一级 tab 激活项联动，**无面包屑**）→ ③ 一级 tab 行 = `.tabs`（32/13/下划线）左 + `.page-actions` 右**同行底部对齐**（真源 `.tab-row`）→ ④ 二级 tab `.seg` 分段器（高 30/item 26/字 12/选中 primary 实底白字，门禁 seg.size/seg.active）→ ⑤ 内容卡片。
 
-**分层页头紧凑间距**：面包屑→标题 8 → tab 行 12 → 二级 16 → 卡片 16；真源变体 `.breadcrumb--compact`/`.page-head--compact` 直引免覆写。
+> **卡片列表分页（2026-11-13）**：卡片网格每页 **12 张（4×3）**；>12 必带真源 `.pager`（`‹ 1 2 3 ›` + `共 N 台 · 每页 12 台`），**禁无限滚动**；筛选/搜索/刷新后页码归 1；末页不足自然留白、**禁补空卡**；分页器**固定贴内容区底部**（`--space-base`），网格 `flex:1` 吃中间高度。
+
+> **`.content--fill` 用法**：见「默认不滚动 + 一屏撑满」——content--fill → card--fill → is-placeholder 三步，禁 `calc(100vh - N)`，嵌层补 flex 链。
+
+> **表格规范（2026-11-12 汇总，活体展示 `表格规范展示_20261112.html`）**
+> ① 尺寸：表头 44 / 行高 44（不随密度档）；分割线 `--n6`。
+> ② 单元格：数值列 `th.num`+`td.num` 成对（否则 `table.align`）；状态 `.status-dot`；级别 `.badge-err/warn/info`；操作列 `.btn.btn-text` + `.dropdown`（`.dropdown-item`、危险 `.danger`、Esc/点外收起）。
+> ③ 行状态：`:hover`、`tr.is-selected`、`.cbx` 全选 / `.is-indeterminate` 半选、补位行 `tr.is-placeholder` 保留分割线。
+> ④ 分页：>5 行必带 `.pager`（`table.pager.required`），≤5 免；**与卡片下沿间距 = 与最后一行间距 = `--space-sm`(8)**；同表禁重复分页器。
+> ⑤ 承载：全宽表用整宽 `.card`（禁裸表）；卡片表行高仍 44、列宽百分比；空态 `.empty`。
+> ⑥ 「撑满 + 贴底」三步见上一条「默认不滚动 + 一屏撑满」。
+
+**分层页头紧凑间距**：标题 → tab 行 12 → 二级 16 → 卡片 16；真源变体 `.page-head--compact` 直引免覆写（面包屑已停用）。
 
 **红线**：① tab 最多两层，二级必挂一级下；② 一、二级 tab 均为标题类、在卡片外，卡片只装内容（二级禁进卡片）；③ `.seg` = 内容视图切换，数据过滤仍走 `.filter-chip`（V9 边界），禁混用。
 
 #### 登录页（独立页，不套后台框架；2026-10-30 v2）
 - 版式：≥1200 分栏 58/42；左 `.login-hero`（纯装饰：`<img alt="">` + 父级 `aria-hidden`），右 `.login-panel` 居中 `.login-col`。
-- 卡外 `.login-head`：logo 40 + 系统名 24/32 Medium N11 + 副标题 13/20 N9；卡内只留「登录」18/26，两层不重复。
+- 卡外 `.login-head`：**不放 logo**（2026-11-13 拍板）；仅「系统名 24/32 Medium N11 + 副标题 13/20 N9」一组（组内 4、组与登录卡间距 24），**左沿与登录卡左沿对齐**；卡内只留「登录」18/26，两层不重复。
 - 卡宽 400（`--login-card-w`，禁写死）、内边距 40、`--radius-md`、`--shadow-card`；页面底 `--n4`。
 - 手机号 + 密码：`.login-cc` 区号（112×40，默认 +86，选项带 16×12 国旗，内联 SVG 转 data-URI 图片）；眼睛 `.ico-off/.ico-on` 由 `aria-pressed` 切换（40×40）。
 - `.input .input-lg` 40 高（契约 32/40）；`.btn-primary .btn-lg` 40 全宽、字重 400；辅助行「记住我」+「忘记密码」+ 联系管理员 + 法务行。
@@ -213,11 +225,11 @@ START: 我要做什么类型的页面？
 - 状态：`.input.is-error` 字段错、`.login-alert` 表单错/锁定、`.login-hint` CapsLock；占位符 N9（N8 仅 2.3:1）、输入 `aria-label`、错误 `aria-describedby`、Tab 可走完、`type=submit`。
 - 找回密码卡内 3 步（`.steps`），卡宽不变、切步不跳页；验证码 6 位、60s 重发。
 - 主色仅按钮实底/链接/聚焦边框/品牌标识，底色 N4；**暗色豁免**：登录页亮色单模式。
-- 背景图：4:3 生成→裁 1:1；默认 `assets/login-hero/login-hero-default.webp`（2160²，`object-position:50% 50%`，羽化 160）；换图只换文件；交付须给「默认模板 + 行业映射模板 + 4:3 后裁 1:1 建议」。
+- 背景图：4:3 生成→裁 1:1；默认 `assets/login-hero/login-hero-default.webp`（2160²，`object-position:50% 50%`，羽化 160）；**58/42 左栏内用 1:1 图 `object-fit:cover` 撑满，禁拿 2.2:1 宽图硬撑竖栏（裁切错位）**；换图只换文件；交付须给「默认模板 + 行业映射模板 + 4:3 后裁 1:1 建议」。
 
 #### 列表页（必含区块：筛选 + 表格 + 分页）
 - **布局变体（自由选择，非固定）**：A 顶部筛选条 + 全宽表格（筛选项 ≤4）/ B 左筛选卡 303 + 右侧表格（筛选项多/常驻）/ C 工具栏 + 折叠筛选 + 表格（高级筛选）。下表为变体 B 的基准结构，变体 A/C 保持必含区块与组件规格即可：
-- 内容区结构（变体 B）：Breadcrumb 条 32（无底纯文本）→ 左侧筛选卡（宽 303，白底 Shadow-Card，内部表单项 itemSpacing 8）→ 工具栏（操作按钮区 56 + 搜索/批量区 48）→ 表格卡（表头 44 / 行 44 / 分页器 44）。
+- 内容区结构（变体 B）：左侧筛选卡（宽 303，白底 Shadow-Card，内部表单项 itemSpacing 8）→ 工具栏（操作按钮区 56 + 搜索/批量区 48）→ 表格卡（表头 44 / 行 44 / 分页器 44）。
 - **表格承载形态（拍板）**：列表页/详情页表格一律**卡片式承载**——变体 A 的「全宽表格」= 全宽卡片（白底 + Shadow-Card + 圆角 8，与变体 B 表格卡同规格，不在 grid12 内不强制 .card--fill）；**禁裸表格**（无卡片直接铺页面底上）。密度需求一律用 行高 44 / 分页 / 列宽预算消化，不用「去卡片包装」换密度。
 - 表格 / 分页规格走 `components.json` 的 `table` / `pager` 契约（数值列 th.num↔td.num 右对齐），勿自造。
 - **数据范围筛选组件（V9 新增 2026-08-27）**：本月/本季度/自定义这类**数据范围 / 快速过滤**用真源 **`.filter-chip`**（互斥胶囊，选中加 `.on`）——**禁用页签 `.tabs/.tab`**（tabs 是导航页签语义；真源曾缺此组件致各页各造：辅机总览自造 ord-chip、订单总览误用页签）。
@@ -230,7 +242,7 @@ START: 我要做什么类型的页面？
 
 #### 详情页（必含区块：基础信息 + 参数 + 日志）
 - **布局变体**：A 纵向堆叠（面包屑→标题→键值对→参数表→时间轴，下为基准）/ B 左右分栏（左 7 信息 + 右 5 日志，示范：output/布局多样化测试/设备详情）/ C 页签分组。
-- 面包屑 32（无底纯文本，`›` 分隔）+ 返回 `.btn-text`；页面标题 H1 28/36 Medium + 右上 `.btn-lg` 操作按钮。
+- 返回 `.btn-text`（可选）+ 页面标题 H1 28/36 Medium + 右上 `.btn-lg` 操作按钮（**无面包屑**）。
 - 基础信息卡 = 键值对网格：label 120 宽 / 行高 40 / label Body2 13 N9 / value Body1 14 N10 / padding 16。
 - 运行参数卡 = `.table`（表头 44 / 行 44），状态列 `.status-dot` + `.badge`（运行 `--run` / 正常 `--suc` / 警告 `--warn` / 故障 `--err`；Web 禁 `#10B981`）。
 - 操作日志卡 = 时间轴：每条 = 时间戳(Body2 13 N9) + 操作人 + 动作(Body1 14 N10)，itemSpacing 12；时间轴圆点 8×8（未激活 N6 边框 + N1 底 / 当前 primary 实底）；连接线 1px N6。
@@ -591,7 +603,7 @@ START: 我要做什么类型的页面？
 |---|---|---|
 | `.stat-grid`（KPI 区）→ `.grid12`（图表区） | **24px**（`--space-lg`） | `.stat-grid{margin-bottom:var(--space-lg)}` |
 | `.grid12` → `.grid12` | **16px**（`--space-base`） | `.grid12{margin-bottom:var(--space-base)}`（兄弟间距）+ `.grid12 .card{margin-bottom:0}`（卡 margin 归零，内部间距由 grid gap 接管） |
-| `.breadcrumb` → `.page-head` | **16px**（`--space-base`，2026-08-12 由 LG 24 降档：面包屑与标题同属页头信息组，组内用 BASE 档） | `.breadcrumb{margin-bottom:var(--space-base)}` |
+| `.breadcrumb`（已停用，仅兼容存量） → `.page-head` | **16px**（`--space-base`，2026-08-12 由 LG 24 降档：面包屑与标题同属页头信息组，组内用 BASE 档） | `.breadcrumb{margin-bottom:var(--space-base)}` |
 | `.page-head` → `.stat-grid` | 16px | `.page-head{margin-bottom:16px}` + `.stat-grid` 无 margin-top |
 | `.content` 上下边 | 24px | `.content{padding:var(--space-lg)}` |
 
@@ -637,6 +649,11 @@ START: 我要做什么类型的页面？
 ### [硬] 4.4c 首屏预算守则（V11 新增 2026-08-27，订单总览实战：核心图表被视口底边拦腰切 53%）⚠️ 必读
 
 > **原则（用户拍板）**：页面允许向下滚动，但**视口底边只允许落在区块之间的 gap 上**——首屏必须完整呈现核心内容（核心区块禁被底边拦腰截断）。长列表页内容区滚动是框架 G8 预期形态，不受本条限制其「可滚动性」，限制的是**首屏边界切在哪**。
+
+> **默认不滚动 + 一屏撑满（2026-11-12 拍板）**：页面默认一屏完整、无页级滚动；超出按「压缩密度 → 收敛列/合并区块 → 移入 tabs/抽屉」处理。滚动能力保留：仅长日志/明细/地图在**容器内**启用（`.content-scroll`/`.table-wrap`）。列表/报表页要「表格撑满 + 分页贴底 + 空行补位」用：`<main class="content content--fill">` + 末卡 `.card--fill`（分页器由真源 `.content--fill .card--fill .pager{margin-top:auto}` 贴底）+ 补 `<tr class="is-placeholder">`（行高 44、`--n6` 分割线，行数 = `ceil((wrap高-44)/44)`，resize 重算）；嵌层（如 `#viewList`）须补 `display:flex;flex-direction:column;flex:1;min-height:0`；**禁页面自写 `calc(100vh - N)`**。
+
+> **完整交互与完整动效（2026-11-12 拍板）**：页面必须交付可用交互（筛选/查询/刷新/排序/分页/切换/空态/加载/错误/禁用）与动效（M1–M5 + 数据元素 hover/active + 图表入场 `--chart-*`），**禁静态截图式页面**；只用真源类（`.anim-*`/`.chart-*`/transition token），禁自造时长与缓动。
+
 
 **A. 预算公式（随视口推导，禁硬编码）**：
 `首屏预算 = 视口高 − 120`（topbar 72 + content 上下 padding 48；实测三方验证：768→648 / 900→796 / 1080→960）。规划页面 IA 时按目标视口（默认 900）核算，且**下限校验**：预算 < 648（vh<768）时视为小屏，首屏只保留 KPI 行 + 单卡。

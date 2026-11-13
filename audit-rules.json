@@ -1,7 +1,7 @@
 {
   "$meta": {
     "title": "弘讯设计系统 · 审计规则真源（audit-rules）",
-    "version": "1.6.2",
+    "version": "1.8.0",
     "updated": "2026-11-12",
     "purpose": "存量项目按弘讯设计系统改造时的单一审计真源。RULES.md 管生成语义（怎么写），本文件管审计语义（怎么查）：每条规则声明 判定谓词 / 严重级 / 可判定性 / 修复策略。机器类规则由 audit-spec.js 与 validate-spec.js 执行，运行时类由截图×状态验证，语义类由 agent+人审查。三层互补，缺一不可。",
     "scope_note": "⚠️ 两种审查场景，归因逻辑不同（2026-09-10 用户澄清）：① 弘讯内项目缺陷审计（项目有义务合规）→ 用 P1 归因二分法（设计系统问题 or 执行问题）+ machine_rules 违规检测；② 外部项目迁移改造（项目不是弘讯生成的，审查目的=找出视觉不符合处并改成符合）→ 归因只有一种『未对齐弘讯规范』，决策点=映射到什么（哪个 token/组件类/字阶），用 migration_dimensions 维度对照清单逐层盘点。两层规则互补：M 层抓硬违规（迁移时同样要清零），D 层管维度映射。",
@@ -95,6 +95,28 @@
       "predicate": "src 非 .svg → HIGH（位图无法锁比例、缩放失真）；src 指向 assets/logo/ 不存在的文件 → HIGH。尺寸由 template.css 锁定（顶栏高 32 白标 / Web 登录高 40 彩标 / 移动登录 64×64），页面禁自写宽高覆盖。真源 = assets/logo/（asset-logo-brand.svg 彩标 / asset-logo-brand-white.svg 白标 / logo_64.svg 方标）",
       "fix": "改引 assets/logo/ 真源 SVG（带 viewBox）；尺寸交给容器类（.topbar-logo .ico 高 32 宽 auto），禁内联宽高、禁自造 logo 文件",
       "implemented_in": "validate-spec.js（Web 端 2026-11-12；移动端 64×64 方标 logo_64.svg 已入库）"
+    },
+    {
+      "id": "M-09",
+      "contract": "contrast.invisible / contrast.near-invisible",
+      "title": "同色 / 近同色前景背景对必须可读（2026-11-12 新增，F9）",
+      "severity": "HIGH（对比度 ≤1.02 = 同色不可见）/ MEDIUM（<1.5 近同色）",
+      "scope": "目标 HTML `<style>` + 本地 `<link>` CSS 中「同一选择器块内同时声明 color 与 background(-color)」的规则；disabled 态豁免",
+      "predicate": "两值各自 resolve() 到实际颜色（含 token 级联；F7 后真源 token 也在定义集）→ 算 WCAG 对比度：≤1.02 → HIGH `contrast.invisible`；<1.5 → MEDIUM `contrast.near-invisible`。gradient / url() / transparent / currentColor / 半透明不判（交人审）；`:disabled`、`.is-disabled`、`.disabled`、`[disabled]` 豁免（WCAG 豁免禁用控件）",
+      "known_limit": "只判「同块双声明」——继承背景场景（如白色卡片内的 `color:var(--n5)` 正文）不在本规则内；该形态先由 `wcag.contrast.banned`（已知禁配表）覆盖，全量需运行时像素采样（R-07）",
+      "fix": "前景改 --text-1/--text-2 或 n9+，背景保持 --n1/--n2/--bg-*；确属装饰（隐形占位/色板展示）登记 exemptions",
+      "implemented_in": "validate-spec.js（双端 2026-11-12）"
+    },
+    {
+      "id": "M-10",
+      "contract": "css.js.injected",
+      "title": "脚本内样式注入中的裸 hex（2026-11-12 新增，F10）",
+      "severity": "MEDIUM（提示级，须运行时复核）",
+      "scope": "目标 HTML 的 `<script>` 内容（原实现先 stripScriptTags，JS 写色全部漏检）",
+      "predicate": "hex 前 120 字符内出现 `.style` / `cssText` / `setProperty` / `innerHTML` / `insertAdjacentHTML` / `createElement('style')` / `textContent=` → MEDIUM。不判死：脚本按主题设色可能合法",
+      "fix": "改 class/属性切换（`data-theme` + CSS 变量），不用 JS 写色值；无法避免时凭 R-08 截图复核",
+      "implemented_in": "audit-spec.js（2026-11-12）",
+      "regression": "夹具 JS 注入 → 2 MED；控制组（脚本无样式写入）0 项；模板 80 MED 不变"
     }
   ],
   "runtime_checks": [
@@ -144,6 +166,13 @@
       "title": "图片可辨识度：暗底上图片乘黑不可见（2026-09-10 新增）",
       "method": "对页面 <img> 的截图裁剪区域做像素采样（亮度均值 / 与容器底色对比度），低于阈值报违规；采样前先探 mix-blend-mode——混合模式改变有效观感，必须在合成后像素上分析（截图裁剪区域分析比 canvas 读原图可靠）",
       "covers": "无任何『元素可辨识度』检查时，滤镜/混合模式类缺陷全穿透；且滤镜修复对混合模式无效（滤镜在混合前应用）（11242 案例四：辅机设备图 mix-blend-mode:multiply 在暗卡上乘黑不可见）"
+    },
+    {
+      "id": "R-08",
+      "contract": "shot.evidence",
+      "title": "表现层截图证据完整性（2026-11-12 新增，F12）",
+      "method": "`node scripts/audit-shots.js <项目> --shots output/audit-shots`：按 页面 × 主题（亮/暗）× 状态（默认/滚动50%）校验截图存在性；缺图即 exit 1（fail-closed）。截图内容判定仍由人/视觉模型做，脚本只管「该看的都看了」",
+      "covers": "P3 此前无产物、无门禁：审查矩阵只写在文档里，是否真看无法核对——「已人工审查」不可验证"
     }
   ],
   "human_checks": [

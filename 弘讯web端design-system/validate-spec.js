@@ -1589,6 +1589,38 @@ function checkWcagContrast(rules, varsByTheme) {
   return violations;
 }
 
+// ===== F9 视觉形态门禁（2026-11-12）：同色 / 近同色前景背景对 =====
+// 只判「同一选择器内同时声明 color 与 background」（不猜继承背景，零误报）；disabled 态豁免（WCAG）。
+// 定级：对比度 ≤1.02 同色 → HIGH（文字不可见）；<1.5 近同色 → MEDIUM。
+function parseCssColor(v, vars) {
+  const s = (resolve(v, vars) || '').trim().toLowerCase(); let m;
+  if ((m = s.match(/^#([0-9a-f]{3})$/))) { const h = m[1]; return { r: parseInt(h[0] + h[0], 16), g: parseInt(h[1] + h[1], 16), b: parseInt(h[2] + h[2], 16), a: 1 }; }
+  if ((m = s.match(/^#([0-9a-f]{6})$/))) return { r: parseInt(m[1].slice(0, 2), 16), g: parseInt(m[1].slice(2, 4), 16), b: parseInt(m[1].slice(4, 6), 16), a: 1 };
+  if ((m = s.match(/^rgba?\(([^)]+)\)$/))) { const p = m[1].split(/[,\s/]+/).filter(Boolean).map(Number); if (p.length < 3 || p.slice(0, 3).some(isNaN)) return null; return { r: p[0], g: p[1], b: p[2], a: p.length > 3 && !isNaN(p[3]) ? p[3] : 1 }; }
+  if (s === 'white') return { r: 255, g: 255, b: 255, a: 1 };
+  if (s === 'black') return { r: 0, g: 0, b: 0, a: 1 };
+  return null;
+}
+function relLum(c) { const f = (x) => { x /= 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); }; return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b); }
+function checkContrastPairs(rules, varsByTheme) {
+  const out = [], seen = new Set();
+  for (const r of rules) {
+    if (r.selectors.some((s) => /:disabled|\.is-disabled\b|\.disabled\b|\[disabled\]/.test(s))) continue;
+    if (/gradient|url\(|transparent|currentcolor/i.test(r.decl)) continue;
+    const fgM = r.decl.match(/(?:^|;)\s*color\s*:\s*([^;]+)/), bgM = r.decl.match(/background(?:-color)?\s*:\s*([^;]+)/);
+    if (!fgM || !bgM) continue;
+    const vars = r.theme === 'dark' ? varsByTheme.dark : varsByTheme.light;
+    const fg = parseCssColor(fgM[1], vars), bg = parseCssColor(bgM[1], vars);
+    if (!fg || !bg || fg.a < 0.95 || bg.a < 0.95) continue;
+    const l1 = relLum(fg), l2 = relLum(bg), ratio = (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+    const sel = r.selectors.join(','), key = sel + '|' + ratio.toFixed(2);
+    if (seen.has(key)) continue; seen.add(key);
+    if (ratio <= 1.02) out.push({ line: r.line, severity: 'HIGH', contract: 'contrast.invisible', sel, msg: '前景 ' + fgM[1].trim() + ' 与背景 ' + bgM[1].trim() + ' 同色（' + ratio.toFixed(2) + ':1）——文字不可见；改 --text-1/2 或 n9+' });
+    else if (ratio < 1.5) out.push({ line: r.line, severity: 'MEDIUM', contract: 'contrast.near-invisible', sel, msg: '前景/背景对比度 ' + ratio.toFixed(2) + ':1（正文需 ≥4.5）——近同色；文字降一档深色或背景加深一档' });
+  }
+  return out;
+}
+
 // ===== 跨模块间距门禁（2026-08-04，RULES §4.3）：stat-grid/grid12 间距不得被页面覆盖 <16px =====
 // 背景：KPI 区(.stat-grid)与图表区(.grid12)紧贴 / 卡片间距失控，根因是页面层覆盖容器 margin。
 //   模板已保证 .stat-grid{margin-bottom:24px} + .grid12 .card{margin-bottom:0}（真源 utilities.css），
@@ -2082,6 +2114,55 @@ function checkKpiSimple(html) {
   return violations;
 }
 
+// ===== 模板残留门禁（2026-11-12 用户报缺口）：克隆页残留模板 demo 文案/示例树 → HIGH =====
+// 背景：framework.fingerprint 只校验 hx-lang/hx-theme 指纹，不查「品牌名/底栏/示例树」是否仍是模板值，
+//   导致「指纹对、内容仍是模板 demo」的页面 0 HIGH 交付。本规则只认可精确命中的字符串。
+const TEMPLATE_RESIDUE = ['弘讯设计系统', '弘讯B端视觉规范', '所有视觉特征取自 template.css', '注塑车间', 'A线 · 注塑机 A-01', 'B线 · 机械手 C-07', '干燥机 D-03'];
+function checkTemplateResidue(html, targetPath) {
+  const base = path.basename(targetPath);
+  if (/page-template\.html$/i.test(base) || /规范展示|框架版|USAGE/i.test(base)) return [];
+  const violations = [];
+  for (const s of TEMPLATE_RESIDUE) {
+    const i = html.indexOf(s);
+    if (i >= 0) violations.push({
+      line: html.slice(0, i).split('\n').length, severity: 'HIGH', contract: 'template.residue', sel: 'body',
+      msg: '克隆页残留模板文案「' + s + '」——请替换为本项目品牌名 / 底栏 / 真实作业树（framework.fingerprint 只查指纹，查不到文案残留）',
+    });
+  }
+  return violations;
+}
+
+// ===== 本地 template.css 副本过期（2026-11-12 用户报「间距又出现」）=====
+// 页面为了便携常把 template.css 复制到同目录；真源更新后副本不会自动同步，
+// 于是「真源已改、页面仍是旧样式」。副本存在且 sha256 ≠ 真源 → HIGH。
+function checkTemplateCssCopy(targetPath, html) {
+  const crypto = require('crypto');
+  const own = path.join(__dirname, 'template.css');
+  const linkRe = /<link\b[^>]*href\s*=\s*["']([^"']*template\.css[^"']*)["'][^>]*>/i;
+  const m = html.match(linkRe);
+  if (!m) return [];
+  const abs = path.resolve(path.dirname(path.resolve(targetPath)), m[1].split('?')[0]);
+  if (abs === path.resolve(own) || !fs.existsSync(abs)) return [];
+  const h = (p) => crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+  if (h(abs) === h(own)) return [];
+  return [{ line: 0, severity: 'HIGH', contract: 'template.css.stale', sel: 'link', msg: '本地 template.css 副本与真源不一致（真源已更新）——请重新复制真源 template.css，否则页面继续用旧样式（间距/组件/分页器等不会生效）' }];
+}
+
+// ===== SVG 空图形门禁（2026-11-12 实坑）：<svg> 里只有文本、没有图形元素 → 图标"有盒子无图形" =====
+function checkSvgShapes(html) {
+  const out = [];
+  const re = /<svg\b[^>]*>([\s\S]*?)<\/svg>/g;
+  let m;
+  while ((m = re.exec(html))) {
+    const inner = m[1];
+    if (!/<(path|circle|rect|line|polyline|polygon|ellipse|g|use|text|image)\b/i.test(inner)) {
+      out.push({ line: html.slice(0, m.index).split('\n').length, severity: 'HIGH', contract: 'svg.invalid', sel: 'svg',
+        msg: 'SVG 内没有图形元素（只有文本/空）——常见于把 path 的 d 数据直接当文本写入；图标会"有盒子无图形"。请写成 <path d="…"/>' });
+    }
+  }
+  return out;
+}
+
 function run(specPath, targetPath) {
   const spec = loadSpec(specPath);
   PALETTE = buildPalette(specPath); // NEW-008：色板 = 手写额外色 ∪ tokens.json 全量 hex
@@ -2098,7 +2179,11 @@ function run(specPath, targetPath) {
   // RED-04 修复：只喂真实 CSS（linkedCss + selfCss，与 checkRootVars 同源），
   //   正文代码示例/脚本字符串里的 :root{...} 会污染变量表、把未定义 token「洗白」——不再喂 HTML 全文。
   const allCss = linkedCss + '\n' + selfCss;
-  const varsByTheme = extractVarsScoped(linkedCss + '\n' + selfCss); // RED-04 修复：只喂真实 CSS（与 checkRootVars 同源），正文/脚本字符串不再污染变量表
+  // F7（2026-11-12）：真源 token 永远算「已定义」——页面在仓库外时 collectLinkedCss 会因 REPO_ROOT
+  //   边界丢掉它 link 的 template.css，不并入真源会让每个合法 token 判 HIGH（假阳性洪水，逼出
+  //   var(--x, 兜底) 掩盖真源缺口）。顺序 = 级联：真源 → 外链 → 内联，页面自身声明仍覆盖真源。
+  const OWN_TOKENS_CSS = fs.readFileSync(path.join(__dirname, 'template.css'), 'utf8');
+  const varsByTheme = extractVarsScoped(OWN_TOKENS_CSS + '\n' + linkedCss + '\n' + selfCss); // RED-04 修复：只喂真实 CSS，正文/脚本字符串不污染变量表
   const varsOf = r => (r && r.theme === 'dark' ? varsByTheme.dark : varsByTheme.light);
   const rules = parseRules(html).concat(...linked.map(l => parseCssRules(l.css, l.label)));
   const isTemplate = path.resolve(targetPath) === path.resolve(__dirname, 'page-template.html'); // B 包：字阶断言 filename-gate（精确路径，避免按文件名豁免被绕过，RED-001）
@@ -2269,7 +2354,13 @@ function run(specPath, targetPath) {
   const webAesV = checkWebAesthetics(html);
   // WCAG 2.0 对比度门禁（2026-08-05，RULES §10.3b / §7.5b）：功能色底 + 白字（亮色 n1）等已知禁止组合 → MED
   // 组件模板已改深字 n10；此门禁拦「页面级覆盖回白字」的回归。暗色（dark n1 为深色）合法不查。
+  // 模板残留（品牌名/底栏/示例树仍是模板值）→ HIGH
+  const residueV = checkTemplateResidue(html, targetPath);
+  const cssCopyV = checkTemplateCssCopy(targetPath, html);
+  const svgShapeV = checkSvgShapes(html);
   const wcagV = checkWcagContrast(rules, varsByTheme);
+  // F9（2026-11-12）：同色/近同色前景背景对（同选择器内双声明才判，disabled 豁免）
+  const contrastPairV = checkContrastPairs(rules, varsByTheme);
   // 守则缺口补强（2026-08-06）：覆写检测 / 网格 calc / 自造类 token 化
   // 豁免「内联模板克隆页」（page-template.html 及克隆：selfCss 即 template.css 本体，
   //   组件类目标 ≥40 视为整份模板内联，其样式一致性由既有契约门禁负责）
@@ -2300,7 +2391,7 @@ function run(specPath, targetPath) {
   const logoV = checkLogoAsset(html, targetPath);
   // KPI 仅两版门禁（2026-08-06 定稿）：简约版（stat-num/stat-sub 独立卡、无 kpi-ico / stat-card--icon / stat-card--ring）已删除，Agent 生成简约版即 HIGH 拦截
   const kpiV = checkKpiSimple(html);
-  return violations.concat(chartSeriesV, rootV, surfaceV, iconV, treeCollapsedV, treeBranchV, treePopoverV, treePartialV, darkOverrideV, whitelistV, tokenV, motionV, chartV, svgV, topbarV, dimV, btnLabelV, btnVarV, statGridV, chartFillV, chartLayoutV, chartValueV, chartBaselineV, templateSyncV, moduleSpacingV, tableMinRowV, tableAlignV, tablePagerV, tableRowStateV, cardFillV, mobileV, webAesV, wcagV, gridV, overrideV, customV, kpiV, svgVarV, scrollV, cloneV, fpV, scrollBodyV, iconSrcV, logoV, fontV, tblBudgetV);
+  return violations.concat(chartSeriesV, rootV, surfaceV, iconV, treeCollapsedV, treeBranchV, treePopoverV, treePartialV, darkOverrideV, whitelistV, tokenV, motionV, chartV, svgV, topbarV, dimV, btnLabelV, btnVarV, statGridV, chartFillV, chartLayoutV, chartValueV, chartBaselineV, templateSyncV, moduleSpacingV, tableMinRowV, tableAlignV, tablePagerV, tableRowStateV, cardFillV, mobileV, webAesV, wcagV, contrastPairV, residueV, cssCopyV, svgShapeV, gridV, overrideV, customV, kpiV, svgVarV, scrollV, cloneV, fpV, scrollBodyV, iconSrcV, logoV, fontV, tblBudgetV);
 }
 
 // ===== 柱状图柱顶数值门禁（2026-08-06：示例页柱状图缺 .chart-v → 柱子无数据标签，门禁此前未查）=====
@@ -2379,7 +2470,7 @@ function checkTablePager(html) {
       const nextTable = noScript.indexOf('<table', tableEnd);
       const searchEnd = nextTable === -1 ? noScript.length : nextTable;
       const after = noScript.slice(tableEnd, searchEnd);
-      if (!after.includes('class="pager"')) {
+      if (!/class="[^"]*\bpager\b[^"]*"/.test(after)) {
         violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'table.pager.required', sel: 'table', msg: `列表表格 ${rowCount} 行（>5）缺 .pager 分页器——Web RULES 列表页规格（筛选 + 表格 + 分页）：表格后必有分页器（‹ 1 2 3 › 共 N 条，components.json pager 契约）` });
       }
     }

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>弘讯设计系统 · 表格规范展示</title>
+<link rel="stylesheet" href="template.css">
+<style>
+html,body{margin:0;padding:0}
+body{background:var(--n4);color:var(--text-1);font-family:var(--font-cn)}
+.spec-head{max-width:1440px;margin:0 auto;padding:32px 24px 8px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px}
+.spec-title{margin:0;font-size:28px;line-height:36px;font-weight:500;color:var(--n11)}
+.spec-sub{margin:8px 0 0;font-size:13px;line-height:20px;color:var(--n9)}
+.spec-actions{display:flex;gap:8px}
+.spec-wrap{max-width:1440px;margin:0 auto;padding:16px 24px 48px}
+.ts-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-base);align-items:start}
+.ts-sec{margin-bottom:var(--space-base)}
+.ts-note{color:var(--n9);font-size:12px;line-height:20px;margin:0 0 var(--space-sm)}
+.ts-toolbar{display:flex;align-items:center;gap:var(--space-sm);margin-bottom:var(--space-sm)}
+.ts-toolbar input{width:200px}
+.ts-pill{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 8px;border-radius:var(--radius-round);background:var(--n3);color:var(--n10);font-size:12px}
+.ts-arrow{display:inline-block;width:12px;text-align:center;transition:transform var(--motion-duration-fast) var(--motion-ease-out)}
+.ts-th-sort{cursor:pointer;user-select:none}
+.ts-scroll{max-height:260px;overflow:auto}
+.ts-progress{height:6px;border-radius:var(--radius-round);background:var(--n5);position:relative;overflow:hidden;min-width:90px}
+.ts-progress i{position:absolute;left:0;top:0;bottom:0;background:var(--primary);border-radius:var(--radius-round);transition:width var(--motion-duration-normal) var(--motion-ease-out)}
+.ts-batch{display:none;align-items:center;gap:var(--space-sm);padding:var(--space-sm) var(--space-base);background:var(--primary-dis-bg);border-bottom:1px solid var(--n6)}
+.ts-batch.on{display:flex}
+.ts-mono{font-family:var(--font-mono)}
+.ts-ops{white-space:nowrap}
+.ts-ops button{height:28px;padding:0 8px;font-size:13px}
+.ts-ops .ts-more{width:28px;padding:0;font-size:16px;line-height:1}
+</style>
+</head>
+<body data-species="document">
+<header class="spec-head">
+  <div>
+    <h1 class="spec-title">表格规范展示</h1>
+    <p class="spec-sub">弘讯 B 端设计系统 · 表格规范可视化：表头 44 / 行高 44（固定）· 悬停 · 单选 · 多选 · 排序 · 分页 · 空态 · 占位行 · 全宽表格 · 卡片表格</p>
+  </div>
+  <div class="spec-actions">
+    <button type="button" class="btn btn-secondary" id="tsEmpty">切换空态</button>
+  </div>
+</header>
+<main class="spec-wrap">
+<section class="card ts-sec">
+        <div class="card-head"><span class="card-title">① 基础表格 · 行高 / 表头 / 对齐 / 单元格内容</span><span class="card-head-meta t-caption">表头 44 · 行 44 · 分割线 n6 · 数字右对齐</span></div>
+        <div class="card-body">
+          <p class="ts-note">悬停行变色（真源 <code>.table tbody tr:hover</code>）；状态列用 <code>.status-dot</code>，级别用 <code>.badge</code>，数值列 <code>.num</code> 右对齐。</p>
+          <div class="table-wrap">
+            <table class="table" id="tsBase">
+              <thead><tr><th style="width:13%">编号</th><th style="width:13%">机器</th><th style="width:12%">所属组织</th><th style="width:11%">状态</th><th style="width:10%">级别</th><th class="num" style="width:11%">产量</th><th style="width:16%">达成率</th><th style="width:14%">操作</th></tr></thead>
+              <tbody id="tsBaseBody"><tr><td>IM-2026-101</td><td>PG-1502</td><td>弘设汇</td><td><span class="status-dot"><i class="dot-run"></i>运行</span></td><td><span class="badge badge-warn">重要</span></td><td class="num">1,180</td><td><div class="ts-progress"><i style="width:68%"></i></div></td><td class="ts-ops"><button type="button" class="btn btn-text">详情</button><span class="dropdown"><button type="button" class="btn btn-text ts-more" aria-haspopup="true" aria-expanded="false">⋯</button><div class="dropdown-content" hidden><div class="dropdown-item">编辑</div><div class="dropdown-item">复制</div><div class="dropdown-item danger">删除</div></div></span></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <div class="ts-grid">
+        <section class="card ts-sec">
+          <div class="card-head"><span class="card-title">② 单选（点击行选中 · <code>.is-selected</code>）</span></div>
+          <div class="card-body">
+            <p class="ts-note">整行可点，选中态底 <code>--row-selected-bg</code> + 左侧 primary 条；同一时刻仅一行。</p>
+            <div class="table-wrap">
+              <table class="table" id="tsSingle">
+                <thead><tr><th style="width:22%">编号</th><th style="width:26%">机器</th><th style="width:26%">状态</th><th class="num" style="width:26%">产量</th></tr></thead>
+                <tbody><tr><td>IM-2026-101</td><td>PG-1502</td><td><span class="status-dot"><i class="dot-run"></i>运行</span></td><td class="num">1,200</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="card ts-sec">
+          <div class="card-head"><span class="card-title">③ 多选（全选 / 半选 / 批量条）</span></div>
+          <div class="card-body">
+            <div class="ts-batch" id="tsBatch"><span class="ts-pill" id="tsCount">已选 0 项</span><button type="button" class="btn btn-primary btn-sm">批量导出</button></div>
+            <div class="table-wrap">
+              <table class="table" id="tsMulti">
+                <thead><tr><th style="width:44px"><span class="cbx" id="tsAll" role="checkbox" aria-checked="false" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span></th><th style="width:26%">编号</th><th style="width:30%">机器</th><th class="num" style="width:20%">产量</th></tr></thead>
+                <tbody><tr><td><span class="cbx" role="checkbox" aria-checked="false"></span></td><td>IM-2026-101</td><td>PG-1502</td><td class="num">1,200</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="card ts-sec">
+        <div class="card-head"><span class="card-title">④ 排序 + ⑤ 分页（每页条数 / 页码 / 总数）</span><span class="card-head-meta t-caption">点击表头切换升/降序</span></div>
+        <div class="card-body">
+          <div class="ts-toolbar">
+            <input class="input" id="tsKeyword" type="text" placeholder="搜索机器名称" aria-label="搜索">
+            <span class="ts-pill" id="tsTotal">共 26 条</span>
+          </div>
+          <div class="table-wrap">
+            <table class="table table--fixed" id="tsPage">
+              <thead><tr>
+                <th class="ts-th-sort" data-k="id" style="width:20%">编号 <span class="ts-arrow">↕</span></th>
+                <th class="ts-th-sort" data-k="machine" style="width:22%">机器 <span class="ts-arrow">↕</span></th>
+                <th style="width:18%">组织</th>
+                <th class="ts-th-sort num" data-k="out" style="width:20%">产量 <span class="ts-arrow">↕</span></th>
+                <th style="width:20%">状态</th>
+              </tr></thead>
+              <tbody><tr><td>-</td><td>-</td><td>-</td><td class="num">1,200</td><td>-</td></tr></tbody>
+            </table>
+          </div>
+          <div class="pager" id="tsPager"></div>
+        </div>
+      </section>
+
+      <div class="ts-grid">
+        <section class="card ts-sec">
+          <div class="card-head"><span class="card-title">⑥ 空态（.empty）</span></div>
+          <div class="card-body">
+            <div class="empty">
+              <svg class="empty-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18v13H3z"/><path d="M3 7l3-3h12l3 3"/><path d="M9 12h6"/></svg>
+              <div class="empty-title">暂无数据</div>
+              <div class="t-caption">调整筛选条件后重试</div>
+            </div>
+          </div>
+        </section>
+        <section class="card ts-sec">
+          <div class="card-head"><span class="card-title">⑦ 占位行（补位保留分割线）</span></div>
+          <div class="card-body">
+            <div class="table-wrap ts-scroll">
+              <table class="table"><thead><tr><th style="width:30%">编号</th><th style="width:40%">机器</th><th class="num" style="width:30%">产量</th></tr></thead>
+              <tbody><tr><td>IM-2026-101</td><td>PG-1502</td><td class="num">1,200</td></tr><tr class="is-placeholder"><td>&nbsp;</td><td></td><td class="num">&nbsp;</td></tr><tr class="is-placeholder"><td>&nbsp;</td><td></td><td class="num">&nbsp;</td></tr><tr class="is-placeholder"><td>&nbsp;</td><td></td><td class="num">&nbsp;</td></tr></tbody></table>
+            </div>
+          </div>
+        </section>
+      </div>
+      <section class="card ts-sec">
+        <div class="card-head"><span class="card-title">⑧ 全宽表格（变体 A：整卡通栏 · 筛选条 + 表格）</span><span class="card-head-meta t-caption">表格铺满内容区宽度，禁裸表格（必须由 .card 承载）</span></div>
+        <div class="card-body">
+          <div class="ts-toolbar">
+            <input class="input" type="text" placeholder="机器名称" aria-label="机器名称">
+            <button type="button" class="btn btn-primary">查询</button>
+            <button type="button" class="btn btn-secondary">导出</button>
+          </div>
+          <div class="table-wrap">
+            <table class="table table--fixed" id="tsWide">
+              <thead><tr><th style="width:14%">编号</th><th style="width:16%">机器</th><th style="width:14%">组织</th><th style="width:12%">状态</th><th class="num" style="width:12%">产量</th><th style="width:16%">达成率</th><th style="width:16%">操作</th></tr></thead>
+              <tbody id="tsWideBody"><tr><td>IM-2026-101</td><td>PG-1502</td><td>弘设汇</td><td><span class="status-dot"><i class="dot-run"></i>运行</span></td><td class="num">1,200</td><td><div class="ts-progress"><i style="width:72%"></i></div></td><td><button type="button" class="btn btn-text">详情</button></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="card ts-sec">
+        <div class="card-head"><span class="card-title">⑨ 卡片表格（变体 B：卡片内紧凑表 · 多卡并列）</span><span class="card-head-meta t-caption">卡内表格行高 44、列宽百分比、徽章收敛</span></div>
+        <div class="card-body">
+          <div class="ts-grid">
+            <div class="card ts-sec" style="margin:0">
+              <div class="card-head"><span class="card-title">弘设汇 · 最近 5 条</span></div>
+              <div class="card-body" style="padding:0">
+                <div class="table-wrap"><table class="table" id="tsCardA"><thead><tr><th style="width:40%">机器</th><th class="num" style="width:30%">产量</th><th style="width:30%">状态</th></tr></thead><tbody><tr><td>PG-1502</td><td class="num">1,200</td><td><span class="status-dot"><i class="dot-run"></i>运行</span></td></tr></tbody></table></div>
+              </div>
+            </div>
+            <div class="card ts-sec" style="margin:0">
+              <div class="card-head"><span class="card-title">宁波分厂 · 最近 5 条</span></div>
+              <div class="card-body" style="padding:0">
+                <div class="table-wrap"><table class="table" id="tsCardB"><thead><tr><th style="width:40%">机器</th><th class="num" style="width:30%">产量</th><th style="width:30%">状态</th></tr></thead><tbody><tr><td>PG-1503</td><td class="num">1,237</td><td><span class="status-dot"><i class="dot-idle"></i>待机</span></td></tr></tbody></table></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+</main>
+<script>
+(function () {
+  var R = [{"id":"IM-2026-101","machine":"PG-1502","org":"弘设汇","status":"run","level":"none","out":1180,"rate":68},{"id":"IM-2026-102","machine":"PG-1503","org":"弘设汇","status":"run","level":"warn","out":1217,"rate":75},{"id":"IM-2026-103","machine":"PG-1504","org":"弘设汇","status":"idle","level":"err","out":1254,"rate":82},{"id":"IM-2026-104","machine":"PG-1505","org":"宁波分厂","status":"alarm","level":"warn","out":1291,"rate":89},{"id":"IM-2026-105","machine":"PG-1506","org":"弘设汇","status":"offline","level":"none","out":1328,"rate":96},{"id":"IM-2026-106","machine":"PG-1507","org":"苏州分厂","status":"run","level":"err","out":1365,"rate":71},{"id":"IM-2026-107","machine":"PG-1508","org":"弘设汇","status":"run","level":"none","out":1402,"rate":78},{"id":"IM-2026-108","machine":"PG-1509","org":"宁波分厂","status":"run","level":"warn","out":1439,"rate":85},{"id":"IM-2026-109","machine":"PG-1510","org":"弘设汇","status":"idle","level":"err","out":1476,"rate":92},{"id":"IM-2026-110","machine":"PG-1511","org":"弘设汇","status":"alarm","level":"warn","out":1513,"rate":99},{"id":"IM-2026-111","machine":"PG-1512","org":"弘设汇","status":"offline","level":"none","out":1550,"rate":74},{"id":"IM-2026-112","machine":"PG-1513","org":"宁波分厂","status":"run","level":"err","out":1587,"rate":81},{"id":"IM-2026-113","machine":"PG-1514","org":"苏州分厂","status":"run","level":"none","out":1624,"rate":88},{"id":"IM-2026-114","machine":"PG-1515","org":"弘设汇","status":"run","level":"warn","out":1661,"rate":95},{"id":"IM-2026-115","machine":"PG-1516","org":"弘设汇","status":"idle","level":"err","out":1698,"rate":70},{"id":"IM-2026-116","machine":"PG-1517","org":"宁波分厂","status":"alarm","level":"warn","out":1735,"rate":77},{"id":"IM-2026-117","machine":"PG-1518","org":"弘设汇","status":"offline","level":"none","out":1772,"rate":84},{"id":"IM-2026-118","machine":"PG-1519","org":"弘设汇","status":"run","level":"err","out":1809,"rate":91},{"id":"IM-2026-119","machine":"PG-1520","org":"弘设汇","status":"run","level":"none","out":1846,"rate":98},{"id":"IM-2026-120","machine":"PG-1521","org":"宁波分厂","status":"run","level":"warn","out":1883,"rate":73},{"id":"IM-2026-121","machine":"PG-1522","org":"弘设汇","status":"idle","level":"err","out":1920,"rate":80},{"id":"IM-2026-122","machine":"PG-1523","org":"弘设汇","status":"alarm","level":"warn","out":1957,"rate":87},{"id":"IM-2026-123","machine":"PG-1524","org":"弘设汇","status":"offline","level":"none","out":1994,"rate":94},{"id":"IM-2026-124","machine":"PG-1525","org":"宁波分厂","status":"run","level":"err","out":2031,"rate":69},{"id":"IM-2026-125","machine":"PG-1526","org":"弘设汇","status":"run","level":"none","out":2068,"rate":76},{"id":"IM-2026-126","machine":"PG-1527","org":"弘设汇","status":"run","level":"warn","out":2105,"rate":83},{"id":"IM-2026-127","machine":"PG-1528","org":"苏州分厂","status":"idle","level":"err","out":2142,"rate":90},{"id":"IM-2026-128","machine":"PG-1529","org":"宁波分厂","status":"alarm","level":"warn","out":2179,"rate":97},{"id":"IM-2026-129","machine":"PG-1530","org":"弘设汇","status":"offline","level":"none","out":2216,"rate":72},{"id":"IM-2026-130","machine":"PG-1531","org":"弘设汇","status":"run","level":"err","out":2253,"rate":79},{"id":"IM-2026-131","machine":"PG-1532","org":"弘设汇","status":"run","level":"none","out":2290,"rate":86},{"id":"IM-2026-132","machine":"PG-1533","org":"宁波分厂","status":"run","level":"warn","out":2327,"rate":93},{"id":"IM-2026-133","machine":"PG-1534","org":"弘设汇","status":"idle","level":"err","out":2364,"rate":68},{"id":"IM-2026-134","machine":"PG-1535","org":"苏州分厂","status":"alarm","level":"warn","out":2401,"rate":75},{"id":"IM-2026-135","machine":"PG-1536","org":"弘设汇","status":"offline","level":"none","out":2438,"rate":82},{"id":"IM-2026-136","machine":"PG-1537","org":"宁波分厂","status":"run","level":"err","out":2475,"rate":89},{"id":"IM-2026-137","machine":"PG-1538","org":"弘设汇","status":"run","level":"none","out":2512,"rate":96},{"id":"IM-2026-138","machine":"PG-1539","org":"弘设汇","status":"run","level":"warn","out":2549,"rate":71},{"id":"IM-2026-139","machine":"PG-1540","org":"弘设汇","status":"idle","level":"err","out":2586,"rate":78},{"id":"IM-2026-140","machine":"PG-1541","org":"宁波分厂","status":"alarm","level":"warn","out":2623,"rate":85},{"id":"IM-2026-141","machine":"PG-1542","org":"苏州分厂","status":"offline","level":"none","out":2660,"rate":92},{"id":"IM-2026-142","machine":"PG-1543","org":"弘设汇","status":"run","level":"err","out":2697,"rate":99},{"id":"IM-2026-143","machine":"PG-1544","org":"弘设汇","status":"run","level":"none","out":2734,"rate":74},{"id":"IM-2026-144","machine":"PG-1545","org":"宁波分厂","status":"run","level":"warn","out":2771,"rate":81},{"id":"IM-2026-145","machine":"PG-1546","org":"弘设汇","status":"idle","level":"err","out":2808,"rate":88},{"id":"IM-2026-146","machine":"PG-1547","org":"弘设汇","status":"alarm","level":"warn","out":2845,"rate":95},{"id":"IM-2026-147","machine":"PG-1548","org":"弘设汇","status":"offline","level":"none","out":2882,"rate":70},{"id":"IM-2026-148","machine":"PG-1549","org":"宁波分厂","status":"run","level":"err","out":2919,"rate":77},{"id":"IM-2026-149","machine":"PG-1550","org":"弘设汇","status":"run","level":"none","out":2956,"rate":84},{"id":"IM-2026-150","machine":"PG-1551","org":"弘设汇","status":"run","level":"warn","out":2993,"rate":91},{"id":"IM-2026-151","machine":"PG-1552","org":"弘设汇","status":"idle","level":"err","out":3030,"rate":98},{"id":"IM-2026-152","machine":"PG-1553","org":"宁波分厂","status":"alarm","level":"warn","out":3067,"rate":73},{"id":"IM-2026-153","machine":"PG-1554","org":"弘设汇","status":"offline","level":"none","out":3104,"rate":80},{"id":"IM-2026-154","machine":"PG-1555","org":"弘设汇","status":"run","level":"err","out":3141,"rate":87},{"id":"IM-2026-155","machine":"PG-1556","org":"苏州分厂","status":"run","level":"none","out":3178,"rate":94},{"id":"IM-2026-156","machine":"PG-1557","org":"宁波分厂","status":"run","level":"warn","out":3215,"rate":69},{"id":"IM-2026-157","machine":"PG-1558","org":"弘设汇","status":"idle","level":"err","out":3252,"rate":76},{"id":"IM-2026-158","machine":"PG-1559","org":"弘设汇","status":"alarm","level":"warn","out":3289,"rate":83},{"id":"IM-2026-159","machine":"PG-1560","org":"弘设汇","status":"offline","level":"none","out":3326,"rate":90},{"id":"IM-2026-160","machine":"PG-1561","org":"宁波分厂","status":"run","level":"err","out":3363,"rate":97}];
+  var S = { run: ['运行', 'dot-run'], idle: ['待机', 'dot-idle'], offline: ['离线', 'dot-offline'], alarm: ['告警', 'dot-alarm'] };
+  var L = { err: ['紧急', 'badge-err'], warn: ['重要', 'badge-warn'], none: ['提示', 'badge-info'] };
+  function dot(r) { var s = S[r.status] || S.run; return '<span class="status-dot"><i class="' + s[1] + '"></i>' + s[0] + '</span>'; }
+  function lvl(r) { var l = L[r.level] || L.none; return '<span class="badge ' + l[1] + '">' + l[0] + '</span>'; }
+  function bar(r) { return '<div class="ts-progress"><i style="width:' + r.rate + '%"></i></div>'; }
+
+  // ① 基础表格：12 行，覆盖 4 种状态 + 3 种级别
+  var base = document.getElementById('tsBaseBody');
+  if (base) base.innerHTML = R.slice(0, 12).map(function (r) {
+    return '<tr><td>' + r.id + '</td><td>' + r.machine + '</td><td>' + r.org + '</td><td>' + dot(r) + '</td><td>' + lvl(r) + '</td><td class="num">' + r.out.toLocaleString('zh-CN') + '</td><td>' + bar(r) + '</td><td class="ts-ops"><button type="button" class="btn btn-text">详情</button><span class="dropdown"><button type="button" class="btn btn-text ts-more" aria-haspopup="true" aria-expanded="false">⋯</button><div class="dropdown-content" hidden><div class="dropdown-item">编辑</div><div class="dropdown-item">复制</div><div class="dropdown-item danger">删除</div></div></span></td></tr>';
+  }).join('');
+
+  // ② 单选：12 行
+  var single = document.getElementById('tsSingle');
+  if (single) {
+    var sb = single.querySelector('tbody');
+    sb.innerHTML = R.slice(0, 12).map(function (r) {
+      return '<tr data-id="' + r.id + '"><td>' + r.id + '</td><td>' + r.machine + '</td><td>' + dot(r) + '</td><td class="num">' + r.out.toLocaleString('zh-CN') + '</td></tr>';
+    }).join('');
+    sb.addEventListener('click', function (e) {
+      var tr = e.target.closest('tr'); if (!tr) return;
+      sb.querySelectorAll('tr').forEach(function (x) { x.classList.remove('is-selected'); });
+      tr.classList.add('is-selected');
+    });
+  }
+
+  // ③ 多选：12 行
+  var multi = document.getElementById('tsMulti'), all = document.getElementById('tsAll');
+  if (multi && all) {
+    var mb = multi.querySelector('tbody');
+    var cbx = '<span class="cbx" role="checkbox" aria-checked="false" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span>';
+    mb.innerHTML = R.slice(0, 12).map(function (r) {
+      return '<tr><td>' + cbx + '</td><td>' + r.id + '</td><td>' + r.machine + '</td><td class="num">' + r.out.toLocaleString('zh-CN') + '</td></tr>';
+    }).join('');
+    function sync() {
+      var boxes = mb.querySelectorAll('.cbx'), on = mb.querySelectorAll('.cbx[aria-checked="true"]').length;
+      all.setAttribute('aria-checked', String(on === boxes.length && on > 0));
+      all.classList.toggle('is-indeterminate', on > 0 && on < boxes.length);
+      var c = document.getElementById('tsCount'); if (c) c.textContent = '已选 ' + on + ' 项';
+      var b = document.getElementById('tsBatch'); if (b) b.classList.toggle('on', on > 0);
+    }
+    mb.addEventListener('click', function (e) {
+      var box = e.target.closest('.cbx'); if (!box) return;
+      var next = box.getAttribute('aria-checked') !== 'true';
+      box.setAttribute('aria-checked', String(next));
+      box.closest('tr').classList.toggle('is-selected', next);
+      sync();
+    });
+    all.addEventListener('click', function () {
+      var next = all.getAttribute('aria-checked') !== 'true';
+      all.setAttribute('aria-checked', String(next)); all.classList.remove('is-indeterminate');
+      mb.querySelectorAll('.cbx').forEach(function (b) { b.setAttribute('aria-checked', String(next)); b.closest('tr').classList.toggle('is-selected', next); });
+      sync();
+    });
+    sync();
+  }
+
+  // ④⑤ 排序 + 分页（默认 10/页，数据 60 条）
+  var page = 1, size = 10, key = '', dir = 1, kw = '';
+  var tbody = document.querySelector('#tsPage tbody'), pager = document.getElementById('tsPager');
+  function rows() {
+    var l = R.filter(function (r) { return !kw || (r.machine + r.id).toLowerCase().indexOf(kw) >= 0; });
+    if (key) l = l.slice().sort(function (a, b) { return (a[key] > b[key] ? 1 : -1) * dir; });
+    return l;
+  }
+  function render() {
+    if (!tbody) return;
+    var l = rows(), pages = Math.max(1, Math.ceil(l.length / size));
+    if (page > pages) page = pages;
+    tbody.innerHTML = l.slice((page - 1) * size, page * size).map(function (r) {
+      return '<tr><td>' + r.id + '</td><td>' + r.machine + '</td><td>' + r.org + '</td><td>' + dot(r) + '</td><td class="num">' + r.out.toLocaleString('zh-CN') + '</td></tr>';
+    }).join('');
+    var t = document.getElementById('tsTotal'); if (t) t.textContent = '共 ' + l.length + ' 条';
+    var html = '<button type="button" class="pg" data-p="' + Math.max(1, page - 1) + '">‹</button>';
+    for (var i = 1; i <= pages; i++) html += '<button type="button" class="pg' + (i === page ? ' active' : '') + '" data-p="' + i + '">' + i + '</button>';
+    html += '<button type="button" class="pg" data-p="' + Math.min(pages, page + 1) + '">›</button>';
+    html += '<select class="input" id="tsSize" aria-label="每页条数" style="width:92px;height:28px"><option value="10">10 / 页</option><option value="20">20 / 页</option></select>';
+    html += '<span class="pg-tot">共 ' + l.length + ' 条</span>';
+    pager.innerHTML = html;
+    var sel = document.getElementById('tsSize');
+    if (sel) { sel.value = String(size); sel.addEventListener('change', function () { size = Number(this.value); page = 1; render(); }); }
+  }
+  if (pager) {
+    pager.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-p]'); if (!b) return;
+      page = Number(b.getAttribute('data-p')); render();
+    });
+    document.querySelectorAll('.ts-th-sort').forEach(function (th) {
+      th.addEventListener('click', function () {
+        var k = th.getAttribute('data-k');
+        dir = (key === k) ? -dir : 1; key = k;
+        document.querySelectorAll('.ts-th-sort .ts-arrow').forEach(function (a) { a.textContent = '↕'; });
+        th.querySelector('.ts-arrow').textContent = dir === 1 ? '↑' : '↓';
+        render();
+      });
+    });
+    var kb = document.getElementById('tsKeyword');
+    if (kb) kb.addEventListener('input', function (e) { kw = e.target.value.trim().toLowerCase(); page = 1; render(); });
+    render();
+  }
+
+  // ⑧ 全宽表格：14 行
+  var wide = document.getElementById('tsWideBody');
+  if (wide) wide.innerHTML = R.slice(0, 14).map(function (r) {
+    return '<tr><td>' + r.id + '</td><td>' + r.machine + '</td><td>' + r.org + '</td><td>' + dot(r) + '</td><td class="num">' + r.out.toLocaleString('zh-CN') + '</td><td>' + bar(r) + '</td><td><button type="button" class="btn btn-text">详情</button></td></tr>';
+  }).join('');
+
+  // ⑨ 卡片表格：各 8 行
+  ['tsCardA', 'tsCardB'].forEach(function (id, k) {
+    var el = document.getElementById(id); if (!el) return;
+    el.querySelector('tbody').innerHTML = R.slice(k * 5, k * 5 + 5).map(function (r) {
+      return '<tr><td>' + r.machine + '</td><td class="num">' + r.out.toLocaleString('zh-CN') + '</td><td>' + dot(r) + '</td></tr>';
+    }).join('');
+  });
+
+  // ===== 分页器规则：>5 行的表格必须有分页器（RULES table.pager.required）=====
+  function paginate(tableSel, size) {
+    var t = document.querySelector(tableSel); if (!t) return;
+    var tb = t.querySelector('tbody'); if (!tb) return;
+    var rows = Array.prototype.slice.call(tb.querySelectorAll('tr'));
+    if (rows.length <= 5) return;
+    var wrap = t.closest('.table-wrap') || t.parentNode;
+    var pager = document.createElement('div');
+    pager.className = 'pager';
+    wrap.parentNode.insertBefore(pager, wrap.nextSibling);
+    var page = 1, pages = Math.ceil(rows.length / size);
+    function draw() {
+      rows.forEach(function (r, i) { r.style.display = (i >= (page - 1) * size && i < page * size) ? '' : 'none'; });
+      var html = '<button type="button" class="pg" data-p="' + Math.max(1, page - 1) + '">‹</button>';
+      for (var i = 1; i <= pages; i++) html += '<button type="button" class="pg' + (i === page ? ' active' : '') + '" data-p="' + i + '">' + i + '</button>';
+      html += '<button type="button" class="pg" data-p="' + Math.min(pages, page + 1) + '">›</button>';
+      html += '<span class="pg-tot">共 ' + rows.length + ' 条 · 每页 ' + size + ' 条</span>';
+      pager.innerHTML = html;
+    }
+    pager.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-p]'); if (!b) return;
+      page = Number(b.getAttribute('data-p')); draw();
+    });
+    draw();
+  }
+  paginate('#tsBase', 6);
+  paginate('#tsSingle', 6);
+  paginate('#tsMulti', 6);
+  paginate('#tsWide', 7);
+
+  // 「操作」列更多菜单
+  document.addEventListener('click', function (e) {
+    var more = e.target.closest('.ts-more');
+    document.querySelectorAll('.dropdown-content').forEach(function (d) {
+      if (!more || d !== more.parentNode.querySelector('.dropdown-content')) { d.hidden = true; if (d.parentNode.querySelector('.ts-more')) d.parentNode.querySelector('.ts-more').setAttribute('aria-expanded', 'false'); }
+    });
+    if (!more) return;
+    var panel = more.parentNode.querySelector('.dropdown-content');
+    panel.hidden = !panel.hidden;
+    more.setAttribute('aria-expanded', String(!panel.hidden));
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    document.querySelectorAll('.dropdown-content').forEach(function (d) { d.hidden = true; });
+  });
+
+  // ⑥ 空态切换
+  var eb = document.getElementById('tsEmpty');
+  if (eb) eb.addEventListener('click', function () {
+    var tb = document.querySelector('#tsPage tbody'); if (tb) tb.hidden = !tb.hidden;
+  });
+})();
+</script>
+</body>
+</html>

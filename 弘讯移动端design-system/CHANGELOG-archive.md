@@ -1,8 +1,38 @@
 # 弘讯B端视觉系统 · 移动端设计系统更新日志（归档）
 
 > 本文件为 `CHANGELOG.md` 滚动归档（2026-09-22 建立，加载纪律 SSOT A-2）：主文件只保留近期条目，更早条目**原样移入**此处，未做任何内容修改。
-> 切割线（滚动更新）：mobile 归档 `[1.14.18]` 及更早。新条目一律写主文件顶部；超限时由 roll-changelog.js 自动滚动。
+> 切割线（滚动更新）：mobile 归档 `[1.14.24]` 及更早。新条目一律写主文件顶部；超限时由 roll-changelog.js 自动滚动。
 
+## [1.14.24] — 2026-09-23 · 对称留痕：Web 修复 page-template.html 畸形 `:root` 块（移动端无同构缺陷）
+
+- **背景**：维护侧消费应用侧报告 DS-20260923-01 核验回执，修复 Web `page-template.html` L111–114 畸形块（孤立 `:root` + 缩进重复密度声明）。
+- **移动端核验结论**：移动端 `page-template.html` 经扫描**无同构缺陷**（无孤立 `:root`、无缩进重复 density 声明），**不联动修改**——仅对称留痕。
+- **验证**：ci-local 全绿（100 pass / 0 fail，项数以输出为准）。
+
+---
+
+---
+## [1.14.23] — 2026-09-23 · 监督闭环修复批（与 Web 1.9.36 对称）
+
+- **词典交付通道**：.gitignore 嵌套负向链放行 skills/tm-design-system/（vocabulary.json 不再被目录级忽略，推送后消费者侧词典可见）。
+- **M-07 白名单双源化**：audit-spec 并收 @keyframes 定义名（16→19），规范 shimmer/toast 动画不再误报节拍超限；四用例复测通过。
+- **RULES §1.1c**：登记 workbench 骨架判据为 web 侧 .stat-grid（mobile 真源无 stat-grid 骨架，暂不机器判——已知边界）。
+- **check-size**：清单封闭扩展名 +.txt/.log（堵膨胀转移）；audit-rules.json v1.6.1。
+- **验证**：ci-local 全绿（项数以输出为准）。
+
+---
+
+---
+## [1.14.22] — 2026-09-23 · 页面 species 正交维度 + register 口径显式化（与 Web 1.9.35 对称）
+
+- **RULES 新增 §1.1c**：`<body data-species="workbench|document">` 与 §1.1b 页面类型正交组合（防物种爆炸）；register 口径显式化（B 端工具页 product / Brand Visual Kit brand，互不越界）。
+- **page-template.html**：body 预置 `data-species="document"`。
+- **validate-spec.js**：species 检查（缺失 MEDIUM / 非法值 HIGH），正反例实测通过。
+- **验证**：check-size 通过；ci-local 全绿（项数以输出为准）。
+
+---
+
+---
 ## [1.14.21] — 2026-09-23 · M-07 节拍预算 + Design Read 停等（与 Web 1.9.34 对称）
 
 - **audit-rules.json v1.6.0**：新增 M-07 `motion.beat.budget`（一页最多一个 heavy 动效；页面内 animation 声明唯一 name 去重 >1 即超，`<link>` CSS 与 transition 不计）。

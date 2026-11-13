@@ -209,21 +209,24 @@ function checkHexLiteral(noScript, palette, lineStarts) {
     }
   }
   // 2) inline style="..." 属性值
-  const inlineRe = /\sstyle\s*=\s*"([^"]*)"/gi;
+  // F10（2026-11-12）：支持单引号 / 无引号 inline style——原实现只认双引号，
+  //   `style='background:#123456'` 与 `style=background:#123456` 全部漏检。
+  const inlineRe = /\sstyle\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))/gi;
   while ((m = inlineRe.exec(noScript))) {
-    const abs = m.index + m[0].indexOf(m[1]);
+    const val = m[1] || m[2] || m[3] || '';
+    const abs = m.index + m[0].indexOf(val);
     const line = lineOf(abs, lineStarts);
     const lineText = noScript.slice(lineStarts[line - 1], lineStarts[line] || undefined);
     if (exemptWithNext(noScript, lineStarts, line)) continue; // RED-007c 三路径对称
     const hexRe = /#([0-9a-fA-F]{3,8})\b/g;
-    const gradRanges = findGradientRanges(m[1]);
+    const gradRanges = findGradientRanges(val);
     let h;
-    while ((h = hexRe.exec(m[1]))) {
+    while ((h = hexRe.exec(val))) {
       const hex = ('#' + h[1]).toUpperCase();
       const isGradStop = inRanges(h.index, gradRanges);
       if (!isGradStop && (hex === '#FFFFFF' || hex === '#FFF')) continue;
       const inPalette = palette.has(hex) || palette.has(normalizeShort(hex));
-      const { prop: inlineProp } = declPropAt(m[1], h.index);
+      const { prop: inlineProp } = declPropAt(val, h.index);
       if (isVarDef(inlineProp)) {
         violations.push({
           rule: 'M-01', contract: 'css.vardef.hex', line,
@@ -482,6 +485,33 @@ function checkMotionBeat(noScript, lineStarts, templateMotion) {
   }
   return violations;
 }
+// ---- M-10 css.js.injected（2026-11-12 F10）：<script> 内的样式注入 ----
+// 既有扫描先 stripScriptTags，JS 里 `el.style.background='#123456'` / `cssText` /
+// `innerHTML='<div style=…>'` / `appendChild(<style>)` 全部不可见（实测 0 命中）。
+// 不判死（脚本设主题色可能合法）：只对「上下文出现 style/cssText/innerHTML/<style>」的 hex 报 MEDIUM，
+// 要求凭运行时截图复核（R-08），能改 class 切换就别用 JS 写色值。
+function checkJsInjected(html, lineStarts) {
+  const violations = [];
+  const scriptRe = /<script\b[^>]*>([\s\S]*?)<\/script>/gi;
+  let m;
+  while ((m = scriptRe.exec(html))) {
+    const body = m[1], base = m.index + m[0].indexOf(body);
+    const hexRe = /#([0-9a-fA-F]{3,8})\b/g;
+    let h;
+    while ((h = hexRe.exec(body))) {
+      const ctx = body.slice(Math.max(0, h.index - 120), h.index);
+      if (!/(\.style|cssText|setProperty|innerHTML|insertAdjacentHTML|createElement\(\s*['"]style|textContent\s*=)/.test(ctx)) continue;
+      violations.push({
+        rule: 'M-10', contract: 'css.js.injected',
+        severity: 'MEDIUM',
+        line: lineOf(base + h.index, lineStarts),
+        excerpt: `#${h[1]} @script`,
+        msg: '脚本内注入样式含裸 hex（style./cssText/innerHTML/<style>）——静态扫描判不了生效结果，须凭运行时截图（R-08）复核；能改成 class 切换就别用 JS 写色值',
+      });
+    }
+  }
+  return violations;
+}
 // ---- 主流程 ----
 function main() {
   const args = process.argv.slice(2);
@@ -506,6 +536,7 @@ function main() {
     ...checkStatusDot(noScript, end, lineStarts),
     ...checkLinkedCss(target, palette),
     ...checkMotionBeat(noScript, lineStarts, buildTemplateMotionNames(end)),
+    ...checkJsInjected(html, buildLineStarts(html)),
   ].sort((a, b) => (a.severity === b.severity ? a.line - b.line : a.severity === 'HIGH' ? -1 : 1));
 
   const high = violations.filter(v => v.severity === 'HIGH').length;

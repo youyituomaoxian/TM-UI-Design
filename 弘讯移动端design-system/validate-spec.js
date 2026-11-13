@@ -1244,6 +1244,62 @@ function checkWcagContrast(rules, varsByTheme) {
   return violations;
 }
 
+// ===== F9 视觉形态门禁（2026-11-12）：同色 / 近同色前景背景对 =====
+// 只判「同一选择器内同时声明 color 与 background」（不猜继承背景，零误报）；disabled 态豁免（WCAG）。
+// 定级：对比度 ≤1.02 同色 → HIGH（文字不可见）；<1.5 近同色 → MEDIUM。
+function parseCssColor(v, vars) {
+  const s = (resolve(v, vars) || '').trim().toLowerCase(); let m;
+  if ((m = s.match(/^#([0-9a-f]{3})$/))) { const h = m[1]; return { r: parseInt(h[0] + h[0], 16), g: parseInt(h[1] + h[1], 16), b: parseInt(h[2] + h[2], 16), a: 1 }; }
+  if ((m = s.match(/^#([0-9a-f]{6})$/))) return { r: parseInt(m[1].slice(0, 2), 16), g: parseInt(m[1].slice(2, 4), 16), b: parseInt(m[1].slice(4, 6), 16), a: 1 };
+  if ((m = s.match(/^rgba?\(([^)]+)\)$/))) { const p = m[1].split(/[,\s/]+/).filter(Boolean).map(Number); if (p.length < 3 || p.slice(0, 3).some(isNaN)) return null; return { r: p[0], g: p[1], b: p[2], a: p.length > 3 && !isNaN(p[3]) ? p[3] : 1 }; }
+  if (s === 'white') return { r: 255, g: 255, b: 255, a: 1 };
+  if (s === 'black') return { r: 0, g: 0, b: 0, a: 1 };
+  return null;
+}
+function relLum(c) { const f = (x) => { x /= 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); }; return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b); }
+function checkContrastPairs(rules, varsByTheme) {
+  const out = [], seen = new Set();
+  for (const r of rules) {
+    if (r.selectors.some((s) => /:disabled|\.is-disabled\b|\.disabled\b|\[disabled\]/.test(s))) continue;
+    if (/gradient|url\(|transparent|currentcolor/i.test(r.decl)) continue;
+    const fgM = r.decl.match(/(?:^|;)\s*color\s*:\s*([^;]+)/), bgM = r.decl.match(/background(?:-color)?\s*:\s*([^;]+)/);
+    if (!fgM || !bgM) continue;
+    const vars = r.theme === 'dark' ? varsByTheme.dark : varsByTheme.light;
+    const fg = parseCssColor(fgM[1], vars), bg = parseCssColor(bgM[1], vars);
+    if (!fg || !bg || fg.a < 0.95 || bg.a < 0.95) continue;
+    const l1 = relLum(fg), l2 = relLum(bg), ratio = (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+    const sel = r.selectors.join(','), key = sel + '|' + ratio.toFixed(2);
+    if (seen.has(key)) continue; seen.add(key);
+    if (ratio <= 1.02) out.push({ line: r.line, severity: 'HIGH', contract: 'contrast.invisible', sel, msg: '前景 ' + fgM[1].trim() + ' 与背景 ' + bgM[1].trim() + ' 同色（' + ratio.toFixed(2) + ':1）——文字不可见；改 --text-1/2 或 n9+' });
+    else if (ratio < 1.5) out.push({ line: r.line, severity: 'MEDIUM', contract: 'contrast.near-invisible', sel, msg: '前景/背景对比度 ' + ratio.toFixed(2) + ':1（正文需 ≥4.5）——近同色；文字降一档深色或背景加深一档' });
+  }
+  return out;
+}
+
+// 2026-11-12 双端对齐：模板残留 + 本地 template.css 副本过期（同 web 口径）
+const MOB_RESIDUE = ['弘讯设计系统', 'page-template.html', '弘讯移动端设计系统'];
+function checkTemplateResidue(html, targetPath) {
+  const base = path.basename(targetPath);
+  if (/page-template\.html$/i.test(base) || /规范展示|框架版|USAGE/i.test(base)) return [];
+  const out = [];
+  for (const s of MOB_RESIDUE) {
+    const i = html.indexOf(s);
+    if (i >= 0) out.push({ line: html.slice(0, i).split('\n').length, severity: 'HIGH', contract: 'template.residue', sel: 'body', msg: '残留模板文案「' + s + '」——替换为本项目品牌/导航' });
+  }
+  return out;
+}
+function checkTemplateCssCopy(targetPath, html) {
+  const crypto = require('crypto');
+  const own = path.join(__dirname, 'template.css');
+  const m = html.match(/<link\b[^>]*href\s*=\s*["']([^"']*template\.css[^"']*)["'][^>]*>/i);
+  if (!m) return [];
+  const abs = path.resolve(path.dirname(path.resolve(targetPath)), m[1].split('?')[0]);
+  if (abs === path.resolve(own) || !fs.existsSync(abs)) return [];
+  const h = (p) => crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+  if (h(abs) === h(own)) return [];
+  return [{ line: 0, severity: 'HIGH', contract: 'template.css.stale', sel: 'link', msg: '本地 template.css 副本过期——重新复制真源' }];
+}
+
 function run(specPath, targetPath) {
   const spec = loadSpec(specPath);
   PALETTE = buildPalette(specPath); // NEW-008：色板 = 手写额外色 ∪ tokens.json 全量 hex
@@ -1255,7 +1311,11 @@ function run(specPath, targetPath) {
   const linkedCss = linked.map(l => l.css).join('\n');
   const selfCss = inlineStyleCss(html);
   // NEW-007：按主题切分变量表，规则按自身作用域取表求值
-  const varsByTheme = extractVarsScoped(linkedCss + '\n' + selfCss); // RED-04 修复：只喂真实 CSS（与 checkRootVars 同源），正文/脚本字符串不再污染变量表
+  // F7（2026-11-12）：真源 token 永远算「已定义」——页面在仓库外时 collectLinkedCss 会因 REPO_ROOT
+  //   边界丢掉它 link 的 template.css，不并入真源会让每个合法 token 判 HIGH（假阳性洪水，逼出
+  //   var(--x, 兜底) 掩盖真源缺口）。顺序 = 级联：真源 → 外链 → 内联，页面自身声明仍覆盖真源。
+  const OWN_TOKENS_CSS = fs.readFileSync(path.join(__dirname, 'template.css'), 'utf8');
+  const varsByTheme = extractVarsScoped(OWN_TOKENS_CSS + '\n' + linkedCss + '\n' + selfCss); // RED-04 修复：只喂真实 CSS，正文/脚本字符串不污染变量表
   const varsOf = r => (r && r.theme === 'dark' ? varsByTheme.dark : varsByTheme.light);
   const rules = parseRules(html).concat(...linked.map(l => parseCssRules(l.css, l.label)));
   // RED-001 同型修复（与 Web 端对齐）：豁免依据由 basename().includes() 改为精确路径比对，
@@ -1356,7 +1416,11 @@ function run(specPath, targetPath) {
   const svgV = checkSvgPaint(html);
   // WCAG 2.0 对比度门禁（2026-08-05 对抗审查 DEFECT-07 补齐：与 Web 端 checkWcagContrast 同款）——
   // 功能色底 + 白字（亮色 n1）等已知禁止组合 → MED；组件模板已改深字 n10/err-fg-deep，拦页面覆盖回归
+  const residueV = checkTemplateResidue(html, targetPath);
+  const cssCopyV = checkTemplateCssCopy(targetPath, html);
   const wcagV = checkWcagContrast(rules, varsByTheme);
+  // F9（2026-11-12）：同色/近同色前景背景对（同选择器内双声明才判，disabled 豁免）
+  const contrastPairV = checkContrastPairs(rules, varsByTheme);
   // 守则缺口补强（2026-08-06）：覆写检测 / 网格 calc / 自造类 token 化
   // 豁免「内联模板克隆页」（page-template.html 及克隆：selfCss 即 template.css 本体，
   //   组件类目标 ≥40 视为整份模板内联，其样式一致性由既有契约门禁 checkComponentRules 负责）
@@ -1397,7 +1461,7 @@ function run(specPath, targetPath) {
   // HTML 结构配对门禁（2026-08-06）：div 开闭配对 + bottomnav 父链必须是 .phone
   const structV = checkHtmlStructure(html);
   const darkBrandV = checkDarkBrandOverride(html);
-  return violations.concat(chartSeriesV, rootV, tokenV, motionV, whitelistV, svgV, wcagV, gridV, overrideV, customV, chartV, chartStretchV, chartEdgeV, chartLayoutV, templateSyncV, structV, darkBrandV, scrollV, cloneV, fpV, iconSrcV, bnCountV, regionV, fontV);
+  return violations.concat(chartSeriesV, rootV, tokenV, motionV, whitelistV, svgV, wcagV, contrastPairV, residueV, cssCopyV, gridV, overrideV, customV, chartV, chartStretchV, chartEdgeV, chartLayoutV, templateSyncV, structV, darkBrandV, scrollV, cloneV, fpV, iconSrcV, bnCountV, regionV, fontV);
 }
 
 // ===== HTML 结构配对门禁（2026-08-06：展示页测试多 1 个 </div> 把 .phone 提前闭合 → bottomnav 被挤出手机壳，门禁此前未拦截）=====

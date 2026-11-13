@@ -126,7 +126,7 @@
 
 
 /* V10（2026-08-27 用户拍板）：content 纵向滚动条统一细样式/悬停加深——与侧栏树「滚动条视觉隐藏」条款同族，长列表页滚动条不破坏视觉统一 */
-.content{flex:1;min-width:0;background:var(--n4);padding:var(--space-lg);overflow:auto;
+.content{flex:1;min-width:0;background:var(--n4);padding:var(--space-md) var(--density-content-padding) var(--density-content-padding);overflow:auto;
   scrollbar-width:thin;scrollbar-color:var(--n6) transparent;}
 .content::-webkit-scrollbar{width:8px;height:8px;}
 .content::-webkit-scrollbar-track{background:transparent;}
@@ -140,8 +140,9 @@
 
 
 /* 分层页头紧凑变体（DS-20261112-04 回灌）：标题行→tab 行 12 */
-.page-head--compact{margin-bottom:var(--space-md);}
-.page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px;}
+
+.page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-base);gap:12px;}
+.page-head.page-head--compact{margin-bottom:var(--space-sm);}
 .page-actions{display:inline-flex;gap:8px;flex-wrap:wrap;margin-top:var(--space-base);}
 
 
@@ -167,3 +168,14 @@
 :root[data-theme="dark"] .topbar{ border-bottom:1px solid rgba(255,255,255,.07); }
 :root[data-theme="dark"] .sidebar{ border-right:1px solid rgba(255,255,255,.07); }
 :root[data-theme="dark"] .footer{ border-top:1px solid rgba(255,255,255,.07); }
+
+/* ===== 2026-11-12 布局类规则归位：一屏撑满 / 分页器贴底 / 页头间距（原误放 components.css） ===== */
+.content--fill{display:flex;flex-direction:column}
+.content--fill>.page-head{flex:none}
+.content--fill .card--fill{flex:1;min-height:0;margin-bottom:0}
+.card--fill .card-body{display:flex;flex-direction:column}
+.content--fill .card--fill .pager{margin-top:auto}
+.card-body:has(.pager){padding-bottom:var(--space-sm)}
+.card-body:has(.pager) .pager{margin-bottom:0}
+.page-head .t-h1{position:relative;padding-left:12px}
+.page-head .t-h1::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:4px;height:20px;border-radius:2px;background:var(--primary)}

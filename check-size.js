@@ -16,7 +16,7 @@ const ROOT = __dirname;
 const LIMITS = [
   // 根
   ['GENERATION-SOP.md', 45000], // 2026-11-12：清 2 段历史过程注记（-380）后重定；全文非 Agent 加载面（仅 §① 进包），上限作维护告警
-  ['AGENTS.md', 5900],
+  ['AGENTS.md', 4500],
   ['README.md', 8500],
   ['USAGE-GUIDE.md', 11800],
   ['团队使用指南.md', 11600],
@@ -76,7 +76,7 @@ const LIMITS = [
   ['弘讯移动端design-system/template.css', 62200],
   ['弘讯移动端design-system/tokens.json', 22800],
   ['弘讯移动端design-system/page-template.html', 11600],
-  ['弘讯移动端design-system/validate-spec.js', 67800],
+  ['弘讯移动端design-system/validate-spec.js', 71000],
   ['弘讯移动端design-system/agent-starter.html', 8000],
   ['弘讯移动端design-system/README.md', 3800],
   ['弘讯移动端design-system/CHANGELOG.md', 5300],
@@ -89,6 +89,7 @@ const EXEMPT = new Set([
   'USAGE.html', 'USAGE_分享版.html',
   '设计系统创作记录.md', '图标库换新记录_20260814.md', '待绘制Icon清单.md',
   '弘讯web端design-system/CROSS-PLATFORM-COLORS.md',
+  '弘讯web端design-system/表格规范展示_20261112.html',
   '弘讯web端design-system/web规范展示_框架版_20260806_1050.html',
   '弘讯web端design-system/web规范展示_框架版_20260806_1050_分享版.html',
   '弘讯移动端design-system/展示页测试.html',

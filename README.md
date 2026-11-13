@@ -33,6 +33,8 @@
 ├── CHART-SPEC.md                   # 图表规范（样式 + 结果约束，Agent 自建图表，色走 --chart-*）
 ├── audit-rules.json                # 审计规则真源（machine/runtime/human 规则 + 迁移维度 D-1~D-13 + 豁免登记 + issue_reporting 报告制度；构成以文件为准）
 ├── audit-spec.js                   # 存量页面增量审计（M-01~03/M-06，--end web|mobile，HIGH>0 exit 1）
+├── scripts/audit-batch.js           # 项目级批量审计（目录枚举 + 双门禁逐页 + 覆盖率台账，0 页/异常 fail-closed）
+├── scripts/audit-shots.js           # P3 截图证据验收（页面×亮暗×滚动态矩阵，缺图/占位图 exit 1）
 ├── check-sync.js                   # 双端真源一致性门禁（vendor↔template 同构 + 双端同名类白名单比对 + 未覆盖类登记闭环）
 ├── templates/                      # 应用侧可复制模板（设计系统问题报告模板.md — issue_reporting 制度的 template_file）
 ├── ci-local.js                     # 全链路自检（全绿 exit 0，含 audit + check-sync + check-size + check-reach 阻断；项数以输出为准）
@@ -74,6 +76,7 @@ cd TM-UI-Design
 |------|------|
 | Web 规范活体展示 | `弘讯web端design-system/web规范展示_框架版_*.html`（同名 `_分享版.html` 零外链） |
 | 移动端规范活体展示 | `弘讯移动端design-system/移动端规范展示_*.html`（同名 `_分享版.html`） |
+| 表格规范活体展示 | `弘讯web端design-system/表格规范展示_20261112.html`（document 文档页） |
 
 ### 使用 USAGE.html · 按需求选模板（最省事）
 
@@ -148,7 +151,7 @@ cd TM-UI-Design
 - **DSH（DeepSeek Harness）**：仓库根 `.dsh/skills/tm-design-system/SKILL.md`（项目级，**薄指针**，只指向 `.workbuddy/skills/` 本体；仓库内开会话即自动进技能目录）。上级工作区若也放一份同名指针，可让不落在本仓库内的会话同样可用——两处都**只写指针、不复制规范**，维护只改本体。
 - **克隆即用**：`git clone https://github.com/youyituomaoxian/TM-UI-Design.git <目录>` → 进入目录直接对话「用弘讯设计系统，生成…」——各智能体自动加载对应入口（AGENTS.md / CLAUDE.md / skill），零额外配置。
 - 生成合规页：按 `GENERATION-SOP.md` §① 克隆 `弘讯web端design-system/page-template.html` → 按 `RULES.md §1.1b` 自建内容 → `node 弘讯web端design-system/validate-spec.js <页面.html>`（HIGH 0 才交付）。
-- **存量项目审查修改**（已有页面按规范改造）：按 `GENERATION-SOP.md` §② 五阶段流程——`node audit-spec.js <页面> --end web|mobile` 清零硬违规 + `audit-rules.json` migration_dimensions D-1~D-13 逐维对照找差异 → 映射决策（每个差异定「改成什么」）→ 分批修复 + 门禁回归。
+- **存量项目审查修改**（已有页面按规范改造）：按 `GENERATION-SOP.md` §② 五阶段流程——先出**页面清单**（`node scripts/audit-batch.js <项目> --list`）+ `audit-spec.js` 清零硬违规 + `audit-rules.json` D-1~D-13 逐维对照找差异 → 映射决策（每个差异定「改成什么」）→ 分批修复 + 门禁回归；收口 = **0 HIGH + 台账全绿**（覆盖率 100% / 截图齐全），只「0 HIGH」不算交付。
 - 全仓总门禁：`node ci-local.js`（全绿 EXIT 0，2026-09-10 起；项数以脚本实际输出为准）。
 - 部署/分发：Git 仓库（私有）clone 或整目录拷贝（打包时排除 `output/`、`node_modules/`、`.git/`、`.reasonix/`）——详见 `团队使用指南.md`「部署与团队分发」。
 

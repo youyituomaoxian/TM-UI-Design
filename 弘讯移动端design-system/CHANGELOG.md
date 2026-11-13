@@ -7,6 +7,32 @@
 
 ---
 
+## [双端对齐：模板残留 + 副本过期门禁；滚动口径登记] — 2026-11-12
+- validate 新增 `template.residue`（HIGH）与 `template.css.stale`（HIGH，本地 `template.css` 副本 sha256 ≠ 真源即拦），与 web 端同口径。
+- RULES 新增「完整交互与完整动效（移动端）」与「滚动口径：双端不对称」：移动端滚动由 `.screen-scroll` 承载，`.content--fill` 属 web 专有契约，勿套用；移动端无分页器。
+- 上限 69,500 → 71,000（+2%，实测 70,329；下次再入规则前先拆 helper 回收）。
+
+## [F10/F11/F12：扫描盲区 + MEDIUM 分档 + 截图证据门禁] — 2026-11-12
+- `audit-spec.js`：inline style 支持单引号/无引号；新增 `css.js.injected`（MED）；`audit-rules.json` v1.8.0（M-10 + R-08）。
+- `audit-batch.js` MEDIUM 分档；`scripts/audit-shots.js` 截图证据验收（缺图 exit 1）。
+
+
+## [F1/F3/F4：P0 页面清单 + P3 截图证据 + DoD 升级] — 2026-11-12
+- P0 先出页面清单再盘点；P3 截图证据落盘（缺图=未审）；P4 DoD =「0 HIGH + 台账全绿」。
+- 同步 AGENTS / USAGE-GUIDE / README / 团队使用指南 / 提示词模板。
+
+
+## [F9：同色不可见 / 近同色门禁 + 存量改造边界] — 2026-11-12
+- 新增 `contrast.invisible`（HIGH）/ `contrast.near-invisible`（MEDIUM），`disabled` 豁免；`audit-rules.json` v1.7.0（M-09 登记）。
+- 存量改造边界：只改表现层，禁改文案/字段/交互/数据口径（SOP §② 铁律 6）。
+- 本端 `validate-spec.js` 上限 67,800→69,500（实测 68,956）。
+
+
+## [F7：token 未定义判定并入真源] — 2026-11-12
+- `token.undefined` 定义集改为「真源 template.css → 外链 → 内联」级联，修仓库外页面合法 token 被判 HIGH 的假阳性（`REPO_ROOT` 边界丢 `<link>`）。
+- 回归：模板 4 MED 不变；仓库外夹具 2 HIGH→0；`var(--nope)` 仍 1 HIGH。
+
+
 ## [page.regions 门禁 + 门禁映射] — 2026-11-12
 - validate 新增 `page.regions`（MEDIUM）：首页范式（hero/kingkong/porcelain）缺 `.mlist/.mcard` 列表区、或导航栏缺 `.m-statusbar` 即报（§9.6）；`gate-map.json` 补 12 条移动章节映射。
 
@@ -74,32 +100,5 @@
 
 - **T-7 结案**：mobile vendor 46 类全 mn-*（Taro 组件层自有命名空间），同构段 0 类 = 检查一对本端显式不适用（设计如此），check-sync 输出 ⏭️；非缺口、不阻断。
 - **T-6/T-8**：vendor-coverage.json 登记闭环 + 阈值上调治理约束（主条目见 web CHANGELOG [1.9.38]），移动端真源无同构改动。
-
----
-
-## [1.14.24] — 2026-09-23 · 对称留痕：Web 修复 page-template.html 畸形 `:root` 块（移动端无同构缺陷）
-
-- **背景**：维护侧消费应用侧报告 DS-20260923-01 核验回执，修复 Web `page-template.html` L111–114 畸形块（孤立 `:root` + 缩进重复密度声明）。
-- **移动端核验结论**：移动端 `page-template.html` 经扫描**无同构缺陷**（无孤立 `:root`、无缩进重复 density 声明），**不联动修改**——仅对称留痕。
-- **验证**：ci-local 全绿（100 pass / 0 fail，项数以输出为准）。
-
----
-
-## [1.14.23] — 2026-09-23 · 监督闭环修复批（与 Web 1.9.36 对称）
-
-- **词典交付通道**：.gitignore 嵌套负向链放行 skills/tm-design-system/（vocabulary.json 不再被目录级忽略，推送后消费者侧词典可见）。
-- **M-07 白名单双源化**：audit-spec 并收 @keyframes 定义名（16→19），规范 shimmer/toast 动画不再误报节拍超限；四用例复测通过。
-- **RULES §1.1c**：登记 workbench 骨架判据为 web 侧 .stat-grid（mobile 真源无 stat-grid 骨架，暂不机器判——已知边界）。
-- **check-size**：清单封闭扩展名 +.txt/.log（堵膨胀转移）；audit-rules.json v1.6.1。
-- **验证**：ci-local 全绿（项数以输出为准）。
-
----
-
-## [1.14.22] — 2026-09-23 · 页面 species 正交维度 + register 口径显式化（与 Web 1.9.35 对称）
-
-- **RULES 新增 §1.1c**：`<body data-species="workbench|document">` 与 §1.1b 页面类型正交组合（防物种爆炸）；register 口径显式化（B 端工具页 product / Brand Visual Kit brand，互不越界）。
-- **page-template.html**：body 预置 `data-species="document"`。
-- **validate-spec.js**：species 检查（缺失 MEDIUM / 非法值 HIGH），正反例实测通过。
-- **验证**：check-size 通过；ci-local 全绿（项数以输出为准）。
 
 ---
