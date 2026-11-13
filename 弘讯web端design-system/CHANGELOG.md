@@ -6,7 +6,7 @@
 ---
 
 ## [默认长 logo 换新：asset-logo-brand.svg → 彩色长标 391.84×125.13] — 2026-11-13
-- 默认彩标（浅底用）`assets/logo/asset-logo-brand.svg` 内容替换为新版彩色长标（原 168.76×43.9 单蓝 → 现 391.84×125.13 多色 #456fec/#ffba24/#00c6ff/#9f9f9f），旧版存档为 `asset-logo-brand-v1.svg`。
+- 默认彩标（浅底用）`assets/logo/asset-logo-brand.svg` 内容替换为新版彩色长标（原 168.76×43.9 单蓝 → 现 391.84×125.13 多色 #456fec/#ffba24/#00c6ff/#9f9f9f），旧版存档已按用户要求删除（2026-11-13）。
 - 白标 `asset-logo-brand-white.svg` 未变（深蓝顶栏用）；页面引用无需改路径。
 
 ## [登录页：品牌区去 logo + 背景图 1:1 口径] — 2026-11-13
