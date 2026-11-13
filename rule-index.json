@@ -14,7 +14,7 @@
       "hard": "硬",
       "title": "B 端后台固定框架（Agent 判定必读 ⚠️）",
       "line": 69,
-      "chars": 8030,
+      "chars": 8063,
       "read": "on-demand",
       "gate": [
         "D-1"
@@ -42,7 +42,7 @@
       "hard": "硬",
       "title": "品牌 logo 规范（M-08）",
       "line": 82,
-      "chars": 289,
+      "chars": 322,
       "read": "on-demand",
       "gate": [
         "logo.asset.format",
@@ -83,7 +83,7 @@
       "hard": "软",
       "title": "组件选择决策树",
       "line": 160,
-      "chars": 11256,
+      "chars": 11308,
       "read": "on-demand",
       "gate": null
     },
@@ -107,7 +107,7 @@
       "hard": "软",
       "title": "页面类型规格（pages/ 已删除并入本节 ⚠️ 必读）",
       "line": 186,
-      "chars": 7262,
+      "chars": 7314,
       "read": "must",
       "gate": null
     },

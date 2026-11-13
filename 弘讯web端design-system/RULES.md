@@ -51,7 +51,7 @@
 
 | 章 | 字符 | 何时读 |
 |---|---|---|
-| [硬] 0. B 端后台固定框架 | 8.0k | 判定是否套框架（判定必读） |
+| [硬] 0. B 端后台固定框架 | 8.1k | 判定是否套框架（判定必读） |
 | [软] 1. 组件选择决策树 | 11.3k | 选组件时 · 必读 |
 | [硬] 2. 禁止清单 | 0.9k | 生成前自查 · 简读 |
 | [硬] 3. 组件状态机 | 8.5k | 写/改按钮·输入态时 |
@@ -81,7 +81,7 @@
 
 ### [硬] 0.1a 品牌 logo 规范（M-08）
 
-- **一律 SVG**：真源 `assets/logo/`（asset-logo-brand.svg 彩标·浅底 / asset-logo-brand-white.svg 白标·蓝底）；禁 PNG/JPG；SVG 须带 viewBox，锁高宽自适应。尺寸：顶栏 **32** 宽自适应（白标）/ 登录 **40**（彩标）/ 方标 **64×64**（logo_64.svg）。取用：`<img>` 引真源，禁自造/改色，PNG 仅限 favicon。门禁 `logo.asset.*` HIGH（M-08）。
+- **一律 SVG**：真源 `assets/logo/`（asset-logo-brand.svg 彩标·浅底，2026-11-13 起为 391.84×125.13 彩色长标 / asset-logo-brand-white.svg 白标·蓝底）；禁 PNG/JPG；SVG 须带 viewBox，锁高宽自适应。尺寸：顶栏 **32** 宽自适应（白标）/ 登录 **40**（彩标）/ 方标 **64×64**（logo_64.svg）。取用：`<img>` 引真源，禁自造/改色，PNG 仅限 favicon。门禁 `logo.asset.*` HIGH（M-08）。
 
 ### [硬] 0.2 框架硬性规则（不可违反）
 
@@ -207,7 +207,7 @@ START: 我要做什么类型的页面？
 > ① 尺寸：表头 44 / 行高 44（不随密度档）；分割线 `--n6`。
 > ② 单元格：数值列 `th.num`+`td.num` 成对（否则 `table.align`）；状态 `.status-dot`；级别 `.badge-err/warn/info`；操作列 `.btn.btn-text` + `.dropdown`（`.dropdown-item`、危险 `.danger`、Esc/点外收起）。
 > ③ 行状态：`:hover`、`tr.is-selected`、`.cbx` 全选 / `.is-indeterminate` 半选、补位行 `tr.is-placeholder` 保留分割线。
-> ④ 分页：>5 行必带 `.pager`（`table.pager.required`），≤5 免；**与卡片下沿间距 = 与最后一行间距 = `--space-sm`(8)**；同表禁重复分页器。
+> ④ 分页：>5 行必带 `.pager`（`table.pager.required`），≤5 免；**与卡片下沿间距 = 与最后一行间距 = `--space-sm`(8)**；同表禁重复分页器；**每页条数按容器可容纳行数自适应（自动档），补位空行只补末页余量——禁「固定小页 + 大量补位」**。
 > ⑤ 承载：全宽表用整宽 `.card`（禁裸表）；卡片表行高仍 44、列宽百分比；空态 `.empty`。
 > ⑥ 「撑满 + 贴底」三步见上一条「默认不滚动 + 一屏撑满」。
 
