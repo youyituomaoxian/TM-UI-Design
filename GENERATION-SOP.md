@@ -2,7 +2,7 @@
 
 > 把一句界面描述，变成**过门禁 0 HIGH** 的合规 HTML 页面（可选同步 Ardot 画布）。  
 > 适用：设计师 / 前端 / Agent。默认品牌 `#005EAE` 直接用模板 token；指定其他品牌色或暗色时用配色引擎推导（附录 B）。  
-> 配套：`brand-color-engine/`（引擎）、两端 `agent-starter.html`（纯净起始模板）、`template.css`（CSS 骨架）、`validate-spec.js`（门禁）。  
+> 配套：`brand-color-engine/`（引擎）、`agent-starter.html`（移动端模板克隆流极简示例；Web V3.0 起停用）、`template.css`（CSS 骨架）、`validate-spec.js`（门禁）。  
 
 > **⚠️ 跨端守则（2026-08-06 更新）**：移动端冻结已于 2026-08-06 解除（见移动端 RULES 顶部声明），可修改；结构性 / 视觉性改动仍建议先与用户确认方向。  
 > 改 Web 端时若涉及移动端（共享 token / 组件体系 / validate-spec 对称改动 / 两端联动规则 / 脚手架），**必须先提醒用户拍板**，不得静默同步改动。
@@ -141,7 +141,7 @@
 
 ### 步骤 4：克隆 page-template 框架外壳（Web B 端）——克隆源统一
 
-> ✅ **V3.0（2026-08-03 拍板）**：HTML 原型一律克隆 **`page-template.html`**（含固定框架外壳），不再用 agent-starter 起步。  
+> ✅ **V3.0（2026-08-03 拍板）**：HTML 原型一律克隆 **`page-template.html`**（含固定框架外壳），不再用 agent-starter 自建骨架；2026-11-17 起 agent-starter 已并入模板克隆流（同源极简示例）。  
 > ✅ **V4.0（2026-08-07 拍板）**：**脚手架优先**——`scripts/new-page-web.js`（Web）/ `new-page-mobile.js`（移动）自动完成克隆 + CSS link 修正 + **注入克隆凭证 `<meta name="x-template-clone">`**（P1 门禁 `template.clone.missing` 检查它；缺 meta 的 B 端页面 HIGH 拦截）。**禁止从空白 HTML / 自搭框架起步**（P0 门禁 `framework.fingerprint` 拦截结构不完整）。
 
 ```bash
@@ -163,6 +163,7 @@ cp 弘讯移动端design-system/page-template.html "<用户项目>/output/设备
 5. **移动端底部导航（2026-08-07 收编）**：`.bottomnav` 内 `.bn-item` **3-5 个**，按业务需求增减（最少 3、最多 5，不是定死 3 个）；无 BottomNav 的页面（登录/详情等）合法不挂；home indicator 挂最后一项后。门禁 `bottomnav.count` MED 兜底（移动 RULES §1.1b）。
 6. **删 head 展示样式 `<style>` 块（2026-08-12 补；V10 补强边界 2026-08-27）**：page-template 自带展示页专用 `<style>`（`.sec/.swatch/.motion-*/.type-*/.callout/.kv/.comp-*` 等约 52 行）——业务页克隆后**删除该 `<style>` 块**（保留其后的内联 `:root` 同步副本，同步规则不变）。残留它会带来每页 27-34 条 MED 噪音（裸 font-size / grid.4px / token.undefined 隐患）。删除边界：以 `/* 仅布局/容器助手` 注释开头的 `<style>` 块。**⚠️ 只删 `<style>` 块本身——框架 `<script>` 段（多语言 i18n / 主题切换 / 折叠）一个都不许删**（订单总览实战：删 style 时连带删掉多语言 IIFE → 语言切换全页失效，门禁 `template.i18n.missing` HIGH 已拦截）。
 7. **框架 `<script>` 段禁删（V10 新增 2026-08-27）**：`</style>` 之后的全部 `<script>` 段（框架级多语言 IIFE / 亮暗切换 / 折叠交互）是**框架外壳的一部分**，与顶栏/侧栏同级，**禁止以"演示代码"为由删除**。门禁 `template.i18n.missing`（HIGH）核对 hx-lang 指纹，缺失即拦。
+8. **内容装配定位纪律（2026-11-17 白屏事故沉淀）**：脚本/程序化注入页面内容时，定位 `<main class="content">` 一律用**行首缩进锚点或 `lastIndexOf`**，**禁裸 `indexOf`**——首个命中可能落进注释内字面量（本次事故：模板头说明注释含同形伪标签 → 注入截断 head/CSS/body，整页白屏，当时双门禁 0 HIGH 放行）。模板伪标签已转义 + 门禁已补 `page.title.missing` / `html.skeleton.*` 兜底，但装配纪律不豁免。
 
 **⚠️ 禁参照既有页面 DOM（2026-08-06 用户拍板）**：克隆后页面结构一律按 `RULES.md §1.1b` + `components.json` + `CHART-SPEC.md` **从零填充**。**禁止**参照 output/、packages/ 或任何既有页面的 DOM 拼新页（既有页面可能含历史漂移，参照它会把漂移复制进新页）。**唯一可复制的结构 = 克隆源 page-template 的框架外壳本身**。
 

@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-13",
+  "generated": "2026-11-17",
   "note": "生成物 · 由 sync-index.js 维护；禁止手改（check-reach 会判 FAIL）",
   "files": {
     "web": "弘讯web端design-system/RULES.md",
@@ -83,7 +83,7 @@
       "hard": "软",
       "title": "组件选择决策树",
       "line": 160,
-      "chars": 12203,
+      "chars": 12251,
       "read": "on-demand",
       "gate": null
     },
@@ -107,7 +107,7 @@
       "hard": "软",
       "title": "页面类型规格（pages/ 已删除并入本节 ⚠️ 必读）",
       "line": 186,
-      "chars": 8073,
+      "chars": 8121,
       "read": "must",
       "gate": null
     },
@@ -889,7 +889,7 @@
       "hard": "硬",
       "title": "间距与布局规范速查",
       "line": 488,
-      "chars": 5594,
+      "chars": 5601,
       "read": "on-demand",
       "gate": null
     },
@@ -929,7 +929,7 @@
       "hard": "硬",
       "title": "HTML 预览结构契约（手机壳，2026-08-04）",
       "line": 516,
-      "chars": 3918,
+      "chars": 3925,
       "read": "on-demand",
       "gate": [
         "html.structure.body",

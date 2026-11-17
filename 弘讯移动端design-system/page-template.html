@@ -28,6 +28,9 @@
   --suc:#10B981; --suc-pressed:#0D9E6F; --suc-dis:#A6D4C5; --suc-text:#F0FFFA;
   --warn:#F59E0B; --warn-pressed:#DB8E09; --warn-dis:#F5D9A6; --warn-text:#FEF2E8;
   --err:#EF4444; --err-pressed:#D63B3B; --err-dis:#F5A6A6; --err-text:#FEDED8; --err-fg-deep:#101010;
+  /* 2026-10-20：功能色文字深变体 + 实底按钮色（2026-11-17 与 template.css 同步补齐） */
+  --suc-deep:#047857; --warn-deep:#B45309; --err-deep:#B91C1C;
+  --suc-btn-bg:#047857; --warn-btn-bg:#B45309; --err-btn-bg:#B91C1C; --run-btn-bg:#15803D;
   --link:#1A75D2;
   /* 功能色 soft 浅底（2026-08-06 新增，对齐 --run-bg/--run-border 命名；值=tokens.json colors.functional.*.bg/border） */
   --suc-bg:#EAF9F3; --suc-border:#B7E7D5;
@@ -61,7 +64,7 @@
   --motion-ease-out-quint:cubic-bezier(0.23,1,0.32,1); --motion-ease-in-out-circ:cubic-bezier(0.78,0.14,0.15,0.86);
   --motion-ease-out-circ:cubic-bezier(0.08,0.82,0.17,1);
   /* 字体（跨平台通用族，Ardot 内再按 Android/iOS 替换） */
-  --font-cn:"PingFang SC","Noto Sans SC",sans-serif;
+  --font-cn:"PingFang SC","Noto Sans SC","Microsoft YaHei","微软雅黑",sans-serif;
   /* 等宽字体（B 包新增；工控数据/代码） */
   --font-mono:"JetBrains Mono","SF Mono",Consolas,"Liberation Mono",Menlo,monospace;
   /* 密度模式（B 包新增；移动端只 comfortable 基准，compact/spacious 不启用） */
@@ -72,7 +75,7 @@
 }
 </style>
 </head>
-<body class="ios" data-species="document"><body class="ios">
+<body class="ios" data-species="document">
 <div class="stage-wrap">
 <button class="theme-toggle" id="themeToggle" title="切换到暗色模式">
   <svg class="ico" id="themeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>

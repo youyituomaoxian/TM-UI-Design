@@ -36,20 +36,20 @@ const LIMITS = [
   // 判定 isExemptLine/isExemptComment（原为整行子串正则，可被 /* swatch */ 注释、
   // .not-a-swatch-at-all 类名、data-audit-exempt-toggle 属性滥用，单行豁免可吞 4 条 HIGH），
   // 且取消 :root 预剥离使 vardef MEDIUM 分支从死代码转为可达。属实质代码增长，按分级余量重测。
-  ['audit-spec.js', 25000],
+  ['audit-spec.js', 27600], // 2026-11-17：+M-11 页头标题语义门禁（与 validate-spec page.title.missing 同口径），实测 25490 + 8%（10k~50k 档）重测
   // 2026-10-08 RED-001 修复：原 9200（实测现值 8364 + 10%）。修复后新增 liftNestedAtRules
   // （at-rule 提升：@media/@supports 内声明必须进入比对面，原实现整块丢弃导致断点内漂移可拿
   // exit 0）。属实质代码增长而非注水，按分级余量规则（10k~50k 档 +8%）重测阈值。
   // 2026-10-10 T-6 检查三 checkCoverage 落码（RED-002 三档，拍板授权）：实测 11997 + 8%（10k~50k 档）→ 13000。
   ['check-sync.js', 13000],
-  ['check-size.js', 8000], // 2026-10-10 T-8/T-6 落码实测 6478 + 15%（≤10k 档）重测（已追认 2026-10-10）；2026-11-12 P0 可达性门禁登记 +3 项
+  ['check-size.js', 8100], // 2026-11-17 留痕+100；2026-10-10 T-8/T-6 实测 6478+15%；2026-11-12 P0+3
   ['roll-changelog.js', 5600],
   ['sync-index.js', 14000],   // 2026-11-12 P0：索引同步生成器（章节索引 + rule-index）
   ['check-reach.js', 14000],  // 2026-11-12 P0：规范可达性门禁（索引/引用/加载预算）
   ['rule-index.json', 40000], // 2026-11-12 P0：规则路由表（生成物，勿手改）
   ['gate-map.json', 12000],   // 2026-11-12：人工确认的 章节→validate 门禁 映射
   // Web 端
-  ['弘讯web端design-system/RULES.md', 55000],  // 2026-11-12 P1：零语义回收（净 647）后按可读性预算重定——加载集 32k 由 check-reach 守，本上限只作膨胀告警（HANDOFF 为本地文件，不入清单）
+  ['弘讯web端design-system/RULES.md', 56000],  // 2026-11-17 容量：可读性优先，本季 1 次预算上调（不搬 RULES 表）；2026-11-12 P1：零语义回收后按可读性预算重定——加载集由 check-reach 守
   ['弘讯web端design-system/MASTER.md', 22200],
   ['弘讯web端design-system/DESIGN-TOKENS.md', 15600],
   ['弘讯web端design-system/components.md', 17900],  // 2026-11-09：§3 三态分型说明,
@@ -61,7 +61,7 @@ const LIMITS = [
   ['弘讯web端design-system/tokens.json', 13300],
   // 2026-11-06：折叠态浮层 JS + data-group/data-key 契约实测 38611，36000 → 40000。
   ['弘讯web端design-system/page-template.html', 40000],
-  ['弘讯web端design-system/validate-spec.js', 120600],  // 2026-11-12：M-08 checkLogoAsset 门禁实质增长，实测 114806 + 5%（>50k 档）重测；2026-11-07：tree.node.split / dark.brand.override
+  ['弘讯web端design-system/validate-spec.js', 129500],  // 2026-11-17：+页头标题语义/HTML骨架两门禁（白屏+按钮标题事故兜底），实测 123231 + 5% 重测；2026-11-12：M-08 实测 114806 + 5%；2026-11-07：tree.node.split / dark.brand.override
   ['弘讯web端design-system/agent-starter.html', 4400],
   ['弘讯web端design-system/README.md', 4600],
   // 2026-11-06：暗色固定主题条目，11000 → 11500。
@@ -87,7 +87,6 @@ const LIMITS = [
 const EXEMPT = new Set([
   '.gitignore', 'LICENSE', 'CLAUDE.md', 'HANDOFF.md',
   'USAGE.html', 'USAGE_分享版.html',
-  '设计系统创作记录.md', '图标库换新记录_20260814.md', '待绘制Icon清单.md',
   '弘讯web端design-system/CROSS-PLATFORM-COLORS.md',
   '弘讯web端design-system/表格规范展示_20261112.html',
   '弘讯web端design-system/web规范展示_框架版_20260806_1050.html',
@@ -128,9 +127,8 @@ for (const [rel, max, optional] of LIMITS) {
 // （实证：_v2 验证夹具整目录静默通过门禁，见 .workbuddy/review/07_复盘_修复回溯审查.md）。
 const DIR_EXEMPT = new Set([
   // 根下既有目录（既有结构，非膨胀转移通道；新增目录一律先登记再落地）
-  '.git', '.github', '.reasonix', '.workbuddy', 'brand-color-engine', 'docs', 'output',
+  '.git', '.github', '.workbuddy', 'brand-color-engine', 'docs', 'output',
   'packages', 'scripts', 'templates', '弘讯web端design-system', '弘讯移动端design-system',
-  'NVIDIA Corporation', // 系统垃圾空目录（0 文件），遗留待删，与本仓库无关
   // 双端下既有目录
   'icons', 'pages', 'showcase', '.workbuddy-web', '.workbuddy-mob',
   // 2026-10-30 登录页 v2：品牌概念图资产库（提示词模板 + 行业预设 + webp），非源码，按目录整体豁免

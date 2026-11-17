@@ -5,21 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>弘讯B端 · 可克隆起始模板 (page-template)</title>
 <!--
-  ============================================================
   弘讯B端 Web 可克隆起始模板（page-template.html）· 纯框架克隆源（2026-08-06）
-
-  角色：Agent 生成 B 端后台页面的**框架克隆源**（demo 展示内容已移除——
-       规范展示见弘讯web端design-system/web规范展示_框架版_*.html）。
-       克隆：<code>cp page-template.html &lt;用户项目&gt;/output/新页面.html</code> →
-       在 <main class="content"> 内按业务填内容（顶栏/侧栏/底栏零改动）。
-       产出落盘「用户项目」的 output/（设计系统仓库 output/ 仅历史归档，不随设计系统分享）。
-
-  框架外壳：顶栏72 / 侧栏240（折叠80）/ 内容区（唯一滚动区 G8）/ 底栏32（文字居中）/
-           作业树每个节点带 .tree-ico 图标 / :root token（内联副本，同步门禁管）。
-
-  规则：所有颜色走 :root 变量；组件用 template.css 预定 class（link 跟随真源）；
-       无硬编码 hex；Web 禁 #10B981。门禁：node validate-spec.js page-template.html → 0 HIGH。
-  ============================================================
+  克隆：cp page-template.html <用户项目>/output/新页面.html → 在 .content 内按业务填内容；顶栏/侧栏/底栏零改动。
+  产出落「用户项目」output/（仓库 output/ 仅历史归档）；框架：顶栏72 / 侧栏240（折叠80）/ content 唯一滚动区 / 底栏32；树节点带 .tree-ico。
+  规则：颜色走 :root；组件用 template.css 类；无硬编码 hex；Web 禁 #10B981。门禁 node validate-spec.js page-template.html → 0 HIGH。
 -->
 <link rel="stylesheet" href="template.css">
 <style>
@@ -164,7 +153,7 @@
   .dp-panel .row{margin-bottom:8px;}
 </style>
 </head>
-<body data-species="document"><body>
+<body data-species="document">
 
 <div class="app">
   <!-- ===== 顶栏（布局骨架 · G8 固定滚动区之一） ===== -->
@@ -263,7 +252,7 @@
 
     <!-- ===== 内容区（唯一可滚动区 · G8） ===== -->
     <main class="content">
-      <!-- 页面内容在此填充（Agent 克隆后按业务在 .content 内填写；框架顶栏/侧栏/底栏零改动） -->
+      <!-- 页面内容在此填充：页头= h1.page-title（RULES §1.1b）；框架外壳零改动。程序化注入用行首锚点或 lastIndexOf，禁裸 indexOf（防截断白屏，SOP 步骤4-8）。 -->
     </main>
 
     <!-- ===== 底栏（G8 固定滚动区之一，位于 .main 内 → 宽 1680px） ===== -->

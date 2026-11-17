@@ -1277,7 +1277,7 @@ function checkContrastPairs(rules, varsByTheme) {
 }
 
 // 2026-11-12 双端对齐：模板残留 + 本地 template.css 副本过期（同 web 口径）
-const MOB_RESIDUE = ['弘讯设计系统', 'page-template.html', '弘讯移动端设计系统'];
+const MOB_RESIDUE = ['弘讯设计系统', '弘讯移动端设计系统']; // 2026-11-17：移除 page-template.html——克隆凭证 meta/注释合法包含它，原规则会误杀所有脚手架克隆页
 function checkTemplateResidue(html, targetPath) {
   const base = path.basename(targetPath);
   if (/page-template\.html$/i.test(base) || /规范展示|框架版|USAGE/i.test(base)) return [];

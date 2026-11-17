@@ -21,7 +21,6 @@
 !.dsh/skills/tm-design-system/SKILL.md
 
 # 本机 Agent 记忆 / 回滚点（绝不提交）
-.reasonix/
 回滚点/
 
 缩减版/
@@ -94,5 +93,3 @@ dist-static/
 output/
 
 # 本地工作文档（不随设计系统分发）
-设计系统创作记录.md
-待绘制Icon清单.md

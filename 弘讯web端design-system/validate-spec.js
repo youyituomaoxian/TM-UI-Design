@@ -1140,6 +1140,60 @@ function checkBtnVariantBase(html) {
 // A4（2026-08-28，订单总览V2 实战：table--fixed 无列宽预算 → 1308 vs 1120 横向滚动）：
 // .table--fixed 的 fixed 布局必须配全列显式宽度（th style width / width 属性 / colgroup），
 // 否则浏览器按内容分配照样撑出横向滚动——V10 宽表守则的机器化落点。
+// ===== 页头标题语义门禁（2026-11-17：成员把页头标题写成按钮，双门禁 0 HIGH 放行）=====
+// B 端框架页 main 非空但 main 内缺 h1.page-title → HIGH（RULES §1.1b：页头=18/500 纯文本，禁按钮冒充）。
+// 2026-11-17 复核修正：① 规范展示/USAGE 等文档页走 isFrameworkExempt（此前误伤 web规范展示_框架版）；
+// ② 只认 main 内的 h1.page-title（div/侧栏/顶层类名不再放行）且 main 标签允许附加属性（此前精确串静默漏检）。
+function checkPageTitleSemantic(html, targetPath) {
+  const violations = [];
+  if (isFrameworkExempt(targetPath || '')) return violations; // 文档/规范展示页不适用内页页头规则
+  const noScript = stripScriptTags(html);
+  if (!noScript.includes('class="app"') || !noScript.includes('class="topbar"')) return violations; // 仅 B 端框架页
+  const mainMatch = noScript.match(/<main\b[^>]*\bclass=["'][^"']*\bcontent\b[^"']*["'][^>]*>/);
+  if (!mainMatch) return violations;
+  const s = mainMatch.index + mainMatch[0].length;
+  const e = noScript.indexOf('</main>', s);
+  if (e < 0) return violations;
+  const mainInner = noScript.slice(s, e);
+  if (mainInner.replace(/<[^>]*>/g, '').trim().length < 20) return violations; // 空壳/占位不查
+  if (!/<h1\b[^>]*\bclass=["'][^"']*\bpage-title\b[^"']*["']/.test(mainInner)) {
+    violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'page.title.missing', sel: '.content',
+      msg: '内页有内容但缺页头标题——RULES §1.1b：页头= h1.page-title（18/500 纯文本）+ .page-actions，禁按钮冒充。' });
+  }
+  return violations;
+}
+
+// ===== HTML 文档骨架门禁（2026-11-17 白屏事故：截断产物 0 HIGH 放行；文档级不依赖 isBiz——截断后指纹检查会静默跳过）=====
+// 分级=真实后果：head 不闭合/无 body/注释不配平/零样式白屏级→HIGH；body 双开（模板遗留，浏览器容错无害）→MEDIUM。
+function checkHtmlSkeleton(html) {
+  const violations = [];
+  const noScript = stripScriptTags(html);
+  if (!/<head[\s>]/i.test(noScript) && !/<body[\s>]/i.test(noScript)) return violations; // 非完整文档（片段）不查
+  if (/<head[\s>]/i.test(noScript) && !/<\/head>/i.test(noScript)) {
+    violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'html.skeleton.head-unclosed', sel: 'head',
+      msg: '<head> 缺闭合标签——骨架损坏致白屏，检查注入/替换脚本是否截断。' });
+  }
+  const bodyN = (noScript.match(/<body[\s>]/gi) || []).length;
+  if (bodyN === 0) {
+    violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'html.skeleton.body-missing', sel: 'body',
+      msg: '缺 <body> 开标签——DOM 骨架不完整。' });
+  } else if (bodyN >= 2) {
+    violations.push({ line: 0, src: 'html', severity: 'MEDIUM', contract: 'html.skeleton.body-multi', sel: 'body',
+      msg: '<body> 开标签 ' + bodyN + ' 次——浏览器容错无害，属遗留畸形，建议清理为单个。' });
+  }
+  const cOpen = (noScript.match(/<!--/g) || []).length;
+  const cClose = (noScript.match(/-->/g) || []).length;
+  if (cOpen !== cClose) {
+    violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'html.skeleton.comment-unbalanced', sel: 'html',
+      msg: '注释不配平（<!-- ' + cOpen + ' / --> ' + cClose + '）——未闭合注释吞整页致白屏。' });
+  }
+  if (!/<style[\s>]/i.test(noScript) && !/<link\b[^>]*rel=["']stylesheet["']/i.test(noScript)) {
+    violations.push({ line: 0, src: 'html', severity: 'HIGH', contract: 'html.skeleton.no-style', sel: 'head',
+      msg: '文档零样式（无 <style>/<link>）——裸 HTML 呈现，确认 CSS link 未被截断。' });
+  }
+  return violations;
+}
+
 function checkTableFixedBudget(html) {
   const violations = [];
   const noScript = stripScriptTags(html);
@@ -2358,6 +2412,9 @@ function run(specPath, targetPath) {
   const residueV = checkTemplateResidue(html, targetPath);
   const cssCopyV = checkTemplateCssCopy(targetPath, html);
   const svgShapeV = checkSvgShapes(html);
+  // 页头标题语义 + 文档骨架完整性（2026-11-17：按钮标题/白屏事故双门禁均 0 HIGH 放行 → 补两个盲区）
+  const pageTitleV = checkPageTitleSemantic(html, targetPath);
+  const skeletonV = checkHtmlSkeleton(html);
   const wcagV = checkWcagContrast(rules, varsByTheme);
   // F9（2026-11-12）：同色/近同色前景背景对（同选择器内双声明才判，disabled 豁免）
   const contrastPairV = checkContrastPairs(rules, varsByTheme);
@@ -2391,7 +2448,7 @@ function run(specPath, targetPath) {
   const logoV = checkLogoAsset(html, targetPath);
   // KPI 仅两版门禁（2026-08-06 定稿）：简约版（stat-num/stat-sub 独立卡、无 kpi-ico / stat-card--icon / stat-card--ring）已删除，Agent 生成简约版即 HIGH 拦截
   const kpiV = checkKpiSimple(html);
-  return violations.concat(chartSeriesV, rootV, surfaceV, iconV, treeCollapsedV, treeBranchV, treePopoverV, treePartialV, darkOverrideV, whitelistV, tokenV, motionV, chartV, svgV, topbarV, dimV, btnLabelV, btnVarV, statGridV, chartFillV, chartLayoutV, chartValueV, chartBaselineV, templateSyncV, moduleSpacingV, tableMinRowV, tableAlignV, tablePagerV, tableRowStateV, cardFillV, mobileV, webAesV, wcagV, contrastPairV, residueV, cssCopyV, svgShapeV, gridV, overrideV, customV, kpiV, svgVarV, scrollV, cloneV, fpV, scrollBodyV, iconSrcV, logoV, fontV, tblBudgetV);
+  return violations.concat(chartSeriesV, rootV, surfaceV, iconV, treeCollapsedV, treeBranchV, treePopoverV, treePartialV, darkOverrideV, whitelistV, tokenV, motionV, chartV, svgV, topbarV, dimV, btnLabelV, btnVarV, statGridV, chartFillV, chartLayoutV, chartValueV, chartBaselineV, templateSyncV, moduleSpacingV, tableMinRowV, tableAlignV, tablePagerV, tableRowStateV, cardFillV, mobileV, webAesV, wcagV, contrastPairV, residueV, cssCopyV, svgShapeV, gridV, overrideV, customV, kpiV, svgVarV, scrollV, cloneV, fpV, scrollBodyV, iconSrcV, logoV, fontV, tblBudgetV, pageTitleV, skeletonV);
 }
 
 // ===== 柱状图柱顶数值门禁（2026-08-06：示例页柱状图缺 .chart-v → 柱子无数据标签，门禁此前未查）=====

@@ -36,7 +36,7 @@ const VALIDATE = {
   web: path.join(ROOT, '弘讯web端design-system', 'validate-spec.js'),
   mobile: path.join(ROOT, '弘讯移动端design-system', 'validate-spec.js'),
 };
-const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', 'dist-static', 'build', 'packages', '.reasonix', '.workbuddy']);
+const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', 'dist-static', 'build', 'packages', '.workbuddy']);
 
 function parseArgs(argv) {
   const o = { dir: null, end: 'auto', json: null, list: false, include: [] };

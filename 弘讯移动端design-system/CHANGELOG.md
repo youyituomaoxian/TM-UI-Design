@@ -7,6 +7,12 @@
 
 ---
 
+## [模板 :root 同步 + 双 body/注释清理 + agent-starter 并入克隆流] — 2026-11-17
+- `page-template.html` 内联 `:root` 对齐 `template.css` 亮色段：`--font-cn` 补 `Microsoft YaHei/微软雅黑`；补 7 个功能色深变体/实底按钮变量（`--suc-deep/--warn-deep/--err-deep/--suc-btn-bg/...`）——`template.root.sync` 2 MED 清零。
+- `page-template.html` 双 `<body>` 合一；`agent-starter.html` 注释伪标签转义。
+- **agent-starter 并入模板克隆流（用户拍板）**：内置 `x-template-clone` meta + 手机壳框架骨架（m-statusbar/navbar/page-view/bottomnav，空 page-view），5 HIGH 清零（现 0 HIGH / 1 MED）；修复 `template.residue` 把克隆 meta 里的 `page-template.html` 误判残留——所有脚手架克隆页此前会被误杀。
+- 门禁：`validate-spec.js page-template.html` 0 HIGH / 2 MED（icon.source、card.radius 沿用既有）；`agent-starter.html` 0 HIGH / 1 MED。
+
 ## [双端对齐：模板残留 + 副本过期门禁；滚动口径登记] — 2026-11-12
 - validate 新增 `template.residue`（HIGH）与 `template.css.stale`（HIGH，本地 `template.css` 副本 sha256 ≠ 真源即拦），与 web 端同口径。
 - RULES 新增「完整交互与完整动效（移动端）」与「滚动口径：双端不对称」：移动端滚动由 `.screen-scroll` 承载，`.content--fill` 属 web 专有契约，勿套用；移动端无分页器。
@@ -89,16 +95,3 @@
 ## [1.14.26] — 2026-10-20 · 表格行选中口径澄清（无代码改动）
 
 - RULES §3.3 补注：Web 表格「已选 / 当前行」双态（`.is-selected` + `.cbx` / 2px 左条），本端列表项保持 `.08` + 标题加粗，**双端不统一**（§3.6 分治）。
-
-## [1.14.26] — 2026-10-20 · 对称留痕：跨智能体交接制度（HANDOFF 每轮更新）
-
-- 流程文档改动（`HANDOFF.md` / `AGENTS.md` / `GENERATION-SOP.md §0`），移动端真源无改动；主条目见 web CHANGELOG [1.9.39]。
-
----
-
-## [1.14.25] — 2026-10-10 · 对称留痕：check-sync T-7 结案（Mobile 检查一「不适用」定性）+ T-6 登记闭环
-
-- **T-7 结案**：mobile vendor 46 类全 mn-*（Taro 组件层自有命名空间），同构段 0 类 = 检查一对本端显式不适用（设计如此），check-sync 输出 ⏭️；非缺口、不阻断。
-- **T-6/T-8**：vendor-coverage.json 登记闭环 + 阈值上调治理约束（主条目见 web CHANGELOG [1.9.38]），移动端真源无同构改动。
-
----

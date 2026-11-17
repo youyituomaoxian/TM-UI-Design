@@ -15,7 +15,7 @@
 ## 生成 HTML 页面（视觉预览）
 
 1. 读 `GENERATION-SOP.md`（选端 → 框架判定 → 选型 → 克隆 → 落盘 → 门禁）。
-2. 克隆模板（**唯一可复制的结构**，优先脚手架）：Web `node scripts/new-page-web.js <语义名>`；移动 `node scripts/new-page-mobile.js <语义名>`（自由布局用 `agent-starter.html`）。克隆后按业务定制作业树：**结构零改动**（层级/图标/选中/无 group-title 分类、顶级节点并列，RULES §0.2-9/10），节点文本与选中态随系统定制（禁留示例树）；移动底部导航 3–5 项（RULES §1.1b，门禁 `bottomnav.count`）。
+2. 克隆模板（**唯一可复制的结构**，优先脚手架）：Web `node scripts/new-page-web.js <语义名>`；移动 `node scripts/new-page-mobile.js <语义名>`（自由布局也从 `page-template.html` 克隆，`agent-starter.html` 仅为同源极简克隆示例）。克隆后按业务定制作业树：**结构零改动**（层级/图标/选中/无 group-title 分类、顶级节点并列，RULES §0.2-9/10），节点文本与选中态随系统定制（禁留示例树）；移动底部导航 3–5 项（RULES §1.1b，门禁 `bottomnav.count`）。
 3. 页面内容**从零自建**（禁参照 output/、packages/ 或既有页面 DOM）：
    - 页面类型规格：各端 `RULES.md §1.1b`；组件规格：`components.json` + `template.css`（门禁与构建消费，Agent 不通读，按名定点检索）
    - 图标一律从各端 `icons/` 取（`icons.md` 索引 → path 内联进 `.ico` 等尺寸类；库缺才手写且符合规格并上报，RULES §7.9③）

@@ -5,6 +5,14 @@
 
 ---
 
+## [白屏/按钮标题事故门禁 + 独立复核收口] — 2026-11-17
+- **新门禁**：validate 新增 `page.title.missing` HIGH（main 内缺 h1.page-title）+ `html.skeleton.*`（head 未闭合/无 body/注释不配平/零样式 → HIGH；body≥2 → MED）；audit 注册 M-11 同口径（audit-rules v1.9.0）。
+- **复核修正**：page-title 接 `isFrameworkExempt`（不再误伤 web规范展示_框架版），只认 main 内 `h1.page-title`（div/注释/顶层类名不再放行），main 允许附加属性；audit M-11 先剥 HTML 注释，注释掉的旧标题不再漏检。
+- **契约/文档收口**：RULES §1.1b 详情页 `H1 28/36` → `.page-title` 18/500；§1.1b 补门禁引用；components.json tabs 13→14（summary/sizing/referenceCss/contract expect 全同步）。
+- **起手件/模板**：web `agent-starter.html` 嵌套注释拆平（此前 L44 起被解析成真实 DOM）；`page-template.html` 头注释裸 `<main>` 转义、双 body 合一。
+- **门禁**：双端 page-template 0 HIGH；web 成品规范页/起手件 0 HIGH；ci-local 103/0（非沙箱）/ DSH 沙箱 101/3（管道限制，非回归）。
+- **容量回收（可读性第一）**：template.css 重 build 去注释（源注释保留）、page-template 注释压缩、audit-rules prose 就地压缩；RULES 阈值 55k→56k（本季 1 次，内容零搬移、不搬 docs）。
+
 ## [生成 SOP：信息层级 × 亲密性双原则（选字阶/间距前置对齐）] — 2026-11-13
 - GENERATION-SOP 步骤 2 新增第 4 条双原则：**层级逻辑优先选字阶**（档位跟信息层级角色走，唯一入口 RULES §1.4；典型错位 = 一级 tab 落辅助档 / 内页标题误用模块标题档）+ **亲密性原则定间距**（间距是分组语义非装饰节奏，取值唯一入口 RULES §4.1；观感与数值不符先查渲染根因再动数值）。
 - 来源：机器群览标题降级 + 间距排查案例复盘（用户拍板沉淀）。RULES/MASTER/template.css 机制本轮未改动（D1–D4 字阶/间距迁移另行拍板），本条为生成流程原则。
@@ -120,11 +128,3 @@
 ## [品牌 logo 规范 + 资产门禁 M-08] — 2026-11-12
 - RULES §0.1a 新增：logo 一律 SVG 强制（assets/logo/ 真源：asset-logo-brand.svg 彩标 / asset-logo-brand-white.svg 白标），锁高宽自适应（viewBox 168.76×43.9，禁写死宽高比）；尺寸分级 = 顶栏 32 白标 / Web 登录 40 彩标 / 移动登录 64×64（方标资产待补）；MASTER.md「logo 40×40」旧值同步修正（原与 RULES 高 32 冲突）。
 - validate-spec.js 新增 `logo.asset.format` / `logo.asset.missing` 双 HIGH（展示页/_框架版/USAGE 豁免）；page-template.html 顶栏占位符替换为真源白标 logo、页面 CSS 宽 32→auto。audit-rules.json v1.6.2 登记 M-08；check-size validate-spec.js 阈值按实测现值 +5%（>50k 档）重测并行内留痕。
-## [内页页头结构 + 二级分段器] — 2026-11-12 · 两层 tab 方案 B 拍板
-- 新增真源组件 **.seg 分段器**（utilities.css → template.css）：容器 N3 底胶囊高 30（item 26/字 12/圆角 15），选中 primary 实底 + var(--text-on-brand) 白字 500，动效走 motion token；语义 = 内容视图切换，与 .filter-chip（数据过滤）禁混用。components.json 登记组件条目 + 契约 `seg.size`（高 30 HIGH，exclude .item 防派生规则误扫）/ `seg.active`（字重 500 HIGH + 底 token MEDIUM）；vendor-coverage tokenProjection 登记 seg/tab-row。
-- 新增真源布局工具 **.tab-row**：两层 tab 内页一级 tab 行 = .tabs 左 + .page-actions 右同行底部对齐，行底线统一、tab 下划线压线。
-- RULES §1.1b 新增「**内页页头结构**」：基础形态（无 tab：标题+操作区同行，真源默认间距）/ 分层形态（面包屑→页标题→一级tab行→二级seg→卡片）；分层页头紧凑间距 8/12/16/16（用户拍板：页头收紧为内容让空间）；红线 = tab 最多两层、二级禁进卡片、seg/filter-chip 语义互斥。
-- 契约红→绿验证：真源默认值 0 HIGH；height 28/weight 400/#999 底 → seg.size+seg.active 双 HIGH。ci-local **102 pass / 0 fail**。视觉演示页（方案 A/B）在应用侧 output/，未入库。
-
-## [面包屑固定形式] — 2026-11-12 · 去 N5 底改纯文本（用户拍板）
-- 真源 `.breadcrumb` 取消 N5 底条带/圆角/水平 padding（components.css → template.css build），固定为**无底纯文本**：32 高保留、› 分隔、item N9/当前 N11、下方间距 16 不变；components.json 组件条目同步（summary/tokens 删 --n5/--radius-base/sizing paddingH 0/variants 改「基础（无底纯文本）」/dont 由「无底色纯文本导航」反转为「加底色/边框/圆角胶囊」）；RULES 面包屑铁律/列表页变体 B/详情页 3 处文字对齐。移动端无同名类无双端项。ci-local **102 pass / 0 fail**（check-size 触发 RULES 超 25 字符，按归位治理压缩今日条款文字消除，未调阈值）。

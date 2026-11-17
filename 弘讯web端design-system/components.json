@@ -905,7 +905,7 @@
       "id": "tabs",
       "name": "页签 Tabs",
       "category": "导航",
-      "summary": "高32、字13；激活态 primary 字+2px primary 下划线、字重500。",
+      "summary": "高32、字14；激活态 primary 字+2px primary 下划线、字重500。",
       "anatomy": {
         "bar": "页签条",
         "tab": "单个页签",
@@ -919,7 +919,7 @@
       ],
       "sizing": {
         "height": 32,
-        "fontSize": 13,
+        "fontSize": 14,
         "activeWeight": 500,
         "barBorder": "N6"
       },
@@ -937,21 +937,21 @@
         "带徽标",
         "滚动"
       ],
-      "referenceCss": ".tabs{display:flex;gap:4px;border-bottom:1px solid var(--n6);height:32px;align-items:flex-end}.tab{padding:0 12px;height:32px;display:flex;align-items:center;font-size:13px;color:var(--n9);cursor:pointer;border-bottom:2px solid transparent}.tab.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:500}",
+      "referenceCss": ".tabs{display:flex;gap:4px;border-bottom:1px solid var(--n6);height:32px;align-items:flex-end}.tab{padding:0 12px;height:32px;display:flex;align-items:center;font-size:14px;color:var(--n9);cursor:pointer;border-bottom:2px solid transparent}.tab.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:500}",
       "referenceHtml": "<div class=\"tabs\"><div class=\"tab\">概览</div><div class=\"tab active\">实时监控</div><div class=\"tab\">历史</div></div>",
       "ardot": {
         "libraryComponent": "Tabs（Ardot 组件库）",
         "variantMapping": "tab 对应 Ardot Tab 变体；active 对应 Ardot Tab/active。",
-        "notes": "高32/字13；激活 primary 字+2px primary 下划线、字重500。未激活用 N9。勿激活字重≠500 或下划线非 primary。"
+        "notes": "高32/字14；激活 primary 字+2px primary 下划线、字重500。未激活用 N9。勿激活字重≠500 或下划线非 primary。"
       },
       "do": [
-        "高32/字13",
+        "高32/字14",
         "激活 primary+2px 下划线+字重500"
       ],
       "dont": [
         "激活字重≠500",
         "下划线非 primary",
-        "字号≠13"
+        "字号≠14"
       ],
       "deprecated": true,
       "supersededBy": "tabs",
@@ -1677,7 +1677,7 @@
         },
         {
           "prop": "font-size",
-          "expect": 13,
+          "expect": 14,
           "severity": "MEDIUM"
         }
       ]

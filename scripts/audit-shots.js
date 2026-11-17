@@ -24,7 +24,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', 'dist-static', 'build', 'packages', '.reasonix', '.workbuddy']);
+const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', 'dist-static', 'build', 'packages', '.workbuddy']);
 const argv = process.argv.slice(2);
 const opt = { dir: null, shots: 'output/audit-shots', themes: ['light', 'dark'], states: ['default', 'scroll50'], init: false, minBytes: 1024 };
 for (let i = 0; i < argv.length; i++) {

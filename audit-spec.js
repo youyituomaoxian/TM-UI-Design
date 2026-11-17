@@ -513,6 +513,30 @@ function checkJsInjected(html, lineStarts) {
   return violations;
 }
 // ---- 主流程 ----
+
+// ===== M-11 页头标题语义（2026-11-17 与 validate-spec 同口径）=====
+// 复核修正：先剥 HTML 注释（此前注释掉的旧标题会漏检）；只认 main 内 h1.page-title（div/顶层类名不放行）；
+// 文档/规范展示页与 validate 的 isFrameworkExempt 同口径跳过；main 标签允许附加属性。
+function checkPageTitle(noScript, lineStarts, targetPath) {
+  const out = [];
+  if (/规范展示|_框架版|展示页测试|USAGE/i.test(targetPath || '')) return out;
+  const clean = noScript.replace(/<!--[\s\S]*?-->/g, m => m.replace(/[^\n]/g, ' '));
+  if (!clean.includes('class="app"') || !clean.includes('class="topbar"')) return out; // 仅 B 端框架页
+  const mainMatch = clean.match(/<main\b[^>]*\bclass=["'][^"']*\bcontent\b[^"']*["'][^>]*>/);
+  if (!mainMatch) return out;
+  const s = mainMatch.index + mainMatch[0].length;
+  const e = clean.indexOf('</main>', s);
+  if (e < 0) return out;
+  const mainInner = clean.slice(s, e);
+  if (mainInner.replace(/<[^>]*>/g, '').trim().length < 20) return out; // 空壳不查(同阈)
+  if (!/<h1\b[^>]*\bclass=["'][^"']*\bpage-title\b[^"']*["']/.test(mainInner)) {
+    out.push({ severity: 'HIGH', contract: 'page.title.missing', line: lineOf(s, lineStarts),
+      excerpt: '页头标题缺失(main 内无 h1.page-title)',
+      msg: '内页有内容但缺页头标题——RULES §1.1b：页头= h1.page-title（18/500 纯文本）+ .page-actions，禁按钮冒充。' });
+  }
+  return out;
+}
+
 function main() {
   const args = process.argv.slice(2);
   const target = args[0];
@@ -537,6 +561,7 @@ function main() {
     ...checkLinkedCss(target, palette),
     ...checkMotionBeat(noScript, lineStarts, buildTemplateMotionNames(end)),
     ...checkJsInjected(html, buildLineStarts(html)),
+    ...checkPageTitle(noScript, lineStarts, target),
   ].sort((a, b) => (a.severity === b.severity ? a.line - b.line : a.severity === 'HIGH' ? -1 : 1));
 
   const high = violations.filter(v => v.severity === 'HIGH').length;

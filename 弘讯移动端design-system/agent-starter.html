@@ -3,23 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=375, initial-scale=1.0">
+<meta name="x-template-clone" content="弘讯移动端design-system/page-template.html">
 <title>弘讯移动端 · 页面起始模板</title>
 <!--
   ============================================================
   弘讯移动端 Agent 起始模板（agent-starter.html）
 
-  角色：Agent 生成移动端页面的纯净起点（375 手机壳预览）。
-  用法：本文件只有骨架 + 交互 API，无任何 Demo 内容。
-        在 <body> 注释占位处填写页面结构，直接保存即可预览。
+  角色：page-template 框架的**极简内容克隆**（2026-11-17 并入模板克隆流；框架外壳与 page-template 同源，克隆凭证 meta 已内置）。
+  用法：本文件只有框架外壳 + 交互 API，无任何业务 Demo；自由布局也在本框架内完成，框架外壳零改动。
+        在 .page-view 内填写页面结构，直接保存即可预览。
 
   流程：按需求写 HTML → 跑 `node validate-spec.js agent-starter.html` → 0 HIGH 交付。
 
-  适用场景与分工（2026-08-06 明确）：
-    · 本文件 = 纯净起点（375 手机壳骨架 + 多屏路由 + 交互 API，无业务 Demo）：适合自由原型 / 快速预览。
-    · 标准移动端页面 → 一律用 page-template.html 克隆起步：
-      `cp page-template.html <用户项目>/output/<页面语义名>_<YYYYMMDD>_<HHmm>.html` → 按 RULES §1.1b 填内容（2026-08-06：产出落用户项目 output/）。
-      page-template 为纯框架（无 demo 组件）+ 内联 :root（受 template.root.sync 门禁监管，保证与 template.css 同步）。
-    · 无论哪条路，交付前跑 `node validate-spec.js <页面>` 至 0 HIGH。
+  适用场景与分工（2026-08-06 明确，2026-11-17 更新）：
+    · 本文件 = 模板克隆流的极简示例（手机壳框架 + 多屏路由 + 交互 API，无业务 Demo）：适合自由原型 / 快速预览。
+    · 标准移动端页面 → 一律用脚手架克隆 page-template.html：
+      `node scripts/new-page-mobile.js <语义名>` → 按 RULES §1.1b 填内容（产出落用户项目 output/）。
+    · 两条路走同一套框架外壳与克隆凭证；交付前跑 `node validate-spec.js <页面>` 至 0 HIGH。
 
   —— 手机壳结构（2026-08-04 起强制）——
   .phone-stage           375 手机壳（固定 375×812 + 圆角 + 深色底水平/垂直居中）
@@ -57,7 +57,7 @@
 -->
 <link rel="stylesheet" href="template.css">
 </head>
-<body>
+<body class="ios" data-species="document">
 
 <!--
   手机壳骨架（结构固定，勿删）：
@@ -90,13 +90,23 @@
 </button>
 <div class="phone-stage">
   <div class="phone">
-    <!-- 在此替换为 .navbar（navbar-ios / navbar-android） -->
+    <div class="m-statusbar m-statusbar-ios"><span class="sb-time">9:41</span></div>
+    <header class="navbar navbar-ios">
+      <div class="navbar-main"><div class="navbar-title">页面标题</div></div>
+    </header>
     <div class="screen-scroll">
       <div class="screen">
-        <!-- 在此放置 <section class="page-view" data-route="..."> 各屏内容 -->
+        <section class="page-view on" data-route="home">
+          <!-- 页面内容在此填充（自由布局仍在本框架内；框架外壳零改动） -->
+        </section>
       </div>
     </div>
-    <!-- 在此替换为 .bottomnav（bottomnav-ios / bottomnav-android），无底栏可删除 -->
+    <nav class="bottomnav bottomnav-ios">
+      <div class="bn-item active"><span class="bn-label">首页</span></div>
+      <div class="bn-item"><span class="bn-label">记录</span></div>
+      <div class="bn-item"><span class="bn-label">我的</span></div>
+      <div class="m-home-indicator m-home-indicator--show"></div>
+    </nav>
   </div>
   <!-- 在此放置 <div class="mmask" id="..."> 弹窗（默认隐藏，openModal 打开） -->
 </div>

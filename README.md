@@ -22,7 +22,7 @@
 │   ├── components.json              # 组件规格层 —— 机器可读 SSoT（含 contract 硬约束）
 │   ├── components.md                # 规格层人读镜像
 │   ├── page-template.html           # Web 端 Agent 起手克隆模板（0 HIGH 基准）
-│   ├── agent-starter.html           # 移动端起手模板（手机壳 375×812 + 屏内滚动 + hash 跳转 + 弹窗 API + StatusBar）
+│   ├── agent-starter.html           # 移动端极简克隆示例（与 page-template 同源框架）
 │   ├── validate-spec.js             # 合规扫描器（HIGH 违反 exit 1，交付门禁；含移动端 DOM 契约门禁）
 │   ├── scripts/generate-design-tokens-md.js  # tokens.json → DESIGN-TOKENS.md（支持 --check）
 │   ├── RULES.md / CHANGELOG.md / README.md
@@ -98,7 +98,7 @@ cd TM-UI-Design
 
 ### Agent / 开发者使用
 
-1. **起手铁律**：Web B 端一律 `node scripts/new-page-web.js <语义名>`；移动端一律 `node scripts/new-page-mobile.js <语义名>`（脚手架自动克隆 page-template 框架 + 注入克隆凭证 meta + 修正 CSS link，落 `./output/`；自由布局用 `agent-starter.html`）——模板已含正确 token + 框架外壳
+1. **起手铁律**：Web B 端一律 `node scripts/new-page-web.js <语义名>`；移动端一律 `node scripts/new-page-mobile.js <语义名>`（脚手架自动克隆 page-template 框架 + 注入克隆凭证 meta + 修正 CSS link，落 `./output/`；自由布局也从 page-template 克隆，`agent-starter.html` 仅为同源极简克隆示例）——模板已含正确 token + 框架外壳
 2. **产出落盘**：生成页一律落「**用户项目**」的 `output/`（自动命名 `<语义名>_<YYYYMMDD>_<HHmm>.html`，禁写入设计系统仓库）；**转发/交付前**把 `<link …template.css>` 替换为内联 `<style>`（template.css 全量）生成 `_分享版.html`（零外链）
 3. 组件尺寸/状态/色值查 `components.json`（机器 SSoT）或 `components.md`（人读）；移动端组件体系规格读移动端 `RULES.md §9`，组件级样例/色彩应用理念读 `§11`（§11.8 色彩应用理念 / §11.9 新增组件 / §11.10 对齐铁律），**前景/背景对比度规则读 §10.3b（功能色底禁白字，用深字 n10）**
 4. 决策规则读 `RULES.md`（Web §3.7 组件 DOM 契约 + §7 布局美学 / 移动端 §3.5 DOM 契约 + §4 间距布局 + §9 组件体系 + §10 布局美学）；背景规范读 `MASTER.md`
@@ -153,7 +153,7 @@ cd TM-UI-Design
 - 生成合规页：按 `GENERATION-SOP.md` §① 克隆 `弘讯web端design-system/page-template.html` → 按 `RULES.md §1.1b` 自建内容 → `node 弘讯web端design-system/validate-spec.js <页面.html>`（HIGH 0 才交付）。
 - **存量项目审查修改**（已有页面按规范改造）：按 `GENERATION-SOP.md` §② 五阶段流程——先出**页面清单**（`node scripts/audit-batch.js <项目> --list`）+ `audit-spec.js` 清零硬违规 + `audit-rules.json` D-1~D-13 逐维对照找差异 → 映射决策（每个差异定「改成什么」）→ 分批修复 + 门禁回归；收口 = **0 HIGH + 台账全绿**（覆盖率 100% / 截图齐全），只「0 HIGH」不算交付。
 - 全仓总门禁：`node ci-local.js`（全绿 EXIT 0，2026-09-10 起；项数以脚本实际输出为准）。
-- 部署/分发：Git 仓库（私有）clone 或整目录拷贝（打包时排除 `output/`、`node_modules/`、`.git/`、`.reasonix/`）——详见 `团队使用指南.md`「部署与团队分发」。
+- 部署/分发：Git 仓库（私有）clone 或整目录拷贝（打包时排除 `output/`、`node_modules/`、`.git/`）——详见 `团队使用指南.md`「部署与团队分发」。
 
 ## 版权
 
