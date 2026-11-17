@@ -281,6 +281,10 @@ try {
 } catch (e) { syncOk = false; }
 ok('check-sync：vendor 同构段一致 + 双端同名类白名单外零漂移（阻断）', syncOk);
 
+let themeOk = false;
+try { execSync(`"${NODE}" "${path.join(ROOT, 'scripts', 'check-themes.js')}"`, { stdio: 'inherit' }); themeOk = true; } catch (e) {}
+ok('主题契约', themeOk);
+
 // ===== 文档体积门禁 check-size（SSOT T-B · 2026-09-22）=====
 // 清单内文件字符数超限阻断 + 清单封闭防膨胀转移（未登记新文件即 FAIL）。
 console.log(`\n▶ 文档体积门禁 check-size（清单封闭 · 阻断）`);

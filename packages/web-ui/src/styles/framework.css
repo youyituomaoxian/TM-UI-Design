@@ -43,6 +43,14 @@
 .lang-opt.on{background:var(--select-item-bg);color:var(--select-item-fg);font-weight:500;}
 .lang-opt.is-disabled{opacity:.45;cursor:not-allowed;color:var(--n8);}
 .lang-opt.is-disabled:hover{background:transparent;}
+/* 2026-11-17 主题换肤：顶栏主题选择器复用 .lang-* 下拉；色点按 data-skin 静态着色 */
+.theme-dot{width:14px;height:14px;border-radius:50%;flex:none;display:inline-block;border:1px solid var(--n6);}
+.lang-panel [data-skin="default"] .theme-dot{background:#005EAE;}
+.lang-panel [data-skin="cyan"] .theme-dot{background:#0E7490;}
+.lang-panel [data-skin="green"] .theme-dot{background:#0F766E;}
+.lang-panel [data-skin="amber"] .theme-dot{background:#B45309;}
+.lang-panel [data-skin="violet"] .theme-dot{background:#7C3AED;}
+.lang-panel [data-theme-choice="dark"] .theme-dot{background:#1E293B;}
 .topbar-sep{width:1px;height:16px;background:var(--topbar-sep-bg);}
 
 

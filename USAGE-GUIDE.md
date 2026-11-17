@@ -107,7 +107,7 @@ cd TM-UI-Design
 
 ## 角色二：产品经理 → HTML 视觉预览
 
-**详细 SOP**：`GENERATION-SOP.md`（含非默认品牌色 / 暗色的引擎映射段）。
+**详细 SOP**：`GENERATION-SOP.md`（含非默认品牌色 / 暗色的引擎映射段）。成品示例：`弘讯web端design-system/showcase/`（Web 规范展示 / 分享版、表格规范、亮色看板；含主题切换，不参与门禁）。
 
 ### 对 Agent 说
 
@@ -158,7 +158,7 @@ import '@techmation/web-ui/src/styles/components.css'; // 组件样式
 import { Button, Input, Table, Tag, StatusDot, Dialog } from '@techmation/web-ui';
 ```
 
-- 暗色：`<html data-theme="dark">`（禁 shadcn 原生 `.dark` 类）
+- 主题：`<html data-skin="green">`（默认/青/绿/橙/紫）；暗色：`<html data-theme="dark">`（禁 shadcn 原生 `.dark` 类）
 - 密度：`<html data-density="compact">` / `comfortable` / `spacious`
 - 预览：`cd packages/web-ui && npm install && npm run dev`
 - **样式真源（N=1）**：`packages/web-ui/src/styles/` 四件 CSS（globals/components/framework/utilities）→ `node packages/web-ui/scripts/build-template-css.js` 合并生成端目录 `template.css`。**改视觉样式改四件再 build，不要直接手改 template.css**。

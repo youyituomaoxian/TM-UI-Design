@@ -5,6 +5,19 @@
 
 ---
 
+## [示例入库：弘讯亮色注塑机看板] — 2026-11-17
+- 将 `讲解展示页/示例页面/弘讯亮色注塑机看板.html` 复制为 `弘讯web端design-system/showcase/弘讯亮色注塑机看板.html`；内联当前 `template.css` + 顶栏主题选择器；假数据演示，不参与门禁。
+- `showcase/` 同时收纳 `web规范展示_框架版_20260806_1050.html`（含分享版）与 `表格规范展示_20261112.html` 示例副本；相对路径改为 `../template.css` / `../assets/`，分享版保持零外链。
+- `showcase/` 走既有 check-size DIR_EXEMPT；`validate-spec` 对 `showcase/` 豁免 `template.residue`（示例页保留模板示例树与假数据）。
+- `README` / `USAGE` / `USAGE-GUIDE` / `团队使用指南` / `web规范展示` 增加示例入口；`showcase/README.md` 说明边界。
+
+## [主题换肤：双属性 + 4 主题 + 固定暗色（2026-11-17 拍板）] — 2026-11-17
+- **双属性**：`data-skin`（品牌色轴）+ `data-theme`（light/dark 明暗轴）。skin 块用 `:root[data-skin="x"]:not([data-theme="dark"])`，暗色块完全不受影响；主题清单 = 默认蓝 / 科技青 / 工业绿 / 琥珀橙 / 深空紫 + 固定暗色。
+- **token**：每 skin 5 个（`--primary/hover/active` + `--brand-surface` + `--text-on-brand`），disabled/选中行/下拉选中/`--secondary` 由一个 `color-mix` 派生块联动；`--chart-*` 保持固定。注册表入 `tokens.json.themes`，由 `build-template-css.js` + `brand-color-engine` 生成。
+- **UI**：顶栏旧亮/暗单按钮 → 「主题」palette 图标 + 下拉（复用 `.lang-*` 下拉；色点 `.theme-dot`）；head 内先行应用 `hx-theme`/`hx-skin` 防闪烁；旧 `hx-theme=light|dark` 兼容。登录页不跟随。
+- **修复**：多语言 IIFE 原来全局 `.lang-opt` 会清掉主题选项 `.on`，改为 `#langSel .lang-opt`；page-template 移除已废弃的展示页 `<style>` 块（SOP 步骤 6 同步）。
+- **门禁**：新增 `scripts/check-themes.js`（token/对比度/选项）+ `validate` 跳过 `data-skin`；`palette.svg` 入库（Web 185→186）；template.css 70,279/71,000、page-template 37,9xx/40,000；`ci-local` 103/0。
+
 ## [白屏/按钮标题事故门禁 + 独立复核收口] — 2026-11-17
 - **新门禁**：validate 新增 `page.title.missing` HIGH（main 内缺 h1.page-title）+ `html.skeleton.*`（head 未闭合/无 body/注释不配平/零样式 → HIGH；body≥2 → MED）；audit 注册 M-11 同口径（audit-rules v1.9.0）。
 - **复核修正**：page-title 接 `isFrameworkExempt`（不再误伤 web规范展示_框架版），只认 main 内 `h1.page-title`（div/注释/顶层类名不再放行），main 允许附加属性；audit M-11 先剥 HTML 注释，注释掉的旧标题不再漏检。
@@ -122,9 +135,3 @@
 - 拍板 8/12 回灌真源（方案 b 紧凑变体，基础形态默认 16 不变）：components.css 新增 `.breadcrumb--compact`（面包屑→标题 8=--space-sm）、framework.css 新增 `.page-head--compact`（标题行→tab 行 12=--space-md），build 进 template.css；vendor-coverage gaps 登记 page-head--compact；components.json breadcrumb 条目同步（variants/tokens/referenceCss/do）；RULES §1.1b 拍板行补变体指针并归位压缩；audit-rules.json feedback_log 登记（六步第 1 步）。移动端无同名类无双端项。ci-local **102 pass / 0 fail**。
 
 ---
-
-## [64 方标 logo 入库] — 2026-11-12
-- assets/logo/ 新增 logo_64.svg（viewBox 64×64 方标，viewBox 合规）；RULES §0.1a 方标档「待补」→ 已入库，M-08 真源清单同步。⚠️ 配色（#456fec→#00c6ff 渐变 + #ffba24/#ffe39e 黄）偏离 VI（主色 #005EAE / 橙 #FA8C16 仅点缀），改色待用户拍板。
-## [品牌 logo 规范 + 资产门禁 M-08] — 2026-11-12
-- RULES §0.1a 新增：logo 一律 SVG 强制（assets/logo/ 真源：asset-logo-brand.svg 彩标 / asset-logo-brand-white.svg 白标），锁高宽自适应（viewBox 168.76×43.9，禁写死宽高比）；尺寸分级 = 顶栏 32 白标 / Web 登录 40 彩标 / 移动登录 64×64（方标资产待补）；MASTER.md「logo 40×40」旧值同步修正（原与 RULES 高 32 冲突）。
-- validate-spec.js 新增 `logo.asset.format` / `logo.asset.missing` 双 HIGH（展示页/_框架版/USAGE 豁免）；page-template.html 顶栏占位符替换为真源白标 logo、页面 CSS 宽 32→auto。audit-rules.json v1.6.2 登记 M-08；check-size validate-spec.js 阈值按实测现值 +5%（>50k 档）重测并行内留痕。

@@ -295,6 +295,8 @@ TopBar        height=72   FIXED   主色底 白字
 
 ## 12. 暗色模式（`:root[data-theme="dark"]`）
 
+> 主题换肤（`data-skin` 品牌轴）见 `DARK-MODE.md §八`；暗色固定、不随主题。
+
 - **切换**：属性选择器（非 `.dark` 类）；值 = tokens.json dark 节（唯一值真源）。
 - **品牌区**：顶栏/侧栏/底栏 dark 下用 `--brand-surface` 固定 `#1E293B`（暗色不随品牌）（避免"蓝壳+黑芯"），文字 `--text-on-brand`（dark = n11 亮白，对比达标）。
 - **dark primary** `#3B82F6`（引擎快照，**不可手改**——主按钮深字/白字对比 3.68-3.98 属品牌特性，待引擎解冻调整，已记录跟踪）。

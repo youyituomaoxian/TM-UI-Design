@@ -15,15 +15,15 @@
 ## 生成 HTML 页面（视觉预览）
 
 1. 读 `GENERATION-SOP.md`（选端 → 框架判定 → 选型 → 克隆 → 落盘 → 门禁）。
-2. 克隆模板（**唯一可复制的结构**，优先脚手架）：Web `node scripts/new-page-web.js <语义名>`；移动 `node scripts/new-page-mobile.js <语义名>`（自由布局也从 `page-template.html` 克隆，`agent-starter.html` 仅为同源极简克隆示例）。克隆后按业务定制作业树：**结构零改动**（层级/图标/选中/无 group-title 分类、顶级节点并列，RULES §0.2-9/10），节点文本与选中态随系统定制（禁留示例树）；移动底部导航 3–5 项（RULES §1.1b，门禁 `bottomnav.count`）。
+2. 克隆模板（**唯一可复制的结构**，优先脚手架）：Web `node scripts/new-page-web.js <语义名>`；移动 `node scripts/new-page-mobile.js <语义名>`（自由布局也从 `page-template.html` 克隆，`agent-starter.html` 仅为同源极简克隆示例）。克隆后按业务定制作业树：**结构零改动**（层级/图标/选中/无 group-title 分类、顶级节点并列，RULES §0.2-9/10），节点文本与选中态随系统定制（禁留示例树）；移动底部导航 3–5 项（RULES §1.1b，门禁 `bottomnav.count`）。克隆模板已带顶栏「主题」选择器（`data-skin` 品牌色 + `data-theme` 明暗，暗色固定、登录页不跟随）。
 3. 页面内容**从零自建**（禁参照 output/、packages/ 或既有页面 DOM）：
    - 页面类型规格：各端 `RULES.md §1.1b`；组件规格：`components.json` + `template.css`（门禁与构建消费，Agent 不通读，按名定点检索）
    - 图标一律从各端 `icons/` 取（`icons.md` 索引 → path 内联进 `.ico` 等尺寸类；库缺才手写且符合规格并上报，RULES §7.9③）
    - 字体只用 `var(--font-cn)` / `var(--font-mono)`，禁具体字体名（门禁 `font.family` MED）；`tabular-nums` 仅限纯数字（中文会回退宋体），RULES 字体守则
    - 图表 `CHART-SPEC.md`（原子 SVG 自建，色走 `--chart-*`）；跨端语义色 `CROSS-PLATFORM-COLORS.md`
-   - 非默认品牌/暗色：`brand-color-engine/`（亮暗双模式；暗色固定不随品牌，2026-11-06 方案 A）
+   - 非默认品牌/主题：`brand-color-engine/`（亮色主题映射；暗色固定不随品牌，2026-11-06 方案 A）
 4. 产出落盘到**用户项目** `output/`（CSS link 指向本仓库对应端 `template.css`）。
-5. 门禁：单页 `node 弘讯web端design-system/validate-spec.js <页面.html>` → **0 HIGH**（存量另加台账全绿）；全链路 `node ci-local.js` → **0 fail**（含 audit / check-sync / check-size / check-reach，项数以实际输出为准）。
+5. 门禁：单页 `node 弘讯web端design-system/validate-spec.js <页面.html>` → **0 HIGH**（存量另加台账全绿）；全链路 `node ci-local.js` → **0 fail**（含 audit / check-sync / check-themes / check-size / check-reach，项数以实际输出为准）。
 6. 转发：生成分享版（`template.css` 内联为 `<style>`，零外链）。
 
 ## 存量项目审查修改（路径二）
@@ -48,6 +48,7 @@
 ## 视觉规范速览
 
 - Web：`弘讯web端design-system/web规范展示_框架版_*.html`（同名 `_分享版.html` 零外链）
+- 示例页：`弘讯web端design-system/showcase/`（Web 规范展示 / 分享版 / 表格规范 / 亮色看板；可直接打开，不参与门禁）
 - 移动：`弘讯移动端design-system/移动端规范展示_*.html`
 
 ## 改视觉样式（维护者）

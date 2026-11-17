@@ -330,7 +330,7 @@
 | 25 | **滚动条** | 单实例 | 自定义滚动条 |
 | 26 | **更多 / 关闭 / 选择器开** | 多状态 | 图标按钮 |
 | 27 | **底部信息** | 单实例 | Footer 条（高 32，主色底） |
-| 28 | **图标集 Icon** | 185 个（2026-08-14 图标库换新后，实际数以 `icons/` 目录为准，索引见 `icons/icons.md`） | `icons/` 目录 SVG；分类明细见 `icons/icons.md`（B 端特有 + 通用，与移动端同源）；规格 stroke 1.8/round/currentColor；尺寸类 `.ico`16 `.btn-ico`16 `.tree-ico`16 `.kpi-ico`20 `.kpi-ico--lg`24 |
+| 28 | **图标集 Icon** | 186 个（2026-08-14 图标库换新后，实际数以 `icons/` 目录为准，索引见 `icons/icons.md`） | `icons/` 目录 SVG；分类明细见 `icons/icons.md`（B 端特有 + 通用，与移动端同源）；规格 stroke 1.8/round/currentColor；尺寸类 `.ico`16 `.btn-ico`16 `.tree-ico`16 `.kpi-ico`20 `.kpi-ico--lg`24 |
 | 29 | **KPI 环形卡（StatCard Ring）** | 5 色环（primary/run/warn/err/secondary） | `.stat-card--ring` 变体：左环 64 + 右 label/num/trend；环周长 163.4（2π×26）、stroke 6、linecap round、svg rotate(-90deg)；环心 14px mono 500、右侧数值 22px（2026-08-06 登记，见 components.json `stat-card--ring`；CSS 沉淀 template.css L664-679） |
 | 30 | **KPI 图标卡（StatCard Icon）** | 5 色图标块（primary/run/warn/err/neutral） | `.stat-card--icon` 变体：左浅底高圆角图标块（48×48、radius-lg 16、低饱和底+高饱和图标，复用 kpi-ico--lg）+ 右上大数字 + 底部行（标题左/变化量右贴图标底）；变化量 12px 500 ↑run 绿 ↓err 红；同批沉淀 `.kpi-ico--err` 与 `.stat-card--mini` 迷你统计卡（2026-08-06 登记，见 components.json `stat-card--icon`） |
 
@@ -489,7 +489,7 @@ itemSpacing       = 4px
 
 > 详见 RULES.md §6 Web 布局黄金法则 + §4.3/§4.4 跨模块间距与卡片对齐契约。最小可执行步骤：
 
-1. **整体框架**：TopBar(72) + Sidebar(240, 可折叠) + Content + Footer(32)。顶栏右依次为 首页/用户名/修改密码/退出登录/全屏/**暗色模式**（`.theme-btn` 亮/暗切换，2026-08-12 拍板）。
+1. **整体框架**：TopBar(72) + Sidebar(240, 可折叠) + Content + Footer(32)。顶栏右依次为 首页/用户名/修改密码/退出登录/全屏/**主题**（palette 图标 + 下拉；`data-skin` 品牌色 + `data-theme` 明暗，2026-11-17）。
 2. **内容区**：背景 N4 `#F5F7FB`，内边距 16–24px，使用 24 列栅格（`.grid12 > .col-N`）排布卡片。**col-* 是弹性容器**（`display:flex;flex-direction:column`，模板已配），col 内卡片自动 flex:1 平分列高——单卡撑满/多卡平分，与同 grid 行其他列对齐。
 3. **面包屑/Tab**：位于内容区顶部，面包屑条 32px 高 + N5 底（`›` 分隔，下方间距 16px）；Tab 高 32px，选中态主色。
 4. **卡片/表格**：插入卡片实例（白底、阴影、圆角 8），**col 内卡片一律 `.card--fill`**（图表/列表/统计卡均适用）；表格用表头(44)+行(44)，动态表格数据不足补 `minRow` 占位行（RULES §4.4）。KPI 卡用 `.stat-card` 族 + 卡数匹配 `--N`（`stat-grid--5/6/8`，RULES §3.7）。

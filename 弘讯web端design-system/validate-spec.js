@@ -134,12 +134,16 @@ function extractVars(css) {
 // 修法：按规则块选择器是否含 [data-theme="dark"] 分流，产出 light / dark 两张表，
 //   dark 表 = light 表叠加暗色覆盖（符合 CSS 级联语义）。检查时按规则自身所属主题取表。
 const DARK_SCOPE_RE = /\[data-theme\s*=\s*["']?dark["']?\]/i;
+// 2026-11-17 主题换肤：data-skin 是品牌色轴，与 light/dark 正交；skin 块只覆盖品牌 token，
+// 不能并入 light 基准表（否则最后一条 skin 会污染全站亮色变量与对比度检查）。
+const SKIN_SCOPE_RE = /\[data-skin\s*=\s*["']?[^"'\]]+/i;
 function extractVarsScoped(rawCss) {
   const css = stripCssComments(rawCss); // 否则 /* [data-theme="dark"] */ 会把亮色块误判成暗色
   const light = {}, darkOverride = {};
   const blockRe = /([^{}]*)\{([^{}]*)\}/g;
   let m;
   while ((m = blockRe.exec(css))) {
+    if (SKIN_SCOPE_RE.test(m[1])) continue; // 主题 skin 块不进基准亮色表
     const target = DARK_SCOPE_RE.test(m[1]) ? darkOverride : light;
     const vre = /(--[\w-]+)\s*:\s*([^;{}]+)/g;
     let v;
@@ -2174,7 +2178,7 @@ function checkKpiSimple(html) {
 const TEMPLATE_RESIDUE = ['弘讯设计系统', '弘讯B端视觉规范', '所有视觉特征取自 template.css', '注塑车间', 'A线 · 注塑机 A-01', 'B线 · 机械手 C-07', '干燥机 D-03'];
 function checkTemplateResidue(html, targetPath) {
   const base = path.basename(targetPath);
-  if (/page-template\.html$/i.test(base) || /规范展示|框架版|USAGE/i.test(base)) return [];
+  if (/page-template\.html$/i.test(base) || /规范展示|框架版|USAGE/i.test(base) || /showcase[\\/]/i.test(targetPath)) return [];
   const violations = [];
   for (const s of TEMPLATE_RESIDUE) {
     const i = html.indexOf(s);

@@ -20,7 +20,7 @@
 | 首次生成页面（默认品牌 `#005EAE` / 亮色 / 无图表）    | 只读 §① 主流程步骤 1–5                        |
 | **存量项目审查修改**（已有页面按规范改造 / 审计修复）       | **§② 存量项目改造 SOP**                      |
 | 页面含图表                                | 步骤 4.5 + **附录 A**（或真源 `CHART-SPEC.md`） |
-| 非 `#005EAE` 品牌色 / 暗色模式               | **附录 B**（配色引擎映射）                       |
+| 非 `#005EAE` 品牌色 / 主题                     | **附录 B**（配色引擎映射）                       |
 | 使用者确认采用 React/Taro 技术栈（可选参考实现）       | **附录 C**                               |
 | 需要 Ardot 原生画布设计稿（须已装 Ardot + MCP 已连） | **附录 D**                               |
 | 表达层增强（构图 / 栅格 / 留白节奏 / taste）        | **附录 E**                               |
@@ -161,8 +161,8 @@ cp 弘讯移动端design-system/page-template.html "<用户项目>/output/设备
 3. **注入克隆凭证 meta**（P1 门禁）：`<head>` 内加 `<meta name="x-template-clone" content="弘讯web端design-system/page-template.html">`（移动端 content 换 `弘讯移动端design-system/page-template.html`）——**脚手架已自动注入，手动克隆必须自己加**；B 端/手机壳页面缺此 meta → 门禁 `template.clone.missing` HIGH。
 4. **定制作业树 + 图标从库取（2026-08-07 拍板；2026-08-12 去菜单分类）**：作业树**结构零改动**（层级/图标/选中/**无 group-title 分类、顶级节点并列**契约，RULES §0.2；折叠态浮层见 §0.2-10），**节点文本/分组/选中态按当前系统业务定制**（禁保留制造业示例树）；页面图标一律从 `<对应端>/icons/` 取（`icons/icons.md` 索引，path 内联进 `.ico/.tree-ico/.kpi-ico` 等尺寸类，规格 viewBox 24/stroke 1.8），库缺才手写并上报（RULES §7.9③）。
 5. **移动端底部导航（2026-08-07 收编）**：`.bottomnav` 内 `.bn-item` **3-5 个**，按业务需求增减（最少 3、最多 5，不是定死 3 个）；无 BottomNav 的页面（登录/详情等）合法不挂；home indicator 挂最后一项后。门禁 `bottomnav.count` MED 兜底（移动 RULES §1.1b）。
-6. **删 head 展示样式 `<style>` 块（2026-08-12 补；V10 补强边界 2026-08-27）**：page-template 自带展示页专用 `<style>`（`.sec/.swatch/.motion-*/.type-*/.callout/.kv/.comp-*` 等约 52 行）——业务页克隆后**删除该 `<style>` 块**（保留其后的内联 `:root` 同步副本，同步规则不变）。残留它会带来每页 27-34 条 MED 噪音（裸 font-size / grid.4px / token.undefined 隐患）。删除边界：以 `/* 仅布局/容器助手` 注释开头的 `<style>` 块。**⚠️ 只删 `<style>` 块本身——框架 `<script>` 段（多语言 i18n / 主题切换 / 折叠）一个都不许删**（订单总览实战：删 style 时连带删掉多语言 IIFE → 语言切换全页失效，门禁 `template.i18n.missing` HIGH 已拦截）。
-7. **框架 `<script>` 段禁删（V10 新增 2026-08-27）**：`</style>` 之后的全部 `<script>` 段（框架级多语言 IIFE / 亮暗切换 / 折叠交互）是**框架外壳的一部分**，与顶栏/侧栏同级，**禁止以"演示代码"为由删除**。门禁 `template.i18n.missing`（HIGH）核对 hx-lang 指纹，缺失即拦。
+6. **head 展示样式 `<style>` 块（2026-11-17 起 page-template 已移除）**：旧克隆若仍含展示页专用 `<style>`（`.sec/.swatch/.motion-*/.type-*/.callout/.kv/.comp-*` 等约 52 行，以 `/* 仅布局/容器助手` 注释开头）——业务页克隆后**删除该 `<style>` 块**（保留其后的内联 `:root` 同步副本，同步规则不变）。残留它会带来每页 27-34 条 MED 噪音（裸 font-size / grid.4px / token.undefined 隐患）。**⚠️ 只删 `<style>` 块本身——框架 `<script>` 段（多语言 i18n / 主题切换 / 折叠）一个都不许删**（订单总览实战：删 style 时连带删掉多语言 IIFE → 语言切换全页失效，门禁 `template.i18n.missing` HIGH 已拦截）。
+7. **框架 `<script>` 段禁删（V10 新增 2026-08-27）**：`</style>` 之后的全部 `<script>` 段（框架级多语言 IIFE / 主题切换 / 折叠交互）是**框架外壳的一部分**，与顶栏/侧栏同级，**禁止以"演示代码"为由删除**。门禁 `template.i18n.missing`（HIGH）核对 hx-lang 指纹，缺失即拦。
 8. **内容装配定位纪律（2026-11-17 白屏事故沉淀）**：脚本/程序化注入页面内容时，定位 `<main class="content">` 一律用**行首缩进锚点或 `lastIndexOf`**，**禁裸 `indexOf`**——首个命中可能落进注释内字面量（本次事故：模板头说明注释含同形伪标签 → 注入截断 head/CSS/body，整页白屏，当时双门禁 0 HIGH 放行）。模板伪标签已转义 + 门禁已补 `page.title.missing` / `html.skeleton.*` 兜底，但装配纪律不豁免。
 
 **⚠️ 禁参照既有页面 DOM（2026-08-06 用户拍板）**：克隆后页面结构一律按 `RULES.md §1.1b` + `components.json` + `CHART-SPEC.md` **从零填充**。**禁止**参照 output/、packages/ 或任何既有页面的 DOM 拼新页（既有页面可能含历史漂移，参照它会把漂移复制进新页）。**唯一可复制的结构 = 克隆源 page-template 的框架外壳本身**。
@@ -177,7 +177,7 @@ cp 弘讯移动端design-system/page-template.html "<用户项目>/output/设备
 | 门禁      | `cd <端目录> && node validate-spec.js <用户项目路径>/output/<产出文件>.html`，期望 0 HIGH                                                                                                                               |
 | **分享版** | 交付前把 `<link …template.css>` 替换为内联 `<style>`（template.css 全量）→ `<用户项目>/output/share/<原名>_分享版.html`（零外链）。**门禁口径（2026-11-05 修订）：重建后同样跑 audit-spec + validate-spec 双跑，0 HIGH 才分发**（实测全量内联后仅余少量 class.self-defined MEDIUM 噪音，非阻断可接受）。**2026-11-07 补充**：系统内分享版重建 = 以 dev 页为源、把 `<link>` 替换为当前 `template.css` 全量；**先确认 dev 与分享版 body 一致**（不一致时先比对差异再套，如 `USAGE` 两者 body 不同，不可直接覆盖）。 |
 
-> **CSS 由 `template.css` 统一提供（不要复制 CSS）**：`:root` 变量（品牌/中性/功能/字阶/圆角/投影/motion/密度）、组件 class、布局骨架（`.app > .topbar + .body(>.sidebar+.content) + .footer`）、`[data-theme="dark"]` / `[data-density]`。色 / 尺寸 / 字重 / 圆角一律走 `:root` 变量，禁止硬编码；动效用 `var(--motion-duration-*)+var(--motion-ease-*)`，禁裸数字秒。
+> **CSS 由 `template.css` 统一提供（不要复制 CSS）**：`:root` 变量（品牌/中性/功能/字阶/圆角/投影/motion/密度）、组件 class、布局骨架（`.app > .topbar + .body(>.sidebar+.content) + .footer`）、`[data-skin]` / `[data-theme="dark"]` / `[data-density]`。色 / 尺寸 / 字重 / 圆角一律走 `:root` 变量，禁止硬编码；动效用 `var(--motion-duration-*)+var(--motion-ease-*)`，禁裸数字秒。
 
 ### 步骤 4.5：图表生成规范（仅页面含图表时读）
 
@@ -271,7 +271,7 @@ cd <端目录> && "$NODE" validate-spec.js <用户项目路径>/output/<产出�
 
 ### 默认流程到此结束（品牌 = #005EAE / 亮色）
 
-若描述含**非 #005EAE 品牌色**或**暗色模式**，继续 **附录 B**。
+若描述含**非 #005EAE 品牌色**或**主题/暗色**，继续 **附录 B**。
 
 ---
 
@@ -311,10 +311,10 @@ cd <端目录> && "$NODE" validate-spec.js <用户项目路径>/output/<产出�
 | 部位 | 对齐口径 | 漏了会怎样 |
 |---|---|---|
 | 顶栏语言切换 | `.lang-sel` 面板（简体中文 / English + 待支持语言置灰）+ `data-i18n` / `data-i18n-title` 标记 | 与模板不一致；视觉/可用性缺失 |
-| 顶栏暗色切换 | `#themeToggle`（moon/sun 双图标 + localStorage 记忆） | 无暗色入口 |
+| 顶栏主题切换 | `#themeSel`（palette 图标 + 下拉；`data-skin` 品牌轴 + `data-theme` 明暗轴；`hx-skin`/`hx-theme` 记忆） | 无主题/暗色入口 |
 | 作业树 | 节点文本用 `.tree-text`；**顶级节点并列、无 `.group-title` 分类**；选中态 `.on` | 旧类名真源无样式 → 标题/缩进失规范 |
 | 作业树折叠浮层 | `.tree-popover` 容器必须放在树 `<script>` **之前**；一级 `data-group/data-page` + `data-key`；`.tree-collapsed` 开关类；`data-page` + 子级 → 浮层首项「进入本页」(`data-self`) | 容器在脚本后 → `getElementById` 为 null，点一级不弹浮层（门禁 `tree.popover.order` 拦截） |
-| 框架指纹 | `<script>` 含 `hx-lang`（多语言）与 `hx-theme`（亮暗）指纹 | 门禁 `template.i18n.missing` 拦截；暗色无入口 |
+| 框架指纹 | `<script>` 含 `hx-lang`（多语言）与 `hx-theme`/`hx-skin`（主题）指纹 | 门禁 `template.i18n.missing` 拦截；主题/暗色无入口 |
 | 暗色品牌覆盖（历史页迁移） | 品牌覆盖层只保留亮色 `:root`；**删除 `:root[data-theme="dark"]` 品牌段**（暗色固定、不随品牌） | 门禁 `dark.brand.override` 拦截；暗色整体偏品牌色 |
 | 图标 | 取各端 `icons/` 内联（24×24 · 线宽 1.8 · `stroke:currentColor`） | 手绘旧图标与图标库形态不一致 |
 | 移动端手机壳 | `.stage-wrap > .phone-stage > .phone`；内含 `.m-statusbar / .navbar / .screen-scroll > .page-view / .bottomnav` | 门禁 `framework.fingerprint` 拦截 |
@@ -394,52 +394,43 @@ cd <端目录> && "$NODE" validate-spec.js <用户项目路径>/output/<产出�
 
 ### 附录 B：配色决策段（非默认品牌 / 暗色 → 引擎映射）
 
-> **什么场景读**：描述含非 `#005EAE` 品牌色（如「用森绿 #2E7D5B」「绛红主题」）或暗色模式（「夜间模式 / dark / 暗色」）。
+> **什么场景读**：描述含非 `#005EAE` 品牌色（如「用森绿 #2E7D5B」「绛红主题」）或主题/暗色（「夜间模式 / dark / 暗色 / 换肤」）。
 
 ### 触发条件
 
 描述中出现以下任一：
 
 - 明确品牌色 ≠ `#005EAE`（如「用森绿 #2E7D5B」「绛红主题」）
-- 暗色模式（「夜间模式 / dark / 暗色」）
+- 主题/暗色（「夜间模式 / dark / 暗色 / 换肤」）
 
 
-### 步骤 1：调引擎拿「亮 + 暗」双调色板（2026-08-12 拍板：亮暗双映射）
+### 步骤 1：调引擎拿「亮色」调色板（暗色固定，2026-11-17 口径）
 
 ```bash
 cd brand-color-engine
 "$NODE" generate.js <品牌色> light <platform>   # 亮色板 → 步骤 2a 映射进 :root
-"$NODE" generate.js <品牌色> dark  <platform>   # 暗色板 → 步骤 2b 映射进 :root[data-theme="dark"]
+# 暗色固定由 template.css 提供；页面不写品牌暗色块（DARK-MODE §七）
 # 例：node generate.js 2E7D5B light web
-#     node generate.js 2E7D5B dark  web
 ```
 
 - `brand`：3/6 位十六进制（带不带 # 均可）。非法输入（如 `xyz`）会 **throw**，不会静默产出垃圾色。
-- `mode`：`light` / `dark`（**双模式须各调一次**）。
+- `mode`：`light` / `dark`（主题页只调 `light`；暗色固定由 `template.css` 提供，页面不写品牌暗色）。
 - `platform`：`web`（默认）/ `mobile`。
-- 在 Agent 中：`const { generatePalette } = require('./generate.js'); const palLight = generatePalette(brand,{mode:'light',platform}); const palDark = generatePalette(brand,{mode:'dark',platform});`
+- 在 Agent 中：`const { generatePalette } = require('./generate.js'); const palLight = generatePalette(brand,{mode:'light',platform});`
 
 返回结构（两端同构）：`{ primary, neutral[], functional, background, chart[], gradient[], css{} }`。
 
-> **双模式（2026-08-12 拍板）**：非默认品牌页默认生成**亮 + 暗两套**——顶栏「暗色模式」按钮（page-template 已内置）驱动 `<html data-theme>` 切换、localStorage 记忆。不再按「用户是否提『暗色』」二选一；无论提不提暗色，都做双模式。  
+> **主题 + 固定暗色（2026-11-17 口径）**：非默认品牌页只生成**亮色主题**（`palLight`），映射进 `:root` 品牌 token；**暗色固定由 `template.css` 提供，页面禁止新增 `:root[data-theme="dark"]` 品牌覆盖**（门禁 `dark.brand.override`；见 DARK-MODE §七）。顶栏「主题」选择器驱动 `data-skin` + `data-theme`。
 > ⚠️ **引擎 `css` 字段是旧长名 `--color-*`（如 `--color-primary`/`--color-neutral-1`），设计系统现行是短名，旧长名已废弃。禁止直接注入 `pal.css`。** 必须按下表把色值**映射进模板短名 `:root`**。
 
 
-### 步骤 2：亮暗双映射进克隆模板（2026-08-12 拍板）
+### 步骤 2：亮色主题映射进克隆模板（暗色固定，2026-11-17）
 
 **通用规则**：`cp agent-starter.html <用户项目>/output/<页面语义名>_<YYYYMMDD>_<HHmm>.html` 后（**落盘「用户项目」output/，自动命名，见 §① 步骤4 产出落盘规则**），按下表 A/B/C/D 映射（变量名不动，只改值）。引擎只改色值，布局 / 字号 / 字重 / 圆角 / 投影 / 字体仍服从设计系统 spec。
 
 - **步骤 2a（亮色）**：把 **palLight** 值替换内联 `:root{}` 的对应变量（原单模式流程不变）。
-- **步骤 2b（暗色，新增）**：把 **palDark** 值写进内联**新增块** `:root[data-theme="dark"]{}`（紧接 `:root{}` 之后）：
-  ```css
-  :root[data-theme="dark"]{
-    --primary:#2E7D5B; --primary-hover:#43B584; --primary-active:#276A4D; --primary-dis-bg:#374151; --primary-dis-fg:#9CA3AF;
-    --n1:#1E293B; --n2:#243044; /* … */ --n11:#FFFFFF;   /* palDark.neutral[i].hex 反相阶 */
-    --suc:#52C41A; --suc-soft:#162312; --suc-fg:#FFFFFF; /* … palDark.functional 固定暗色值 */
-    --brand-surface:#020604; --brand-surface-fg:#FFFFFF; /* palDark.background.brandSurface */
-  }
-  ```
-  顶栏「暗色模式」按钮驱动 `<html data-theme>` 切换；template.css 暗色骨架规则（`.topbar/.sidebar/.footer → var(--brand-surface)`，framework.css 已内置）自动把骨架转深色（固定 `#1E293B`，暗色不随品牌，2026-11-06 方案 A）。
+- **步骤 2b（暗色）**：**不写品牌暗色块**；暗色由 `template.css` 的 `:root[data-theme="dark"]` 固定块提供。旧克隆若仍含品牌暗色段（`:root[data-theme="dark"]` 内 `--primary`/`--brand-surface` 品牌值），删除该段（DARK-MODE §七）。
+- 顶栏「主题」选择器驱动 `data-skin`（品牌色）+ `data-theme`（light/dark）；template.css 暗色骨架规则（`.topbar/.sidebar/.footer → var(--brand-surface)`，framework.css 已内置）自动把骨架转深色（固定 `#1E293B`，暗色不随品牌，2026-11-06 方案 A）。
 
 #### A. 品牌色 + 中性色（两端通用）
 
@@ -564,7 +555,7 @@ CODEBUDDY_SESSION_ID= CLAUDE_SESSION_ID= npm run build   # tsc + vite 全过 = e
 
 #### 步骤 4：暗色
 
-- `<html data-theme="dark">`（引擎驱动轨）；**勿用 shadcn `.dark` 类**（双体系冲突）。
+- 主题：`<html data-skin="green">` + 暗色：`<html data-theme="dark">`（顶栏主题选择器驱动）；**勿用 shadcn `.dark` 类**（双体系冲突）。
 
 #### 与 HTML 流区别表
 

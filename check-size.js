@@ -29,7 +29,8 @@ const LIMITS = [
   ['audit-rules.json', 25900], // 2026-11-12 容量维护批：实测 23991 + 8%（>10k 档）；机器资产（门禁消费），非 Agent 阅读面。下次调阈值须附回收记录
   ['audit-rules-feedback-archive.json', 7500],
   // 2026-11-06：暗色固定主题「不随品牌」断言，ci-local 实测 18014，17800 → 18200。
-  ['ci-local.js', 18600], // 2026-11-06：暗色固定主题「不随品牌」断言，实测 18014，17800 → 18200。2026-11-12 P0：接入 check-reach + 子进程块
+  ['ci-local.js', 18600], // 2026-11-17：+check-themes 主题契约（压缩调用，守原阈值）；2026-11-06 暗色固定断言；2026-11-12 P0 接入 check-reach
+  ['scripts/check-themes.js', 4000], // 2026-11-17：主题 token/对比度/下拉选项契约门禁
   ['gate-capture.js', 5200], // VERDICT-A（2026-10-08）：门禁子进程结果捕获真源（退出码=权威判据）
   ['vendor-coverage.json', 4000], // RED-002 三档登记真源（T-6 2026-10-10）：check-sync 检查三读取（tokenProjection 豁免 / gaps 真缺口）
   // 2026-10-08 RED-007/008 修复：原 22000（实测现值 20000 + 10%）。修复后新增结构化豁免
@@ -57,7 +58,7 @@ const LIMITS = [
   // 2026-10-30 用户追认：62000 → 64500。login v2 新增 ~3.2k 样式；实测 554 条规则零重复、无安全可回收冗余，
   //   按「不影响现有系统优先」调阈值而非压缩产物（依据见 web CHANGELOG 1.9.46）。
   // 2026-11-06：作业树折叠浮层（浮层 CSS + 折叠规则）实测 65386，按维护者流程 64500 → 67000。
-  ['弘讯web端design-system/template.css', 70000],
+  ['弘讯web端design-system/template.css', 71000], // 2026-11-17 主题换肤色点（实测 70,279；容量第 2 次）
   ['弘讯web端design-system/tokens.json', 13300],
   // 2026-11-06：折叠态浮层 JS + data-group/data-key 契约实测 38611，36000 → 40000。
   ['弘讯web端design-system/page-template.html', 40000],

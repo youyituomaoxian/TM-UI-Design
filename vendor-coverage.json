@@ -35,7 +35,8 @@
     "t-mono",
     "t-overline",
     "tab-row",
-    "table-placeholder"
+    "table-placeholder",
+    "theme-dot"
   ],
   "gaps": [
     "app",

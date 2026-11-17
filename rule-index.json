@@ -14,7 +14,7 @@
       "hard": "硬",
       "title": "B 端后台固定框架（Agent 判定必读 ⚠️）",
       "line": 69,
-      "chars": 8063,
+      "chars": 8181,
       "read": "on-demand",
       "gate": [
         "D-1"
@@ -28,7 +28,7 @@
       "hard": "硬",
       "title": "框架固定结构（四维）",
       "line": 73,
-      "chars": 498,
+      "chars": 518,
       "read": "on-demand",
       "gate": [
         "D-11"
@@ -57,7 +57,7 @@
       "hard": "硬",
       "title": "框架硬性规则（不可违反）",
       "line": 86,
-      "chars": 3207,
+      "chars": 3305,
       "read": "on-demand",
       "gate": [
         "D-13"

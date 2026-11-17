@@ -4,7 +4,7 @@
 > 统一规格：viewBox 24×24 · linecap/linejoin round · fill none · currentColor。源文件统一 `stroke-width=1.8`（24px 基准）；渲染描边按尺寸覆盖：16px→2.2 / 20px→2.0 / 24px→1.8（2026-10-20，见 RULES §9）。
 > 尺寸类（template.css 已落地）：`.ico` 16px（表格/菜单操作）· `.btn-ico` 16px（按钮内）· `.tree-ico` 16px（侧栏树节点）· `.kpi-ico` 20px / `.kpi-ico--lg` 24px（指标卡）
 > 语义色联动：状态图标用功能色 token（`var(--suc/--warn/--err/--run)` 等）
-> 图标与移动端同源（icons/ 共用），共 **185 个**（2026-08-14 图标库换新后）。
+> 图标与移动端同源（icons/ 共用），共 **186 个**（2026-08-14 图标库换新后；2026-11-17 新增 palette）。
 
 ## B 端特有（14）
 
@@ -26,6 +26,7 @@
 | `fullscreen.svg` | 全屏 | 全屏展开 | B端操作 |
 | `sun.svg` | 日（亮色） | 顶栏亮/暗模式切换（亮态图标） | B端操作 |
 | `moon.svg` | 月（暗色） | 顶栏亮/暗模式切换（暗态图标） | B端操作 |
+| `palette.svg` | 调色板 | 顶栏主题/换肤切换 | B端操作 |
 | `language.svg` | 语言 | 顶栏多语言切换（地球） | B端操作 |
 
 > 通用 70 个索引见移动端 `icons/icons.md`（跨端共用同一份 SVG）。

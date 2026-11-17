@@ -96,6 +96,8 @@ cd TM-UI-Design
 
 把 `<看板描述>` 换成你的需求（如「注塑机运行看板，含 KPI 图标卡 + 趋势/柱状图 + 设备表格 + 告警列表」）发给 AI 即按规范生成（框架 / 图标 / 图表 / 门禁全自动）。若你的 AI 是网页版等不加载 AGENTS.md 的工具，改用卡片里的「完整版」（含脚手架命令 + 规范路径 + 0 HIGH 门禁）。
 
+已有成品示例：[showcase/](弘讯web端design-system/showcase/) 下 4 个示例（Web 规范展示 / 分享版、表格规范、亮色看板；含主题切换，不参与门禁）。
+
 ### Agent / 开发者使用
 
 1. **起手铁律**：Web B 端一律 `node scripts/new-page-web.js <语义名>`；移动端一律 `node scripts/new-page-mobile.js <语义名>`（脚手架自动克隆 page-template 框架 + 注入克隆凭证 meta + 修正 CSS link，落 `./output/`；自由布局也从 page-template 克隆，`agent-starter.html` 仅为同源极简克隆示例）——模板已含正确 token + 框架外壳

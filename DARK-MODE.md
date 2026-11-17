@@ -3,7 +3,7 @@
 > 2026-07-30 · C 包产物
 > 真源：`tokens.json` 顶层 `dark` 节（值来自 brand-color-engine `generatePalette('#005EAE',{mode:'dark'})` 快照，引擎为唯一真源，勿手改）
 > 切换：`page-template.html` 的 `:root[data-theme="dark"]` 属性选择器
-> **内置切换（2026-08-12 拍板）**：`page-template.html` 顶栏已内置「暗色模式」按钮（`.topbar-item.theme-btn`，位于 首页|用户名|改密|退出|全屏|暗色 顺序末位，RULES §0.1）——点击切换 `<html data-theme>` + localStorage（`hx-theme`）记忆选择；**每次 Web 端生成（克隆 page-template）即默认带亮/暗双模式自由切换**。
+> **内置切换（2026-11-17 升级）**：`page-template.html` 顶栏已内置「主题」选择器（`.theme-dot` + palette 图标 + 下拉，替代旧亮/暗单按钮）——选项 = 默认蓝 / 暗色 / 科技青 / 工业绿 / 琥珀橙 / 深空紫；切换 `data-skin` + `data-theme` 并写 localStorage（`hx-skin` / `hx-theme`）；**每次 Web 端生成（克隆 page-template）即默认带主题切换**。
 > 国际对标：Material / AntD / Apple HIG / Atlassian / Polaris（引证 16–20；引证文件已移除，要点见 §六）
 > 适用：Web 后台（Ant Design 风）+ 移动端（微信小程序 / Android / iOS 跨端）
 
@@ -212,3 +212,11 @@ Agent 克隆模板时自动继承此规则，无需逐页手写。
 - 引擎：`darkBrandMode: "fixed"`（默认）；`derived` 仅保留旧能力，不启用。
 - 门禁：`ci-local` 断言「另一品牌暗色背景全等」。
 - **历史品牌页迁移（2026-11-07）**：2026-11-03 及更早用 `derived` 模式生成的品牌页，其品牌覆盖层含 `:root[data-theme="dark"]{ --primary:<品牌>; --brand-surface:<品牌深色>; ... }` 整段。迁移时**删除该暗色段**，只保留亮色品牌覆盖；暗色回落到 `template.css` 固定值。门禁 `dark.brand.override` 拦截残留。
+
+## 八、主题换肤（2026-11-17）
+
+- **双属性**：`data-skin`（品牌色轴）+ `data-theme`（light/dark 明暗轴）。skin 块用 `:root[data-skin="x"]:not([data-theme="dark"])`，切暗色自动失效。
+- **主题清单**：默认蓝 `#005EAE` / 科技青 `#0E7490` / 工业绿 `#0F766E` / 琥珀橙 `#B45309` / 深空紫 `#7C3AED`。
+- **token**：每 skin 5 个（`--primary/hover/active` + `--brand-surface` + `--text-on-brand`）；disabled/选中/`--secondary` 由 `color-mix` 派生块联动；`--chart-*` 固定。
+- **入口**：顶栏「主题」palette 图标下拉；`hx-skin` / `hx-theme` 记忆；登录页不跟随
+- **真源**：`tokens.json.themes` + `brand-color-engine` → `build-template-css.js` 生成；`scripts/check-themes.js` 校验 token/对比度/选项。
