@@ -300,6 +300,7 @@
 .tabs .tab:focus-visible{outline:2px solid var(--primary);outline-offset:-2px;}
 
 
+.filter-chips{display:inline-flex;flex-wrap:wrap;gap:8px;}
 .filter-chip{height:32px;padding:0 16px;display:inline-flex;align-items:center;gap:6px;
   border:1px solid var(--n6);border-radius:var(--radius-round);background:var(--n1);color:var(--n10);
   font-size:13px;font-family:var(--font-cn);cursor:pointer;
@@ -1110,8 +1111,8 @@ body{margin:0;font-family:var(--font-cn);font-size:14px;color:var(--n10);backgro
   /* ===== 页面级布局/视觉类（值全部走 token；4px 网格；禁裸 font-size / 裸动效秒；禁覆写真源组件类）===== */
 
   /* 页头 */
-  .page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-base);margin-bottom:var(--space-lg);}
-  .page-head .page-title{margin-bottom:var(--space-xs);}
+  
+  
   .page-actions{display:flex;align-items:center;gap:var(--space-sm);flex-shrink:0;}
 
   /* 面包屑 */
@@ -1317,15 +1318,10 @@ body{margin:0;font-family:var(--font-cn);font-size:14px;color:var(--n10);backgro
 
     <main class="content">
 
-      <!-- ===== 页头：面包屑 + 全局工具 ===== -->
+      <!-- ===== 页头：标题 + 全局工具（无面包屑） ===== -->
       <div class="page-head">
         <div>
           <h1 class="page-title">注塑机 A-01 · 关键运行参数看板</h1>
-          <div class="crumb">
-            <span>注塑车间</span><span class="crumb-sep">/</span>
-            <span>注塑机 A-01</span><span class="crumb-sep">/</span>
-            <span class="t-link">运行监控</span>
-          </div>
         </div>
         <div class="page-actions">
           <span class="badge badge-muted" id="refreshState">数据刷新中</span>
@@ -1661,11 +1657,11 @@ body{margin:0;font-family:var(--font-cn);font-size:14px;color:var(--n10);backgro
             <div class="card-head">
               <span class="card-title">报警信息列表</span>
               <span class="card-head-actions">
-                <div class="tabs" id="alarmTabs">
-                  <div class="tab active" data-level="all">全部</div>
-                  <div class="tab" data-level="err">紧急</div>
-                  <div class="tab" data-level="warn">警告</div>
-                  <div class="tab" data-level="info">提示</div>
+                <div class="filter-chips" id="alarmFilter">
+                  <button class="filter-chip on" type="button" data-level="all">全部</button>
+                  <button class="filter-chip" type="button" data-level="err">紧急</button>
+                  <button class="filter-chip" type="button" data-level="warn">警告</button>
+                  <button class="filter-chip" type="button" data-level="info">提示</button>
                 </div>
                 <span class="badge badge-err" id="alarmBadge">2 条未确认</span>
                 <button class="btn btn-text" onclick="refreshAlarmList()">
@@ -2149,10 +2145,10 @@ body{margin:0;font-family:var(--font-cn);font-size:14px;color:var(--n10);backgro
     b.className = n > 0 ? 'badge badge-err' : 'badge badge-suc';
   }
   /* 报警等级筛选 */
-  document.querySelectorAll('#alarmTabs .tab').forEach(function (tab) {
+  document.querySelectorAll('#alarmFilter .filter-chip').forEach(function (tab) {
     tab.addEventListener('click', function () {
-      document.querySelectorAll('#alarmTabs .tab').forEach(function (t) { t.classList.remove('active'); });
-      tab.classList.add('active');
+      document.querySelectorAll('#alarmFilter .filter-chip').forEach(function (t) { t.classList.remove('on'); });
+      tab.classList.add('on');
       var lv = tab.getAttribute('data-level');
       document.querySelectorAll('#alarmBody .alarm-row').forEach(function (tr) {
         tr.style.display = (lv === 'all' || tr.getAttribute('data-level') === lv) ? '' : 'none';
@@ -2160,7 +2156,7 @@ body{margin:0;font-family:var(--font-cn);font-size:14px;color:var(--n10);backgro
     });
   });
   window.refreshAlarmList = function () {
-    var active = document.querySelector('#alarmTabs .tab.active');
+    var active = document.querySelector('#alarmFilter .filter-chip.on');
     var lv = active ? active.getAttribute('data-level') : 'all';
     document.querySelectorAll('#alarmBody .alarm-row').forEach(function (tr) {
       tr.style.display = (lv === 'all' || tr.getAttribute('data-level') === lv) ? '' : 'none';
