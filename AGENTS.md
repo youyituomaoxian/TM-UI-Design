@@ -4,7 +4,7 @@
 
 ## 交接铁律（任何 Agent、任何轮次）
 
-**接手先读根 `HANDOFF.md`，收尾必须更新它**（§1 现状快照 / §4 未决事项 / §7 更新记录；改真源、改页面、出报告、只做分析、只跑门禁都算）。**未更新 = 本轮未完成，不得宣告 done。** 本文件不是真源，禁当规格引用；协议全文见 `HANDOFF.md §0`。
+**接手先读根 `START-HERE.md`；`HANDOFF.md` 是维护者本地日志、不入库；若工作区存在，先读它补当前状态，收尾时按现场规则更新。未更新本地日志 = 本轮未完成（维护者现场规则）。** 本文件不是真源，禁当规格引用；协议见 `START-HERE` / `GENERATION-SOP`。
 
 ## 这是什么
 
@@ -23,7 +23,7 @@
    - 图表 `CHART-SPEC.md`（原子 SVG 自建，色走 `--chart-*`）；跨端语义色 `CROSS-PLATFORM-COLORS.md`
    - 非默认品牌/主题：`brand-color-engine/`（亮色主题映射；暗色固定不随品牌，2026-11-06 方案 A）
 4. 产出落盘到**用户项目** `output/`（CSS link 指向本仓库对应端 `template.css`）。
-5. 门禁：单页 `node 弘讯web端design-system/validate-spec.js <页面.html>` → **0 HIGH**（存量另加台账全绿）；全链路 `node ci-local.js` → **0 fail**（含 audit / check-sync / check-themes / check-size / check-reach，项数以实际输出为准）。
+5. 门禁：单页 `node scripts/verify.js page <页面.html>` → **0 HIGH**（存量另加台账全绿）；全链路 `node scripts/verify.js all` → **0 fail**（含 audit / check-sync / check-themes / check-size / check-reach，项数以实际输出为准）。
 6. 转发：生成分享版（`template.css` 内联为 `<style>`，零外链）。
 
 ## 存量项目审查修改（路径二）

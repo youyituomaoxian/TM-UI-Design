@@ -18,6 +18,7 @@ const LIMITS = [
   ['GENERATION-SOP.md', 45000], // 2026-11-12：清 2 段历史过程注记（-380）后重定；全文非 Agent 加载面（仅 §① 进包），上限作维护告警
   ['AGENTS.md', 4500],
   ['README.md', 8500],
+  ['START-HERE.md', 5000],
   ['USAGE-GUIDE.md', 11800],
   ['团队使用指南.md', 11600],
   ['CHART-SPEC.md', 16000],
@@ -26,10 +27,10 @@ const LIMITS = [
   ['CROSS-PLATFORM-COLORS.md', 2500],
   ['标准提示词模板.md', 5800],
   // 2026-11-06：新增 D-13 作业树折叠态浮层维度，实测 28697，28600 → 29000。
-  ['audit-rules.json', 25900], // 2026-11-12 容量维护批：实测 23991 + 8%（>10k 档）；机器资产（门禁消费），非 Agent 阅读面。下次调阈值须附回收记录
+  ['audit-rules.json', 25900], // 2026-11-12 容量批：23991+8%；机器资产；调阈值须附回收记录
   ['audit-rules-feedback-archive.json', 7500],
   // 2026-11-06：暗色固定主题「不随品牌」断言，ci-local 实测 18014，17800 → 18200。
-  ['ci-local.js', 18600], // 2026-11-17：+check-themes 主题契约（压缩调用，守原阈值）；2026-11-06 暗色固定断言；2026-11-12 P0 接入 check-reach
+  ['ci-local.js', 18600], // 2026-11-17 主题契约；2026-11-06 暗色；2026-11-12 check-reach
   ['scripts/check-themes.js', 4000], // 2026-11-17：主题 token/对比度/下拉选项契约门禁
   ['gate-capture.js', 5200], // VERDICT-A（2026-10-08）：门禁子进程结果捕获真源（退出码=权威判据）
   ['vendor-coverage.json', 4000], // RED-002 三档登记真源（T-6 2026-10-10）：check-sync 检查三读取（tokenProjection 豁免 / gaps 真缺口）

@@ -1,6 +1,6 @@
 # 弘讯 Design System 设计规范
 
-> 📖 第一次来？先看 [USAGE-GUIDE.md](./USAGE-GUIDE.md)（3 分钟找到你的入口）
+> 📖 第一次来？先看 [START-HERE.md](./START-HERE.md)（10 分钟上手）
 
 > 工业控制（注塑机）领域的设计系统，覆盖 **Web 后台管理** 与 **移动端（小程序 / Android / iOS）** 两套平台规范。
 >
