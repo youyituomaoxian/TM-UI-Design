@@ -50,7 +50,7 @@ node packages/web-ui/scripts/build-template-css.js
 | CSS 生成 | `packages/web-ui/src/styles/*.css` → `template.css` | 改源后 `build-template-css.js`；**不要手改 template.css** |
 | 组件契约 | `components.json` + `components.md` | 机器契约 / 人读说明 |
 | 页面模板 | `page-template.html` | 唯一克隆源 |
-| 示例 | `showcase/`、根目录 `web规范展示` | 根目录是源；`showcase/` 里三个规范展示由 `scripts/sync-showcase.js` 生成，勿手改；`弘讯亮色注塑机看板.html` 是独立示例 |
+| 示例 | `showcase/`、根目录 `web规范展示` | 根目录是源；`showcase/` 里规范展示副本（含分享版）由 `scripts/sync-showcase.js` 生成，勿手改；`弘讯亮色注塑机看板.html` 是独立示例 |
 | 历史 | `CHANGELOG-archive`、`output/` | 只读；新产出落用户项目 `output/` |
 
 ## 5. 五个不要改
@@ -88,7 +88,7 @@ node packages/web-ui/scripts/build-template-css.js
 
 - 可直接打开：`showcase/弘讯亮色注塑机看板.html`（主题切换）、`showcase/web规范展示...html`、`showcase/表格规范展示...html`。
 - 示例保留演示树/假数据，`validate` 对 `showcase/` 豁免 `template.residue`；业务页必须替换品牌、底栏、作业树。
-- `showcase/` 里三个规范展示是**生成物**：改根目录源后运行 `node scripts/sync-showcase.js`；`node scripts/verify.js showcase` 检查是否漂移，不要手改副本。
+- `showcase/` 里的规范展示副本（Web 非分享版/分享版、表格非分享版/分享版）是**生成物**：改根目录源后运行 `node scripts/sync-showcase.js`；`node scripts/verify.js showcase` 检查是否漂移，不要手改副本。
 
 ## 9. 当前状态以运行结果为准
 

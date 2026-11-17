@@ -3,7 +3,7 @@
 /* ============================================================
  * sync-showcase.js — 从端目录根生成 showcase 副本（2026-11-17）
  *
- * 根目录是源；showcase 里三个规范展示是生成物。
+ * 根目录是源；showcase 里规范展示副本（含分享版）是生成物。
  * 只做路径改写 + 生成头，不改内容、不改门禁。
  *
  * 用法：
@@ -26,7 +26,7 @@ function withHeader(html) {
   return html.replace(/^<!DOCTYPE html>\r?\n?/i, m => m + HEADER);
 }
 function inlineTemplate(html) {
-  return html.replace('<link rel="stylesheet" href="template.css">', '<style>\n' + TEMPLATE + '\n</style>');
+  return html.replace(/<link rel="stylesheet" href="template\.css(?:\?[^"]*)?"\s*\/?>/, '<style>\n' + TEMPLATE + '\n</style>');
 }
 function toShowcase(html) {
   return withHeader(
@@ -58,6 +58,7 @@ const outputs = [
   [path.join(SHOW, 'web规范展示_框架版_20260806_1050.html'), toShowcase(rootWeb)],
   [path.join(SHOW, 'web规范展示_框架版_20260806_1050_分享版.html'), toShowcaseShare(rootWeb)],
   [path.join(SHOW, '表格规范展示_20261112.html'), toShowcase(rootTable)],
+  [path.join(SHOW, '表格规范展示_20261112_分享版.html'), toShowcaseShare(rootTable)],
 ];
 
 let bad = 0;
