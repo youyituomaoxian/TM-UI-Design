@@ -2,8 +2,16 @@
 
 > 本文件为 `CHANGELOG.md` 的滚动归档（2026-09-22 建立）：主文件只保留近期条目，更早条目**原样移入**此处，未做任何内容修改。
 > **分卷（2026-11-20）**：归档容器触顶后按时间拆卷——本卷只保留 **2026-10 及之后**；**2026-09 及更早**见 [`CHANGELOG-archive-2026-08_09.md`](CHANGELOG-archive-2026-08_09.md)（冻结卷，不再追加）。
-> 切割线（滚动更新）：web 归档 `[登录页定稿写回真源 + login 门禁]` 及更早。新条目一律写主文件顶部；超限时由 roll-changelog.js 自动滚动。
+> 切割线（滚动更新）：web 归档 `[登录页 v2 定稿：logo 出卡 + 标题进卡 + 字段标签 + 全状态门禁]` 及更早。新条目一律写主文件顶部；超限时由 roll-changelog.js 自动滚动。
 
+## [登录页 v2 定稿：logo 出卡 + 标题进卡 + 字段标签 + 全状态门禁] — 2026-11-18
+- **真源 `components.css` → build `template.css`**：`.login-head` 承载 logo（`.login-head img` 高 40 宽自适应）；卡内 `.login-card-title` 保留为标题组/表单标题；新增 `.login-field`（字段组 16）、`.login-label`（14/22 N10、下 8）；删除 `.login-brand` / `.login-account`（logo 已出卡）；`<1200` 图槽 `contain` 与法务行多语言保持。
+- **RULES §1.1b 登录页**：改写为「logo 卡外左对齐 + 卡内标题组（系统名 24/32 + 副标题 13/20）+「登录」18/26 + 字段 label + 账号/密码」；节奏改为 卡 32/40 → 标题组 → 24 → 登录 → 24 → 字段；状态补「提交中 / 验证码错 / 锁定 / 成功」；找回密码 3 步含 6 位验证码 + 60s 重发。
+- **门禁 `checkLoginPage` v2**：`login.head.logo`（卡外恰好 1 个矢量 logo）、`login.card.no-logo`（卡内禁 `<img>`）、`login.card.title`（卡内必有 `.login-card-title`）、`login.fields.labels`（账号/密码须可见 `<label for>`，其余至少 aria-label）、`login.states`（MED，必有 `.login-alert` 承载位）；保留 `login.fields.account` / `login.password.eye` / `login.hero.slot` / `login.card.required`；旧 `login.head.no-logo` / `login.brand.*` / `login.title.one` 废止。
+- **示例**：`output/登录页示例.html` 删除全部登录页局部样式（仅剩 demo 工具条），`0 HIGH / 2 MED`；12 个交互状态 + 状态总览截图；`showcase/登录页示例_分享版.html` 重生成（613,478B，零外链）。
+- **实测**：负向样例 3 条 HIGH（head.logo / card.no-logo / fields.labels）+ `login.states` MED 实测命中；`template.css` 70,898/71,000；`validate-spec` 129,495/129,500；`RULES` 55,679/56,000；`ci-local` 104/0；`sync-index` + `freeze-baseline` + `roll-changelog` 已跑。
+
+---
 ## [登录页定稿写回真源 + login 门禁] — 2026-11-18
 - **真源（`components.css` → build `template.css`）**：`.login-card` 内边距 上下 **32** / 左右 40；新增 `.login-brand`（卡内顶部居中，logo 高 40、上 32 下 32）、`.login-account`（下距 16）、`.login-link`、`.login-legal-links`；`.login-legal` 改 `justify-content:space-between`、`.login-copy` 归零、`html[lang="en"] .login-legal` 整块居中；`<1200` 断点 `.login-hero img{object-fit:contain}`（1:1 图在 280 横幅 cover 会裁成 3.66:1 特写）。
 - **RULES §1.1b 登录页**：改写为定稿口径——logo 卡内 40 / 32 / 32、去卡内「登录」标题、字段「账号 + 密码」（手机号为显式变体）、法务行多语言、图槽比例、节奏 32/16/12/16/16/24/32、`<1200` contain。

@@ -5,6 +5,12 @@
 
 ---
 
+## [文档随门禁定级对齐：图表条款 / 写死计数 / 加载计划口径] — 2026-11-20
+- **计数去写死**：RULES 双端「软规则必读清单」、SOP 自查表、USAGE 资产地图的「图表结果约束 8 条」→「结果约束清单」（实际 Web 12 / 移动 10 / CHART-SPEC §2 共通 9 条，写死必漂）。
+- **双端差异说明**：移动 §9.7 ② 头改「缺一不可；共通条款见 CHART-SPEC §2，Web 端另有量纲/标签脚本 2 条」。
+- **加载计划口径**：SOP §0 删 2026-11-12 的 37,870/37,115 快照，改为「3 个计划、以输出为准」；START-HERE 门禁地图更新为 7 页 / 6 分享版 / 19 WARN / 1 WARN / 31 条登记。
+- **实测**：`verify all` 全绿；check-reach 0 FAIL/1 WARN；check-size 0 FAIL/19 WARN。
+
 ## [图表门禁逐条定级：3 条几何缺陷升 HIGH，2 条保留 MED] — 2026-11-20
 - **逐条判定（存量命中 → 原因）**：`chart.baseline` 0 / `chart.symmetry` 0 / `chart.svg.viewbox-edge` 0 —— 三者都是**可量化的几何破损**（柱底悬空、左右留白不一致、拉伸后末端标签被裁切），升 **HIGH**（双端）；`chart.text.inline` 0 但属样式令牌政策（1:1 不拉伸不必然变形）、`chart.line.vertical` 在 v7 命中 2 条（覆盖率 54%，低波动真实序列）→ **保留 MED**。
 - **回归**：9 页（web 7 + mobile 2）升级后 **HIGH 仍 0**，无存量真违规。
@@ -129,10 +135,3 @@
 - **预算**：`ci-local.js` 压缩图标计数段/functional 注释（零语义）腾出 105 项位置，18,590/18,600；`validate-spec` 129,495/129,500、`template.css` 70,898/71,000 不变。
 - **示例/分享版**：示例页改用库内 `eye_on` 与 `safe_check` 勾选 path（`icon.source` MED 清零），页面与分享版均 **0 HIGH / 1 MED**；分享版重生成 613,464B；12 状态截图 + 总览按中文态重出。
 - **门禁**：`ci-local` **105/0**；`sync-index` / `freeze-baseline` 已跑。
-
-## [登录页 v2 定稿：logo 出卡 + 标题进卡 + 字段标签 + 全状态门禁] — 2026-11-18
-- **真源 `components.css` → build `template.css`**：`.login-head` 承载 logo（`.login-head img` 高 40 宽自适应）；卡内 `.login-card-title` 保留为标题组/表单标题；新增 `.login-field`（字段组 16）、`.login-label`（14/22 N10、下 8）；删除 `.login-brand` / `.login-account`（logo 已出卡）；`<1200` 图槽 `contain` 与法务行多语言保持。
-- **RULES §1.1b 登录页**：改写为「logo 卡外左对齐 + 卡内标题组（系统名 24/32 + 副标题 13/20）+「登录」18/26 + 字段 label + 账号/密码」；节奏改为 卡 32/40 → 标题组 → 24 → 登录 → 24 → 字段；状态补「提交中 / 验证码错 / 锁定 / 成功」；找回密码 3 步含 6 位验证码 + 60s 重发。
-- **门禁 `checkLoginPage` v2**：`login.head.logo`（卡外恰好 1 个矢量 logo）、`login.card.no-logo`（卡内禁 `<img>`）、`login.card.title`（卡内必有 `.login-card-title`）、`login.fields.labels`（账号/密码须可见 `<label for>`，其余至少 aria-label）、`login.states`（MED，必有 `.login-alert` 承载位）；保留 `login.fields.account` / `login.password.eye` / `login.hero.slot` / `login.card.required`；旧 `login.head.no-logo` / `login.brand.*` / `login.title.one` 废止。
-- **示例**：`output/登录页示例.html` 删除全部登录页局部样式（仅剩 demo 工具条），`0 HIGH / 2 MED`；12 个交互状态 + 状态总览截图；`showcase/登录页示例_分享版.html` 重生成（613,478B，零外链）。
-- **实测**：负向样例 3 条 HIGH（head.logo / card.no-logo / fields.labels）+ `login.states` MED 实测命中；`template.css` 70,898/71,000；`validate-spec` 129,495/129,500；`RULES` 55,679/56,000；`ci-local` 104/0；`sync-index` + `freeze-baseline` + `roll-changelog` 已跑。

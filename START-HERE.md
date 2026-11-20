@@ -70,16 +70,16 @@ node packages/web-ui/scripts/build-template-css.js
 
 | 命令 | 检查什么 | 当前状态 |
 |---|---|---|
-| `verify.js page` | 单页 0 HIGH：结构/标题/颜色/组件/克隆凭证/作业树运行时 | ✅ 6 页 0 HIGH（USAGE 64 MED 属 doc-* 布局类；登录示例 0 违反） |
-| `verify.js all --scope=new` | 6 页 validate + 8 页 tree runtime + 5 分享版零外链 + 清单/工具区 + check-size | ✅ 通过 |
+| `verify.js page` | 单页 0 HIGH：结构/标题/颜色/组件/克隆凭证/作业树运行时 | ✅ 7 页 0 HIGH（USAGE 64 MED 属 doc-* 布局类；登录示例 1 MED） |
+| `verify.js all --scope=new` | 7 页 validate + 8 页 tree runtime + 6 分享版零外链 + 清单/工具区 + check-size | ✅ 通过 |
 | `verify.js all` | **交付口径** = 存量全链路 + 新规范范围 | ✅ 两者全绿 |
 | `ci-local.js`（存量全链路） | 两端克隆源 / token / audit / 双端一致性 / 体积 | ✅ **105 pass / 0 fail** |
-| `check-size.js` | 文档体积 + 清单封闭 | ✅ 0 FAIL / 23 WARN |
-| `check-reach.js` | 索引 / 引用 / 加载预算 | ✅ 0 FAIL / 2 WARN（加载余量 3.7%） |
+| `check-size.js` | 文档体积 + 清单封闭 | ✅ 0 FAIL（WARN 数随阈值余量变化，以输出为准） |
+| `check-reach.js` | 索引 / 引用 / 3 个加载计划预算 | ✅ 0 FAIL / 1 WARN（图表任务余量 5.2%） |
 | `check-sync.js` | 双端同名类 + vendor 同构 | ✅ 3 pass / 0 fail（4 类平台差异入白名单；141 类已扩容登记 gaps） |
 | `verify.js chrome` | 工具区与真源 `partials/shell-tools.html` 一致 + 4 个运行 js 可加载（9 页含分享版） | ✅ 通过 |
 | `verify.js shell` | 工具区真源是否已注入各页（漂移检查，失败给正确修复命令） | ✅ 4 / 4 |
-| `verify.js manifest` | 清单存在性/组内去重/页面覆盖性/契约声明 | ✅ 29 条登记 / 1 条忽略 |
+| `verify.js manifest` | 清单存在性/组内去重/页面覆盖性/契约声明 | ✅ 31 条登记 / 1 条忽略 |
 | `verify.js icons` | 图标库每个图标都在规范展示「图标集」出现 + 计数一致 | ✅ 190 / 190 |
 | `verify.js spec` | 规范展示页自检：图表坐标/柱值标签/计数声明/锚点/旧分页器/未定义变量 | ✅ 通过 |
 
