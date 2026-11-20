@@ -370,7 +370,7 @@ node <仓库根>/scripts/verify.js page <用户项目路径>/output/<产出文�
 - **交互与动画（默认即带）**：图形挂动画类 `.chart-bar`（柱升起）/`.chart-hbar`（条生长）/`.chart-line`（描边生长）/`.chart-ring-anim`（环放大）/`.chart-dot`（点延迟淡入）；Web hover 数据元素本身（三合一，阴影 `--shadow-data-hover` 轻弥散）；移动点按反馈（active 提亮）；时长全走 `--motion-duration-*`
 - **图例**：`.chart-legend` / `.legend-item` / `.legend-dot`（圆点）/ `.legend-line`（线段，可 `--dash`）
 - **卡片内图表**：卡片一律 `.card--fill`（等高收底）；图表/表格容器（`.donut-wrap` / `.chart-box--flex` / `.table-wrap`）`flex:1` 弹性吸收拉伸空白（Web，禁图例下方留白）。**`.chart-box--flex` 须配合 `.card--fill` + `.col-*` 环境才产生弹性拉伸**（单用不生效）；环形/迷你图用 `.chart-box--ring` 定高，勿加 `.chart-box--flex`
-- **禁止**：自造 chart 类；canvas 挂裸 `<div>`（门禁 MEDIUM）；环形图 none 拉伸；SVG 裸 hex；**系列色用通用语义色（--primary/--suc/--warn/--err，门禁 `chart.series.color` HIGH，2026-11-20 升级）**
+- **禁止**：自造 chart 类；canvas 挂裸 `<div>`（门禁 MEDIUM）；环形图 none 拉伸；SVG 裸 hex；**系列色用通用语义色（--primary/--suc/--warn/--err，门禁 `chart.series.color` HIGH，2026-11-20 升级）**；**拉伸态元素贴边 / 数据区左右不对称 / 柱底悬空（`chart.svg.viewbox-edge` / `chart.symmetry` / `chart.baseline` 均 HIGH，2026-11-20 升级）**
 
 #### 图表色板契约（两端 token，CHART-SPEC §4）
 

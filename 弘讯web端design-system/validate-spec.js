@@ -1265,7 +1265,7 @@ function checkChartSvgFill(html) {
     }
     if (maxX >= W) {
       violations.push({
-        line: 0, severity: 'MEDIUM', contract: 'chart.svg.viewbox-edge', sel: fm[1],
+        line: 0, severity: 'HIGH', contract: 'chart.svg.viewbox-edge', sel: fm[1],
         msg: `svg.chart-svg--fill（preserveAspectRatio="none" 拉伸态）内部元素最大 x=${maxX} 贴 viewBox 右边缘（宽 ${W}）——拉伸后末端 X 轴标签会被 card-body padding 16px 裁切（实测 21:00 → 21）。请把 viewBox 宽度改为 ${Math.round(maxX + 20)}（留 ≥20px 内部边距），数据元素末端 x 保持 ≤ viewBox 宽-20。见 RULES §3.7 配套约定 5`
       });
     }
@@ -1315,7 +1315,7 @@ function checkChartLayout(html) {
     for (const [x1, x2] of gridXs) {
       if (Math.abs((x1 + x2) - W) > 2) {
         violations.push({
-          line: 0, severity: 'MEDIUM', contract: 'chart.symmetry', sel: cls,
+          line: 0, severity: 'HIGH', contract: 'chart.symmetry', sel: cls,
           msg: `网格线 x1=${x1} + x2=${x2} ≠ viewBox 宽 ${W}（应 x1+x2=W，左右留白一致）——数据区左右不对称，见 CHART-SPEC §3`
         });
         break;
@@ -1337,7 +1337,7 @@ function checkChartLayout(html) {
       const maxRight = Math.max(...bars.map(b => b.x + b.w));
       if (Math.abs((minX + maxRight) - W) > 2) {
         violations.push({
-          line: 0, severity: 'MEDIUM', contract: 'chart.symmetry', sel: cls,
+          line: 0, severity: 'HIGH', contract: 'chart.symmetry', sel: cls,
           msg: `柱数据区 左=${minX} 右=${maxRight}（应 minX+maxRight=viewBox 宽 ${W}）——数据区左右不对称，见 CHART-SPEC §3`
         });
       }
@@ -1347,7 +1347,7 @@ function checkChartLayout(html) {
         const barBottom = Math.max(...bars.map(b => b.y + b.h));
         if (Math.abs(barBottom - baseY) > 2) {
           violations.push({
-            line: 0, severity: 'MEDIUM', contract: 'chart.baseline', sel: cls,
+            line: 0, severity: 'HIGH', contract: 'chart.baseline', sel: cls,
             msg: `柱底 ${barBottom} 未对齐最下网格线 ${baseY}（差 ${Math.abs(barBottom - baseY)} > 2）——柱底悬空无基线 = 漂移，见 CHART-SPEC §3`
           });
         }
@@ -1363,7 +1363,7 @@ function checkChartLayout(html) {
       for (let i = 0; i < nums.length; i += 2) { if (nums[i] < minX) minX = nums[i]; if (nums[i] > maxX) maxX = nums[i]; }
       if (Math.abs((minX + maxX) - W) > 2) {
         violations.push({
-          line: 0, severity: 'MEDIUM', contract: 'chart.symmetry', sel: cls,
+          line: 0, severity: 'HIGH', contract: 'chart.symmetry', sel: cls,
           msg: `折线数据 x 左=${minX} 右=${maxX}（应 min+max=viewBox 宽 ${W}）——数据区左右不对称，见 CHART-SPEC §3`
         });
         break;

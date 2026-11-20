@@ -81,7 +81,7 @@
 ## 3. 布局铁律（两端通用，血泪教训背书）
 
 - **图表左右对称（间距系统铁律）**：数据区左右边距必须一致——**禁一侧贴边一侧留大**（实测 x 30-360 → 左 30 右 40 不对称）。内边距按间距规范选值，**不是简单居中就行**。
-- **纵向占满 + 对称（2026-08-24 数值化）**：折线数据 y 范围纵向覆盖 **≥ viewBox 高度 70%**（数据带不得集中一条带），上下留白对称（**上/下差 ≤ 高度 15%**）。已纳入门禁 `chart.line.vertical`（MED）——不达标即提示重映射 y（如 viewBox 高 100 → y≈[92,8]，上下对称占满）。
+- **纵向占满 + 对称（2026-08-24 数值化）**：折线数据 y 范围纵向覆盖 **≥ viewBox 高度 70%**（数据带不得集中一条带），上下留白对称（**上/下差 ≤ 高度 15%**）。已纳入门禁 `chart.line.vertical`（MED：低波动序列合理，保留）——不达标即提示重映射 y（如 viewBox 高 100 → y≈[92,8]，上下对称占满）。
 - **柱底对齐基线**：柱底必须落在基线上，底部不留悬空。
 - **最下网格线（基线）与 x 轴标签纵向间距 ≥20px**（标签独立行时 = 标签行高度）。
 - **网格线水平留白（2026-08-07 补齐）**：网格线水平范围限于绘图区，两侧为 y 轴刻度标签留白 ≥20；y 轴刻度与网格线同高对齐但水平错开——**禁网格线贯穿左右边缘贴卡边**（移动端示例已隐性示范，Web 端补齐显式约束）。
@@ -148,9 +148,10 @@
 | `svg.paint.non-palette`（SVG 裸 hex 自造色）| HIGH | HIGH（已有）|
 | `svg.paint.non-token`（调色板内但裸 hex）| MEDIUM | MEDIUM（已有）|
 | `chart.svg.fill`（chart-svg 带 meet 撑不满）| MEDIUM | 移动版：chart-svg 带 `none` → MEDIUM（禁拉伸变形）|
-| `chart.text.inline`（SVG 内 `<text>`）| MEDIUM | MEDIUM（同）|
-| `chart.symmetry`（数据区左右对称）| MEDIUM | MEDIUM（同）|
-| `chart.baseline`（柱底对齐基线）| MEDIUM | MEDIUM（同）|
+| `chart.svg.viewbox-edge`（拉伸态元素贴右边缘 → 末端标签被裁切）| **HIGH**（2026-11-20 升级）| **HIGH**（同）|
+| `chart.text.inline`（SVG 内 `<text>`）| MEDIUM（1:1 不必然变形，保留）| MEDIUM（同）|
+| `chart.symmetry`（数据区左右对称）| **HIGH**（2026-11-20 升级：几何缺陷）| **HIGH**（同）|
+| `chart.baseline`（柱底对齐基线）| **HIGH**（2026-11-20 升级：柱底悬空）| **HIGH**（同）|
 | `chart.series.color`（**2026-08-07 新增**：系列元素 fill/stroke 用通用语义色 --primary/--suc/--warn/--err 作系列色）| **HIGH**（2026-11-20 由 MEDIUM 升级：语义色作系列色会误导数据语义；目标线 --warn 豁免）| **HIGH**（同）|
 | `kpi.simple.forbidden` / `kpi.label.top.forbidden`（KPI 卡，见 KPI 两版规范）| HIGH | — |
 

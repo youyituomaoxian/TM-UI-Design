@@ -5,6 +5,11 @@
 
 ---
 
+## [图表门禁逐条定级：3 条几何缺陷升 HIGH，2 条保留 MED] — 2026-11-20
+- **逐条判定（存量命中 → 原因）**：`chart.baseline` 0 / `chart.symmetry` 0 / `chart.svg.viewbox-edge` 0 —— 三者都是**可量化的几何破损**（柱底悬空、左右留白不一致、拉伸后末端标签被裁切），升 **HIGH**（双端）；`chart.text.inline` 0 但属样式令牌政策（1:1 不拉伸不必然变形）、`chart.line.vertical` 在 v7 命中 2 条（覆盖率 54%，低波动真实序列）→ **保留 MED**。
+- **回归**：9 页（web 7 + mobile 2）升级后 **HIGH 仍 0**，无存量真违规。
+- **文档**：CHART-SPEC §7 表（新增 viewbox-edge 行 + 保留理由）、RULES §9 ⑤、SOP 附录 A 禁区同步；为守住图表任务加载集 ≤95% 顺带压缩 §9 表述（37,916/40,000 = 94.8%）。
+
 ## [残留风险收口：系列色语义色升 HIGH + 图表页读前提示] — 2026-11-20
 - **门禁升级**：`chart.series.color`（系列元素用 --primary/--suc/--warn/--err 作系列色）双端 MEDIUM → **HIGH**（理由：语义色作系列色会误导数据语义）；同步 RULES §9 / 移动 §9.7、CHART-SPEC §7、SOP 附录 A 禁区。回归：8 页（web 6 + mobile 2）HIGH 仍 0，证明存量无真违规。
 - **读前提示**：`verify.js page` 检测到 `.chart-box/.chart-svg` 时打印「图表页必读 CHART-SPEC §4/§5/§7（generate-web-chart ≈37.9k）」——把「靠自觉」再收一道。
