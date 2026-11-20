@@ -5,6 +5,11 @@
 
 ---
 
+## [残留风险收口：系列色语义色升 HIGH + 图表页读前提示] — 2026-11-20
+- **门禁升级**：`chart.series.color`（系列元素用 --primary/--suc/--warn/--err 作系列色）双端 MEDIUM → **HIGH**（理由：语义色作系列色会误导数据语义）；同步 RULES §9 / 移动 §9.7、CHART-SPEC §7、SOP 附录 A 禁区。回归：8 页（web 6 + mobile 2）HIGH 仍 0，证明存量无真违规。
+- **读前提示**：`verify.js page` 检测到 `.chart-box/.chart-svg` 时打印「图表页必读 CHART-SPEC §4/§5/§7（generate-web-chart ≈37.9k）」——把「靠自觉」再收一道。
+- **残留**：其余图表 MED（基线/对称/贴边/纵向占满等）仍不阻断；逐条升 HIGH 需评估存量页，留待拍板。
+
 ## [登录帮助行移除 + 图表任务加载集显式化] — 2026-11-20
 - **登录页**：`showcase/登录页示例.html` 删除「账号由系统管理员开通，登录问题请联系管理员」帮助行（含 i18n `login.help` 中英键）；RULES §1.1b 写明「不设帮助行，`.login-help` 只留给找回密码/返回链接」；分享版重出并截图核对。
 - **图表可读性**：新增第 3 个加载计划 `generate-web-chart`（AGENTS + SOP §① + RULES §1.1b/§7/§9 + CHART-SPEC §4/§5/§7 + colors）= **37,922/40,000（94.8%）**；SOP 步骤 4.5、RULES §9 头、AGENTS 阅读策略统一为「图表页必读 CHART-SPEC §4/§5/§7，加载集 = generate-web-chart」——把「靠自觉读」升级为「加载集被实测、超预算即红」。
@@ -126,10 +131,3 @@
 - **门禁 `checkLoginPage` v2**：`login.head.logo`（卡外恰好 1 个矢量 logo）、`login.card.no-logo`（卡内禁 `<img>`）、`login.card.title`（卡内必有 `.login-card-title`）、`login.fields.labels`（账号/密码须可见 `<label for>`，其余至少 aria-label）、`login.states`（MED，必有 `.login-alert` 承载位）；保留 `login.fields.account` / `login.password.eye` / `login.hero.slot` / `login.card.required`；旧 `login.head.no-logo` / `login.brand.*` / `login.title.one` 废止。
 - **示例**：`output/登录页示例.html` 删除全部登录页局部样式（仅剩 demo 工具条），`0 HIGH / 2 MED`；12 个交互状态 + 状态总览截图；`showcase/登录页示例_分享版.html` 重生成（613,478B，零外链）。
 - **实测**：负向样例 3 条 HIGH（head.logo / card.no-logo / fields.labels）+ `login.states` MED 实测命中；`template.css` 70,898/71,000；`validate-spec` 129,495/129,500；`RULES` 55,679/56,000；`ci-local` 104/0；`sync-index` + `freeze-baseline` + `roll-changelog` 已跑。
-
-## [登录页定稿写回真源 + login 门禁] — 2026-11-18
-- **真源（`components.css` → build `template.css`）**：`.login-card` 内边距 上下 **32** / 左右 40；新增 `.login-brand`（卡内顶部居中，logo 高 40、上 32 下 32）、`.login-account`（下距 16）、`.login-link`、`.login-legal-links`；`.login-legal` 改 `justify-content:space-between`、`.login-copy` 归零、`html[lang="en"] .login-legal` 整块居中；`<1200` 断点 `.login-hero img{object-fit:contain}`（1:1 图在 280 横幅 cover 会裁成 3.66:1 特写）。
-- **RULES §1.1b 登录页**：改写为定稿口径——logo 卡内 40 / 32 / 32、去卡内「登录」标题、字段「账号 + 密码」（手机号为显式变体）、法务行多语言、图槽比例、节奏 32/16/12/16/16/24/32、`<1200` contain。
-- **门禁 `validate-spec`（新增 `checkLoginPage`）**：`login.card.required` / `login.head.no-logo` / `login.title.one` / `login.brand.missing` / `login.brand.logo` / `login.fields.account` / `login.hero.slot`（HIGH）+ `login.password.eye`（MED）；`COMPONENT_CLASS_RE` 增 `login-` → 页面覆写 `.login-*` 现报 `css.override` HIGH（此前正则 `^` 锚定漏检，DS-20261118-02 §3.5）。
-- **示例**：`output/登录页示例.html` 删除 8 处页面级覆写（样式全部由真源提供）→ `0 HIGH / 1 MED`；`showcase/登录页示例_分享版.html` 按新真源重生成（598,934B，零外链）。
-- **实测/门禁**：`template.css` 70,914 / 71,000；`validate-spec` 129,173 / 129,500；`ci-local` **104/0**；check-size 0 FAIL / 26 WARN；`sync-index` + `freeze-baseline` 已跑。

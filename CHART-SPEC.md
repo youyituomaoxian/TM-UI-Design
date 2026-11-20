@@ -151,7 +151,7 @@
 | `chart.text.inline`（SVG 内 `<text>`）| MEDIUM | MEDIUM（同）|
 | `chart.symmetry`（数据区左右对称）| MEDIUM | MEDIUM（同）|
 | `chart.baseline`（柱底对齐基线）| MEDIUM | MEDIUM（同）|
-| `chart.series.color`（**2026-08-07 新增**：系列元素 fill/stroke 用通用语义色 --primary/--suc/--warn/--err 作系列色）| MEDIUM（建议 --chart-*，目标线 --warn 豁免）| MEDIUM（同）|
+| `chart.series.color`（**2026-08-07 新增**：系列元素 fill/stroke 用通用语义色 --primary/--suc/--warn/--err 作系列色）| **HIGH**（2026-11-20 由 MEDIUM 升级：语义色作系列色会误导数据语义；目标线 --warn 豁免）| **HIGH**（同）|
 | `kpi.simple.forbidden` / `kpi.label.top.forbidden`（KPI 卡，见 KPI 两版规范）| HIGH | — |
 
 ---

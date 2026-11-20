@@ -2125,7 +2125,7 @@ function checkChartSeriesColor(html) {
     const el = m[0];
     if (tag === 'polyline' && /stroke-dasharray/.test(el)) continue; // 目标线豁免
     violations.push({
-      line: 0, severity: 'MEDIUM', contract: 'chart.series.color', sel: tag,
+      line: 0, severity: 'HIGH', contract: 'chart.series.color', sel: tag,
       msg: 'SVG 系列元素 <' + tag + '> 用通用语义色 var(--' + color + ') 作绘制色——信息化图表系列色（柱/条/线/环段/点）只能用 --chart-* token（Web 8 色 / 移动 13 色）；目标线等辅助线例外（polyline+stroke-dasharray）'
     });
   }

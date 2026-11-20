@@ -57,14 +57,20 @@ switch (cmd) {
     }
     const abs = path.resolve(ROOT, file);
     const end = args[1] || (/移动端/.test(abs) ? 'mobile' : 'web');
+    const pageHtml = fs.existsSync(abs) ? fs.readFileSync(abs, 'utf8') : '';
     if (end === 'mobile') {
       run('移动端单页 validate', path.join(MOB, 'validate-spec.js'), [abs], MOB);
     } else {
       run('Web 单页 validate', path.join(WEB, 'validate-spec.js'), [abs], WEB);
       run('组件复用门禁', path.join(ROOT, 'scripts', 'audit-component-reuse.js'), [abs]);
-      if (fs.readFileSync(abs, 'utf8').includes('class="rail"')) {
+      if (pageHtml.includes('class="rail"')) {
         run('作业树运行时门禁', path.join(ROOT, 'scripts', 'audit-tree-runtime.js'), [abs]);
       }
+    }
+    // 图表页提示（2026-11-20）：门禁只兜部分规则，色彩/交互/门禁细节必须回真源
+    if (/class="chart-(box|svg)/.test(pageHtml)) {
+      console.log('\nℹ️ 本页含图表：按「图表页」加载集读 CHART-SPEC §4（色彩）/§5（交互）/§7（门禁）' +
+        '（generate-web-chart ≈37.9k，超预算 check-reach 会红）');
     }
     break;
   }

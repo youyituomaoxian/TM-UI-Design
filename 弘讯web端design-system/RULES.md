@@ -1073,6 +1073,6 @@ Shell           height=100vh FIXED
 
 **③ 色彩 / 交互 / 门禁（细节真源 `CHART-SPEC §4/§5/§7`，此处只留红线）**
 
-- 系列色**只用 `--chart-*`**（8 色）：禁通用语义色（--primary/--suc/--warn/--err，chart.series.color MED）、禁裸 hex（svg.paint.non-palette HIGH）；辅助线用中性 --n4 / 目标线 --warn（虚线）；同页 ≤5 系列、同系列同色；图例 `.chart-legend` / `.legend-item` + `.legend-dot` / `.legend-line`。
+- 系列色**只用 `--chart-*`**（8 色）：禁通用语义色（--primary/--suc/--warn/--err，chart.series.color **HIGH**，2026-11-20 升级）、禁裸 hex（svg.paint.non-palette HIGH）；辅助线用中性 --n4 / 目标线 --warn（虚线）；同页 ≤5 系列、同系列同色；图例 `.chart-legend` / `.legend-item` + `.legend-dot` / `.legend-line`。
 - **交互默认即带**：`.chart-bar` / `.chart-hbar` / `.chart-line` / `.chart-ring-anim` / `.chart-dot`（点延迟出现），时长走 `--motion-duration-*`；hover 目标是数据元素（**禁整卡浮起**），数据阴影 `var(--shadow-data-hover)`；环图中心常显主段、悬停切换。
-- **门禁**：容器缺失 / SVG 裸 hex / 未定义 var → HIGH；系列色语义色 / meet 撑不满 / SVG 内文字 / 贴边 / 左右不对称 / 柱底基线 / 折线纵向占满 → MED。完整口径见 `CHART-SPEC §7`。
+- **门禁**：容器缺失 / SVG 裸 hex / 未定义 var / **系列色用语义色** → HIGH；meet 撑不满 / SVG 内文字 / 贴边 / 左右不对称 / 柱底基线 / 折线纵向占满 → MED。完整口径见 `CHART-SPEC §7`。

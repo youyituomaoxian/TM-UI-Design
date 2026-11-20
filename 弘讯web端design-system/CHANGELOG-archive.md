@@ -2,8 +2,16 @@
 
 > 本文件为 `CHANGELOG.md` 的滚动归档（2026-09-22 建立）：主文件只保留近期条目，更早条目**原样移入**此处，未做任何内容修改。
 > **分卷（2026-11-20）**：归档容器触顶后按时间拆卷——本卷只保留 **2026-10 及之后**；**2026-09 及更早**见 [`CHANGELOG-archive-2026-08_09.md`](CHANGELOG-archive-2026-08_09.md)（冻结卷，不再追加）。
-> 切割线（滚动更新）：web 归档 `[Logo 库收敛：三套产品长标 + 反白 + 按系统名选用]` 及更早。新条目一律写主文件顶部；超限时由 roll-changelog.js 自动滚动。
+> 切割线（滚动更新）：web 归档 `[登录页定稿写回真源 + login 门禁]` 及更早。新条目一律写主文件顶部；超限时由 roll-changelog.js 自动滚动。
 
+## [登录页定稿写回真源 + login 门禁] — 2026-11-18
+- **真源（`components.css` → build `template.css`）**：`.login-card` 内边距 上下 **32** / 左右 40；新增 `.login-brand`（卡内顶部居中，logo 高 40、上 32 下 32）、`.login-account`（下距 16）、`.login-link`、`.login-legal-links`；`.login-legal` 改 `justify-content:space-between`、`.login-copy` 归零、`html[lang="en"] .login-legal` 整块居中；`<1200` 断点 `.login-hero img{object-fit:contain}`（1:1 图在 280 横幅 cover 会裁成 3.66:1 特写）。
+- **RULES §1.1b 登录页**：改写为定稿口径——logo 卡内 40 / 32 / 32、去卡内「登录」标题、字段「账号 + 密码」（手机号为显式变体）、法务行多语言、图槽比例、节奏 32/16/12/16/16/24/32、`<1200` contain。
+- **门禁 `validate-spec`（新增 `checkLoginPage`）**：`login.card.required` / `login.head.no-logo` / `login.title.one` / `login.brand.missing` / `login.brand.logo` / `login.fields.account` / `login.hero.slot`（HIGH）+ `login.password.eye`（MED）；`COMPONENT_CLASS_RE` 增 `login-` → 页面覆写 `.login-*` 现报 `css.override` HIGH（此前正则 `^` 锚定漏检，DS-20261118-02 §3.5）。
+- **示例**：`output/登录页示例.html` 删除 8 处页面级覆写（样式全部由真源提供）→ `0 HIGH / 1 MED`；`showcase/登录页示例_分享版.html` 按新真源重生成（598,934B，零外链）。
+- **实测/门禁**：`template.css` 70,914 / 71,000；`validate-spec` 129,173 / 129,500；`ci-local` **104/0**；check-size 0 FAIL / 26 WARN；`sync-index` + `freeze-baseline` 已跑。
+
+---
 ## [Logo 库收敛：三套产品长标 + 反白 + 按系统名选用] — 2026-11-18
 - **资产**：`assets/logo/` 收敛为三套产品 logo（弘设汇 `400.74×105.91` / 弘塑云 `391.84×125.13` / 弘智造 `381.59×105.91`），并为每套生成同名反白 `-white.svg`（全部显色统一映射 `#FFFFFF`，保留原 opacity，用于品牌蓝底）；**删除** `asset-logo-brand.svg` / `asset-logo-brand-new.svg` / `asset-logo-brand-white.svg` / `logo_64.svg`。
 - **选用规则（RULES §0.1a）**：按系统名三选一——弘设汇 / 弘塑云 / 弘智造；蓝底（顶栏）用 `-white` 反白，浅底（登录卡）用彩标；尺寸不变（顶栏高 32 宽自适应 / 登录高 40），禁 PNG/自造/改色。
