@@ -7,11 +7,11 @@
 
 ## 快速开始（Git 仓库）
 
-> 本目录即仓库根（`main`）：`git clone <内部仓库地址>` 后 `git pull` 取更新。`output/`（历史产物）与 `HANDOFF.md`（维护者交接件）不入库，分发不再靠整目录拷贝。
+> 本目录即仓库根（`main`）：`git clone https://github.com/youyituomaoxian/TM-UI-Design.git` 后 `git pull` 取更新。`output/`（历史产物）与 `HANDOFF.md`（维护者交接件）不入库，分发不再靠整目录拷贝。
 
 - **codex / Reasonix / Cursor / 通用 Agent**：项目根 `AGENTS.md` 自动加载，零配置。
 - **Claude Code**：读 `CLAUDE.md`（`@AGENTS.md` 导入，同源）。
-- **WorkBuddy / DSH**：本项目 skill 入口已停用（`.dsh`/`.workbuddy` 的 `SKILL.md.disabled`）；会话落在项目目录时按 `AGENTS.md` + `START-HERE.md` 执行。
+- **WorkBuddy / DSH**：skill 入口随仓库启用（`.workbuddy/skills/tm-design-system/SKILL.md` 薄壳 + `.dsh` 指针）；会话落在项目目录时按 skill 指引 + `AGENTS.md` + `START-HERE.md` 执行。
 - **其他 Agent**：把项目根路径写进任务书（`TM_DESIGN_REPO` 仅兼容旧入口）。
 
 ---
@@ -244,5 +244,5 @@ A: 维护者改完跑 `sync-index` + `verify all`，更新双端 `CHANGELOG`；�
 ## Agent 接入（codex / Claude Code / 其他）
 
 - **codex / Claude Code / 通用 Agent**：项目根 `AGENTS.md` 自动加载（脚手架克隆 → `RULES §1.1d` 自建 → `verify.js page` 0 HIGH）。
-- **WorkBuddy / DSH**：本项目 skill 入口已停用（`SKILL.md.disabled`）；按 `AGENTS.md` + `START-HERE.md` 执行。
+- **WorkBuddy / DSH**：skill 入口随仓库启用（`.workbuddy/.../SKILL.md`）；按 skill 指引 + `AGENTS.md` + `START-HERE.md` 执行。
 - 一句话需求 → 过门禁 0 HIGH 的合规 HTML 页，详见 `AGENTS.md` + `GENERATION-SOP.md`。

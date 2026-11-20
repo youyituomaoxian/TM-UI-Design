@@ -2,8 +2,18 @@
 
 > 本文件为 `CHANGELOG.md` 的滚动归档（2026-09-22 建立）：主文件只保留近期条目，更早条目**原样移入**此处，未做任何内容修改。
 > **分卷（2026-11-20）**：归档容器触顶后按时间拆卷——本卷只保留 **2026-10 及之后**；**2026-09 及更早**见 [`CHANGELOG-archive-2026-08_09.md`](CHANGELOG-archive-2026-08_09.md)（冻结卷，不再追加）。
-> 切割线（滚动更新）：web 归档 `[登录页 v2 定稿：logo 出卡 + 标题进卡 + 字段标签 + 全状态门禁]` 及更早。新条目一律写主文件顶部；超限时由 roll-changelog.js 自动滚动。
+> 切割线（滚动更新）：web 归档 `[DS-20261118-02 收尾：eye_on 入库 + logo 门禁解析基准 + 背景图资产脚本]` 及更早。新条目一律写主文件顶部；超限时由 roll-changelog.js 自动滚动。
 
+## [DS-20261118-02 收尾：eye_on 入库 + logo 门禁解析基准 + 背景图资产脚本] — 2026-11-18
+- **图标**：新增 `icons/eye_on.svg`（24 viewBox / stroke 1.8 / round / currentColor，与 `eye_off` 成对）；`icons.md` 登记并改计数 186→**187**，`MASTER.md` / `RULES.md` 图标数声明同步（`ci-local` 图标数断言 187/187）。
+- **门禁修正**：`validate-spec.js checkLogoAsset` 的 `<img src>` 解析基准由 `__dirname` 改为**页面所在目录**；仓库内页面缺失仍 HIGH，**仓库外页面降 MED**（跨项目仅提示）。实测 output 缺失 → MED、仓库内缺失 → HIGH。
+- **新脚本**：`assets/login-hero/validate-hero.js`（零依赖解析 WebP 头 VP8/VP8L/VP8X）——default 2160²±1%、@1x 1024²±1%、任意 webp 1:1±1%、≤400KB；已接入 `ci-local`（`登录背景图资产`，105 项）；负向样例 1600×900 实测命中 2 条。
+- **文档**：`assets/login-hero/README.md §6` 标注脚本实装与「留白/主色比仍靠人审」；manifest size 2400→2160；RULES §1.1b 背景图条补脚本名。
+- **预算**：`ci-local.js` 压缩图标计数段/functional 注释（零语义）腾出 105 项位置，18,590/18,600；`validate-spec` 129,495/129,500、`template.css` 70,898/71,000 不变。
+- **示例/分享版**：示例页改用库内 `eye_on` 与 `safe_check` 勾选 path（`icon.source` MED 清零），页面与分享版均 **0 HIGH / 1 MED**；分享版重生成 613,464B；12 状态截图 + 总览按中文态重出。
+- **门禁**：`ci-local` **105/0**；`sync-index` / `freeze-baseline` 已跑。
+
+---
 ## [登录页 v2 定稿：logo 出卡 + 标题进卡 + 字段标签 + 全状态门禁] — 2026-11-18
 - **真源 `components.css` → build `template.css`**：`.login-head` 承载 logo（`.login-head img` 高 40 宽自适应）；卡内 `.login-card-title` 保留为标题组/表单标题；新增 `.login-field`（字段组 16）、`.login-label`（14/22 N10、下 8）；删除 `.login-brand` / `.login-account`（logo 已出卡）；`<1200` 图槽 `contain` 与法务行多语言保持。
 - **RULES §1.1b 登录页**：改写为「logo 卡外左对齐 + 卡内标题组（系统名 24/32 + 副标题 13/20）+「登录」18/26 + 字段 label + 账号/密码」；节奏改为 卡 32/40 → 标题组 → 24 → 登录 → 24 → 字段；状态补「提交中 / 验证码错 / 锁定 / 成功」；找回密码 3 步含 6 位验证码 + 60s 重发。

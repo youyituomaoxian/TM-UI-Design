@@ -1,7 +1,7 @@
 # START HERE · 弘讯设计系统（左右结构 · 新规范）
 
 > ⚠️ **本项目 = 「左右结构」新设计规范（2026-11-18 起）。V2.1 已冻结，仅历史：不读、不克隆、不引用。**
-> 当前状态见 §6 / §9；本文件不是真源。页面统一从 `page-template.html`（`.shell/.rail` 工作台）克隆；skill 入口已停用；本目录即 Git 仓库根（`main`），`output/` 不入库。
+> 当前状态见 §6 / §9；本文件不是真源。页面统一从 `page-template.html`（`.shell/.rail` 工作台）克隆；skill 入口随仓库启用（`.workbuddy/.../SKILL.md` + `.dsh/...` 指针）；本目录即 Git 仓库根（`main`），`output/` 不入库。
 
 ## 1. 一句话
 

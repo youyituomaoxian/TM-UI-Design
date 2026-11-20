@@ -6,7 +6,7 @@
 
 **本轮收尾：真源/门禁/文档改动写双端 `CHANGELOG.md` 留痕，再向用户汇报。本文件不是真源，禁当规格引用。**
 
-**项目约定（2026-11-20 更新）**：本项目 = 「左右结构」新规范；规范只读本项目文件，`.dsh`/`.workbuddy` 的 `tm-design-system` 已 `.disabled`（不加载、不修改）。**本目录即 Git 仓库根（`main`）**：改动先跑门禁再 `git add/commit`；不 `push` 到未经用户确认的远端、禁 `force-push`、禁把 `output/` 与 `HANDOFF.md` 入库；交付口径 `verify.js all` 全绿，新页以 `verify.js page` 为准。
+**项目约定（2026-11-20 更新）**：本项目 = 「左右结构」新规范；**skill 入口随仓库启用**（`.workbuddy/skills/tm-design-system/SKILL.md` 为薄壳，`.dsh` 为指针，团队拉仓即用）；**本目录即 Git 仓库根（`main`）**：改动先跑门禁再 `git add/commit`；不 `push` 到未经用户确认的远端、禁 `force-push`、禁把 `output/` 与 `HANDOFF.md` 入库；交付口径 `verify.js all` 全绿，新页以 `verify.js page` 为准。
 
 ## 这是什么
 
@@ -47,7 +47,7 @@
 ## 视觉速览
 
 - Web：`web规范展示_左右结构.html`（+ `_分享版.html` 零外链）
-- 示例：`showcase/`（v7 / 看板 / 登录页 / 表格 / 规范展示副本）；**按文件类型分别参与门禁**——源页过 validate + 组件复用，含 `.rail` 的过树运行时，含 `.ws-tools` 的比对外层真源，分享版查零外链
+- 示例：`showcase/`（v7 / 看板 / 登录 / 表格 / 规范展示副本）；按文件类型参与门禁：源页 validate + 复用、`.rail` 页树运行时、`.ws-tools` 页比对外壳真源、分享版零外链
 - 移动：`移动端规范展示_*.html`
 
 ## 改视觉样式（维护者）

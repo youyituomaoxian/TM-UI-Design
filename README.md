@@ -57,8 +57,8 @@ node <仓库根>/scripts/build-share-web.js <你的项目目录>/output/设备�
 
 ## 快速开始（Git 仓库）
 
-- 本目录即仓库根，分支 `main`：`git clone <内部仓库地址> design-system` → `cd design-system`；之后 `git pull` 取更新。
-- 仓库不含 `output/`（历史产出，本地留档）与 `HANDOFF.md`（维护者交接件）；`.dsh`/`.workbuddy` 的 `tm-design-system` 已 `SKILL.md.disabled`，规范只读本项目文件（`AGENTS.md` / `START-HERE.md` / 各端真源）。
+- 本目录即仓库根，分支 `main`：`git clone https://github.com/youyituomaoxian/TM-UI-Design.git design-system` → `cd design-system`；之后 `git pull` 取更新。
+- 仓库不含 `output/`（历史产出，本地留档）与 `HANDOFF.md`（维护者交接件）；`.dsh`/`.workbuddy` 的 `tm-design-system` **skill 入口随仓库分发**（`.workbuddy/.../SKILL.md` + `.dsh/.../SKILL.md` 指针），拉仓即用；规范仍以仓内文件为准（`AGENTS.md` / `START-HERE.md` / 各端真源）。
 - 改完先跑门禁（`node scripts/verify.js all --scope=new`）再 `git commit`；禁 `force-push`，禁把 `output/` 加回版本库。
 
 ## 查看展示页（推荐入口）
@@ -87,7 +87,7 @@ node <仓库根>/scripts/build-share-web.js <你的项目目录>/output/设备�
 ## Agent 接入
 
 - **Codex / Cursor / 通用**：根 `AGENTS.md` 自动加载；**Claude Code**：`CLAUDE.md`（`@AGENTS.md` 导入）。
-- **DSH / WorkBuddy**：本项目 skill 入口已停用；会话落在此目录时按 `AGENTS.md` + `START-HERE.md` 执行，不要加载外部 skill 指向的旧规范。
+- **DSH / WorkBuddy**：skill 入口在本仓库内（`.workbuddy/skills/tm-design-system/SKILL.md` 为薄壳，DSH 走 `.dsh/...` 指针），定位仓库根后按 `AGENTS.md` + `START-HERE.md` + 各端真源执行。
 - 存量项目改造走 `GENERATION-SOP.md §②`：先台账（`scripts/audit-batch.js` 覆盖率 100%）→ 映射决策 → 分批修复 → `0 HIGH + 台账全绿` 收口。
 
 ## 版权

@@ -5,6 +5,12 @@
 
 ---
 
+## [skill 入口随仓库启用（团队拉仓即用）] — 2026-11-20
+- **workbuddy**：`.workbuddy/skills/tm-design-system/SKILL.md` 重写并启用（原 `.disabled`）——仓库定位改用 `scripts/verify.js`；加载顺序补 CHART-SPEC §4/§5/§7（`generate-web-chart`）；命令改 `verify.js page` / `verify all`（交付口径）/ `build-share-web`（禁手工内联）；铁律补外壳真源、图表 HIGH、登录备案号、D-1~D-13、git 约定。
+- **DSH**：`.dsh/.../SKILL.md` 指针启用，去掉「读 HANDOFF」硬依赖（HANDOFF gitignored，新克隆不存在）。
+- **分发**：`.gitignore` 放行 `SKILL.md` + `data/`；`check-reach` R5 由「入口已停用」自动转为「入口文件齐全」；README / START-HERE / USAGE-GUIDE / 团队指南 / AGENTS 的「skill 停用」口径全部改为「随仓库启用」，clone 地址换成真实仓库。
+- **实测**：`verify all` 全绿；check-size 0/19；check-reach 0/1。
+
 ## [说明文档与门禁覆盖对齐：showcase 参与方式 / 死引用 / 写死体量] — 2026-11-20
 - **showcase 描述**：AGENTS / USAGE-GUIDE / 团队指南 / USAGE.html 原写「参与门禁（validate/树运行时/工具区）」属一刀切——实际按文件类型：源页过 validate + 组件复用、含 `.rail` 的过树运行时、含 `.ws-tools` 的比对外壳真源、分享版查零外链；补 `表格规范展示` 两行（源 + 分享版），`showcase/README` 增门禁参与说明与入口清单。
 - **其它过期**：README 仓库树/START-HERE 可直接打开清单补登录页与表格；START-HERE §4 历史行补冻结卷、AGENTS 读法去掉写死体量；USAGE-GUIDE 的 verify 子命令补 shell/manifest/chrome/icons/spec。
@@ -132,12 +138,3 @@
 - `USAGE.html` + `USAGE_分享版.html` 图标库计数 186/184 → **187/185**；`RULES.md §7.9` 内「移动端同源 184 个」→ 185。
 - `showcase/README.md` 登录页示例说明改「卡外 logo + 12 状态 + 法务行多语言」；`DESIGN-TOKENS.md` 明确 `--login-card-pad` 只管左右（上下 32 = `--space-xl`）。
 - 门禁：`ci-local` **105/0**。
-
-## [DS-20261118-02 收尾：eye_on 入库 + logo 门禁解析基准 + 背景图资产脚本] — 2026-11-18
-- **图标**：新增 `icons/eye_on.svg`（24 viewBox / stroke 1.8 / round / currentColor，与 `eye_off` 成对）；`icons.md` 登记并改计数 186→**187**，`MASTER.md` / `RULES.md` 图标数声明同步（`ci-local` 图标数断言 187/187）。
-- **门禁修正**：`validate-spec.js checkLogoAsset` 的 `<img src>` 解析基准由 `__dirname` 改为**页面所在目录**；仓库内页面缺失仍 HIGH，**仓库外页面降 MED**（跨项目仅提示）。实测 output 缺失 → MED、仓库内缺失 → HIGH。
-- **新脚本**：`assets/login-hero/validate-hero.js`（零依赖解析 WebP 头 VP8/VP8L/VP8X）——default 2160²±1%、@1x 1024²±1%、任意 webp 1:1±1%、≤400KB；已接入 `ci-local`（`登录背景图资产`，105 项）；负向样例 1600×900 实测命中 2 条。
-- **文档**：`assets/login-hero/README.md §6` 标注脚本实装与「留白/主色比仍靠人审」；manifest size 2400→2160；RULES §1.1b 背景图条补脚本名。
-- **预算**：`ci-local.js` 压缩图标计数段/functional 注释（零语义）腾出 105 项位置，18,590/18,600；`validate-spec` 129,495/129,500、`template.css` 70,898/71,000 不变。
-- **示例/分享版**：示例页改用库内 `eye_on` 与 `safe_check` 勾选 path（`icon.source` MED 清零），页面与分享版均 **0 HIGH / 1 MED**；分享版重生成 613,464B；12 状态截图 + 总览按中文态重出。
-- **门禁**：`ci-local` **105/0**；`sync-index` / `freeze-baseline` 已跑。

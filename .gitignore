@@ -12,11 +12,7 @@
 !**/.workbuddy/skills/tm-design-system/SKILL.md
 !**/.workbuddy/skills/tm-design-system/data/
 
-# 2026-11-20 上传前复核：skill 入口已停用（SKILL.md.disabled），data/ 是本地实装，不入库；
-#   恢复 skill 时把下面两行删掉即可随仓库分发。
-.workbuddy/skills/tm-design-system/data/
-.dsh/skills/tm-design-system/data/
-
+# 2026-11-20 团队拉仓即用：skill 入口启用（SKILL.md + data/ 随仓库分发）
 # DSH 项目级 skill（入口薄壳，随仓库分发；其余 .dsh 本地内容不入库）
 .dsh/*
 !.dsh/skills/
@@ -24,6 +20,7 @@
 !.dsh/skills/tm-design-system/
 .dsh/skills/tm-design-system/*
 !.dsh/skills/tm-design-system/SKILL.md
+!/.dsh/skills/tm-design-system/data/
 
 # 本机 Agent 记忆 / 回滚点（绝不提交）
 回滚点/
