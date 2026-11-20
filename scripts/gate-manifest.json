@@ -1,5 +1,6 @@
 {
-  "$comment": "门禁输入唯一清单（2026-11-20）。门禁只读本文件，禁在脚本里再写死页面路径；页面新增/改名先登记再落地。路径相对仓库根。",
+  "$comment": "门禁输入清单（2026-11-20）。门禁只读本文件，禁在脚本里再写死页面路径；页面新增/改名先登记再落地。路径相对仓库根。schemaVersion=1 是单端假设：shell.* 只描述 Web 外壳；移动端若引入同类外壳，升 schemaVersion=2、把 shell 改为 shell.web/shell.mobile，并同步 5 个读取点（verify-new / check-shell-chrome / sync-shell-tools / check-gate-manifest / lib/shell-tools）。",
+  "schemaVersion": 1,
   "shell": {
     "truth": "弘讯web端design-system/partials/shell-tools.html",
     "truthMaxChars": 12000,

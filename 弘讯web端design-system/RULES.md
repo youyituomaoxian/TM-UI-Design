@@ -4,25 +4,25 @@
 > 供 AI Agent / 开发者做 UI 决策时查阅
 > **平台**: Web / B端 / 后台管理系统（Ant Design 风格）
 
-> **⚠️ 跨端守则（更新）：移动端冻结已解除（用户拍板，恢复可修改）。**
+> **⚠️ 跨端守则：移动端冻结已解除（已拍板）。**
 > 改 Web 若涉及移动端（共享 token / 组件体系 / validate-spec 对称改动 / 两端联动规则），
 > **仍应先提醒用户拍板**，不静默改动两端联动资产。
 
 > **🏛️ 真源治理契约（增补 · 用户拍板「分级治理」）**
-> 一句话：**消费只读，演进留痕；谁碰真源，谁走六步。** 角色不由人名定义，由行为定义——改「真源区」任何文件即进入维护者流程。
+> 一句话：**消费只读，演进留痕；谁碰真源，谁走六步。** 改「真源区」任何文件即进入维护者流程。
 
 | 角色 | 允许动的文件 | 约束 |
 |---|---|---|
 | **使用者**（页面/项目/Agent 默认） | 自建页面 HTML/CSS、output/ 产物、外部项目仓库 | 交付物 validate-spec 0 HIGH；**禁改真源**（页面覆写真源由 `css.override` HIGH 门禁机器化拦截） |
-| **维护者**（系统演进，含被显式指派的 Agent） | 真源区：本目录 `template.css` / `tokens.json` / `components.json` / `validate-spec.js` / `RULES.md` / `MASTER.md` / `DESIGN-TOKENS.md` / `page-template.html` / `icons/` / `scripts/`；跨端 `packages/*/src/styles/components.css`（W1 层，与真源同构）；仓库根 `ci-local.js` / `audit-spec.js` / `audit-rules.json` / `check-sync.js` / `check-size.js` / `check-reach.js` / `sync-index.js` / `gate-map.json` / `gate-capture.js` / `roll-changelog.js` / `vendor-coverage.json`（检查三登记真源） | 六步流程（见下） |
+| **维护者**（系统演进，含被显式指派的 Agent） | 真源区：本目录 `template.css` / `tokens.json` / `components.json` / `validate-spec.js` / `RULES.md` / `MASTER.md` / `DESIGN-TOKENS.md` / `page-template.html` / `partials/` / `icons/` / `scripts/`；跨端 `packages/*/src/styles/components.css`（W1）；仓库根 `ci-local.js` / `audit-spec.js` / `audit-rules.json` / `check-sync.js` / `check-size.js` / `check-reach.js` / `sync-index.js` / `gate-map.json` / `gate-capture.js` / `roll-changelog.js` / `vendor-coverage.json`（检查三登记真源） | 六步流程（见下） |
 | **冻结区** | 各包 `sha256-baseline.json` 清单内文件 | 改动即 HIGH；确需演进须显式 `freeze-baseline` 并在 CHANGELOG 说明 |
 
 **维护者六步流程**（每步留痕，缺步 = 违规）：
 
 1. **缺口登记**——`audit-rules.json` feedback_log 或台账文档先记「为什么要改」
 2. **修改真源**
-3. **双端同步**——web 与 mobile 同名类/同源值一致；W1 层 components.css 与 template.css 同构同步
-4. **门禁全绿**——ci-local 全量 pass/fail 不回归 + 双包 validate-static 0 HIGH
+3. **双端同步**——web 与 mobile 同名类/同源值一致；W1 层 components.css 与 template.css 同构同步（外壳片段无对端，走注入门禁）
+4. **门禁全绿**——`verify all` 全绿（旧线 105 + 新规范）+ 双包 validate-static 0 HIGH
 5. **刷指纹**——涉及冻结文件时跑 `freeze-baseline` 并说明
 6. **CHANGELOG 留痕**——改了什么 / 为什么 / 关联台账
 

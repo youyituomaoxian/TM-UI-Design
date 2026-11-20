@@ -6,7 +6,7 @@
 
 **本轮收尾：真源/门禁/文档改动写双端 `CHANGELOG.md` 留痕，再向用户汇报。本文件不是真源，禁当规格引用。**
 
-**项目约定（2026-11-20 更新）**：本项目 = 「左右结构」新规范；规范只读本项目文件，`.dsh`/`.workbuddy` 的 `tm-design-system` 已 `.disabled`（不加载、不修改）。**本目录即 Git 仓库根（`main`）**：改动先跑门禁再 `git add/commit`；不 `push` 到未经用户确认的远端、禁 `force-push`、禁把 `output/` 与 `HANDOFF.md` 入库；全链路 `ci-local` 105/0，新页以 `verify.js page` 为准。
+**项目约定（2026-11-20 更新）**：本项目 = 「左右结构」新规范；规范只读本项目文件，`.dsh`/`.workbuddy` 的 `tm-design-system` 已 `.disabled`（不加载、不修改）。**本目录即 Git 仓库根（`main`）**：改动先跑门禁再 `git add/commit`；不 `push` 到未经用户确认的远端、禁 `force-push`、禁把 `output/` 与 `HANDOFF.md` 入库；交付口径 `verify.js all` 全绿，新页以 `verify.js page` 为准。
 
 ## 这是什么
 
@@ -23,7 +23,7 @@
    - 图表 `CHART-SPEC.md`（原子 SVG，色走 `--chart-*`）；跨端色 `CROSS-PLATFORM-COLORS.md`
    - 非默认品牌：`brand-color-engine/`（暗色固定不随品牌）
 4. 产出落「**用户项目**」`output/`（CSS link 指向本仓库 `template.css`）。
-5. 门禁：单页 `node scripts/verify.js page <页面>` → **0 HIGH**；全链路 `verify.js all` → **105 pass / 0 fail**；新规范范围 `verify.js all --scope=new` → 通过。
+5. 门禁：单页 `node scripts/verify.js page <页面>` → **0 HIGH**；**交付口径** `verify.js all` = `ci-local`（105 项）+ 新规范范围（verify-new），两者全绿；只验新规范用 `verify.js all --scope=new`。
 6. 分享：`node scripts/build-share-web.js <页面> [--out]`（内联 CSS + js + 资源，零外链），禁手工内联。
 
 ## 存量项目改造（路径二）

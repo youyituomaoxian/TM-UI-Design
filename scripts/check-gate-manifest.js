@@ -18,6 +18,10 @@ const { ROOT, readManifest, abs } = require('./lib/shell-tools');
 
 let m;
 try { m = readManifest(); } catch (e) { console.error('❌ gate-manifest.json 不可读：' + e.message); process.exit(2); }
+if (m.schemaVersion !== 1) {
+  console.error('❌ 不认识的 schemaVersion：' + m.schemaVersion + '（本门禁实现只读 v1 单端结构；升版需同步 5 个读取点）');
+  process.exit(2);
+}
 
 const rel = p => path.relative(ROOT, p).split(path.sep).join('/');
 const uniq = list => [...new Set(list)];

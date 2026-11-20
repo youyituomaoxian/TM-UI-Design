@@ -31,7 +31,7 @@ node scripts/build-share-web.js <页面.html> [--out <输出.html>]
 node packages/web-ui/scripts/build-template-css.js
 ```
 
-`verify.js` 只按固定顺序调用现有脚本，**不新增检查、不改判定**。全量 `verify.js all`（=`ci-local.js`）含旧 V2.1 派生检查，当前有历史红灯，见 §6。
+`verify.js` 只按固定顺序调用现有脚本，**不新增检查、不改判定**。`verify.js all` = 存量全链路（`ci-local.js` 105 项）+ 新规范范围（`verify-new.js`）；`--scope=new` 只跑后者。
 
 ## 3. 先认这 6 个入口
 
@@ -72,7 +72,8 @@ node packages/web-ui/scripts/build-template-css.js
 |---|---|---|
 | `verify.js page` | 单页 0 HIGH：结构/标题/颜色/组件/克隆凭证/作业树运行时 | ✅ 6 页 0 HIGH（USAGE 64 MED 属 doc-* 布局类；登录示例 0 违反） |
 | `verify.js all --scope=new` | 6 页 validate + 8 页 tree runtime + 5 分享版零外链 + 清单/工具区 + check-size | ✅ 通过 |
-| `ci-local.js`（`verify all`） | 旧全链路 + 双端一致性 | ✅ **105 pass / 0 fail** |
+| `verify.js all` | **交付口径** = ci-local 105 项 + 新规范范围 | ✅ 两者全绿 |
+| `ci-local.js`（存量全链路） | 两端克隆源 / token / audit / 双端一致性 / 体积 | ✅ **105 pass / 0 fail** |
 | `check-size.js` | 文档体积 + 清单封闭 | ✅ 0 FAIL / 23 WARN |
 | `check-reach.js` | 索引 / 引用 / 加载预算 | ✅ 0 FAIL / 2 WARN（加载余量 3.7%） |
 | `check-sync.js` | 双端同名类 + vendor 同构 | ✅ 3 pass / 0 fail（4 类平台差异入白名单；141 类已扩容登记 gaps） |

@@ -6,10 +6,11 @@
 ---
 
 ## [门禁清单化 + 工具区 DOM 契约：堵掉「删条目 = 绕过门禁」] — 2026-11-20
-- **清单**：新增 `scripts/gate-manifest.json`（工具区真源/注入/派生 + newScope + pageScan）；`verify-new`、`check-shell-chrome`、`sync-shell-tools` 改读清单，脚本不再写死页面；新增 `scripts/lib/shell-tools.js`，让「注入」与「比对」共用同一份提取/归一/路径改写实现。
-- **清单防篡改**：新增 `check-gate-manifest.js`（`verify.js manifest`）——存在性、组内去重、inject 与 derived 不交叉、`.html` 覆盖性（删条目即红）、ignore 必带理由。
-- **工具区契约**：真源须保住 shell-ui/i18n 的 DOM 钩子（4 个 pop id、`fsBtn`、aria-haspopup≥4、theme-opt≥6、ws-sep≥1、data-i18n≥10、`data-theme="dark"`、`data-skin=`）与体积上限（manifest `truthMaxChars`）；失败信息按文件类别给对应修复命令。
+- **清单**：新增 `scripts/gate-manifest.json`（工具区真源/注入/派生 + newScope + pageScan + `schemaVersion`）；`verify-new`、`check-shell-chrome`、`sync-shell-tools` 改读清单，脚本不再写死页面；新增 `lib/shell-tools.js` 统一提取/归一/改写。
+- **清单防篡改**：新增 `check-gate-manifest.js`（`verify.js manifest`）——存在性 / 组内去重 / inject⊥derived / `.html` 覆盖性（删条目即红）/ 含 `.ws-tools` 必登 inject|derived / ignore 带理由。
+- **工具区契约**：真源须保住 shell-ui/i18n 钩子（4 pop id / fsBtn / aria-haspopup≥4 / theme-opt≥6 / ws-sep≥1 / data-i18n≥10 / data-theme=dark / data-skin=）与 `truthMaxChars` 上限；失败按类别给修复命令。
 - **清理**：check-size 删死条目 `表格规范展示_20261112.html`；`verify.js` 增 `shell` / `manifest` 子命令。
+- **治理**（三阶风险收口）：RULES 真源区名单补 `partials/`，六步 step3 补「无对端走注入门禁」、step4 改「`verify all` 全绿」；`verify.js all` 改为 ci-local 105 + verify-new 双跑（**交付口径唯一**，`--scope=new` 只跑后者）；manifest 声明单端假设与升 v2 路径。
 - **实测**：manifest 29/1 通过；chrome 9/9；`verify all --scope=new` 与 `ci-local` 105/0 全绿。
 
 ## [外壳工具区收为单点真源：基准方向纠正 + 9 页门禁] — 2026-11-20

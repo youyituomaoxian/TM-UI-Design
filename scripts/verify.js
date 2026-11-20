@@ -41,9 +41,11 @@ const MOB = path.join(ROOT, '弘讯移动端design-system');
 switch (cmd) {
   case 'all':
     if (args.includes('--scope=new')) {
-      run('新规范全链路 verify-new', path.join(ROOT, 'scripts', 'verify-new.js'), []);
+      run('新规范范围 verify-new', path.join(ROOT, 'scripts', 'verify-new.js'), []);
     } else {
-      run('全链路 ci-local', path.join(ROOT, 'ci-local.js'), []);
+      // 交付口径 = 存量全链路 + 新规范范围；两者都跑完再给结论（任一红即 exitCode 非 0）
+      run('存量全链路 ci-local', path.join(ROOT, 'ci-local.js'), []);
+      run('新规范范围 verify-new', path.join(ROOT, 'scripts', 'verify-new.js'), []);
     }
     break;
 
@@ -123,8 +125,8 @@ switch (cmd) {
 
   default:
     console.log('用法：');
-    console.log('  node scripts/verify.js all                 # 全链路');
-    console.log('  node scripts/verify.js all --scope=new     # 新规范范围（真源/生成/分享）');
+    console.log('  node scripts/verify.js all                 # 交付口径：ci-local 105 + 新规范范围');
+    console.log('  node scripts/verify.js all --scope=new     # 只跑新规范范围（真源/生成/分享）');
     console.log('  node scripts/verify.js page <文件> [端]     # 单页');
     console.log('  node scripts/verify.js themes              # 主题契约');
     console.log('  node scripts/verify.js docs                # 文档体积');

@@ -37,7 +37,7 @@
 |----|------|
 | 真源 | 两端目录下 `tokens.json`（值）+ `components.json`（契约）+ `RULES.md §1.1b`（页面类型规格） |
 | 铁律 | 不硬编码色值；不自造规范；页面内容按 `RULES.md §1.1b` 从零自建（**禁参照既有页面 DOM**）；组件词汇与代码库同源 |
-| 质量闸 | HTML 预览产物 → `scripts/verify.js page <页面>` **0 HIGH**（validate + 组件复用 + 作业树运行时）；全链路 `scripts/verify.js all` **105 pass / 0 fail** |
+| 质量闸 | HTML 预览产物 → `scripts/verify.js page <页面>` **0 HIGH**（validate + 组件复用 + 作业树运行时）；交付口径 `scripts/verify.js all`（= ci-local 105 项 + 新规范范围）**全绿** |
 | 禁区 | 真源/门禁/引擎**使用者只读**（改真源走维护者六步流程，真源治理契约）；Web 端任何文件禁 `#10B981`（移动端成功绿） |
 | 边界 | 交付「视觉规格 + HTML 预览」，上线实现由使用者决定；参考实现仅供同栈复用 |
 | 落盘 | 生成页一律落「**用户项目**」的 `output/`；设计系统仓库根 `output/` 仅历史归档，不随仓库分发 |
