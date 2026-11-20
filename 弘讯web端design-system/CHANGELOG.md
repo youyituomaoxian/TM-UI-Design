@@ -5,6 +5,12 @@
 
 ---
 
+## [说明文档与门禁覆盖对齐：showcase 参与方式 / 死引用 / 写死体量] — 2026-11-20
+- **showcase 描述**：AGENTS / USAGE-GUIDE / 团队指南 / USAGE.html 原写「参与门禁（validate/树运行时/工具区）」属一刀切——实际按文件类型：源页过 validate + 组件复用、含 `.rail` 的过树运行时、含 `.ws-tools` 的比对外壳真源、分享版查零外链；补 `表格规范展示` 两行（源 + 分享版），`showcase/README` 增门禁参与说明与入口清单。
+- **其它过期**：README 仓库树/START-HERE 可直接打开清单补登录页与表格；START-HERE §4 历史行补冻结卷、AGENTS 读法去掉写死体量；USAGE-GUIDE 的 verify 子命令补 shell/manifest/chrome/icons/spec。
+- **查漏手段**：全仓 `node <script>.js` 引用做存在性扫描（26 个引用，0 死链；brand-color-engine 为相对路径误报）。
+- **实测**：`verify all` 全绿；check-size 0/18；check-reach 0/1；USAGE 分享版重出。
+
 ## [文档随门禁定级对齐：图表条款 / 写死计数 / 加载计划口径] — 2026-11-20
 - **计数去写死**：RULES 双端「软规则必读清单」、SOP 自查表、USAGE 资产地图的「图表结果约束 8 条」→「结果约束清单」（实际 Web 12 / 移动 10 / CHART-SPEC §2 共通 9 条，写死必漂）。
 - **双端差异说明**：移动 §9.7 ② 头改「缺一不可；共通条款见 CHART-SPEC §2，Web 端另有量纲/标签脚本 2 条」。

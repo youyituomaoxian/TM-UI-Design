@@ -24,7 +24,7 @@
 │   ├── validate-spec.js               # 单页门禁（0 HIGH 才交付）
 │   ├── RULES.md / MASTER.md / components.md / DESIGN-TOKENS.md
 │   ├── web规范展示_左右结构.html        # 规范活体展示（+ `_分享版.html`）
-│   └── showcase/                      # 示例页（工作台 v7 / 亮色看板 / 规范展示副本）
+│   └── showcase/                      # 示例页（v7 / 看板 / 登录页 / 表格 / 规范展示副本，均含 +分享版）
 ├── 弘讯移动端design-system/            # 移动端规范（同构；模板手写）
 ├── packages/web-ui/src/styles/        # Web CSS 真源：globals/components/framework/utilities/workbench 五件
 ├── scripts/                           # verify / new-page / build-share / shell-tools / gate-manifest / audit-*

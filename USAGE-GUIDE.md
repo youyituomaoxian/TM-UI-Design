@@ -80,7 +80,7 @@ Web 文件 `709697838782860`（83 变量 + 33 组件 + 12 级字阶）；移动 
 
 ## 角色二：产品经理 → HTML 视觉预览
 
-**详细 SOP**：`GENERATION-SOP.md`（含品牌色 / 暗色引擎映射段）。成品示例：`弘讯web端design-system/showcase/`（工作台 v7 / 亮色看板 / 规范展示；参与 validate / 树运行时 / 工具区门禁）。
+**详细 SOP**：`GENERATION-SOP.md`（含品牌色 / 暗色引擎映射段）。成品示例：`弘讯web端design-system/showcase/`（v7 / 看板 / 登录 / 表格 / 规范展示副本）；按文件类型参与门禁——源页 validate + 组件复用、含 `.rail` 的树运行时、含 `.ws-tools` 的外壳真源比对、分享版零外链。
 
 ### 对 Agent 说
 
@@ -198,7 +198,7 @@ npx taro build --type weapp   # 产物 dist/ 导入微信开发者工具
 | `README.md` / `START-HERE.md` / `团队使用指南.md` | 项目入口 / 10 分钟上手 / 人读速览 |
 | `USAGE-GUIDE.md` / `USAGE.html` | 本文件（三角色 SOP） / 网页版说明 |
 | `GENERATION-SOP.md` / `CHART-SPEC.md` / `DARK-MODE.md` / `VISUAL-SPEC.md` | 生成总纲 / 图表 / 暗色 / 视觉规格 |
-| `scripts/verify.js` | 统一门禁入口（page / all / tree / themes / docs / sync / reach / reuse / showcase / chrome / icons / spec） |
+| `scripts/verify.js` | 统一门禁入口（page / all / shell / manifest / chrome / icons / spec / tree / themes / docs / sync / reach / reuse / showcase） |
 | `scripts/new-page-web.js` / `new-page-mobile.js` | 脚手架：克隆唯一模板并注入克隆凭证 |
 | `scripts/build-share-web.js` | 分享版构建（内联 CSS + 4 js + 资源，零外链） |
 | `ci-local.js` / `check-size.js` / `check-reach.js` / `check-sync.js` / `sync-index.js` | 全链路 / 体积 / 可达性 / 双端一致性 / 索引生成 |

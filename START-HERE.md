@@ -37,7 +37,7 @@ node packages/web-ui/scripts/build-template-css.js
 
 | 文件 | 作用 | 读法 |
 |---|---|---|
-| `AGENTS.md` | Agent 行为入口 | 全文，约 3.7k |
+| `AGENTS.md` | Agent 行为入口 | 全文（体量以文件为准） |
 | `GENERATION-SOP.md` | 生成流程（选端→框架→选型→克隆→落盘→门禁） | 先读 §①，存量读 §② |
 | `弘讯web端design-system/RULES.md` | Web 规范正文（§1.1d = 左右结构） | 按章节索引定点读，禁止通读 |
 | `弘讯web端design-system/tokens.json` | token 值真源 | 读 `colors` / `themes`；不要手改生成物 |
@@ -56,7 +56,7 @@ node packages/web-ui/scripts/build-template-css.js
 | 外壳工具区 | `partials/shell-tools.html` | 单点真源；`sync-shell-tools.js` 注入各页，禁改副本 |
 | 门禁输入清单 | `scripts/gate-manifest.json` | 门禁只读此处（页面/分享版/工具区真源），禁在脚本里写死路径 |
 | 示例 | `showcase/`（含 v7 工作台）、`web规范展示_左右结构.html` | 示例可看，不参与生成；分享版由 `build-share-web.js` 生成 |
-| 历史 | `CHANGELOG-archive`、`output/` | 只读；新产出落**用户项目** `output/` |
+| 历史 | `CHANGELOG-archive`（含分卷 `-2026-08_09`）、`output/` | 只读；新产出落**用户项目** `output/` |
 
 ## 5. 五个不要改
 
@@ -98,7 +98,7 @@ node packages/web-ui/scripts/build-template-css.js
 
 ## 8. 示例与限制
 
-- 可直接打开：`showcase/左右结构_v7_设备运维工作台.html`（+ `_分享版.html`）、`showcase/弘讯亮色注塑机看板.html`、`web规范展示_左右结构.html`。
+- 可直接打开：`showcase/左右结构_v7_设备运维工作台.html`（+ `_分享版.html`）、`showcase/弘讯亮色注塑机看板.html`、`showcase/登录页示例.html`、`showcase/表格规范展示_20261112.html`、`web规范展示_左右结构.html`。
 - 示例保留演示树 / 假数据，`validate` 对 `showcase/` 豁免 `template.residue`；业务页必须替换品牌与作业树。
 - `showcase/` 的规范展示副本是**生成物**：改根目录源后运行 `node scripts/sync-showcase.js`；`verify.js showcase` 查漂移。分享版由 `build-share-web.js` 生成。
 
