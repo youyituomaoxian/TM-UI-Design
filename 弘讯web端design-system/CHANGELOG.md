@@ -1,9 +1,15 @@
 # 弘讯B端视觉系统 · 设计系统更新日志（CHANGELOG）
 
 ---
-> 📦 历史条目已滚动归档：web 归档 `[1.9.27]`（2026-09-10）及更早见 [`CHANGELOG-archive.md`](CHANGELOG-archive.md)（2026-09-22）。
+> 📦 历史条目已分卷归档：[`CHANGELOG-archive.md`](CHANGELOG-archive.md)（2026-10 起）+ [`CHANGELOG-archive-2026-08_09.md`](CHANGELOG-archive-2026-08_09.md)（2026-09 及更早，冻结卷）。
 
 ---
+
+## [容量治理：L2 加载预算回收 + 归档分卷 + 数据阈值重测] — 2026-11-20
+- **L2 是真瓶颈**：`generate-web` 加载预算 39,168/40,000（97.9%）→ **34,724/40,000（86.8%）**；`generate-mobile` 35,799 → 32,356（80.9%）。做法：RULES §9 的 ③④⑤ 与 CHART-SPEC §4/§5/§7 逐条对照后压成红线 + 指针（−1,001）；§9 ② 修重号（3/4 各出现两次 → 1..12）；SOP 步骤 4/4.5 去实战叙事与重复清单（−3,443，步骤 4 保留全部 8 条规则 + 产出落盘表 + 分享版重出条件）。
+- **L1 文件 cap**：web archive 触顶 → 按时间分卷：`CHANGELOG-archive.md` 留 2026-10 起（24,994），`CHANGELOG-archive-2026-08_09.md` 冻结卷（35,377）；`tokens.json` 13,300→14,500、`components.json` 84,000→87,000、`audit-rules.json` 26,200→27,000（均按实测 +3.9~9% 重测并留注释）。
+- **未做（有意）**：治理契约未抽成 `GOVERNANCE.md`——抽离需进 loadPlan（+1.8k），会把刚回收的预算再吃回去；单源化留待下一轮。
+- **实测**：check-size 0 FAIL / 19 WARN；RULES 58,998/60,000、SOP 41,109/45,000；`verify all` 全绿。
 
 ## [登录页法务行改工信部备案号（可点击）+ 表格规范展示入库] — 2026-11-20
 - **真源**：RULES §1.1b 法务行加「备案号 = `工信部备案号 浙ICP备0000000号-1`，可点击 `https://beian.miit.gov.cn/`（`_blank`+`noopener`），en 同号」；components.json login note 同步；删 RULES 一条已废弃 `.app` 历史注记腾空间（59,999/60,000）。
@@ -121,17 +127,3 @@
 - **门禁 `validate-spec`（新增 `checkLoginPage`）**：`login.card.required` / `login.head.no-logo` / `login.title.one` / `login.brand.missing` / `login.brand.logo` / `login.fields.account` / `login.hero.slot`（HIGH）+ `login.password.eye`（MED）；`COMPONENT_CLASS_RE` 增 `login-` → 页面覆写 `.login-*` 现报 `css.override` HIGH（此前正则 `^` 锚定漏检，DS-20261118-02 §3.5）。
 - **示例**：`output/登录页示例.html` 删除 8 处页面级覆写（样式全部由真源提供）→ `0 HIGH / 1 MED`；`showcase/登录页示例_分享版.html` 按新真源重生成（598,934B，零外链）。
 - **实测/门禁**：`template.css` 70,914 / 71,000；`validate-spec` 129,173 / 129,500；`ci-local` **104/0**；check-size 0 FAIL / 26 WARN；`sync-index` + `freeze-baseline` 已跑。
-
-## [Logo 库收敛：三套产品长标 + 反白 + 按系统名选用] — 2026-11-18
-- **资产**：`assets/logo/` 收敛为三套产品 logo（弘设汇 `400.74×105.91` / 弘塑云 `391.84×125.13` / 弘智造 `381.59×105.91`），并为每套生成同名反白 `-white.svg`（全部显色统一映射 `#FFFFFF`，保留原 opacity，用于品牌蓝底）；**删除** `asset-logo-brand.svg` / `asset-logo-brand-new.svg` / `asset-logo-brand-white.svg` / `logo_64.svg`。
-- **选用规则（RULES §0.1a）**：按系统名三选一——弘设汇 / 弘塑云 / 弘智造；蓝底（顶栏）用 `-white` 反白，浅底（登录卡）用彩标；尺寸不变（顶栏高 32 宽自适应 / 登录高 40），禁 PNG/自造/改色。
-- **代码**：`page-template.html` 顶栏 logo → `弘设汇logo-white.svg`（alt 同步）；`validate-spec.js` M-08 两条报错文案同步新资产名与选用规则。
-- **审计**：`audit-rules.json` M-08 predicate / implemented_in 同步（`真源 = 弘设汇/弘塑云/弘智造 logo.svg + 同名 -white 反白`）。
-- **门禁**：`validate-spec.js page-template.html` 0 HIGH（1 MED 为既有 aesthetic）；`ci-local` 104/0；`check-sync` 3/0；`check-reach` 0 FAIL（`sync-index` 已刷）；`freeze-baseline` 已刷新 5 件指纹。
-- **注**：`logo_64.svg`（64×64 方标）随库收敛停用，移动端登录 logo 口径同步为「高 40 宽自适应」（移动 RULES §1.1b）。
-
-## [示例入库：弘讯亮色注塑机看板] — 2026-11-17
-- 将 `讲解展示页/示例页面/弘讯亮色注塑机看板.html` 复制为 `弘讯web端design-system/showcase/弘讯亮色注塑机看板.html`；内联当前 `template.css` + 顶栏主题选择器；假数据演示，不参与门禁。
-- `showcase/` 同时收纳 `web规范展示_框架版_20260806_1050.html`（含分享版）与 `表格规范展示_20261112.html` 示例副本；相对路径改为 `../template.css` / `../assets/`，分享版保持零外链。
-- `showcase/` 走既有 check-size DIR_EXEMPT；`validate-spec` 对 `showcase/` 豁免 `template.residue`（示例页保留模板示例树与假数据）。
-- `README` / `USAGE` / `USAGE-GUIDE` / `团队使用指南` / `web规范展示` 增加示例入口；`showcase/README.md` 说明边界。

@@ -145,54 +145,45 @@
 
 ### 步骤 4：克隆 page-template 框架外壳（Web B 端）——克隆源统一
 
-> ✅ **V3.0（2026-08-03 拍板）**：HTML 原型一律克隆 **`page-template.html`**（含固定框架外壳），不再用 agent-starter 自建骨架；2026-11-17 起 agent-starter 已并入模板克隆流（同源极简示例）。  
-> ✅ **V4.0（2026-08-07 拍板）**：**脚手架优先**——`scripts/new-page-web.js`（Web）/ `new-page-mobile.js`（移动）自动完成克隆 + CSS link 修正 + **注入克隆凭证 `<meta name="x-template-clone">`**（P1 门禁 `template.clone.missing` 检查它；缺 meta 的 B 端页面 HIGH 拦截）。**禁止从空白 HTML / 自搭框架起步**（P0 门禁 `framework.fingerprint` 拦截结构不完整）。
+> ✅ **克隆源唯一 = `page-template.html`**（2026-08-03 起；`agent-starter.html` 只是说明页）。**脚手架优先**：`scripts/new-page-web.js` / `new-page-mobile.js` 自动克隆 + 修 CSS link + 注入 `<meta name="x-template-clone">`（缺 meta → `template.clone.missing` HIGH；结构不全 → `framework.fingerprint` HIGH）；**禁空白起手 / 自搭框架**。
 
 ```bash
 # 首选：脚手架（自动注入克隆凭证 + 修正 link + 防覆盖命名）
 node <仓库根>/scripts/new-page-web.js <页面语义名>          # 默认落 cwd/output/
 node <仓库根>/scripts/new-page-mobile.js <页面语义名> [目标目录]
-# 备选：手动克隆（须手动注入 meta，见下方第 3 件事）
-mkdir -p <用户项目>/output
-cp 弘讯web端design-system/page-template.html "<用户项目>/output/机器群览_$(date +%Y%m%d_%H%M).html"
-cp 弘讯移动端design-system/page-template.html "<用户项目>/output/设备台帐_$(date +%Y%m%d_%H%M).html"
+# 备选：手动克隆（须手动注入 meta，见第 3 件）
+cp 弘讯web端design-system/page-template.html "<用户项目>/output/<语义名>_<YYYYMMDD>_<HHmm>.html"
 ```
 
-**克隆后必须做的事（2026-08-12 更新：6 件）：**
+**克隆后必须做的事：**
 
-1. **删 demo（可执行边界）**：Web page-template 已提供 `.ws-body` + `.page-sec` 占位；在 `.page-sec` 填业务，保留 `.shell/.rail/.ws-global/.ws-body` 外壳与框架级 `<script>`。**KPI 统计卡**按业务需要**重建为 `stat-card--icon` 标准版**（components.json 已登记）；禁止保留 demo 简约卡或自造 KPI 样式。
-2. **改 CSS link 为指向仓库的相对路径**（克隆自 page-template 后必须改；移动端同理；脚手架自动处理）。**相对层级按落盘目录计算**：output/ 直下层 = `../弘讯web端design-system/template.css`；output/ 子目录（如 `output/某测试/`）= `../../弘讯web端design-system/template.css`——层级写错 → CSS 加载失败（token.undefined HIGH + 表格无样式）。
-3. **注入克隆凭证 meta**（P1 门禁）：`<head>` 内加 `<meta name="x-template-clone" content="弘讯web端design-system/page-template.html">`（移动端 content 换 `弘讯移动端design-system/page-template.html`）——**脚手架已自动注入，手动克隆必须自己加**；B 端/手机壳页面缺此 meta → 门禁 `template.clone.missing` HIGH。
-4. **定制作业树 + 图标从库取（2026-08-07 拍板；2026-08-12 去菜单分类）**：作业树**结构零改动**（层级/图标/选中/**无 group-title 分类、顶级节点并列**契约，RULES §0.2；折叠态浮层见 §0.2-10），**节点文本/分组/选中态按当前系统业务定制**（禁保留制造业示例树）；页面图标一律从 `<对应端>/icons/` 取（`icons/icons.md` 索引，path 内联进 `.ico/.tree-ico/.kpi-ico` 等尺寸类，规格 viewBox 24/stroke 1.8），库缺才手写并上报（RULES §7.9③）。
-5. **移动端底部导航（2026-08-07 收编）**：`.bottomnav` 内 `.bn-item` **3-5 个**，按业务需求增减（最少 3、最多 5，不是定死 3 个）；无 BottomNav 的页面（登录/详情等）合法不挂；home indicator 挂最后一项后。门禁 `bottomnav.count` MED 兜底（移动 RULES §1.1b）。
-6. **head 展示样式 `<style>` 块（2026-11-17 起 page-template 已移除）**：旧克隆若仍含展示页专用 `<style>`（`.sec/.swatch/.motion-*/.type-*/.callout/.kv/.comp-*` 等约 52 行，以 `/* 仅布局/容器助手` 注释开头）——业务页克隆后**删除该 `<style>` 块**（保留其后的内联 `:root` 同步副本，同步规则不变）。残留它会带来每页 27-34 条 MED 噪音（裸 font-size / grid.4px / token.undefined 隐患）。**⚠️ 只删 `<style>` 块本身——框架 `<script>` 段（多语言 i18n / 主题切换 / 折叠）一个都不许删**（订单总览实战：删 style 时连带删掉多语言 IIFE → 语言切换全页失效，门禁 `template.i18n.missing` HIGH 已拦截）。
-7. **框架 `<script>` 段禁删（V10 新增 2026-08-27）**：`</style>` 之后的全部 `<script>` 段（框架级多语言 IIFE / 主题切换 / 折叠交互）是**框架外壳的一部分**，与顶栏/侧栏同级，**禁止以"演示代码"为由删除**。门禁 `template.i18n.missing`（HIGH）核对 hx-lang 指纹，缺失即拦。
-8. **内容装配定位纪律（2026-11-17 白屏事故沉淀）**：脚本/程序化注入页面内容时，定位 `<main class="content">` 一律用**行首缩进锚点或 `lastIndexOf`**，**禁裸 `indexOf`**——首个命中可能落进注释内字面量（本次事故：模板头说明注释含同形伪标签 → 注入截断 head/CSS/body，整页白屏，当时双门禁 0 HIGH 放行）。模板伪标签已转义 + 门禁已补 `page.title.missing` / `html.skeleton.*` 兜底，但装配纪律不豁免。
-9. **外壳零改动（含顶部工具区，2026-11-20）**：`.ws-global` 顶部工具区（`.ws-tools`）= 真源 `弘讯web端design-system/partials/shell-tools.html` 注入产物；克隆页只保留、不手改（改真源后由 `sync-shell-tools.js` 注入各页，`verify.js chrome` 校验全页与真源一致）。**克隆页不跟随真源后续变更**：真源更新后需重新克隆或手工同步工具区。
+1. **删 demo**：在 `.ws-body .page-sec` 填业务，保留 `.shell/.rail/.ws-global/.ws-body` 外壳与框架 `<script>`；KPI 卡按 `stat-card--icon` 重建（禁自造）。
+2. **改 CSS link 指向仓库**：`output/` 直下层 = `../弘讯web端design-system/template.css`；子目录 = `../../…`。写错 → `token.undefined` HIGH + 表格无样式（脚手架已自动处理）。
+3. **注入克隆凭证**：`<meta name="x-template-clone" content="弘讯web端design-system/page-template.html">`（脚手架自动；手动必加）。
+4. **作业树 + 图标**：树结构零改动（RULES §0.2），节点文本按业务定制；图标从 `<端>/icons/` 取（`icons.md` 索引，path 内联；缺件才手写并上报，RULES §7.9③）。
+5. **移动底导**：`.bn-item` 3–5 个（`bottomnav.count` MED）；登录/详情页可不挂。
+6. **删旧展示 `<style>` 块**：旧克隆若含展示页专用 `<style>`（`.sec/.swatch/.motion-*` 等约 52 行）必须删——残留会带来 27–34 条 MED 噪音。**只删 `<style>`，框架 `<script>` 一个都不许删**（`template.i18n.missing` HIGH 兜底）。
+7. **框架 `<script>` 禁删**：多语言 / 主题 / 折叠属外壳，与顶栏同级，禁以「演示代码」为由删除。
+8. **装配定位纪律**：程序化注入内容时，定位 `<main class="ws-body">` 用行首缩进锚点或 `lastIndexOf`，**禁裸 `indexOf`**（首个命中可能落在注释伪标签内 → 整页白屏）。
 
-**⚠️ 禁参照既有页面 DOM（2026-08-06 用户拍板）**：克隆后页面结构一律按 `RULES.md §1.1b` + `components.json` + `CHART-SPEC.md` **从零填充**。**禁止**参照 output/、packages/ 或任何既有页面的 DOM 拼新页（既有页面可能含历史漂移，参照它会把漂移复制进新页）。**唯一可复制的结构 = 克隆源 page-template 的框架外壳本身**。
+**⚠️ 禁参照既有页面 DOM**：结构按 `RULES.md §1.1b` + `components.json` + `CHART-SPEC.md` 从零填充；**唯一可复制的是克隆源外壳本身**（既有页可能含历史漂移）。
 
-**产出落盘规则（2026-08-06 更新，⚠️ 必读）**：
+**产出落盘规则**：
 
-| 项       | 规则                                                                                                                                                                                                      |
-| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 目录      | 「**用户项目**」的 `output/`（`mkdir -p <用户项目>/output`）。设计系统仓库根的 `output/` 只放内置示例与规范展示，**不得混入用户生成页**                                                                                                            |
-| 文件名     | 自动拼 `<页面语义名>_<YYYYMMDD>_<HHmm>.html`；同日同语义名重复 → 追加 `_2`/`_3`，**绝不覆盖**                                                                                                                                   |
-| CSS 引用  | `<link rel="stylesheet" href="…/弘讯web端design-system/template.css">`（相对路径按实际位置写）                                                                                                                         |
-| 门禁      | `node scripts/verify.js page <用户项目路径>/output/<产出文件>.html`，期望 0 HIGH（validate + 组件复用 + 树运行时） |
-| **分享版** | `node scripts/build-share-web.js <页面> [--out <输出>]`：内联 `template.css` + 4 个 js（shell-ui/tree-nav/i18n/page-ui）+ 本地资源，零外链；**禁手工内联**。重出后复跑 `verify.js page`，0 HIGH 才分发；**改外壳工具区真源后必须重出分享版**（副本读的是页面里的工具区快照） |
+| 项 | 规则 |
+|---|---|
+| 目录 | 「用户项目」的 `output/`；仓库根 `output/` 只放内置示例，不得混入用户页 |
+| 文件名 | `<语义名>_<YYYYMMDD>_<HHmm>.html`；同日同语义名追加 `_2/_3`，绝不覆盖 |
+| CSS 引用 | `<link rel="stylesheet" href="…/弘讯web端design-system/template.css">`（相对层级按落盘位置） |
+| 门禁 | `verify.js page <用户项目>/output/<文件>.html` → 0 HIGH |
+| **分享版** | `build-share-web.js <页面> [--out]`：内联 CSS + 4 js + 本地资源，零外链；重出后复跑 `verify.js page`；**改外壳工具区真源后必须重出** |
 
-> **CSS 由 `template.css` 统一提供（不要复制 CSS）**：`:root` 变量（品牌/中性/功能/字阶/圆角/投影/motion/密度）、组件 class、布局骨架（`.shell > .rail + .workspace(>.ws-global + .ws-body)`）、`[data-skin]` / `[data-theme="dark"]` / `[data-density]`。色 / 尺寸 / 字重 / 圆角一律走 `:root` 变量，禁止硬编码；动效用 `var(--motion-duration-*)+var(--motion-ease-*)`，禁裸数字秒。
+> **CSS 统一由 `template.css` 提供**（不要复制）：`:root` 变量 + 组件类 + 布局骨架 + `[data-skin]/[data-theme]/[data-density]`；色 / 尺寸 / 字重 / 圆角走 token，动效走 `var(--motion-*)`，禁裸值。
 
 ### 步骤 4.5：图表生成规范（仅页面含图表时读）
 
-> **图表规范唯一真源 = 仓库根 `CHART-SPEC.md`**（Web RULES §9 [软] / 移动 RULES §9.7 [软] 为内联入口）。完整执行要点见 **附录 A**。
-
-- **主路线（2026-08-07 拍板）**：信息化图表**不设组件、不锁实现**——尺寸/数据量/坐标 Agent 按容器自适应自选（HTML flex 柱 / SVG polyline+HTML 点 / 定尺寸方形 SVG 环）。canvas 图表库（ECharts 等）仅限库级复杂图表。
-- **结果约束 8 条（缺一不可，[软] 无门禁全兜）**：柱底对齐基线 / x 轴标签独立行不叠柱 / 标签不溢出容器 / 折线点严格落线 / 环形中心文字不变形 / 多系列配图例 / **颜色只用 `--chart-*`（禁通用语义色与裸 hex）** / 图表不溢出卡片。
-- 容器原语：`.chart-box`（高度自定）+ canvas 用 `.chart-canvas`；卡片内图表卡一律 `.card--fill`。
-- 交互动画默认即带：`.chart-bar` / `.chart-hbar` / `.chart-line` / `.chart-ring-anim` / `.chart-dot`，时长全走 `--motion-duration-*`。
-
+> **真源 = 仓库根 `CHART-SPEC.md`**（Web RULES §9 / 移动 §9.7 为内联红线）；执行要点见 **附录 A**。
+> 三条硬红线（无门禁全兜，必查）：**柱底贴基线 / x 标签独立行不叠柱 / 系列色只用 `--chart-*`**（禁语义色与裸 hex）。
 
 ### 步骤 5：门禁自检 → 软规则自查表 → 交付
 

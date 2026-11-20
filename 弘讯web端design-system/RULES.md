@@ -50,7 +50,7 @@
 
 ## 章节索引（加载纪律 · 2026-09-10 新增）
 
-> 全文 **约 60k 字符**——**别整份加载**。按当前任务只读命中章节（Grep 标题 / Read offset 取段），**[软] 章节必读、[硬] 章节按需检索**（门禁兜底）。
+> 全文 **约 59k 字符**——**别整份加载**。按当前任务只读命中章节（Grep 标题 / Read offset 取段），**[软] 章节必读、[硬] 章节按需检索**（门禁兜底）。
 
 | 章 | 字符 | 何时读 |
 |---|---|---|
@@ -63,7 +63,7 @@
 | [硬] 6. 布局黄金法则 | 2.0k | 布局时 · 必读 |
 | [软] 7. 布局美学规范 | 6.7k | 排版/留白/层级 · 必读 |
 | [硬] 8. 动效与交互 | 1.3k | 生成即携带 |
-| [软] 9. 图表自建范式 | 4.2k | 含图表时（真源 CHART-SPEC.md） |
+| [软] 9. 图表自建范式 | 3.2k | 含图表时（真源 CHART-SPEC.md） |
 
 > 机器资产（`components.json` 71k / `template.css` 54k / `validate-spec.js` 107k）**不通读**——由门禁与构建消费；单点事实源见 `GENERATION-SOP.md §0`。
 
@@ -1055,38 +1055,23 @@ Shell           height=100vh FIXED
 - 环形/圆形图**禁 preserveAspectRatio="none"**（圆变椭圆）——定尺寸方形 SVG 居中，中心文字 HTML 绝对定位。
 - SVG 拉伸区**禁放一切需保形元素**——**文字与数据点圆标均不得写入 `preserveAspectRatio="none"` 的 SVG**（非等比拉伸会把圆拉成椭圆、文字变形；辅机总览实战：r=1.6 圆点实测被拉成 10.9×8.7 椭圆）。轴标签 / 数值 / 图例 / **数据点**一律 HTML 叠层（数据点 = absolute 定位 span，left/top 百分比与 polyline points 同源，8px 正圆）；SVG 属性 stroke/fill 一律 style="var(--chart-*)"（禁裸 hex：svg.paint.non-palette HIGH；禁未定义 var：token.svg-var HIGH）。
 
-**② 结果约束清单（8 条，缺一不可）**
+**② 结果约束清单（缺一不可）**
 
 1. **柱底对齐基线**：任何柱数/容器宽度下柱底贴基线（flex 容器 + 基线元素）。
 2. **x 轴标签不重叠、不叠柱**：标签独立行（flex 与柱同列宽对齐）——禁止标签作为柱子子级定位；柱多自动跳显。**x 标签外置时（V10 模式）**：标签行放 chart-box **外部**（真源 `.chart-x-labels`，span 纯 flex 均分、禁 absolute+left% 旧模式）；**SVG viewBox 的 PB（底部预留）须同步回收至 ≤8**——PB=42 是旧「图内标签」模式的占位，外置后不回收即残留 ~100px 死空间（订单总览实战）。
 3. **禁不同量纲共单轴（V10 新增 2026-08-27，订单总览实战）**：折线图两个系列单位不同（万元 vs 台）时**禁止归一化共绘一条坐标系**——量纲归一后两线位置由缩放系数偶然决定，对比无意义（实战：双线几乎重合）。双量纲场景：① 单系列主指标 + 次指标进汇总行/tooltip；② 双 Y 轴（左右刻度分离标注）；③ 柱线组合图。另：**数据必须符合业务常识**——时间序列禁止编造完美单调递增（真实订单/产能必有波动）。
 4. **x 轴标签必须用真源组件对齐（V12-A3 新增 2026-08-28，连续两代页面复犯）**：x 标签与数据点共用同一坐标系——用 `scripts/chart-x-labels.js` 的 **`renderChartXLabels()`**（从 polyline points 反解数据点 x，absolute + left% + translateX(-50%)，端点钳制防溢出），**禁页面自绘标签行**（flex 全宽均分与绘图区均布是两套坐标系，实测错位 delta -54/+36px）。**图表底部结构顺序硬规则**：SVG → x-labels（独立文档流行，容器 position:relative; height:20px; margin-top:8px）→ legend → summary，四层各占独立行、间距 token 化，禁 absolute 互相侵入（实战：「7月」叠「客单价」）。
-3. **标签不溢出容器**：图表底部为 x 轴标签留白区（基线下方 ≥20px），x 标签与柱顶数值均不得负定位溢出容器。
-4. **折线数据点严格落线**：polyline 与 HTML 点共用同一百分比坐标系（points 坐标 ÷100 = dot left/top）；点固定尺寸正圆（non-scaling-stroke 线宽恒定）。
-5. **环形图中心文字不变形**：HTML 绝对定位居中，SVG 只画环。
-6. **多系列必配图例**：双系列柱/折线/多段环均有图例；单系列可省。
-7. **颜色只用信息化图表色 --chart-***（见 ③）。
-8. **图表不溢出卡片**：图表容器高度自定，禁止内容溢出卡片。
-9. **网格线水平范围限于绘图区**：网格线两侧为 y 轴刻度标签留白（≥20），不贯穿标签区；y 轴刻度与网格线同高对齐但水平错开（刻度在留白区、网格线在绘图区）——**禁网格线贯穿到图表左右边缘贴卡边**（执行上报补齐）。
-10. **折线纵向占满（新增）**：折线数据 y 范围纵向覆盖 **≥ viewBox 高度 70%**、上下留白对称（差 ≤15%）——禁"数据集中一条带 + 下方大片空白"。门禁 chart.line.vertical（MED）兜底。
+5. **标签不溢出容器**：图表底部为 x 轴标签留白区（基线下方 ≥20px），x 标签与柱顶数值均不得负定位溢出容器。
+6. **折线数据点严格落线**：polyline 与 HTML 点共用同一百分比坐标系（points 坐标 ÷100 = dot left/top）；点固定尺寸正圆（non-scaling-stroke 线宽恒定）。
+7. **环形图中心文字不变形**：HTML 绝对定位居中，SVG 只画环。
+8. **多系列必配图例**：双系列柱/折线/多段环均有图例；单系列可省。
+9. **颜色只用信息化图表色 --chart-***（见 ③）。
+10. **图表不溢出卡片**：图表容器高度自定，禁止内容溢出卡片。
+11. **网格线水平范围限于绘图区**：网格线两侧为 y 轴刻度标签留白（≥20），不贯穿标签区；y 轴刻度与网格线同高对齐但水平错开（刻度在留白区、网格线在绘图区）——**禁网格线贯穿到图表左右边缘贴卡边**（执行上报补齐）。
+12. **折线纵向占满**：折线数据 y 范围纵向覆盖 **≥ viewBox 高度 70%**、上下留白对称（差 ≤15%）——禁"数据集中一条带 + 下方大片空白"。门禁 chart.line.vertical（MED）兜底。
 
-**③ 色彩契约（强化：系列色只能用 --chart-*）**
+**③ 色彩 / 交互 / 门禁（细节真源 `CHART-SPEC §4/§5/§7`，此处只留红线）**
 
-- **系列数据色（柱/条/线/环段/点）一律 --chart-* token**（Web 8 色：tech-blue/data-cyan/smart-cyan/fresh-green/vivid-orange/alert-red/wisdom-purple/modern-pink）——**禁通用语义色（--primary/--suc/--warn/--err）做系列色**（门禁 chart.series.color MED 建议）；**禁裸 hex**（HIGH）。
-- **辅助线例外**：网格线用中性 --n4 级、目标线可用 --warn（虚线辅助语义）——仅限非数据系列元素。
-- 同页 ≤5 个系列色；**同系列数据色统一**（禁最高值强调色）；分组柱状图两系列用两色区分（如 tech-blue + data-cyan）。
-- 图例用 .chart-legend / .legend-item + .legend-dot（圆点）/ .legend-line（线段，可 --dash）。
-
-**④ 默认交互与动画（所有信息化图表默认即带）**
-
-- 图形动画类（真源默认，Agent 给图形元素挂类即得）：柱 .chart-bar（底部升起）、横向条 .chart-hbar（左侧生长）、折线 .chart-line（描边生长）、环 .chart-ring-anim（放大淡入）——时长全走 motion token。
-- **数据点 .chart-dot 延迟出现**（animation-delay: var(--motion-duration-slow)，线画完才淡入）——防「点漂移」错位。
-- **图形元素悬停（hover 目标是数据元素本身，非整卡；表现 = 阴影 + 微动画 + 颜色强调 三合一）**：柱/条上浮 2px + brightness(1.12) + drop-shadow；圆点放大 1.7×；折线加粗 3.5；环段微膨胀 1.04×——均走 fast token。**禁整卡 hover 浮起**；柱/条进入动画 fill-mode 须用 backwards（both 会锁死 transform 挡住 hover 上浮）。
-- **数据悬停阴影层级**：一律 drop-shadow(var(--shadow-data-hover))（单阴影 token，card/row-hover 级轻弥散）——**禁 float/modal 级**。暗色 --shadow-data-hover 已补（）。
-- 环状图分段数据：中心常显主段数值，悬停环段切换对应段数值（Web）；移动端点按段（附录 A 脚本）。
-
-**⑤ 门禁口径**
-
-- 容器缺失（chart.container.missing）→ HIGH；SVG 裸 hex（svg.paint.non-palette）→ HIGH；未定义 var（token.svg-var）→ HIGH；**系列色用通用语义色（chart.series.color）→ MED**（建议 --chart-*，目标线 polyline+dasharray 豁免）；meet 撑不满（chart.svg.fill）→ MED；内容贴边（chart.svg.viewbox-edge）→ MED；SVG 内文字（chart.text.inline）→ MED；数据区左右对称（chart.symmetry）→ MED；柱底对齐基线（chart.baseline）→ MED；**折线纵向占满（chart.line.vertical）→ MED**（数据带 y 覆盖 ≥70% 且上下留白对称差 ≤15%，2026-08-24 新增——根治"折线数据集中一条带/下方大片空白"）。
-
-
+- 系列色**只用 `--chart-*`**（8 色）：禁通用语义色（--primary/--suc/--warn/--err，chart.series.color MED）、禁裸 hex（svg.paint.non-palette HIGH）；辅助线用中性 --n4 / 目标线 --warn（虚线）；同页 ≤5 系列、同系列同色；图例 `.chart-legend` / `.legend-item` + `.legend-dot` / `.legend-line`。
+- **交互默认即带**：`.chart-bar` / `.chart-hbar` / `.chart-line` / `.chart-ring-anim` / `.chart-dot`（点延迟出现），时长走 `--motion-duration-*`；hover 目标是数据元素（**禁整卡浮起**），数据阴影 `var(--shadow-data-hover)`；环图中心常显主段、悬停切换。
+- **门禁**：容器缺失 / SVG 裸 hex / 未定义 var → HIGH；系列色语义色 / meet 撑不满 / SVG 内文字 / 贴边 / 左右不对称 / 柱底基线 / 折线纵向占满 → MED。完整口径见 `CHART-SPEC §7`。
