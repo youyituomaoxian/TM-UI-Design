@@ -12,7 +12,7 @@
 |---|---|---|
 | `login-hero-default.webp` | 2160×2160，373KB | **默认背景**，页面 `src` 指向它 |
 | `login-hero-default@1x.webp` | 1024×1024，92KB | 1x 档 |
-| `login-hero-default.png` | 2160×2160 | 源文件（重新导出用，勿删） |
+| `login-hero-default.png` | 2160×2160 | 源文件（**本地保留，不入库**：4.5MB；重新导出 webp 用） |
 
 - 换图：覆盖同名 webp 即可，**不改 HTML**；1:1 素材 `object-position:50% 50%`。
 - 边缘：**羽化 160**（`--login-hero-feather`，用户定稿）；要硬切改 0。

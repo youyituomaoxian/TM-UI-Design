@@ -5,6 +5,12 @@
 
 ---
 
+## [仓库瘦身：参考素材 / 大体积源文件 / 过程截图不入库] — 2026-11-20
+- **移出仓库**：`参考不入设计系统库/`（用户参考图，非规范资产）、`assets/login-hero/login-hero-default.png`（4.5MB 源文件，本地保留，README 标注改「不入库」）、`弘讯移动端design-system/状态色_回灌_移动端.png`（过程截图，无引用）。
+- **清理历史**：三路径用 `git filter-branch` 从全部提交移除后强推；旧 V2.1 历史仍在 `backup/v2.1-final-20261120`。
+- **体积**：约 10.6MB → 6.1MB；文件 601 → 598。
+- **实测**：`verify all` 全绿；新克隆复验。
+
 ## [skill 入口随仓库启用（团队拉仓即用）] — 2026-11-20
 - **workbuddy**：`.workbuddy/skills/tm-design-system/SKILL.md` 重写并启用（原 `.disabled`）——仓库定位改用 `scripts/verify.js`；加载顺序补 CHART-SPEC §4/§5/§7（`generate-web-chart`）；命令改 `verify.js page` / `verify all`（交付口径）/ `build-share-web`（禁手工内联）；铁律补外壳真源、图表 HIGH、登录备案号、D-1~D-13、git 约定。
 - **DSH**：`.dsh/.../SKILL.md` 指针启用，去掉「读 HANDOFF」硬依赖（HANDOFF gitignored，新克隆不存在）。

@@ -100,4 +100,9 @@ dist-static/
 # 视觉稿产物（本地预览用，不入库——历史稿见 archive/output/ 或本地保留）
 output/
 
+# 2026-11-20 仓库瘦身：参考素材 / 大体积源文件 / 过程截图不入库（本地保留）
+参考不入设计系统库/
+弘讯web端design-system/assets/login-hero/login-hero-default.png
+弘讯移动端design-system/状态色_回灌_移动端.png
+
 # 本地工作文档（不随设计系统分发）
