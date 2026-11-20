@@ -135,7 +135,7 @@
   --elev-overlay-surface:#1E293B; --elev-overlay-shadow:0 6px 16px rgba(0,0,0,0.50), 0 0 0 1px rgba(255,255,255,0.06);
   --elev-overflow-surface:#1E293B; --elev-overflow-shadow:0 0 8px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.06);
   --bg-page:#121826; --bg-surface:#1E293B; --bg-elevated:#243044; --table-header-bg:#26364F;
-  --text-1:#FFFFFF; --text-2:#F1F5F9; --text-3:#CBD5E1; --border:#334155;
+  --text-1:#F1F5F9; --text-2:#CBD5E1; --text-3:#94A3B8; --border:#334155;
 }
 
 /* ===== 排版语义类（.t-*：font.scale 派生，与 --font-* 1:1；build 漂移修复回写真源） ===== */

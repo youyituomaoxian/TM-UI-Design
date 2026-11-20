@@ -11,7 +11,9 @@
  * 标签与数据点共用同一坐标系（absolute + left% + translateX(-50%)）。
  *
  * 用法（生成页必须引用本实现，禁止页面自绘标签行）：
- *   <div class="chart-x-labels" id="trendXRow"></div>   ← 容器：position:relative; height:20px; margin-top:8px
+ *   <div class="chart-x-labels" id="trendXRow"></div>   ← 容器：只需常规定位
+ *                                                          （DS-20261120-01 起脚本自动挂 .chart-x-labels--abs，
+ *                                                           提供 position:relative + height:20；也可页面显式写上该类）
  *   <script src=".../chart-x-labels.js"></script>       ← 或整段复制本函数
  *   renderChartXLabels({ svg: document.getElementById('trendSvg'),
  *                        labels: ['1月','2月',...],
@@ -28,7 +30,11 @@ function renderChartXLabels(opts) {
   const container = opts.container;
   if (!svg || !container) return { error: 'svg/container 缺失' };
 
-  // 1. 取 polyline 数据点 x 坐标（viewBox 系）；无 polyline 时均分兜底
+  // 1. 定位容器契约（DS-20261120-01）：本函数输出的是 position:absolute 子元素，容器必须是定位容器。
+  //    自 v2026.11.20 起脚本自动挂 `.chart-x-labels--abs`（真源 utilities.css 提供 position:relative + 20 高），
+  //    页面无需再手写包装层；若容器已有其它定位（position 非 static）则保持不动。
+  const cs = (typeof window !== 'undefined' && window.getComputedStyle) ? window.getComputedStyle(container) : null;
+  if ((!cs || cs.position === 'static') && container.classList) container.classList.add('chart-x-labels--abs');
   const vb = (svg.getAttribute('viewBox') || '0 0 100 100').split(/[\s,]+/).map(Number);
   const vbW = vb[2] || 100;
   let xs = null;

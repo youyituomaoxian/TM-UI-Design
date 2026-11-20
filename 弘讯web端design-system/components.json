@@ -1474,6 +1474,24 @@
       "notes": "2026-10-20 新增：横向步骤；.is-done 实底 primary+白字，.is-active 描边 primary+primary 字；连接线 1px N6。"
     },
     {
+      "id": "flow",
+      "name": "工序流程 Flow（DS-20261120-06 入库）",
+      "selector": [
+        ".flow",
+        ".flow-step",
+        ".flow-ico",
+        ".flow-info",
+        ".flow-tag",
+        ".flow-conn",
+        ".flow-arrow",
+        ".flow--row",
+        ".flow-pulse"
+      ],
+      "scope": "web",
+      "rules": [],
+      "notes": "2026-11-20 新增（实现取自示例页已验证形态）：设备工序链条，每节点 = .flow-ico 图标块 + .flow-info 文字块（内用 .t-* 字阶）+ .badge 状态。默认纵向链，节点间用 .flow-conn（28 宽虚线）连接；.flow--row 为横向节点卡，节点间用 .flow-arrow 箭头。异常态 .is-err / .is-warn 改图标块（--err-soft/--err、--warn-soft/--warn）与横向节点边框。与 .steps 分工：.steps = 线性进度（is-done/is-active），.flow = 流程健康态 + 节点指标。"
+    },
+    {
       "id": "timeline",
       "name": "时间线 Timeline",
       "selector": [
@@ -1636,7 +1654,7 @@
         "指标条超过 4 项（超出改详情）",
         "把状态做成独立 badge 而没有左侧状态条"
       ],
-      "note": "2026-11-19 左右结构新增。示例：output/左右结构_图表示例页.html（机器卡片区）。CSS 真源：packages/web-ui/src/styles/components.css；template.css 由 build-template-css.js 生成。"
+      "note": "2026-11-19 左右结构新增。示例：showcase/左右结构_v7_设备运维工作台.html（机器群览区，入库）。CSS 真源：packages/web-ui/src/styles/components.css；template.css 由 build-template-css.js 生成。"
     }
   ],
   "contract": [

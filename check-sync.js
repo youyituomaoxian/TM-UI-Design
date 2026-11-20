@@ -172,7 +172,7 @@ const SYNC_WHITELIST = {
   'chart-line': { onlyWeb: ['transition', 'cursor', 'filter', 'stroke-width'], onlyMob: [] }, // Web hover
   'chart-ring-anim': { onlyWeb: ['transform-box', 'transform-origin', 'transition', 'cursor', 'filter', 'transform'], onlyMob: [] }, // Web hover 动画
   'chart-svg': { onlyWeb: [], onlyMob: ['height'] },                                 // Mobile 容器定高
-  'chart-svg--fill': { onlyWeb: ['aspect-ratio'], onlyMob: [] },                     // Web 响应式
+  'chart-svg--fill': { onlyWeb: ['inset', 'position'], onlyMob: [] },                // DS-20261120-02：Web 弹性高度模型改为绝对填充；Mobile 容器定高仍走流内 100%
   'chart-v': { onlyWeb: [], onlyMob: ['font-size', 'line-height'] },                 // Mobile 字阶
   'legend-dot': { onlyWeb: ['background', 'flex-shrink'], onlyMob: [] },             // Web 视觉增强
   'legend-item': { onlyWeb: ['color', 'font-family', 'font-size'], onlyMob: [] },    // Mobile 上提至 .chart-legend 父容器继承（Web 子项显式声明）

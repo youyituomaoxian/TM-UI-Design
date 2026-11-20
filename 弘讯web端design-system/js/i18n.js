@@ -60,6 +60,9 @@
   };
 
   DICT['template.title']={zh:'页面标题',en:'Page Title'};
+  DICT['page.live']={zh:'数据实时状态',en:'Live data'};
+  DICT['page.refreshLabel']={zh:'刷新',en:'Refresh'};
+  DICT['template.paneHint']={zh:'双 pane 演示：页签 data-pane ↔ 正文 .page-sec.is-active 联动',en:'Dual-pane demo: tab data-pane ↔ .page-sec.is-active'};
   DICT['template.module']={zh:'业务模块',en:'Business Modules'};
   DICT['template.current']={zh:'当前页面',en:'Current Page'};
   DICT['template.page2']={zh:'页面二',en:'Page 2'};

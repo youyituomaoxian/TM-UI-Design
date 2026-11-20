@@ -50,20 +50,20 @@
 
 ## 章节索引（加载纪律 · 2026-09-10 新增）
 
-> 全文 **约 59k 字符**——**别整份加载**。按当前任务只读命中章节（Grep 标题 / Read offset 取段），**[软] 章节必读、[硬] 章节按需检索**（门禁兜底）。
+> 全文 **约 60k 字符**——**别整份加载**。按当前任务只读命中章节（Grep 标题 / Read offset 取段），**[软] 章节必读、[硬] 章节按需检索**（门禁兜底）。
 
 | 章 | 字符 | 何时读 |
 |---|---|---|
 | [硬] 0. B 端后台固定框架 | 7.7k | 判定是否套框架（判定必读） |
-| [软] 1. 组件选择决策树 | 14.7k | 选组件时 · 必读 |
+| [软] 1. 组件选择决策树 | 14.8k | 选组件时 · 必读 |
 | [硬] 2. 禁止清单 | 1.0k | 生成前自查 · 简读 |
 | [硬] 3. 组件状态机 | 10.5k | 写/改按钮·输入态时 |
-| [硬] 4. 间距与布局速查 | 7.8k | 布局时 |
+| [硬] 4. 间距与布局速查 | 7.9k | 布局时 |
 | [软] 5. 生成检查清单 | 1.1k | 交付前 |
 | [硬] 6. 布局黄金法则 | 2.0k | 布局时 · 必读 |
-| [软] 7. 布局美学规范 | 6.7k | 排版/留白/层级 · 必读 |
+| [软] 7. 布局美学规范 | 6.9k | 排版/留白/层级 · 必读 |
 | [硬] 8. 动效与交互 | 1.3k | 生成即携带 |
-| [软] 9. 图表自建范式 | 3.1k | 含图表时（真源 CHART-SPEC.md） |
+| [软] 9. 图表自建范式 | 3.3k | 含图表时（真源 CHART-SPEC.md） |
 
 > 机器资产（`components.json` 71k / `template.css` 54k / `validate-spec.js` 107k）**不通读**——由门禁与构建消费；单点事实源见 `GENERATION-SOP.md §0`。
 
@@ -276,7 +276,7 @@ START: 我要做什么类型的页面？
 |---|---|---|
 | 外壳 | `.shell` / `.rail` / `.workspace` / `.ws-global` / `.ws-pagebar` / `.ws-body` | 左栏 216 / 折叠 64；白条 60；pagebar 56；body 内滚 |
 | 作业树 | `.rail .tree` / `.tree-node` / `.tree-group` / `.tree-node--child` / `.rail-foot` | 品牌底；节点 40；折叠 44；版权与折叠同排 |
-| 页面 | `.page-sec` / `.pane-note` / `.seg-row` / `.monitor-split` / `.detail-card` | 页签 32；主从表 1476 起侧栏，≤1475 抽屉 |
+| 页面 | `.page-sec` / `.page-sec.is-active`（pane 切换，配 `data-pane`）/ `.pane-note` / `.seg-row` / `.monitor-split` / `.detail-card` | 页签 32；主从表 1476 起侧栏，≤1475 抽屉 |
 | 表格 | `.table-card` / `.table-scroll` / `.table-tools` / `.table-empty` / `.row-empty` | 表头 44 / 行 44 / 空行只分割线 / 0 条空状态 / 同高 |
 | 弹窗 | `.modal` / `.spec-modal` + `--520/--640/--720` | 382 标准；520–720 宽表单；长表单整页 |
 | 状态 | `.dot-run/idle/stop/fault/offline` / `.machine-card--*` | 5 主状态；第二层 mode/productionStatus/reason |
@@ -659,7 +659,7 @@ START: 我要做什么类型的页面？
 | 内容区 padding | 16 / 24 / 24 | `.ws-body` |
 | 表格表头高 | 44px | token 底（亮 #FAFAFA / 暗 #26364F） |
 | 表格行高 | 44px | hover N3 |
-| 卡片头高 | 40px | 标题 N11 |
+| 卡片头高 | 40px（含 32px 控件时 48） | 标题 N11；`.card-head:has(.btn:not(.btn-sm)/.filter-chip/.input/.sel-trigger)` 自动 48 |
 | Tab 高 | 32px | 选中主色 |
 | 分页器高 | 44px | 圆钮 24 |
 | 栅格 | 24 列 | Ant Grid |
@@ -909,6 +909,7 @@ Shell           height=100vh FIXED
 | ⛔ 禁止 | `n8 on n1` 2.07 / `n6 on n1` | — | 作正文不可用（禁用/装饰）|
 
 > **组件现状**：Web `.badge-suc/warn/err` 已用「`-soft` 浅底 + 同系深字」方案（对比达标 ✅）；按钮功能色建议深字 `n11`。禁止页面覆盖回「白 on 功能色」。
+> **2026-11-20 补（DS-20261120-04）**：`.badge-warn` 文字由 `n11` 改 `--warn × --n11` 混色（亮 4.97:1 AA / 暗回全纯度 `--warn`），族内统一为「同系 soft 底 + 同系深字」；新增 `.badge-info`（复用 `--select-item-bg/-fg`）承载「提示/信息」语义，**提示类禁再用 `.badge-muted`**（灰底灰字不属该族规则）。
 
 ### [软] 7.6 视觉反馈与层级
 
@@ -1054,6 +1055,7 @@ Shell           height=100vh FIXED
 
 - 图表**不设组件、不锁实现**：尺寸、数据量、坐标方式（HTML flex 柱 / SVG polyline + HTML 点 / 定尺寸方形 SVG 环）**Agent 按容器自适应自选**——不再固定 viewBox 400×160、折线 ≥8 点、柱状 12 根等实现级断言。图表容器高度走 **`--chart-height` token**（默认 320px，可密度/场景覆盖），弹性填充型图表用 `.chart-box--flex`（）。`.chart-box--flex` 前置条件=**确定高度容器**——auto 高度链（如 `.card--fill` 内）禁用弹性类，须用定高 `.chart-box`，否则 SVG `height:100%` 无基准回退 viewBox 1:1 爆炸。
 - 环形/圆形图**禁 preserveAspectRatio="none"**（圆变椭圆）——定尺寸方形 SVG 居中，中心文字 HTML 绝对定位。
+- **2026-11-20 补（DS-20261120-01/02）**：`.chart-svg--fill` 已改**绝对填充**（`position:absolute;inset:0`，不再用 `aspect-ratio` 反推高度）——父级必须是 `.chart-box` 系列（定高或 `min-height`），否则高度塌成 0；x 轴标签用 `renderChartXLabels()`，脚本会自动给容器挂 `.chart-x-labels--abs`（定位容器 + 20 高），页面不要再自造包装层。
 - SVG 拉伸区**禁放一切需保形元素**——**文字与数据点圆标均不得写入 `preserveAspectRatio="none"` 的 SVG**（非等比拉伸会把圆拉成椭圆、文字变形；辅机总览实战：r=1.6 圆点实测被拉成 10.9×8.7 椭圆）。轴标签 / 数值 / 图例 / **数据点**一律 HTML 叠层（数据点 = absolute 定位 span，left/top 百分比与 polyline points 同源，8px 正圆）；SVG 属性 stroke/fill 一律 style="var(--chart-*)"（禁裸 hex：svg.paint.non-palette HIGH；禁未定义 var：token.svg-var HIGH）。
 
 **② 结果约束清单（缺一不可）**

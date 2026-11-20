@@ -2,10 +2,10 @@
   "frozen": "2026-07-30",
   "note": "W1 修订版冻结的旧生成流水线核心 spec 文件集；W1 全程不得改动，validate-static.js 内置复核",
   "files": {
-    "弘讯web端design-system/tokens.json": "a6a76d139786bd3ab364063661efc01b051161ae3ef27e8958badb98407f2b86",
-    "弘讯web端design-system/components.json": "1687314c1e6412472ffc6f7e203548b9342763bac7c575edc59603ae7a476aff",
-    "弘讯web端design-system/validate-spec.js": "7cf3a2e52726f57fdedb1c01f11ef4789a4b49d650bc1611a3ed157933097bd5",
-    "弘讯web端design-system/page-template.html": "62c239203eb95986c1d6f792650ef668908ea4fafe8248c06f317bd6817a446c",
+    "弘讯web端design-system/tokens.json": "79993f83dee22f59526947e60cdf783aab4bde56c53fcc3732bcd75953fe18af",
+    "弘讯web端design-system/components.json": "70723c18c75a77c4bc64fc4182195f75055db2095faa897c74538e7dc1bd5246",
+    "弘讯web端design-system/validate-spec.js": "25151c4fa67968527889c276b93eccc0e2036479184245b460e2ef28720a09a8",
+    "弘讯web端design-system/page-template.html": "58a2f633e851ae6a37ac4634011f0b999690a86cab9d7df0f79bc22c264bf88f",
     "弘讯web端design-system/scripts/generate-design-tokens-md.js": "2dfa67fd021392277efd80d898260bae79d0ccf2cc07fd6f657095a723d78743"
   }
 }

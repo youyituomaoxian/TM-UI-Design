@@ -24,7 +24,7 @@ const LIMITS = [
   ['CHART-SPEC.md', 16000],
   ['DARK-MODE.md', 10300],
   ['VISUAL-SPEC.md', 12400],
-  ['CROSS-PLATFORM-COLORS.md', 2500],
+  ['CROSS-PLATFORM-NEUTRALS.md', 2500],
   ['标准提示词模板.md', 5800],
   // 2026-11-06：新增 D-13 作业树折叠态浮层维度，实测 28697，28600 → 29000。
   ['audit-rules.json', 27000], // 2026-11-20 实测 25,997 → 27,000 // 2026-11-12 容量批：23991+8%；机器资产；调阈值须附回收记录

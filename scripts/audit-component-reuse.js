@@ -31,7 +31,7 @@ const style = (html.match(/<style[^>]*>([\s\S]*?)<\/style>/i) || [,''])[1];
 const classes = (text) => new Set([...text.matchAll(/\.([a-zA-Z][a-zA-Z0-9_-]*)/g)].map(m => m[1]));
 const local = classes(style);
 const canonical = classes(tpl);
-const COMPONENT_PREFIXES = /^(kpi|stat|card|btn|button|table|modal|dialog|tabs?|tag|badge|form|input|select|sel|pager|alert|toast|empty|avatar|progress|status|machine|chart|tree|topbar|sidebar|footer|toggle|switch|checkbox|radio|upload|date|dropdown|popover|tooltip|skeleton|spinner|drawer|sheet|breadcrumb|toolbar|seg|filter|detail|nav|list|search|pop|panel)/;
+const COMPONENT_PREFIXES = /^(kpi|stat|card|btn|button|table|modal|dialog|tabs?|tag|badge|form|input|select|sel|pager|alert|toast|empty|avatar|progress|status|machine|chart|tree|topbar|sidebar|footer|toggle|switch|checkbox|radio|upload|date|dropdown|popover|tooltip|skeleton|spinner|drawer|sheet|breadcrumb|toolbar|seg|filter|detail|nav|list|search|pop|panel|step|flow)/;
 const LAYOUT_PREFIXES = /^(page-|workspace-|layout-|grid-|stack-|cluster-|demo-|showcase-|section-|col-|row-|flex-|gap-|mt-|mb-|pt-|pb-)/;
 const violations = [];
 for (const c of local) {

@@ -49,7 +49,7 @@
   <!-- ================= 右侧：内容区 ================= -->
   <div class="workspace">
   <div class="ws-global">
-    <div class="ws-pagebar"><h1 class="page-title" data-i18n="template.title">页面标题</h1></div>
+    <div class="ws-pagebar"><h1 class="page-title" data-i18n="template.title">页面标题</h1><span class="live-badge" title="数据实时状态" data-i18n-title="page.live"><i></i>LIVE</span><span class="bar-sep"></span><button class="bar-refresh" id="pageRefresh" type="button" title="刷新（自动 30 秒）" data-i18n-title="page.refresh" aria-label="刷新数据（当前页）"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 3 12 C 3 12 3 7 7 4.5 C 11 2 15 3 17 4.5 C 19 6 21 8 21 8"/><path d="M 21 12 C 21 12 21 17 17 19.5 C 13 22 9 21 7 19.5 C 4.5 18 3 16 3 16"/><path d="M 21 3 V 8 H 16"/><path d="M 8 16 H 3 V 21"/></svg><span data-i18n="page.refreshLabel">刷新</span><span class="bar-refresh-sec" id="refreshSec">30s</span></button></div>
     <div class="ws-tools">        <a class="tool-ico" href="#" title="首页" data-i18n-title="tool.home" aria-label="首页">
           <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 1.5 10.8 L 12 2.2 L 22.5 10.8"/><path d="M 3.5 9.8 V 19.6 A 1.4 1.4 0 0 0 4.9 21 H 19.1 A 1.4 1.4 0 0 0 20.5 19.6 V 9.8"/><path d="M 9.2 21 V 15.4 A 1 1 0 0 1 10.2 14.4 H 13.8 A 1 1 0 0 1 14.8 15.4 V 21"/></svg>
         </a>
@@ -154,7 +154,8 @@
   <main class="ws-body" id="pageView">
   <div class="tab-row">
     <div class="tabs" role="tablist" aria-label="页面视图">
-      <div class="tab active" role="tab" aria-selected="true" data-i18n="template.tab">页面</div>
+      <div class="tab active" role="tab" aria-selected="true" data-pane="page" data-i18n="template.tab">页面</div>
+      <div class="tab" role="tab" aria-selected="false" data-pane="page2" data-i18n="template.page2">页面二</div>
     </div>
     <div class="page-actions" aria-label="页面操作">
       <button class="btn btn-secondary" type="button" data-i18n="template.export">导出</button>
@@ -168,10 +169,16 @@
     </div>
     <span class="t-caption" data-i18n="template.hint">从 .page-sec 开始填业务；组件直接使用 template.css 类</span>
   </div>
-  <section class="page-sec">
+  <section class="page-sec" data-pane="page">
     <div class="sec-head"><h2 data-i18n="template.content">页面内容</h2><span class="t-caption" data-i18n="template.contentHint">替换本区块，不要改外壳</span></div>
     <div class="card"><div class="card-body">
       <p class="t-body2">这里是业务内容占位。KPI 用 <code>stat-grid + stat-card--icon</code>，表格用 <code>table + table-card</code>，弹窗用 <code>modal</code>；机器状态用 <code>machine-card</code> 与 5 状态 token。</p>
+    </div></div>
+  </section>
+  <section class="page-sec" data-pane="page2">
+    <div class="sec-head"><h2 data-i18n="template.page2">页面二</h2><span class="t-caption" data-i18n="template.paneHint">双 pane 演示：页签 data-pane ↔ 正文 .page-sec.is-active 联动</span></div>
+    <div class="card"><div class="card-body">
+      <p class="t-body2">第二个 pane 占位。多 pane 页面：每个 <code>.tab[data-pane]</code> 对应一个 <code>.page-sec[data-pane]</code>，切换由 <code>page-ui.js</code> 真源完成，业务无需写 JS。</p>
     </div></div>
   </section>
 </main>

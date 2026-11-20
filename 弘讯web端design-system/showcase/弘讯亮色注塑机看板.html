@@ -51,18 +51,7 @@
   .oee-progress{margin:var(--space-sm) 0 var(--space-base);}
 
   /* 设备工序状态示意图 */
-  .flow{display:flex;flex-direction:column;}
-  .flow-tag{margin-left:var(--space-sm);}
-  .flow-step{display:flex;align-items:center;gap:var(--space-md);padding:var(--space-xs) 0;border-radius:var(--radius-base);
-    transition:background var(--motion-duration-fast) var(--motion-ease-out);}
-  .flow-step:hover{background:var(--n3);}
-  .flow-ico{width:28px;height:28px;flex-shrink:0;border-radius:var(--radius-md);background:var(--n3);color:var(--n10);
-    display:inline-flex;align-items:center;justify-content:center;
-    transition:background var(--motion-duration-fast) var(--motion-ease-out),color var(--motion-duration-fast) var(--motion-ease-out),transform var(--motion-duration-fast) var(--motion-ease-out);}
-  .flow-ico svg{width:16px;height:16px;stroke:currentColor;fill:none;}
-  .flow-step.is-err .flow-ico{background:var(--err-soft);color:var(--err);transform:scale(1.08);}
-  .flow-info{flex:1;min-width:0;}
-  .flow-conn{width:28px;margin:0 auto;height:12px;border-left:2px dashed var(--n6);}
+  /* DS-20261120-06：.flow 工序流程已入库真源（components.css），本页不再自造 */
 
   /* 实时趋势 */
   .trend-x{padding:0 var(--space-md);}
@@ -96,7 +85,7 @@
   @keyframes num-flash{0%{opacity:.35;}100%{opacity:1;}}
 
   /* 工序异常脉冲 */
-  .flow-pulse{animation:pulse var(--motion-duration-slow) var(--motion-ease-in-out) infinite;}
+  /* DS-20261120-06：.flow-pulse 已入库真源 */
   50%{opacity:.55;}}
 
   /* Toast */

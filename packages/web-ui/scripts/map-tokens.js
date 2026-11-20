@@ -248,7 +248,7 @@ ${fontVars}
   ${Object.entries(d.colors.chart || {}).map(([k, v]) => `--chart-${k.replace(/([A-Z])/g, '-$1').toLowerCase()}:${v};`).join(' ')}
 ${['sunken', 'default', 'raised', 'overlay', 'overflow'].map(delev).join('\n')}
   --bg-page:${d.background.page}; --bg-surface:${d.background.surface}; --bg-elevated:${d.background.elevated}; --table-header-bg:${d.colors.tableHeaderBg};
-  --text-1:${dn.N11}; --text-2:${dn.N10}; --text-3:${dn.N9}; --border:${d.background.border};
+  --text-1:${dn.N10}; --text-2:${dn.N9}; --text-3:${dn.N8}; --border:${d.background.border};
 }
 
 /* ===== 排版语义类（.t-*：font.scale 派生，与 --font-* 1:1；build 漂移修复回写真源） ===== */

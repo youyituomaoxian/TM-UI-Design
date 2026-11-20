@@ -232,9 +232,15 @@
   font-size:12px;font-weight:500;font-family:var(--font-cn);margin-right:8px;vertical-align:middle;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
 .badge-suc{background:var(--suc-soft);color:var(--suc-active);}
-.badge-warn{background:var(--warn-soft);color:var(--n11);}
+/* DS-20261120-04：badge 族统一「同系 soft 底 + 同系深字」；warn 由 n11 深字改 warn×n11 混色（亮 4.97:1 AA / 暗回全纯度 --warn）。 */
+.badge-warn{background:var(--warn-soft);color:color-mix(in srgb, var(--warn) 55%, var(--n11));}
+:root[data-theme="dark"] .badge-warn{color:var(--warn);}
 .badge-err{background:var(--err-soft);color:var(--err-active);}
 .badge-run{background:var(--run-soft);color:var(--run-active);}
+/* DS-20261120-04b：补「提示/信息」语义（原只有 muted 灰底灰字）——复用真源「选中项浅底/深字」对，零新增色值。 */
+.badge-info{background:var(--select-item-bg);color:var(--select-item-fg);}
+.badge-info:hover{background:color-mix(in srgb, var(--primary) 16%, var(--n1));}
+.badge-info.is-disabled{opacity:.6;}
 .badge-suc:hover{background:var(--suc-soft-hover);} .badge-suc.is-disabled{background:var(--suc-disabled);color:var(--suc-fg);opacity:.6;}
 .badge-warn:hover{background:var(--warn-soft-hover);} .badge-warn.is-disabled{background:var(--warn-disabled);color:var(--warn-fg);opacity:.6;}
 .badge-err:hover{background:var(--err-soft-hover);} .badge-err.is-disabled{background:var(--err-disabled);color:var(--err-fg);opacity:.6;}
@@ -354,6 +360,11 @@
 .card-head{height:40px;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid var(--n6);
   font-size:14px;font-weight:500;color:var(--n11);}
 .card-title{font-size:14px;font-weight:500;color:var(--text-1);}
+/* DS-20261120-07：卡头含 32px 控件时自动 48 高（上下各 8；原 40 高只剩 4px，与 16px 内边距形成 4 倍落差）。 */
+.card-head:has(.btn:not(.btn-sm)),
+.card-head:has(.filter-chip),
+.card-head:has(.input),
+.card-head:has(.sel-trigger){height:48px;}
 .card-body{padding:var(--density-content-padding);}
 
 .card--fill{display:flex;flex-direction:column;}
@@ -393,6 +404,37 @@ body{margin:0;font-family:var(--font-cn);font-size:14px;color:var(--n10);backgro
 .step.is-active .step-dot{border-color:var(--primary);color:var(--primary);font-weight:600;}
 .step.is-active .step-text{color:var(--text-1);font-weight:500;}
 .step-line{flex:1;height:1px;background:var(--n6);margin:0 var(--space-sm);min-width:16px;}
+
+/* ===== 工序流程 Flow（DS-20261120-06 入库；实现取自示例页已验证形态） =====
+ * 纵向链（默认：.flow > .flow-step + .flow-conn 虚线连接）/ .flow--row 横向节点卡 + .flow-arrow 箭头。
+ * 文字走 .t-* 字阶类；状态用 .badge；异常 .is-err / .is-warn 改图标块与节点边框。 */
+.flow{display:flex;flex-direction:column;}
+.flow-step{display:flex;align-items:center;gap:var(--space-md);padding:var(--space-xs) 0;border-radius:var(--radius-base);
+  transition:background var(--motion-duration-fast) var(--motion-ease-out);}
+.flow-step:hover{background:var(--n3);}
+.flow-ico{width:28px;height:28px;flex:none;border-radius:var(--radius-md);background:var(--n3);color:var(--n10);
+  display:inline-flex;align-items:center;justify-content:center;
+  transition:background var(--motion-duration-fast) var(--motion-ease-out),color var(--motion-duration-fast) var(--motion-ease-out),transform var(--motion-duration-fast) var(--motion-ease-out);}
+.flow-ico svg{width:16px;height:16px;stroke:currentColor;fill:none;}
+.flow-info{flex:1;min-width:0;}
+.flow-tag{margin-left:var(--space-sm);}
+.flow-conn{width:28px;margin:0 auto;height:12px;border-left:2px dashed var(--n6);}
+.flow-pulse{animation:pulse var(--motion-duration-slow) var(--motion-ease-in-out) infinite;}
+.flow-step.is-err .flow-ico{background:var(--err-soft);color:var(--err);transform:scale(1.08);}
+.flow-step.is-warn .flow-ico{background:var(--warn-soft);color:color-mix(in srgb, var(--warn) 55%, var(--n11));}
+/* 横向变体：节点卡 + 连接箭头（工序链条示意）。
+ * DS-20261120-04②：节点 = 横排左对齐（icon 左 + 文本块占满卡宽），禁竖排居中——
+ * flex:1 拉伸 × 居中窄内容在少步数全宽场景产生大片空白（看板页实测）。 */
+.flow--row{flex-direction:row;align-items:stretch;gap:var(--space-sm);}
+.flow--row .flow-step{flex:1;min-width:0;align-items:center;text-align:left;
+  padding:var(--space-sm) var(--space-md);border:1px solid var(--n6);background:var(--bg-surface);}
+.flow--row .flow-info{flex:1;min-width:0;}
+.flow--row .flow-step.is-err{border-color:var(--err);box-shadow:0 0 0 3px var(--err-soft);}
+.flow--row .flow-step.is-warn{border-color:var(--warn);box-shadow:0 0 0 3px var(--warn-soft);}
+.flow-arrow{flex:none;width:24px;align-self:center;height:0;border-top:2px solid var(--n6);position:relative;}
+.flow-arrow::after{content:'';position:absolute;right:-2px;top:-7px;border:6px solid transparent;border-left-color:var(--n6);}
+.flow-arrow.is-err{border-top-color:var(--err);}
+.flow-arrow.is-err::after{border-left-color:var(--err);}
 
 /* ===== 时间线 Timeline（2026-10-20 新增；日志/操作记录） ===== */
 .timeline{display:flex;flex-direction:column;}

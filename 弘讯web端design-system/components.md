@@ -292,8 +292,13 @@
 | 步骤条 | `.steps` `.step` `.step-dot` `.step-text` `.step-line` | 点 24 圆、连接线 1px N6；`.is-done` 实底 primary+白字，`.is-active` 描边 primary+primary 字 |
 | 时间线 | `.timeline` `.tl-item` `.tl-dot` `.tl-time` `.tl-text` | 点 8、线 1px N6、时间 12/N9、正文 14/N10；`.is-active` 圆点实心 |
 | 描述列表 | `.descriptions` `.desc-item` `.desc-label` `.desc-value` | 自适应列 min240、行高 40、label 96/13/N9、value 14/N10 省略号 |
+| 工序流程（2026-11-20） | `.flow` `.flow-step` `.flow-ico` `.flow-info` `.flow-tag` `.flow-conn` `.flow-arrow` `.flow--row` | 节点 = 图标块 28 + 文字块（`.t-*`）+ `.badge`；纵向链用 `.flow-conn` 虚线连接，`.flow--row` 横向节点卡 + `.flow-arrow` 箭头；`.is-err`/`.is-warn` 改图标块与边框 |
 
 **用法**：空数据禁止留白表格；步骤/时间线/键值对统一复用上述类，不自造。
+
+> **`.steps` vs `.flow`**：`.steps` = 线性进度（`is-done/is-active`）；`.flow` = 流程健康态 + 节点指标（设备工序链）。工序图禁页面自造 `.flow*`（门禁已纳入前缀）。
+> **Badge 六态（补 `.badge-info`）**：统一「同系 soft 底 + 同系深字」；`.badge-warn` 文字改 `--warn × --n11` 混色（亮 4.97:1 AA、暗回 `--warn`）；「提示」不得再用 `.badge-muted`。
+> **卡头高度**：含 32px 控件（`.btn:not(.btn-sm)`/`.filter-chip`/`.input`/`.sel-trigger`）时 `:has()` 自动 48（上下各 8），页面无需改类。
 
 ## 页面模板（非组件，独立页）
 
@@ -306,7 +311,7 @@
 - **状态**：`.machine-card--idle`（state-idle）、`.machine-card--stop` / `--off`（state-stop）、`.machine-card--fault`（state-fault）、`.machine-card--offline`（state-offline 虚线）；默认 state-run。
 - **规格**：状态条 3px；标题 16/600 + 编码 12；周期 24/28 mono；指标条 n3 四列；进度条 6px；footer 11。
 - **禁忌**：关机不用蓝色；指标不超过 4 项；卡内不再套卡；状态不只靠 badge，必须有左侧状态条。
-- **代码**：`referenceCss / referenceHtml` 见 `components.json#machine-card`；示例 `output/左右结构_图表示例页.html`。
+- **代码**：`referenceCss / referenceHtml` 见 `components.json#machine-card`；示例 `showcase/左右结构_v7_设备运维工作台.html`（机器群览区）。
 - **真源**：`packages/web-ui/src/styles/components.css`；`template.css` 由 `build-template-css.js` 生成。
 
 ---

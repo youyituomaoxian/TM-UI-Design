@@ -108,7 +108,9 @@
 .chart-canvas{position:absolute;inset:0;width:100%;height:100%;}
 
 
-.chart-svg--fill{width:100%;height:100%;display:block;aspect-ratio:16/9;}
+/* DS-20261120-02：绝对填充取代 aspect-ratio 反推（--flex 的 height:auto 会让 100% 失效 → 溢出裁切）。
+   父级必须是 .chart-box 系列（定高 / min-height）；与 .chart-canvas 同款原语。 */
+.chart-svg--fill{position:absolute;inset:0;width:100%;height:100%;display:block;}
 .chart-svg--fill polyline,.chart-svg--fill path,.chart-svg--fill line{vector-effect:non-scaling-stroke;}
 
 .chart-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;}
@@ -117,6 +119,8 @@
 /* 轴标签显式锁定黑体 + 12px（V8c：曾漏显式声明——字号错继承 body 14px、字体全靠继承链，违反「显式 font-family 锁定黑体家族」守则；暗底细灰字渲染发虚被误读为衬线） */
 .chart-x-labels{display:flex;justify-content:space-between;margin-top:4px;color:var(--n8);font-family:var(--font-cn);font-size:12px;}
 .chart-x-labels span{flex:1;text-align:center;}
+/* DS-20261120-01：给 renderChartXLabels() 的 absolute 子元素提供定位容器（脚本会自动挂本类）。 */
+.chart-x-labels--abs{position:relative;height:20px;}
 .chart-v{position:absolute;transform:translateX(-50%);color:var(--n11);font-family:var(--font-mono);}
 .chart-hl{position:absolute;left:0;transform:translateY(-50%);color:var(--n8);font-family:var(--font-mono);}
 .chart-hr{position:absolute;transform:translateY(-50%);color:var(--n11);font-family:var(--font-mono);}

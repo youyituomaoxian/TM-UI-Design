@@ -20,7 +20,7 @@
    - 页面规格：`RULES.md §1.1b/§1.1d`；组件：`components.json` + `template.css`（按名检索，不通读）
    - 图标从 `icons/` 取（`icons.md` 索引 → path 内联；缺件才手写并上报，RULES §7.9③）
    - 字体只用 `var(--font-cn)` / `var(--font-mono)`；`tabular-nums` 仅纯数字
-   - 图表 `CHART-SPEC.md`（原子 SVG，色走 `--chart-*`）；跨端色 `CROSS-PLATFORM-COLORS.md`
+   - 图表 `CHART-SPEC.md`（原子 SVG，色走 `--chart-*`）；跨端**中性色**差异 `CROSS-PLATFORM-NEUTRALS.md`（根目录）；跨端**功能色**契约 `弘讯web端design-system/CROSS-PLATFORM-COLORS.md`（同名两文件，主题不同，勿混读）
    - 非默认品牌：`brand-color-engine/`（暗色固定不随品牌）
 4. 产出落「**用户项目**」`output/`（CSS link 指向本仓库 `template.css`）。
 5. 门禁：单页 `node scripts/verify.js page <页面>` → **0 HIGH**；**交付口径** `verify.js all` = 存量全链路（`ci-local`）+ 新规范范围（`verify-new`），两者全绿；只验新规范用 `verify.js all --scope=new`。

@@ -1834,14 +1834,14 @@ body[data-allow-scroll] .shell{overflow:hidden;}
   .req-empty{display:none;text-align:center;padding:32px;color:var(--n8);}
 
   /* ---- 快速上手 5 步 ---- */
-  .step-track{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
-  .step-card{position:relative;background:var(--n1);border:1px solid var(--n6);border-radius:var(--radius-lg);padding:18px 14px 14px;transition:transform var(--motion-duration-fast) var(--motion-ease-out),box-shadow var(--motion-duration-fast) var(--motion-ease-out);}
-  .step-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-float);}
-  .step-num{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:var(--radius-round);
+  .guide-track{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+  .guide-card{position:relative;background:var(--n1);border:1px solid var(--n6);border-radius:var(--radius-lg);padding:18px 14px 14px;transition:transform var(--motion-duration-fast) var(--motion-ease-out),box-shadow var(--motion-duration-fast) var(--motion-ease-out);}
+  .guide-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-float);}
+  .guide-num{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:var(--radius-round);
     font-size:15px;font-weight:600;color:var(--text-on-brand);margin-bottom:10px;}
   .sn-1{background:var(--primary);}.sn-2{background:var(--run-active);}.sn-3{background:var(--warn-active);}.sn-4{background:var(--err-active);}.sn-5{background:var(--n9);}
-  .step-card b{display:block;font-size:14px;margin-bottom:6px;}
-  .step-card .t-body2{font-size:12px;color:var(--n8);line-height:1.6;}
+  .guide-card b{display:block;font-size:14px;margin-bottom:6px;}
+  .guide-card .t-body2{font-size:12px;color:var(--n8);line-height:1.6;}
 
   /* ---- 角色路径 ---- */
   .path-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;}
@@ -1888,11 +1888,11 @@ body[data-allow-scroll] .shell{overflow:hidden;}
   .kbd{display:inline-block;padding:0 6px;height:20px;line-height:18px;border:1px solid var(--n6);border-radius:var(--radius-base);background:var(--n1);color:var(--n10);font-family:var(--font-mono);font-size:12px;}
 
   @media (max-width:900px){
-    .step-track{grid-template-columns:repeat(2,1fr);}
+    .guide-track{grid-template-columns:repeat(2,1fr);}
     .doc-nav{position:static;border-radius:var(--radius-md);}
   }
   @media (max-width:560px){
-    .step-track{grid-template-columns:1fr;}
+    .guide-track{grid-template-columns:1fr;}
     .doc-hero h1{font-size:30px;}
     .hero-btn{flex:1;justify-content:center;}
   }
@@ -2029,29 +2029,29 @@ body[data-allow-scroll] .shell{overflow:hidden;}
       <h2>快速上手 · 5 步</h2>
       <span class="t-caption">第一次生成页面的最小路径</span>
     </div>
-    <div class="step-track">
-      <div class="step-card">
-        <span class="step-num sn-1">1</span>
+    <div class="guide-track">
+      <div class="guide-card">
+        <span class="guide-num sn-1">1</span>
         <b>定位仓库</b>
         <span class="t-body2">在项目目录内对话（<span class="kbd">AGENTS.md</span> / <span class="kbd">CLAUDE.md</span> 自动加载）；本目录即仓库根（<span class="kbd">main</span>），<span class="kbd">git pull</span> 取更新。<span class="kbd">TM_DESIGN_REPO</span> 仅兼容旧入口。</span>
       </div>
-      <div class="step-card">
-        <span class="step-num sn-2">2</span>
+      <div class="guide-card">
+        <span class="guide-num sn-2">2</span>
         <b>脚手架起手</b>
         <span class="t-body2"><span class="kbd">new-page-web.js</span>（Web）或 <span class="kbd">new-page-mobile.js</span>（移动）——自动克隆框架 + 注入克隆凭证 + 修 CSS link，落 <span class="kbd">./output/</span>。</span>
       </div>
-      <div class="step-card">
-        <span class="step-num sn-3">3</span>
+      <div class="guide-card">
+        <span class="guide-num sn-3">3</span>
         <b>填内容</b>
         <span class="t-body2">按 <span class="kbd">RULES.md §1.1b</span> 页面类型规格从零自建；组件用规范 class，颜色/尺寸/字重全走 <span class="kbd">var(--*)</span>；图表按 <span class="kbd">CHART-SPEC.md</span>。</span>
       </div>
-      <div class="step-card">
-        <span class="step-num sn-4">4</span>
+      <div class="guide-card">
+        <span class="guide-num sn-4">4</span>
         <b>过门禁</b>
         <span class="t-body2"><span class="kbd">scripts/verify.js page &lt;页面&gt;</span> → <b>0 HIGH</b>（validate + 组件复用 + 树运行时）；<b>交付口径</b> <span class="kbd">scripts/verify.js all</span>（存量全链路 + 新规范范围）全绿；只验新规范用 <span class="kbd">--scope=new</span>。</span>
       </div>
-      <div class="step-card">
-        <span class="step-num sn-5">5</span>
+      <div class="guide-card">
+        <span class="guide-num sn-5">5</span>
         <b>分享</b>
         <span class="t-body2">运行 <span class="kbd">scripts/build-share-web.js &lt;页面&gt;</span> 生成同名 <span class="kbd">_分享版.html</span>——内联 CSS + 4 个 js + 本地资源并校验零外链；<b>禁手工内联</b>。重出后复跑单页门禁。</span>
       </div>

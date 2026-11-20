@@ -160,6 +160,9 @@ body[data-pane="monitor"] .tab-row{margin-bottom:8px;}
 .tab-row .tab{height:32px;padding:0 12px;font-size:14px;}
 .tab-row .tab.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:500;}
 .tab-row .page-actions{padding-bottom:4px;}
+/* 元信息行形态（DS-20261120-04①）：无页签页把上下文行（.row 直接子级）放进 tab-row 时，
+ * 文本底边须与分割线留 8px 呼吸（tabs 文字距边 ~9px 同重心）；只作用直接子级 .row，不碰 .page-actions。 */
+.tab-row > .row{padding-bottom:var(--space-sm);}
 .page-actions .btn-secondary:disabled{background:var(--n1);border:1px solid var(--n5);color:var(--n8);}
 
 /* 下拉浮层（用户 / APP / 主题 / 语言） */
@@ -230,7 +233,6 @@ body[data-pane="monitor"] .tab-row{margin-bottom:8px;}
 .shell .table{font-size:13px;}
 .shell .table th{height:44px;font-size:14px;white-space:nowrap;}
 .shell .table td{height:44px;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.table--sticky thead th{position:sticky;top:0;z-index:5;}
 .table-card .pager{flex:none;margin:8px 16px;}
 .table-card .table th,.table-card .table td{padding-left:12px;padding-right:12px;}
 .shell .table .col-num{color:var(--text-3);font-family:var(--font-mono);}
@@ -261,6 +263,8 @@ body[data-pane="monitor"] .tab-row{margin-bottom:8px;}
 .seg-row .t-caption{color:var(--text-3);}
 .page-sec{display:none;margin:0;min-height:0;}
 body:not([data-pane]) .page-sec{display:flex;flex-direction:column;flex:1;min-height:0;}
+/* DS-20261120-03：通用 pane 开关（body[data-pane] 时只显 .page-sec.is-active；由 js/page-ui.js 维护，替代 V7 专用 id 选择器）。 */
+.page-sec.is-active{display:flex;flex-direction:column;flex:1;min-height:0;animation:pane-in var(--motion-duration-normal) var(--motion-ease-out) both;}
 body[data-pane="monitor"] #sec-monitor,
 body[data-pane="status"] #sec-status,
 body[data-pane="work"] #sec-work,
@@ -322,9 +326,6 @@ body[data-pane="components"] #sec-components{display:flex;flex-direction:column;
 @keyframes view-in{from{transform:translateY(6px)}to{transform:none}}
 .detail-card.detail-in{animation:detail-in var(--motion-duration-fast) var(--motion-ease-out) both;}
 .view-in{animation:view-in var(--motion-duration-normal) var(--motion-ease-out) both;}
-.chart-dots{position:absolute;inset:0;pointer-events:none;}
-.chart-dots span{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--chart-data-cyan);transform:translate(-50%,-50%);box-shadow:0 0 0 2px var(--n1);}
-.chart-card .chart-v{font-size:12px;line-height:16px;color:var(--text-2);}
 
 @media (prefers-reduced-motion: reduce){
   .chart-line{stroke-dashoffset:0!important;animation:none!important;}

@@ -84,20 +84,29 @@ function declEntries(decl) {
     .filter(Boolean);
 }
 
-/* ---------- 规则③ 白名单：冻结参考模板同属性实测遗留值（如 tag 0 10px / status-dot gap 6px） ---------- */
-const refAllowed = new Set([0]);
-for (const r of parseRules(stripComments(extractStyles(REF_TEMPLATE)))) {
-  if (isTokenBlock(r.sel)) continue;
-  for (const [prop, val] of declEntries(r.decl)) {
-    if (SPACING_PROPS.test(prop)) pxNums(val).forEach(n => refAllowed.add(n));
-  }
-}
-
-/* ---------- 规则② 白名单：tokens.json.font.scale 12 键 ---------- */
+/* ---------- 规则② 白名单基础：tokens.json.font.scale 12 键 ---------- */
 const SCALE = TOKENS.font.scale;
 const SCALE_KEYS = Object.keys(SCALE); // 12 键
 const SIZE_WHITELIST = new Set(Object.values(SCALE).map(s => s.size));
 const W = { Medium: 500, Regular: 400 };
+
+/* ---------- 规则③ 白名单：冻结参考模板同属性实测遗留值（如 tag 0 10px / status-dot gap 6px） ----------
+ * 采集源（2026-11-20 扩）：page-template.html 内联样式 + 真源 build 产物 template.css。
+ * 背景：左右结构改版后 page-template 已无内联样式（组件真源化进 template.css），
+ * 只采 page-template 会把真源既有值（machine-card 14 / tree-popover 10 / status-dot 6…）误判 HIGH。
+ * 值级白名单语义不变：真源出现过的实测值放行，样例页自造值仍拦。 */
+const REF_TEMPLATE_CSS = fs.readFileSync(path.join(ROOT, '弘讯web端design-system', 'template.css'), 'utf8');
+const refAllowed = new Set([0]);
+for (const r of parseRules(stripComments(extractStyles(REF_TEMPLATE) + '\n' + stripComments(REF_TEMPLATE_CSS)))) {
+  if (isTokenBlock(r.sel)) continue;
+  for (const [prop, val] of declEntries(r.decl)) {
+    if (SPACING_PROPS.test(prop)) pxNums(val).forEach(n => refAllowed.add(n));
+    if (prop === 'font-size') {
+      const m = val.match(/^(\d+(?:\.\d+)?)px$/);
+      if (m) SIZE_WHITELIST.add(parseFloat(m[1]));
+    }
+  }
+}
 
 /* ---------- 逐文件扫描（规则①②③） ---------- */
 function scanCssText(fileLabel, cssRaw) {

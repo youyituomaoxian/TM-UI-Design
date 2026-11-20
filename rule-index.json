@@ -83,7 +83,7 @@
       "hard": "软",
       "title": "组件选择决策树",
       "line": 163,
-      "chars": 14711,
+      "chars": 14757,
       "read": "on-demand",
       "gate": null
     },
@@ -119,7 +119,7 @@
       "hard": "硬",
       "title": "左右结构工作台页面模式（2026-11-19 从 v7 示例页提升）",
       "line": 271,
-      "chars": 1390,
+      "chars": 1436,
       "read": "on-demand",
       "gate": null
     },
@@ -354,7 +354,7 @@
       "hard": "硬",
       "title": "间距与布局规范速查",
       "line": 626,
-      "chars": 7837,
+      "chars": 7927,
       "read": "on-demand",
       "gate": null
     },
@@ -396,7 +396,7 @@
       "hard": "硬",
       "title": "固定布局常量",
       "line": 650,
-      "chars": 513,
+      "chars": 603,
       "read": "on-demand",
       "gate": [
         "grid.4px"
@@ -551,7 +551,7 @@
       "hard": "软",
       "title": "布局美学规范（新增 · 本地化改写自 ui-ux-pro-max 审美规则）⚠️ 必读",
       "line": 840,
-      "chars": 6671,
+      "chars": 6900,
       "read": "must",
       "gate": null
     },
@@ -623,7 +623,7 @@
       "hard": "软",
       "title": "WCAG 2.0 前景/背景色使用（与移动端 §10.3b 对称）",
       "line": 895,
-      "chars": 817,
+      "chars": 1046,
       "read": "must",
       "gate": null
     },
@@ -634,7 +634,7 @@
       "level": 3,
       "hard": "软",
       "title": "视觉反馈与层级",
-      "line": 913,
+      "line": 914,
       "chars": 305,
       "read": "must",
       "gate": null
@@ -646,7 +646,7 @@
       "level": 3,
       "hard": "软",
       "title": "反廉价清单（Anti-Patterns，生成后自查）",
-      "line": 923,
+      "line": 924,
       "chars": 360,
       "read": "must",
       "gate": null
@@ -658,7 +658,7 @@
       "level": 3,
       "hard": "软",
       "title": "生成后视觉自检闭环（必做）",
-      "line": 934,
+      "line": 935,
       "chars": 209,
       "read": "must",
       "gate": null
@@ -670,7 +670,7 @@
       "level": 3,
       "hard": "软",
       "title": "页面级自造类守则（拍板修订 v2：与移动端 §10.10 对称·解禁视觉属性·禁覆写真源·门禁落地）⚠️ 必读",
-      "line": 942,
+      "line": 943,
       "chars": 3386,
       "read": "must",
       "gate": [
@@ -684,7 +684,7 @@
       "level": 2,
       "hard": "硬",
       "title": "动效与交互自动添加（拍板：页面生成即携带交互）⚠️ 必读",
-      "line": 1011,
+      "line": 1012,
       "chars": 1262,
       "read": "on-demand",
       "gate": [
@@ -698,8 +698,8 @@
       "level": 2,
       "hard": "软",
       "title": "图表自建范式（重构：「样式 + 结果约束」——实现放开，结果锁死）⚠️ 必读",
-      "line": 1047,
-      "chars": 3064,
+      "line": 1048,
+      "chars": 3323,
       "read": "must",
       "gate": null
     },
