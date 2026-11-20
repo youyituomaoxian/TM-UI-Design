@@ -39,7 +39,7 @@
 > 一次任务（含入口）≤ 40k 字符（SOP §0）。
 
 - 必读：SOP §①（存量 §②）＋对应端 RULES 命中章节＋`tokens.json` 的 `colors`。
-- 按需：`CHART-SPEC.md` / `audit-rules.json` / `DESIGN-TOKENS.md` / `MASTER.md`（按章）。
+- 按需：`CHART-SPEC.md`（**含图表页必读 §4/§5/§7**，加载集 `generate-web-chart`）/ `audit-rules.json` / `DESIGN-TOKENS.md` / `MASTER.md`（按章）。
 - 禁通读：`components.json` · `template.css` · `validate-spec.js` · `ci-local.js` 及门禁脚本；禁整份 RULES/SOP/CHART-SPEC。
 - SSOT：色→`tokens.json`｜组件→`components.json`+`components.md`｜审计→`audit-rules.json`｜图表→`CHART-SPEC.md`｜治理→双端 RULES 页首｜交付线→`verify.js`/`validate-spec` 输出。
 - 门禁报错发散 → 回读对应端 RULES 章节，禁盲目修补。

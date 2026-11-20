@@ -188,6 +188,19 @@ function build() {
         { file: '弘讯web端design-system/tokens.json', jsonPath: 'colors' },
       ],
     },
+    'generate-web-chart': {
+      budget: 40000,
+      items: [
+        { file: 'AGENTS.md', whole: true },
+        { file: SOP, from: '## ① ', to: '## ② ' },
+        { file: ENDS[0].file, section: '1.1b' },
+        { file: ENDS[0].file, section: '7' },
+        { file: ENDS[0].file, section: '9' },
+        { file: 'CHART-SPEC.md', from: '## 4. ', to: '## 6. ' },
+        { file: 'CHART-SPEC.md', from: '## 7. ', to: '## 附录 A' },
+        { file: '弘讯web端design-system/tokens.json', jsonPath: 'colors' },
+      ],
+    },
     'generate-mobile': {
       budget: 40000,
       items: [

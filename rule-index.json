@@ -83,7 +83,7 @@
       "hard": "软",
       "title": "组件选择决策树",
       "line": 163,
-      "chars": 14653,
+      "chars": 14711,
       "read": "on-demand",
       "gate": null
     },
@@ -107,7 +107,7 @@
       "hard": "软",
       "title": "页面类型规格（pages/ 已删除并入本节 ⚠️ 必读）",
       "line": 189,
-      "chars": 9133,
+      "chars": 9191,
       "read": "must",
       "gate": null
     },
@@ -699,7 +699,7 @@
       "hard": "软",
       "title": "图表自建范式（重构：「样式 + 结果约束」——实现放开，结果锁死）⚠️ 必读",
       "line": 1047,
-      "chars": 3222,
+      "chars": 3258,
       "read": "must",
       "gate": null
     },
@@ -1549,6 +1549,46 @@
         {
           "file": "弘讯web端design-system/RULES.md",
           "section": "9"
+        },
+        {
+          "file": "弘讯web端design-system/tokens.json",
+          "jsonPath": "colors"
+        }
+      ]
+    },
+    "generate-web-chart": {
+      "budget": 40000,
+      "items": [
+        {
+          "file": "AGENTS.md",
+          "whole": true
+        },
+        {
+          "file": "GENERATION-SOP.md",
+          "from": "## ① ",
+          "to": "## ② "
+        },
+        {
+          "file": "弘讯web端design-system/RULES.md",
+          "section": "1.1b"
+        },
+        {
+          "file": "弘讯web端design-system/RULES.md",
+          "section": "7"
+        },
+        {
+          "file": "弘讯web端design-system/RULES.md",
+          "section": "9"
+        },
+        {
+          "file": "CHART-SPEC.md",
+          "from": "## 4. ",
+          "to": "## 6. "
+        },
+        {
+          "file": "CHART-SPEC.md",
+          "from": "## 7. ",
+          "to": "## 附录 A"
         },
         {
           "file": "弘讯web端design-system/tokens.json",

@@ -63,7 +63,7 @@
 | [硬] 6. 布局黄金法则 | 2.0k | 布局时 · 必读 |
 | [软] 7. 布局美学规范 | 6.7k | 排版/留白/层级 · 必读 |
 | [硬] 8. 动效与交互 | 1.3k | 生成即携带 |
-| [软] 9. 图表自建范式 | 3.2k | 含图表时（真源 CHART-SPEC.md） |
+| [软] 9. 图表自建范式 | 3.3k | 含图表时（真源 CHART-SPEC.md） |
 
 > 机器资产（`components.json` 71k / `template.css` 54k / `validate-spec.js` 107k）**不通读**——由门禁与构建消费；单点事实源见 `GENERATION-SOP.md §0`。
 
@@ -224,7 +224,7 @@ START: 我要做什么类型的页面？
 - 卡外 `.login-head`：**承载品牌 logo**——`<img>` 高 **40** 宽自适应（按系统名选 弘设汇/弘塑云/弘智造 彩标，见 §0.1a），**左沿与卡左沿对齐**，与卡间距 **24**；卡外不再放系统名文字（门禁 `login.head.logo`）。
 - 卡内顶部：**标题组**「系统名 24/32 Medium N11 + 副标题 13/20 N9」左对齐（组内 4，用 `.login-head-text`）→ 其下 **「登录」18/26**（`.login-card-title`）；**卡内禁放 logo**（门禁 `login.card.no-logo` / `login.card.title`）。
 - 字段：**账号 + 密码**——每个字段 = `.login-field` + `.login-label`（14/22 N10，下 8）+ 输入（40 高）；密码用 `.login-password`（`.login-input--pwd` 右留 48，眼睛 `.ico-off/.ico-on` 由 `aria-pressed` 切换，40×40）；字段组之间 **16**；手机号登录为**变体**（`.login-phone` + `.login-cc` 区号 112×40），页面须显式声明 `data-login-phone="true"`；**账号/密码必须有可见 `<label for>`**（门禁 `login.fields.labels`）。
-- `.input .input-lg` 40 高（契约 32/40）；`.btn-primary .btn-lg` 40 全宽、字重 400；辅助行「记住我」+「忘记密码」(`.login-link`) + 联系管理员 + 法务行。
+- `.input .input-lg` 40 高（契约 32/40）；`.btn-primary .btn-lg` 40 全宽、字重 400；辅助行「记住我」+「忘记密码」(`.login-link`)；**不设「账号由系统管理员开通」帮助行**（2026-11-20 拍板移除，`.login-help` 仅留给找回密码/返回链接）；法务行见下。
 - 节奏：卡 padding 上下 32 / 左右 40 →「系统名组」→ 24 →「登录」→ 24 → 首字段；label 下 8、字段组 16、辅助行上 12、主按钮上 16、帮助行上 16、法务行上 24、法务行→卡底 32；语言在卡外右上（`.lang-sel`）。
 - 法务行 `.login-legal`：`.login-legal-links`（链接组，gap 8）+ `.login-copy`（版权/备案号，`margin-left:0`），行级 `justify-content:space-between` + `flex-wrap`；**zh 单行＝链接左/版权右；en（`html[lang="en"]`）两行整块居中**；禁缩字号或砍文案硬塞；**备案号 = `工信部备案号 浙ICP备0000000号-1`**，可点击（`https://beian.miit.gov.cn/`，`_blank`+`noopener`），en 同号
 - 状态：`.input.is-error` 字段错、`.login-alert` 表单错/账号锁定/验证码错（**必须有此承载位**，门禁 `login.states`）、`.login-hint` CapsLock、提交中按钮禁用 + `.spinner`；占位符 N9（N8 仅 2.3:1）、输入 `aria-label`、错误 `aria-describedby`、Tab 可走完、`type=submit`。
@@ -1047,6 +1047,7 @@ Shell           height=100vh FIXED
 ## [软] 9. 图表自建范式（重构：「样式 + 结果约束」——实现放开，结果锁死）⚠️ 必读
 
 > **完整真源 = 仓库根 CHART-SPEC.md**（含通用决策流程 / 结果约束清单 / 两端差异 / 门禁口径 / 扩展类型指引 / 附录 A 点按脚本）。本节约为 Web 端内联摘要，冲突以 CHART-SPEC 为准。
+> **图表页必读**：`CHART-SPEC §4`（色彩）/ `§5`（交互）/ `§7`（门禁）；图表任务加载集 = `generate-web-chart`（`rule-index.json` 实测 37.7k/40k）。不读这三节不得交付图表页。
 > **实物示范 = 展示页 #chart-demo section**（多类型×多尺寸自适应，识图全过）
 
 **① 实现放开（拍板，替代固定 viewBox/尺寸/数据量）**
@@ -1058,9 +1059,9 @@ Shell           height=100vh FIXED
 **② 结果约束清单（缺一不可）**
 
 1. **柱底对齐基线**：任何柱数/容器宽度下柱底贴基线（flex 容器 + 基线元素）。
-2. **x 轴标签不重叠、不叠柱**：标签独立行（flex 与柱同列宽对齐）——禁止标签作为柱子子级定位；柱多自动跳显。**x 标签外置时（V10 模式）**：标签行放 chart-box **外部**（真源 `.chart-x-labels`，span 纯 flex 均分、禁 absolute+left% 旧模式）；**SVG viewBox 的 PB（底部预留）须同步回收至 ≤8**——PB=42 是旧「图内标签」模式的占位，外置后不回收即残留 ~100px 死空间（订单总览实战）。
-3. **禁不同量纲共单轴（V10 新增 2026-08-27，订单总览实战）**：折线图两个系列单位不同（万元 vs 台）时**禁止归一化共绘一条坐标系**——量纲归一后两线位置由缩放系数偶然决定，对比无意义（实战：双线几乎重合）。双量纲场景：① 单系列主指标 + 次指标进汇总行/tooltip；② 双 Y 轴（左右刻度分离标注）；③ 柱线组合图。另：**数据必须符合业务常识**——时间序列禁止编造完美单调递增（真实订单/产能必有波动）。
-4. **x 轴标签必须用真源组件对齐（V12-A3 新增 2026-08-28，连续两代页面复犯）**：x 标签与数据点共用同一坐标系——用 `scripts/chart-x-labels.js` 的 **`renderChartXLabels()`**（从 polyline points 反解数据点 x，absolute + left% + translateX(-50%)，端点钳制防溢出），**禁页面自绘标签行**（flex 全宽均分与绘图区均布是两套坐标系，实测错位 delta -54/+36px）。**图表底部结构顺序硬规则**：SVG → x-labels（独立文档流行，容器 position:relative; height:20px; margin-top:8px）→ legend → summary，四层各占独立行、间距 token 化，禁 absolute 互相侵入（实战：「7月」叠「客单价」）。
+2. **x 轴标签不重叠、不叠柱**：标签独立行（flex 与柱同列宽对齐）——禁止标签作为柱子子级定位；柱多自动跳显。**x 标签外置时（V10 模式）**：标签行放 chart-box **外部**（真源 `.chart-x-labels`，span 纯 flex 均分、禁 absolute+left% 旧模式）；**SVG viewBox 的 PB（底部预留）须同步回收至 ≤8**——PB=42 是旧「图内标签」模式的占位，外置后不回收即残留 ~100px 死空间。
+3. **禁不同量纲共单轴（V10）**：折线图两个系列单位不同（万元 vs 台）时**禁止归一化共绘一条坐标系**——量纲归一后两线位置由缩放系数偶然决定，对比无意义。双量纲场景：① 单系列主指标 + 次指标进汇总行/tooltip；② 双 Y 轴（左右刻度分离标注）；③ 柱线组合图。另：**数据必须符合业务常识**——时间序列禁止编造完美单调递增（真实订单/产能必有波动）。
+4. **x 轴标签必须用真源组件对齐（V12-A3）**：x 标签与数据点共用同一坐标系——用 `scripts/chart-x-labels.js` 的 **`renderChartXLabels()`**（从 polyline points 反解数据点 x，absolute + left% + translateX(-50%)，端点钳制防溢出），**禁页面自绘标签行**（两套坐标系必错位，实测 delta -54/+36px）。**图表底部结构顺序硬规则**：SVG → x-labels（独立文档流行，容器 position:relative; height:20px; margin-top:8px）→ legend → summary，四层各占独立行、间距 token 化，禁 absolute 互相侵入。
 5. **标签不溢出容器**：图表底部为 x 轴标签留白区（基线下方 ≥20px），x 标签与柱顶数值均不得负定位溢出容器。
 6. **折线数据点严格落线**：polyline 与 HTML 点共用同一百分比坐标系（points 坐标 ÷100 = dot left/top）；点固定尺寸正圆（non-scaling-stroke 线宽恒定）。
 7. **环形图中心文字不变形**：HTML 绝对定位居中，SVG 只画环。
