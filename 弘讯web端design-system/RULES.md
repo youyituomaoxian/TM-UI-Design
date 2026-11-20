@@ -54,8 +54,8 @@
 
 | 章 | 字符 | 何时读 |
 |---|---|---|
-| [硬] 0. B 端后台固定框架 | 7.8k | 判定是否套框架（判定必读） |
-| [软] 1. 组件选择决策树 | 14.6k | 选组件时 · 必读 |
+| [硬] 0. B 端后台固定框架 | 7.7k | 判定是否套框架（判定必读） |
+| [软] 1. 组件选择决策树 | 14.7k | 选组件时 · 必读 |
 | [硬] 2. 禁止清单 | 1.0k | 生成前自查 · 简读 |
 | [硬] 3. 组件状态机 | 10.5k | 写/改按钮·输入态时 |
 | [硬] 4. 间距与布局速查 | 7.8k | 布局时 |
@@ -138,8 +138,6 @@
 > - **参考实现路径（仅同栈）**：React 页用 `node packages/web-ui/scripts/new-page-react.js <PageName>`（脚手架 `BizAdminPage.tsx`，`AdminLayout` + 真实组件），**禁基于 template.css 自搓组件**；Taro 页用 `node packages/mobile-ui/scripts/new-page-mobile.js <PageName>`。预览页与参考实现**统一遵守** DOM 契约 / 类名白名单。
 >
 > **框架维度真源**：左右结构外壳 = `workbench.css`（第五件）+ `framework.css`（G8 固定滚动 / G9 折叠 / 品牌表面树选中 / 暗色 chrome），维度变量（216/64/60/56）来自 `globals.css` token。旧 `.app/.sidebar`（72/240/80/32）为历史实现。
->
-> **📌 历史记录（已随左右结构废弃）**：旧 `.app` 结构底栏与侧栏的宽度关系问题不再适用于新外壳——现行外壳无全局底栏，版权在 `.rail-foot`。
 >
 > **参考样例**：`packages/web-ui/src/demo/pages/CncDashboard.tsx`（`npm run dev` 指向它，`npm run build` 端到端验证）；HTML 起手 Clone 源 = `page-template.html`（link template.css，0 违反）。
 >
@@ -228,7 +226,7 @@ START: 我要做什么类型的页面？
 - 字段：**账号 + 密码**——每个字段 = `.login-field` + `.login-label`（14/22 N10，下 8）+ 输入（40 高）；密码用 `.login-password`（`.login-input--pwd` 右留 48，眼睛 `.ico-off/.ico-on` 由 `aria-pressed` 切换，40×40）；字段组之间 **16**；手机号登录为**变体**（`.login-phone` + `.login-cc` 区号 112×40），页面须显式声明 `data-login-phone="true"`；**账号/密码必须有可见 `<label for>`**（门禁 `login.fields.labels`）。
 - `.input .input-lg` 40 高（契约 32/40）；`.btn-primary .btn-lg` 40 全宽、字重 400；辅助行「记住我」+「忘记密码」(`.login-link`) + 联系管理员 + 法务行。
 - 节奏：卡 padding 上下 32 / 左右 40 →「系统名组」→ 24 →「登录」→ 24 → 首字段；label 下 8、字段组 16、辅助行上 12、主按钮上 16、帮助行上 16、法务行上 24、法务行→卡底 32；语言在卡外右上（`.lang-sel`）。
-- 法务行 `.login-legal`：`.login-legal-links`（链接组，gap 8）+ `.login-copy`（版权，`margin-left:0`），行级 `justify-content:space-between` + `flex-wrap`；**zh 单行＝链接左/版权右；en（`html[lang="en"]`）两行整块居中**；禁缩字号或砍文案硬塞。
+- 法务行 `.login-legal`：`.login-legal-links`（链接组，gap 8）+ `.login-copy`（版权/备案号，`margin-left:0`），行级 `justify-content:space-between` + `flex-wrap`；**zh 单行＝链接左/版权右；en（`html[lang="en"]`）两行整块居中**；禁缩字号或砍文案硬塞；**备案号 = `工信部备案号 浙ICP备0000000号-1`**，可点击（`https://beian.miit.gov.cn/`，`_blank`+`noopener`），en 同号
 - 状态：`.input.is-error` 字段错、`.login-alert` 表单错/账号锁定/验证码错（**必须有此承载位**，门禁 `login.states`）、`.login-hint` CapsLock、提交中按钮禁用 + `.spinner`；占位符 N9（N8 仅 2.3:1）、输入 `aria-label`、错误 `aria-describedby`、Tab 可走完、`type=submit`。
 - 找回密码卡内 3 步（`.steps`）：账号 → 6 位验证码（`.login-code`，60s 重发）→ 新密码（8–20 位含字母数字）；卡宽不变、切步不跳页；完成态 `.login-done`（重置成功 / 登录成功两种文案）。
 - 主色仅按钮实底/链接/聚焦边框/品牌标识，底色 N4；**暗色豁免**：登录页亮色单模式。

@@ -69,8 +69,8 @@ const LIMITS = [
   ['弘讯web端design-system/validate-spec.js', 132000],  // 2026-11-17：+页头标题语义/HTML骨架两门禁（白屏+按钮标题事故兜底），实测 123231 + 5% 重测；2026-11-12：M-08 实测 114806 + 5%；2026-11-07：tree.node.split / dark.brand.override
   ['弘讯web端design-system/agent-starter.html', 4400],
   ['弘讯web端design-system/README.md', 4600],
-  // 2026-11-20：外壳真源 / 门禁清单 / 三阶治理两轮条目，12500 → 14400（归档容器已满，滚动归位待按年拆分后执行）。
-  ['弘讯web端design-system/CHANGELOG.md', 14400],
+  // 2026-11-20：外壳真源 / 门禁清单 / 治理 / 登录备案号条目，12500 → 14800（归档容器已满，滚动归位待按年拆分后执行）。
+  ['弘讯web端design-system/CHANGELOG.md', 14800],
   ['弘讯web端design-system/CHANGELOG-archive.md', 60000], // 滚动归档容器：只增不减，超 60k 按年拆分
   // 移动端
   ['弘讯移动端design-system/RULES.md', 54200],

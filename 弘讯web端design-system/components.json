@@ -1731,7 +1731,7 @@
           "prop": "width",
           "expect": 400,
           "severity": "HIGH",
-          "note": "登录卡宽 400（--login-card-w）；2026-11-18 v2 定稿：内边距 上下 32 / 左右 40、logo 出卡置于 .login-head（高 40）、卡内标题组 + 「登录」18/26 + 字段 label、账号+密码、法务行多语言"
+          "note": "登录卡宽 400（--login-card-w）；2026-11-18 v2 定稿：内边距 上下 32 / 左右 40、logo 出卡置于 .login-head（高 40）、卡内标题组 + 「登录」18/26 + 字段 label、账号+密码、法务行多语言；2026-11-20 法务行版权改工信部备案号（可点击 https://beian.miit.gov.cn/）"
         }
       ]
     },

@@ -5,11 +5,17 @@
 
 ---
 
+## [登录页法务行改工信部备案号（可点击）+ 表格规范展示入库] — 2026-11-20
+- **真源**：RULES §1.1b 法务行加「备案号 = `工信部备案号 浙ICP备0000000号-1`，可点击 `https://beian.miit.gov.cn/`（`_blank`+`noopener`），en 同号」；components.json login note 同步；删 RULES 一条已废弃 `.app` 历史注记腾空间（59,999/60,000）。
+- **页面**：`showcase/登录页示例.html` 版权文案 → 备案号，`.login-copy` 由 `span` 改 `a`（i18n `login.copy` zh/en 同步），分享版重出。
+- **示例入库**：`showcase/表格规范展示_20261112.html`（团队视觉展示）登记 `newScope.pages` + 出 `_分享版`；manifest 31 条登记 / 1 条忽略。
+- **实测**：登录页 0 HIGH / 1 MED；表格页 0 HIGH / 13 MED；两分享版零外链。
+
 ## [机制对齐：文档口径随门禁链收口] — 2026-11-20
-- **交付口径**：六份入口文档与双端 RULES 六步的「ci-local 全绿」统一为 `verify all`（存量全链路 + 新规范范围）；按 SOP §0 删写死项数。
-- **流程**：SOP 补外壳工具区真源（SSOT / 克隆第 9 件 / 分享版重出 / 禁区），修退役命令（`cp agent-starter`、本机 node 路径），附录 F 改脚手架。
-- **示例页**：showcase 去掉「不参与门禁」；USAGE 资产地图 +3 行（partials / gate-manifest / 工具区门禁）21→24；移动 RULES 六步同口径。
-- **实测**：`verify all` 全绿；reach 0/2、sync 3/0、size 0 FAIL；分享版与 showcase 副本重出。
+- **口径**：6 份入口文档 + 双端 RULES 六步统一 `verify all`；按 SOP §0 删写死项数。
+- **SOP**：补外壳工具区真源（SSOT / 克隆第 9 件 / 分享版重出 / 禁区）、修 `cp agent-starter` 与本机 node 路径、附录 F 改脚手架。
+- **定位**：showcase 去「不参与门禁」；USAGE 资产地图 21→24；移动 RULES 同口径。
+- **实测**：`verify all` 全绿；reach 0/2、sync 3/0、size 0 FAIL。
 
 ## [门禁清单化 + 工具区 DOM 契约：堵掉「删条目 = 绕过门禁」] — 2026-11-20
 - **清单**：新增 `scripts/gate-manifest.json`（工具区真源/注入/派生 + newScope + pageScan + `schemaVersion`）；`verify-new`、`check-shell-chrome`、`sync-shell-tools` 改读清单，脚本不再写死页面；新增 `lib/shell-tools.js` 统一提取/归一/改写。
