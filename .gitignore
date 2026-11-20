@@ -1,0 +1,106 @@
+# .gitignore for 弘讯设计系统仓库
+# ==================================
+
+# Agent workspace（内部记忆，绝不提交）；skills/ 需随仓库分发，纳入版本
+.workbuddy/*
+!.workbuddy/skills/
+**/.workbuddy/*
+!**/.workbuddy/skills/
+**/.workbuddy/skills/*
+!**/.workbuddy/skills/tm-design-system/
+**/.workbuddy/skills/tm-design-system/*
+!**/.workbuddy/skills/tm-design-system/SKILL.md
+!**/.workbuddy/skills/tm-design-system/data/
+
+# 2026-11-20 上传前复核：skill 入口已停用（SKILL.md.disabled），data/ 是本地实装，不入库；
+#   恢复 skill 时把下面两行删掉即可随仓库分发。
+.workbuddy/skills/tm-design-system/data/
+.dsh/skills/tm-design-system/data/
+
+# DSH 项目级 skill（入口薄壳，随仓库分发；其余 .dsh 本地内容不入库）
+.dsh/*
+!.dsh/skills/
+.dsh/skills/*
+!.dsh/skills/tm-design-system/
+.dsh/skills/tm-design-system/*
+!.dsh/skills/tm-design-system/SKILL.md
+
+# 本机 Agent 记忆 / 回滚点（绝不提交）
+回滚点/
+
+缩减版/
+
+# 使用示例素材（本地展示用，不随仓库分发——2026-08-07 用户拍板）
+docs/
+
+# 移动端交互演示页（本地自测，不随仓库分发——2026-08-07 用户拍板）
+弘讯移动端design-system/展示页测试.html
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Node
+node_modules/
+package-lock.json
+
+# SWC 编译缓存（二进制，不入库）
+.swc/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Build output
+dist/
+build/
+*.log
+
+# Screenshots / 审计痕迹（本地工作草稿）
+screenshots/
+review/
+archive/
+
+# 门禁临时产物：audit-tree-runtime 在页面旁落 _tree_runtime_<pid>.html
+_tree_runtime_*.html
+
+# Edge headless 用户数据目录（审计脚本运行残留）
+.edge-*/
+
+# 配色引擎 demo 产物（按需由脚本再生成，不入库）
+brand-color-engine/examples/*.html
+
+# 原始色彩系统设计稿（引擎算法来源，保留为本地资产，不入库）
+【20251226】弘讯UI色彩系统_马守坤.html
+
+# ==================================
+# 设计过程产生的临时/内部文件（保留本地追溯，不入库）
+# ==================================
+
+# 阶段任务书（W1/W2/W3 系列）
+*-TASKBOOK.md
+
+# 内部过程文档
+PROGRESS.md
+HANDOFF.md
+BLOCKED.md
+TOKENS-EVIDENCE.md
+ARDOT-VARIANT-AUDIT.md
+
+# 展示快照与旧版说明（功能已被 USAGE-GUIDE.md 取代）
+A-PACK-SHOWCASE.html
+Techmation设计系统使用说明.html
+
+# 构建/检查产物
+dist-static/
+*.tsbuildinfo
+
+# 视觉稿产物（本地预览用，不入库——历史稿见 archive/output/ 或本地保留）
+output/
+
+# 本地工作文档（不随设计系统分发）

@@ -1,0 +1,27 @@
+/* pages/index/index.scss — 演示页布局（token 驱动，禁裸 hex）
+ * 修复：原 index.tsx 使用的 .demo-page / .demo-section / .demo-title 在仓库中无定义，
+ * 导致演示页零布局（无背景、无间距、标题无样式）。此处用 globals.css 的 var(--*) 补全。 */
+
+.demo-page {
+  min-height: 100vh;
+  background: var(--bg-page);
+  padding: var(--space-16);
+  box-sizing: border-box;
+}
+
+.demo-section {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-16);
+  margin-bottom: var(--space-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.demo-title {
+  display: block;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-1);
+}

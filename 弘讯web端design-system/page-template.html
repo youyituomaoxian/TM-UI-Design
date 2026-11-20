@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<!-- 左右结构工作台模板：复制后只改 .page-sec，外壳不复制自 V7。 -->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>左右结构工作台模板</title>
+<script>
+/* 主题 / 语言先于首屏应用，避免刷新闪烁（沿用旧 hx-theme / hx-skin / hx-lang 键） */
+(function(){
+  try{
+    var t=localStorage.getItem('hx-theme'), s=localStorage.getItem('hx-skin'), l=localStorage.getItem('hx-lang');
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark');
+    if(s && s!=='default') document.documentElement.setAttribute('data-skin',s);
+    if(l==='en') document.documentElement.setAttribute('lang','en');
+  }catch(e){}
+})();
+</script>
+<link rel="stylesheet" href="template.css">
+<!-- 工作台视觉已提升到 template.css（workbench.css），页面不再保留本地样式 -->
+</head>
+<body data-page="workbench" data-species="workbench">
+<div class="shell">
+
+  <!-- ================= 左侧：品牌色作业树 ================= -->
+  <aside class="rail" id="rail" aria-label="系统导航">
+    <div class="rail-head">
+      <a class="rail-logo" href="#" aria-label="弘设汇管理平台">
+        <img class="logo-full" src="assets/logo/弘设汇logo-white.svg" alt="弘设汇">
+        <span class="logo-round"><img src="assets/左右结构/弘设汇-mark-white.svg" alt="弘设汇"></span>
+      </a>
+    </div>
+
+    <div class="tree" id="tree" role="tree"><div class="tree-node" data-group role="treeitem" aria-expanded="true"><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 12 8 V 6"/><path d="M 21 15 C 21 10 17 6 12 6 C 7 6 3 10 3 15"/><path d="M 12 15 L 16 12"/></svg></span><span class="tree-text" data-i18n="template.module">业务模块</span><span class="tree-sw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 6 9 L 12 15 L 18 9"/></svg></span></div><div class="tree-group"><div class="tree-node tree-node--child on" data-leaf role="treeitem"><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 20 21 V 3 H 6 C 5 3 4 4 4 5 V 19 C 4 20 5 21 6 21 H 20 Z"/><path d="M 20 16 H 6 C 5 16 4 17 4 18 V 19"/></svg></span><span class="tree-text" data-i18n="template.current">当前页面</span></div><div class="tree-node tree-node--child" data-leaf role="treeitem"><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 20 4 H 4 C 3.5 4 3 4.5 3 5 V 8 C 3 8.5 3.5 9 4 9 H 20 C 20.5 9 21 8.5 21 8 V 5 C 21 4.5 20.5 4 20 4 Z"/><path d="M 5 9 V 18 C 5 19 6 20 7 20 H 17 C 18 20 19 19 19 18 V 9"/><path d="M 10 13 H 14"/></svg></span><span class="tree-text" data-i18n="template.page2">页面二</span></div></div><div class="tree-node" data-group role="treeitem" aria-expanded="true"><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 13.5 4 C 14 4 14 4 14 4 C 14.5 6 16 7 18 6.5 C 18 6.5 18 6.5 18 6.5 C 19 8 19 8 20 9.5 C 20 9.5 20 9.5 20 9.5 C 18.5 11 18.5 13 20 14.5 C 20 14.5 20 14.5 20 14.5 L 18 17.5 C 18 17.5 18 17.5 18 17.5 C 16 17 14.5 18 14 20 C 14 20 14 20 13.5 20 H 10.5 C 10 20 10 20 10 20 C 9.5 18 8 17 6 17.5 C 6 17.5 6 17.5 6 17.5 L 4 14.5 C 4 14.5 4 14.5 4 14.5 C 5.5 13 5.5 11 4 9.5 C 4 9.5 4 9.5 4 9.5 C 5 8 5 8 6 6.5 C 6 6.5 6 6.5 6 6.5 C 8 7 9.5 6 10 4 C 10 4 10 4 10.5 4 H 13.5 Z" stroke-miterlimit="10"/><path d="M 10 12 H 14"/></svg></span><span class="tree-text" data-i18n="template.settings">系统设置</span><span class="tree-sw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 6 9 L 12 15 L 18 9"/></svg></span></div><div class="tree-group"><div class="tree-node tree-node--child" data-leaf role="treeitem"><span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 9 6 H 21"/><path d="M 9 12 H 21"/><path d="M 9 18 H 21"/><path d="M 3 6 L 5 8 L 7 4"/><path d="M 3 12 L 5 14 L 7 10"/><path d="M 3 18 L 5 20 L 7 16"/></svg></span><span class="tree-text" data-i18n="template.basic">基础配置</span></div></div></div>
+
+    <div class="rail-foot">
+      <div class="rail-meta" title="© 2013-2026 弘讯科技">
+        <div>© 2013-2026 弘讯科技</div>
+        <div>v2.8.47.2</div>
+      </div>
+      <div class="rail-toggle-row">
+        <button class="rail-toggle" id="railToggle" type="button" title="收起侧栏" aria-label="收起侧栏" aria-expanded="true" aria-controls="rail">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 9 6 L 15 12 L 9 18"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= 右侧：内容区 ================= -->
+  <div class="workspace">
+  <div class="ws-global">
+    <div class="ws-pagebar"><h1 class="page-title" data-i18n="template.title">页面标题</h1></div>
+    <div class="ws-tools">        <a class="tool-ico" href="#" title="首页" data-i18n-title="tool.home" aria-label="首页">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 1.5 10.8 L 12 2.2 L 22.5 10.8"/><path d="M 3.5 9.8 V 19.6 A 1.4 1.4 0 0 0 4.9 21 H 19.1 A 1.4 1.4 0 0 0 20.5 19.6 V 9.8"/><path d="M 9.2 21 V 15.4 A 1 1 0 0 1 10.2 14.4 H 13.8 A 1 1 0 0 1 14.8 15.4 V 21"/></svg>
+        </a>
+        <span class="ws-sep"></span>
+        <!-- 全屏：默认不绑定交互，业务按需实现（保留 #fsBtn 挂载点） -->
+        <button class="tool-ico" id="fsBtn" type="button" title="全屏" data-i18n-title="tool.fullscreen" aria-label="全屏">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 8 3 H 5 C 4 3 3 4 3 5 V 8"/><path d="M 16 3 H 19 C 20 3 21 4 21 5 V 8"/><path d="M 21 16 V 19 C 21 20 20 21 19 21 H 16"/><path d="M 3 16 V 19 C 3 20 4 21 5 21 H 8"/></svg>
+        </button>
+        <div class="pop" id="themePop">
+          <button class="tool-ico" type="button" aria-haspopup="menu" aria-expanded="false" title="主题切换" data-i18n-title="tool.theme" aria-label="主题切换">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 12 3.5 C 7.3 3.5 3.5 7.3 3.5 12 C 3.5 16.7 7.3 20.5 12 20.5 C 13.4 20.5 14.3 19.6 14.3 18.4 C 14.3 17.5 13.7 17 13.7 16.1 C 13.7 14.9 14.7 13.9 16 13.9 H 18 C 20.1 13.9 21.7 12.3 21.7 10.2 C 21.7 6.5 17.2 3.5 12 3.5 Z"/><circle cx="8" cy="9.2" r="1.1"/><circle cx="12" cy="7.2" r="1.1"/><circle cx="16" cy="9.2" r="1.1"/><circle cx="7.4" cy="13.4" r="1.1"/></svg>
+          </button>
+          <div class="pop-panel theme-panel" role="menu">
+            <div class="pop-item theme-opt on" role="menuitem" data-skin="default">
+              <span class="theme-dot" style="background:#005EAE"></span><span data-i18n="theme.default">默认蓝</span>
+              <span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></span>
+            </div>
+            <div class="pop-item theme-opt" role="menuitem" data-skin="cyan">
+              <span class="theme-dot" style="background:#0E7490"></span><span data-i18n="theme.cyan">科技青</span>
+              <span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></span>
+            </div>
+            <div class="pop-item theme-opt" role="menuitem" data-skin="green">
+              <span class="theme-dot" style="background:#0F766E"></span><span data-i18n="theme.green">工业绿</span>
+              <span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></span>
+            </div>
+            <div class="pop-item theme-opt" role="menuitem" data-skin="amber">
+              <span class="theme-dot" style="background:#B45309"></span><span data-i18n="theme.amber">琥珀橙</span>
+              <span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></span>
+            </div>
+            <div class="pop-item theme-opt" role="menuitem" data-skin="violet">
+              <span class="theme-dot" style="background:#7C3AED"></span><span data-i18n="theme.violet">深空紫</span>
+              <span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></span>
+            </div>
+            <div class="pop-sep"></div>
+            <div class="pop-item theme-opt" role="menuitem" data-theme="dark">
+              <span class="theme-dot" style="background:#1E293B"></span><span data-i18n="theme.dark">暗色</span>
+              <span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></span>
+            </div>
+          </div>
+        </div>
+                
+        <div class="pop" id="appPop">
+          <button class="tool-ico" type="button" aria-haspopup="dialog" aria-expanded="false" title="APP 下载" data-i18n-title="tool.app" aria-label="APP 下载">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="3" width="13" height="18" rx="2.5"/><path d="M 12 8 V 14.5"/><path d="M 9.5 12 L 12 14.5 L 14.5 12"/></svg>
+          </button>
+          <div class="pop-panel app-panel" role="dialog" aria-label="APP 下载">
+            <div class="app-title">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="3" width="13" height="18" rx="2.5"/><path d="M 12 8 V 14.5"/><path d="M 9.5 12 L 12 14.5 L 14.5 12"/></svg>
+              <span data-i18n="app.title">APP 下载</span>
+            </div>
+            <div class="app-sub" data-i18n="app.sub">扫码安装弘设汇移动端</div>
+            <div class="qr-row">
+              <div class="qr-card">
+                <img src="assets/左右结构/qr-android.svg" alt="安卓版下载二维码">
+                <div class="qr-name" data-i18n="app.android">安卓版</div>
+                <div class="qr-desc">Android 5.0 及以上</div>
+              </div>
+              <div class="qr-card">
+                <img src="assets/左右结构/qr-ios.svg" alt="iOS 版下载二维码">
+                <div class="qr-name" data-i18n="app.ios">iOS 版</div>
+                <div class="qr-desc">iOS 12.0 及以上</div>
+              </div>
+            </div>
+            <div class="app-note" data-i18n="app.note">也可在应用商店搜索「弘设汇」下载</div>
+          </div>
+        </div>
+        <span class="ws-sep"></span>
+        <div class="pop" id="langPop">
+          <button class="tool-ico" type="button" aria-haspopup="menu" aria-expanded="false" title="语言：简体中文" aria-label="语言切换">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M 3.5 12 H 20.5"/><ellipse cx="12" cy="12" rx="4" ry="8.5"/></svg>
+          </button>
+          <div class="pop-panel" role="menu">
+            <div class="lang-opt on" data-lang="zh" role="menuitem">简体中文</div>
+            <div class="lang-opt" data-lang="en" role="menuitem">English</div>
+            <div class="lang-opt is-disabled" role="menuitem">日本語</div>
+            <div class="lang-opt is-disabled" role="menuitem">한국어</div>
+            <div class="lang-opt is-disabled" role="menuitem">Deutsch</div>
+            <div class="lang-opt is-disabled" role="menuitem">Français</div>
+          </div>
+        </div>
+        <span class="ws-sep"></span>
+        <div class="pop" id="userPop">
+          <button class="user-chip" type="button" aria-haspopup="menu" aria-expanded="false" title="账号">
+            <span class="avatar avatar--default" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.5"/><path d="M 5 20 C 5 16.4 8.1 13.5 12 13.5 C 15.9 13.5 19 16.4 19 20"/></svg></span>
+            <span class="uname">弘设汇运维2</span>
+            <span class="caret"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 6 9 L 12 15 L 18 9"/></svg></span>
+          </button>
+          <div class="pop-panel" role="menu">
+            <div class="pop-item" role="menuitem" tabindex="0">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 17.5 10 H 6.5 C 5.5 10 5 10.5 5 11.5 V 18.5 C 5 19.5 5.5 20 6.5 20 H 17.5 C 18.5 20 19 19.5 19 18.5 V 11.5 C 19 10.5 18.5 10 17.5 10 Z"/><path d="M 12 14 V 17"/><path d="M 16 10 V 6 C 16 5 15 4 14 4 H 10 C 9 4 8 5 8 6 V 10"/></svg>
+              <span data-i18n="tool.changepwd">修改密码</span>
+            </div>
+            <div class="pop-sep"></div>
+            <div class="pop-item danger" role="menuitem" tabindex="0">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 15 3 H 19 C 20 3 21 4 21 5 V 19 C 21 20 20 21 19 21 H 15"/><path d="M 15 12 H 3"/><path d="M 8 7 L 3 12 L 8 17"/></svg>
+              <span data-i18n="tool.logout">退出登录</span>
+            </div>
+          </div>
+        </div>
+</div>
+  </div>
+  <main class="ws-body" id="pageView">
+  <div class="tab-row">
+    <div class="tabs" role="tablist" aria-label="页面视图">
+      <div class="tab active" role="tab" aria-selected="true" data-i18n="template.tab">页面</div>
+    </div>
+    <div class="page-actions" aria-label="页面操作">
+      <button class="btn btn-secondary" type="button" data-i18n="template.export">导出</button>
+      <button class="btn btn-primary" type="button"><span class="btn-label" data-i18n="template.add">新增</span></button>
+    </div>
+  </div>
+  <div class="seg-row">
+    <div class="seg" role="tablist" aria-label="视图切换">
+      <div class="item active" data-i18n="template.list">列表视图</div>
+      <div class="item" data-i18n="template.card">卡片视图</div>
+    </div>
+    <span class="t-caption" data-i18n="template.hint">从 .page-sec 开始填业务；组件直接使用 template.css 类</span>
+  </div>
+  <section class="page-sec">
+    <div class="sec-head"><h2 data-i18n="template.content">页面内容</h2><span class="t-caption" data-i18n="template.contentHint">替换本区块，不要改外壳</span></div>
+    <div class="card"><div class="card-body">
+      <p class="t-body2">这里是业务内容占位。KPI 用 <code>stat-grid + stat-card--icon</code>，表格用 <code>table + table-card</code>，弹窗用 <code>modal</code>；机器状态用 <code>machine-card</code> 与 5 状态 token。</p>
+    </div></div>
+  </section>
+</main>
+  </div>
+</div>
+<script src="js/shell-ui.js"></script>
+
+<div class="rail-fly" id="railFly" role="menu" hidden></div>
+<script src="js/tree-nav.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/page-ui.js"></script>
+</body>
+</html>

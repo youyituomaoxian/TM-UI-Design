@@ -1,0 +1,25 @@
+# 换行策略（2026-10-30）
+# 背景：core.autocrlf=true 时 Windows 工作区会把 LF 换成 CRLF，每行多 1 字符，
+#   导致 check-size 这类「字符数」门禁在不同机器/不同 checkout 状态下结论不一致
+#   （实证：RULES.md 981 行 → 51851 字符，越过 51600 阈值）。
+# 约定：仓库与工作区统一 LF；二进制不做转换。
+* text=auto eol=lf
+
+# 二进制：不转换、不做文本 diff
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.7z binary
+*.psd binary
+*.ai binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.eot binary
+*.mp4 binary

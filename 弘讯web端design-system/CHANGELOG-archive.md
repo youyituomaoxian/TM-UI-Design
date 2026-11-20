@@ -1,0 +1,729 @@
+# 弘讯B端视觉系统 · Web 端设计系统更新日志（归档）
+
+> 本文件为 `CHANGELOG.md` 滚动归档（2026-09-22 建立，加载纪律 SSOT A-2）：主文件只保留近期条目，更早条目**原样移入**此处，未做任何内容修改。
+> 切割线（滚动更新）：web 归档 `[主题换肤：双属性 + 4 主题 + 固定暗色（2026-11-17 拍板）]` 及更早。新条目一律写主文件顶部；超限时由 roll-changelog.js 自动滚动。
+
+## [主题换肤：双属性 + 4 主题 + 固定暗色（2026-11-17 拍板）] — 2026-11-17
+- **双属性**：`data-skin`（品牌色轴）+ `data-theme`（light/dark 明暗轴）。skin 块用 `:root[data-skin="x"]:not([data-theme="dark"])`，暗色块完全不受影响；主题清单 = 默认蓝 / 科技青 / 工业绿 / 琥珀橙 / 深空紫 + 固定暗色。
+- **token**：每 skin 5 个（`--primary/hover/active` + `--brand-surface` + `--text-on-brand`），disabled/选中行/下拉选中/`--secondary` 由一个 `color-mix` 派生块联动；`--chart-*` 保持固定。注册表入 `tokens.json.themes`，由 `build-template-css.js` + `brand-color-engine` 生成。
+- **UI**：顶栏旧亮/暗单按钮 → 「主题」palette 图标 + 下拉（复用 `.lang-*` 下拉；色点 `.theme-dot`）；head 内先行应用 `hx-theme`/`hx-skin` 防闪烁；旧 `hx-theme=light|dark` 兼容。登录页不跟随。
+- **修复**：多语言 IIFE 原来全局 `.lang-opt` 会清掉主题选项 `.on`，改为 `#langSel .lang-opt`；page-template 移除已废弃的展示页 `<style>` 块（SOP 步骤 6 同步）。
+- **门禁**：新增 `scripts/check-themes.js`（token/对比度/选项）+ `validate` 跳过 `data-skin`；`palette.svg` 入库（Web 185→186）；template.css 70,279/71,000、page-template 37,9xx/40,000；`ci-local` 103/0。
+
+---
+## [白屏/按钮标题事故门禁 + 独立复核收口] — 2026-11-17
+- **新门禁**：validate 新增 `page.title.missing` HIGH（main 内缺 h1.page-title）+ `html.skeleton.*`（head 未闭合/无 body/注释不配平/零样式 → HIGH；body≥2 → MED）；audit 注册 M-11 同口径（audit-rules v1.9.0）。
+- **复核修正**：page-title 接 `isFrameworkExempt`（不再误伤 web规范展示_框架版），只认 main 内 `h1.page-title`（div/注释/顶层类名不再放行），main 允许附加属性；audit M-11 先剥 HTML 注释，注释掉的旧标题不再漏检。
+- **契约/文档收口**：RULES §1.1b 详情页 `H1 28/36` → `.page-title` 18/500；§1.1b 补门禁引用；components.json tabs 13→14（summary/sizing/referenceCss/contract expect 全同步）。
+- **起手件/模板**：web `agent-starter.html` 嵌套注释拆平（此前 L44 起被解析成真实 DOM）；`page-template.html` 头注释裸 `<main>` 转义、双 body 合一。
+- **门禁**：双端 page-template 0 HIGH；web 成品规范页/起手件 0 HIGH；ci-local 103/0（非沙箱）/ DSH 沙箱 101/3（管道限制，非回归）。
+- **容量回收（可读性第一）**：template.css 重 build 去注释（源注释保留）、page-template 注释压缩、audit-rules prose 就地压缩；RULES 阈值 55k→56k（本季 1 次，内容零搬移、不搬 docs）。
+
+---
+## [生成 SOP：信息层级 × 亲密性双原则（选字阶/间距前置对齐）] — 2026-11-13
+- GENERATION-SOP 步骤 2 新增第 4 条双原则：**层级逻辑优先选字阶**（档位跟信息层级角色走，唯一入口 RULES §1.4；典型错位 = 一级 tab 落辅助档 / 内页标题误用模块标题档）+ **亲密性原则定间距**（间距是分组语义非装饰节奏，取值唯一入口 RULES §4.1；观感与数值不符先查渲染根因再动数值）。
+- 来源：机器群览标题降级 + 间距排查案例复盘（用户拍板沉淀）。RULES/MASTER/template.css 机制本轮未改动（D1–D4 字阶/间距迁移另行拍板），本条为生成流程原则。
+
+---
+## [页头行上下间距相等：compact 默认 md12，分层形态 :has 保持 xs4] — 2026-11-13
+- 用户实测拍板：基础形态页头行→内容间距应与框架→标题相等（原 compact xs4 < content padding-top md12，上下不均）。
+- 真源：.page-head--compact margin-bottom xs→**md12**；新增 .page-head--compact:has(+ .tab-row) 保持分层形态 **xs4**（原 D3 拍板不回退）。RULES §1.1b 口径同步。
+- 重建/template.css 副本 + 4 分享版重内联同步。
+
+---
+## [分享版快照重建 ×6 + 页头口径收尾（t-h1 → .page-title）] — 2026-11-13
+- **内联真源重建**：重建 4 分享版（login / machine_alarm / machine_group / status_report）+ web规范展示_框架版_分享版 + USAGE_分享版——内联块替换为当前 template.css（tabs 14 / .card-grid / .table--sticky / 滚动条 n5 全部带入），机器群览分享版挂 .card-grid。
+- **页头口径收尾**：machine_alarm / status_report 两 dev 页与三分享版页头 `t-h1` → `.page-title`（RULES §1.4 内页例外补漏改面）；4 dev 页 template.css 缓存指纹 bump v=20261113。
+- components.md 字阶表补「页头标题 .page-title 18/26」行。
+
+---
+## [表格表头跟随立项：.table--sticky（容器内滚动）] — 2026-11-13
+- 真源新增修饰类 **`.table--sticky`**（thead th sticky top:0 / z-5，约 3 行 CSS）：定高/弹性卡内长列表滚动时表头跟随；th 自带 --table-header-bg 不透明底满足 sticky 前提，暗色 token 自适应。
+- 边界（RULES 表格规范 ⑦ / MASTER 表格节）：**仅限容器内滚动**（.scroll-fixed / .card-body--scroll / .table-wrap），**禁页面级 sticky**（分页红线）；可与 `.table--fixed` 组合横+纵双向。
+- 表格规范展示页新增 ⑫ 示例（定高卡左右对照：无 sticky / sticky 各 12 行）。
+- **实测补强（2026-11-13）**：sticky 表格**禁中间再套 .table-wrap**——其 overflow:auto 成为 th 最近滚动祖先、截断 sticky 生效范围（table-wrap 无纵向溢出时表头不粘）；纵向滚动容器直接包 table，或 .table-wrap 自身定高充当滚动器（横+纵双向 sticky 均生效）。
+
+---
+## [滚动条统一浅色化：全局 thumb n6→n5 + 滚动容器补真源样式] — 2026-11-13
+- 修复：`.table-wrap`/`.card-body--scroll`/`.scroll-fixed` 原无自定义滚动条样式，吃浏览器默认深灰——补统一浅色滚动条（thumb **n5** #EAEAED、hover n6、track 透明、8px/圆角 4、Firefox scrollbar-color n5）。
+- 全局降浅一档：`.content` thumb n6→**n5**、hover n7→n6。亮暗双主题均走中性 token 自适应。表格规范展示页 ⑩⑪ 滚动示例即为受惠场景。
+
+---
+## [内页页头字阶/间距口径 D1–D5 迁移（机器群览案例拍板）] — 2026-11-13
+- **D1 字阶口径**：RULES §1.4 决策树后补「内页页头标题例外」——内页页头标题一律 `.page-title` 18/500，不走 .t-display/.t-h1（消除 28/18 双口径）；MASTER §2 Tabs 补字号行。
+- **D2 一级 tab**：`.tabs .tab` 13 → 14px（body1 档，导航不低于正文；二级 .seg 维持 12）。
+- **D3 紧凑间距**：标题→tab 行 12 → **4（xs）**，`.page-head--compact` margin-bottom sm8→xs4。
+- **D4 渲染修正**：`.page-actions` 移除 margin-top 16（纵向堆叠遗留；横排页头把行高撑到 48px，小标题居中产生 ~11px 死空——2026-11-13 机器群览实测）。
+- **D5 网格组合规则**：真源 utilities.css 新增通用容器 **`.card-grid`**（gap 供行距 + 直接子 .card margin 归零；.card 文档流 margin 与 grid gap 双计 → 行距 32 为左右两倍，2026-11-13 机器群览实测）；页面禁覆写 .card（css.override HIGH），改挂 .card-grid 类。
+- 重建页 page_machine_group.html 同步：标题 t-h1 → .page-title、.mg-grid>.card margin 归零；预演覆写块清除。
+
+---
+## [audit-rules 零语义压缩：25,859 → 24,780（余量 41 → 1,120）] — 2026-11-13
+- `audit-rules.json` 压缩 8 处长文案（change_policy / machine_rules[0][5][6].predicate / scope_note / report_quality_bar / consumption_model / maintainer_duty），**规则语义零改动**（判级、出口、六步、回执三件套、仲裁全部保留）。
+- 复测：`audit-spec` 输出项数与压缩前一致（80 项 / 0 HIGH）；`ci-local` 103 pass / 0 fail；`check-size` 余量从 41 → **1,120**。
+- `updated` → 2026-11-13；版本号保持 1.8.0（无语义变更）。
+
+---
+## [默认长 logo 换新：asset-logo-brand.svg → 彩色长标 391.84×125.13] — 2026-11-13
+- 默认彩标（浅底用）`assets/logo/asset-logo-brand.svg` 内容替换为新版彩色长标（原 168.76×43.9 单蓝 → 现 391.84×125.13 多色 #456fec/#ffba24/#00c6ff/#9f9f9f），旧版存档已按用户要求删除（2026-11-13）。
+- 白标 `asset-logo-brand-white.svg` 未变（深蓝顶栏用）；页面引用无需改路径。
+
+---
+## [登录页：品牌区去 logo + 背景图 1:1 口径] — 2026-11-13
+- RULES §1.1b 登录页：卡外 `.login-head` **不放 logo**，仅「系统名 24/32 + 副标题 13/20」一组（组内 4、与登录卡间距 24），左沿与登录卡左沿对齐。
+- RULES §1.1b 背景图：58/42 左栏内使用 **1:1** hero（`object-fit:cover` + `object-position:50% 50%` + 羽化 160），明示**禁 2.2:1 宽图硬撑竖栏**（本次实测裁切错位的真因）。
+
+---
+## [真源归位 + SVG 空图形门禁 + .content--fill 用法入规范] — 2026-11-12
+- **规则归位**：一屏撑满/分页器贴底/页头间距/标题竖条等**布局类规则**从 `components.css` 迁到 `framework.css`（组件文件只留组件；避免加载顺序与职责混淆）。
+- **新门禁 `svg.invalid`（HIGH）**：`<svg>` 内无 path/circle/rect/line/polyline/polygon/ellipse/g/use/text/image 时拦截——实测坑：把 path 的 d 数据当文本写入，图标"有盒子无图形"。
+- **RULES** 列表页规格新增「`.content--fill` 用法」三步（content--fill → card--fill → is-placeholder 补位），明示禁 `calc(100vh - N)`、嵌层须补 flex 链。
+
+---
+## [一屏撑满 / 表格填充 / KPI 图标卡：页面 hack 收敛进真源] — 2026-11-12
+- `components.css` 新增真源契约：`.content--fill`（内容区纵向 flex，页头固定 + 末卡吃剩余高）、`.card--fill .pager{margin-top:auto}`（分页器恒贴底）、`.table tr.is-placeholder`（补位空行保留分割线）、`.stat-card--compact`（紧凑 KPI）；随 `build-template-css.js` 生成 `template.css`。
+- `validate-spec.js`：① `table.pager.required` 由字面量 `class="pager"` 改为词元正则（分页器带附加类不再误报）；② 新增 `template.css.stale`（HIGH）：页面链接的本地 `template.css` 副本与真源 sha256 不一致即拦——此前真源改了、副本没同步，导致「间距又出现」。
+- RULES 新增「一屏撑满契约」；页面侧删除 `.fill-*` 私有类与 `calc(100vh - N)` 自算高度，改用真源类。
+
+---
+## [F10/F11/F12：扫描盲区 + MEDIUM 分档 + 截图证据门禁] — 2026-11-12
+- `audit-spec.js`：inline style 支持单引号/无引号（原只认双引号，实测全漏）；新增 `css.js.injected`（MED，脚本内 `style./cssText/innerHTML/<style>` 注入）；`audit-rules.json` v1.8.0（M-10 + R-08）。
+- `audit-batch.js`：MEDIUM 分「必修/提示」（台账 `mediumMust`/`mediumAdvisory`）；新增 `scripts/audit-shots.js`：P3 截图矩阵验收（缺图/占位图 exit 1）。
+- `AGENTS.md` 压缩 5,895→3,968（重复内容指向 HANDOFF/RULES），上限 5,900→4,500。
+
+---
+## [F1/F3/F4：P0 页面清单 + P3 截图证据 + DoD 升级] — 2026-11-12
+- P0 改为「先出页面清单再盘点」（`audit-batch --list` 枚举全项目 + `--json` 台账带覆盖率，<100% 即 P0 未完成）；P3 强制截图落盘 `output/audit-shots/<页面>/<theme>-<state>.png`（缺图=该格未审）；P4 DoD 由「0 HIGH」升级为 **「0 HIGH + 台账全绿」**。
+- 同步交付线：AGENTS 门禁条、USAGE-GUIDE 路径二、README、团队使用指南、标准提示词模板——**「0 HIGH」单独不再构成交付**。
+
+---
+## [F9：同色不可见 / 近同色门禁 + 存量改造边界] — 2026-11-12
+- 新增 `contrast.invisible`（HIGH）/ `contrast.near-invisible`（MEDIUM）：同一选择器内 `color` 与 `background` 解析为同色 → 拦截（白字白底类）；`:disabled/.is-disabled` 豁免。`audit-rules.json` v1.6.2→**v1.7.0**（M-09 登记）。
+- **存量改造边界**写入 SOP §② 铁律 6：只改表现层（色彩/字阶/间距/圆角/图标/组件外观），禁改文案与信息项、字段与数据口径、交互流程与功能行为；台账模板 + 标准提示词模板同步。
+- 回归：双端模板 24/4 MED 不变；夹具白字白底→HIGH、近同色→MED、`:disabled` 不报。移动 `validate-spec.js` 上限 67,800→69,500（实测 68,956；仅留 0.8%，下轮优先拆 helper 回收）。
+
+---
+## [F7：token 未定义判定并入真源] — 2026-11-12
+- `token.undefined` 定义集改为「真源 template.css → 外链 CSS → 内联」三级级联：仓库外页面 link 的真源 CSS 原被 `REPO_ROOT` 边界丢弃 → 合法 token 全判 HIGH（假阳性洪水），进而被 `var(--x, 兜底)` 掩盖。
+- 回归：双端模板 24/4 MED 不变；仓库外夹具 2 HIGH→0；`var(--nope)` 仍 1 HIGH。方案 `output/F7-token定义源修复方案_20261112.md`。
+
+---
+## [门禁映射补全 + mobile page.regions] — 2026-11-12
+- 新增 `gate-map.json`：29 条 [硬] 叶子节 → validate/audit 门禁人工映射（web 17 / mobile 12）；`sync-index` 合并进 `rule-index`，`check-reach` 增死链校验（validate 规则名 + audit id 必须真实存在）。
+- 移动端 validate 新增 `page.regions`（MEDIUM）：首页范式缺列表区 / 导航栏缺透明状态栏即报（RULES §9.6）；`[硬]` 叶子节 33 条 **100% 有门禁映射**，R3 **0 WARN**。
+
+---
+## [硬规则再分级：30 条不可机检章节转 [软]] — 2026-11-12
+- 按「[硬] = 可机检」口径复核 64 条无门禁 [硬] 章节：30 条无机器门禁（输入/Tag/列表状态、平台/字段/组件参考表、检查清单等）转 [软] 并进「按需检索」；mobile §2/§3 容器章保留 [硬]，改由子节覆盖判定（check-reach R3）；mobile §9.6 保留 [硬] 待补页区域门禁。
+- 结果：硬叶子节 34 条 / 已映射 4 / 待映射 30（候选映射批次，见 `output/硬规则门禁分诊_20261112.md`）；check-reach 0 FAIL / 1 WARN。
+
+---
+## [容量维护批：三资产上限重定 + 加载预算 40k] — 2026-11-12
+- 机器资产上限按实测 + 分级余量重定（六步留痕）：`audit-rules.json` 24,000→25,900（23,991 + 8%，>10k 档）、`template.css` 67,000→70,000（66,636 + 5%，>50k 档）、`components.json` 77,200→80,000（76,640 + 4.4%）。三者由门禁/构建消费，非 Agent 阅读面；**下次再调须附回收记录**。
+- 加载预算口径改为「入口 + 规范包」：AGENTS 5,890 计入，web 37,870 / mobile 37,115 ≤ 40,000（94.7% / 92.8%）；`rule-index.json` 加载计划与 SOP §0 同步。
+- 验收：干净环境 `ci-local` **103 pass / 0 fail**；DSH 沙箱内 101/3 为子进程管道限制（非回归）。
+- GENERATION-SOP：清 2 段历史过程注记（-380 字符），上限 44,300→45,000（全文非 Agent 加载面，仅 §① 进包）；USAGE_分享版按当前 `template.css` 全量重建（108,799 字符，零外链）。
+
+---
+## [规范可达性 P1：软规则分级 + 零语义回收] — 2026-11-12
+- `[软]` 分级补全：RULES「必读清单」新增「按需检索」行（§0.3/§1/§1.1/§1.2/§1.1c/§2.2 不列为缺读事故）；`rule-index.json` 双端 39 条软规则 **0 条 unset**，check-reach R3 由 WARN 转 PASS。
+- RULES 零语义回收：清除 63 处括号内历史日期（`（2026-xx-xx …）` → `（…）`），**净回收 647 字符**（日期清理 680，分级行 +84、标点修整 -51）；规则文本与语义未改，日期留痕在 CHANGELOG。
+- 阈值按可读性预算重定：RULES 53000 → **55000**（加载集 31,994/35,000 由 check-reach 守；文件上限降为膨胀告警，不再当质量判据）。
+- HANDOFF 为本地交接文件，移出 check-size 清单：**不设体积阈值、不参与加载预算**，已完成任务归档到 CHANGELOG。
+- 验收：check-reach **0 FAIL / 1 WARN**（[硬] 64/75 未映射门禁，逐批补）；ci-local 101 pass（3 项沙箱故障沿用）。
+
+---
+## [规范可达性 P0：索引生成 + 可达性门禁] — 2026-11-12
+- 新增 `sync-index.js`：按标题实测重写双端 RULES「章节索引」表（生成物），并生成 `rule-index.json`（114 条规则路由：id/端/层级/硬软/行/字符/必读级/门禁映射 + 3 个加载计划）。索引从 47k 失真值校正为实测 53k；各章字符数同步实测。
+- 新增 `check-reach.js`（已入 ci-local，阻断）：R1 索引 0 漂移；R2 加载集实测（web 32240/35000、mobile 31225/35000、交接 19065/20000）；R3 [软] 11 条未分级 / [硬] 64 条未映射（WARN，逐批补）；R4 引用 541 处 0 断链；R5 入口链齐全。
+- 修正 RULES 标题缺陷：web 重复 `## [硬] 2` 两处、mobile `### [软] 1.2` 行内重复；两处均属锚点歧义，零语义变更。
+- check-size 登记 3 新文件；阈值按实质增长重测：check-size.js 7500→8000、ci-local.js 18200→18600。ci-local 增 1 项 → **101 pass**（3 项沙箱子进程故障沿用）。
+- 依据：用户 2026-11-12 拍板「先建可达性门禁、不先拆/压 RULES」；方案见应用侧 `output/规范可达性治理方案_20261112.md`。
+
+---
+## [分层页头紧凑间距真源化] — 2026-11-12 · DS-20261112-04 消费
+- 拍板 8/12 回灌真源（方案 b 紧凑变体，基础形态默认 16 不变）：components.css 新增 `.breadcrumb--compact`（面包屑→标题 8=--space-sm）、framework.css 新增 `.page-head--compact`（标题行→tab 行 12=--space-md），build 进 template.css；vendor-coverage gaps 登记 page-head--compact；components.json breadcrumb 条目同步（variants/tokens/referenceCss/do）；RULES §1.1b 拍板行补变体指针并归位压缩；audit-rules.json feedback_log 登记（六步第 1 步）。移动端无同名类无双端项。ci-local **102 pass / 0 fail**。
+
+---
+
+---
+## [64 方标 logo 入库] — 2026-11-12
+- assets/logo/ 新增 logo_64.svg（viewBox 64×64 方标，viewBox 合规）；RULES §0.1a 方标档「待补」→ 已入库，M-08 真源清单同步。⚠️ 配色（#456fec→#00c6ff 渐变 + #ffba24/#ffe39e 黄）偏离 VI（主色 #005EAE / 橙 #FA8C16 仅点缀），改色待用户拍板。
+
+---
+## [品牌 logo 规范 + 资产门禁 M-08] — 2026-11-12
+- RULES §0.1a 新增：logo 一律 SVG 强制（assets/logo/ 真源：asset-logo-brand.svg 彩标 / asset-logo-brand-white.svg 白标），锁高宽自适应（viewBox 168.76×43.9，禁写死宽高比）；尺寸分级 = 顶栏 32 白标 / Web 登录 40 彩标 / 移动登录 64×64（方标资产待补）；MASTER.md「logo 40×40」旧值同步修正（原与 RULES 高 32 冲突）。
+- validate-spec.js 新增 `logo.asset.format` / `logo.asset.missing` 双 HIGH（展示页/_框架版/USAGE 豁免）；page-template.html 顶栏占位符替换为真源白标 logo、页面 CSS 宽 32→auto。audit-rules.json v1.6.2 登记 M-08；check-size validate-spec.js 阈值按实测现值 +5%（>50k 档）重测并行内留痕。
+
+---
+## [内页页头结构 + 二级分段器] — 2026-11-12 · 两层 tab 方案 B 拍板
+- 新增真源组件 **.seg 分段器**（utilities.css → template.css）：容器 N3 底胶囊高 30（item 26/字 12/圆角 15），选中 primary 实底 + var(--text-on-brand) 白字 500，动效走 motion token；语义 = 内容视图切换，与 .filter-chip（数据过滤）禁混用。components.json 登记组件条目 + 契约 `seg.size`（高 30 HIGH，exclude .item 防派生规则误扫）/ `seg.active`（字重 500 HIGH + 底 token MEDIUM）；vendor-coverage tokenProjection 登记 seg/tab-row。
+- 新增真源布局工具 **.tab-row**：两层 tab 内页一级 tab 行 = .tabs 左 + .page-actions 右同行底部对齐，行底线统一、tab 下划线压线。
+- RULES §1.1b 新增「**内页页头结构**」：基础形态（无 tab：标题+操作区同行，真源默认间距）/ 分层形态（面包屑→页标题→一级tab行→二级seg→卡片）；分层页头紧凑间距 8/12/16/16（用户拍板：页头收紧为内容让空间）；红线 = tab 最多两层、二级禁进卡片、seg/filter-chip 语义互斥。
+- 契约红→绿验证：真源默认值 0 HIGH；height 28/weight 400/#999 底 → seg.size+seg.active 双 HIGH。ci-local **102 pass / 0 fail**。视觉演示页（方案 A/B）在应用侧 output/，未入库。
+
+---
+## [面包屑固定形式] — 2026-11-12 · 去 N5 底改纯文本（用户拍板）
+- 真源 `.breadcrumb` 取消 N5 底条带/圆角/水平 padding（components.css → template.css build），固定为**无底纯文本**：32 高保留、› 分隔、item N9/当前 N11、下方间距 16 不变；components.json 组件条目同步（summary/tokens 删 --n5/--radius-base/sizing paddingH 0/variants 改「基础（无底纯文本）」/dont 由「无底色纯文本导航」反转为「加底色/边框/圆角胶囊」）；RULES 面包屑铁律/列表页变体 B/详情页 3 处文字对齐。移动端无同名类无双端项。ci-local **102 pass / 0 fail**（check-size 触发 RULES 超 25 字符，按归位治理压缩今日条款文字消除，未调阈值）。
+
+---
+## [表格占位行真源化 + 表头口径清漂] — 2026-11-12 · DS-20261112-01/02 消费
+- **表格承载形态拍板（方案 1 堵灰区）**：RULES §1.1b 新增条款——列表页/详情页表格一律卡片式承载，变体 A「全宽表格」=全宽卡片（白底+Shadow-Card+圆角 8），**禁裸表格**；密度用 行高/分页/列宽预算消化。零新增组件，门禁不变。
+- **DS-02（组件缺口）**：RULES §4.4 第 4 条定义的 minRow 占位行 `tr.table-placeholder` 落地真源——utilities.css 新增 `.table-placeholder{pointer-events:none}`（td 提示文案 N8）并 build 进 template.css（L1060）；components.json 契约数组登记 `table.placeholder`（pointer-events=none，HIGH）；vendor-coverage.json tokenProjection 登记（31 项）。应用侧 `表格规范展示.html` 页内临时定义已回滚，validate-spec + audit-spec 双跑 0 HIGH。
+- **DS-01（文档口径冲突）**：2026-10-20 表头改版（14px/44px）未同步人读文档——RULES §3.3b L468（13px→14px、删「不得统一字号」旧原则句）、§1.1b L204 / §2.1 G6 L713 / 交付清单 L722 / 门禁说明 L667（表头 48→44）；components.json 弃用 table 条目 summary/sizing.fontSize/referenceCss/ardot.variantMapping/notes/do 六处 48→44、13→14。文档现与契约 `table.head`（44/14/500/N2）完全一致。
+- 验证：ci-local **102 pass / 0 fail** 全绿（含 check-sync 检查三新类登记）；修复样例红→绿双向复测通过（DS-01 样例 A/B 依据契约现值成立、样例 C grep 旧值清零）。
+
+---
+## [作业树 · 自身页+子级 折叠态] — 2026-11-09
+- 新增第三分型：`data-page` + 子级 → 折叠弹浮层，首项「进入本页」(`data-self`)；page-template JS/CSS（`.pop-self`）；RULES §0.2-10 / components.md/json / SOP 同步；门禁 `tree.node.split` 改为「data-page+子级须含 data-self」；示例页恢复该分型。
+
+---
+## [门禁：折叠半迁移 + 暗色品牌覆盖] — 2026-11-07
+- 新增 `tree.collapsed.partial`、`dark.brand.override`（双端）、`tree.popover.order`；`gen-examples` 品牌覆盖只留亮色 + `.tag→.badge`；历史品牌页清理 2387aa ×4。
+
+---
+## [暗色固定主题] — 2026-11-06 · 暗色不随品牌（方案 A）
+- `darkBrandMode:"fixed"`：暗色 background 固定、不随品牌推导（`derived` 保留旧能力）；`--brand-surface` `#0A2540 → #1E293B`（= 卡片色），内容 `#121826`，主色固定 `#3B82F6`；框架三边 1px `.07` 分区线；双端 tokens / globals / template 重生成；DARK-MODE / SOP / VISUAL-SPEC 同步；ci-local 加「换品牌暗色不变」断言。
+
+---
+## [作业树折叠浮层 P1-P7] — 2026-11-06 · 折叠态只显一级 + 二级浮层
+- RULES §0.2-10；折叠态只显一级（`.tree-collapsed` 兼容旧页）；`.tree-popover` 浮层；`.branch-active` 展开 8% / 折叠 18%；`data-group/data-page/data-key`；page-template JS；tree.tsx `collapsed`/`onGroupClick`；AdminLayout 浮层；check-size 调阈。validate 0 HIGH + tsc 通过。
+
+---
+## [文档死链与口径清漂] — 2026-11-05 · 说明文档对齐现行规范
+
+- 登记说明文档（根 + 双端）机检漂移，修 15 处：①死链——TOKENS-EVIDENCE.md（文件已移除，9 处引证改「对标引证文件已移除」）、web RULES 机器群览页示范、mobile RULES dashboard.md §2、components.md design-system-showcase :root 改指 template.css、CHART-SPEC 两处已移除测试文件标注（ci-chart-interaction.js 属 §9 待办登记，保留）；②口径——团队使用指南「模板 ×7」更正「两级通用+4 专用」；GENERATION-SOP 分享版口径改「重建后 audit-spec + validate-spec 双跑 0 HIGH 分发」。
+- 真值核对：图标 web 185 / 移动 184、版本 1.9.46 / 1.14.28 一致；USAGE-GUIDE 所引 packages 脚本实测存在，未改。ci-local 100 pass / 0 fail。
+
+---
+## [USAGE 使用指南内容同步] — 2026-11-05 · 提示词逻辑对齐现行 SOP / 审计口径
+
+- USAGE.html（dev + 两份 USAGE_分享版）提示词内容同步到当前真源口径：审计卡完整版改「audit-spec 台账 + D-1~D-12 逐维对照 → 逐项映射决策 → 分批修复 → validate-spec 双跑收口」（旧版仅 validate 逐条修，已废止）；迁移卡完整版改「SOP §② 五阶段（P0 台账 → P1 映射 → P2 修复 → P3 截图审查 → P4 收口）」；完整版提示词统一补 SOP §0 加载纪律（≤35k 只读命中章节）与问题上报口径（templates/设计系统问题报告模板.md）。
+- 资产地图补 tokens.json / audit-rules.json / audit-spec.js 3 行（13→16 条）；「提示词模板 ×7」更正为「两级通用 + 4 个专用（共 6 个）」；FAQ 新增 data-species 条目；分享步骤改「重建后 audit-spec + validate-spec 双跑 0 HIGH 再分发」；新增「环境路径 · 从克隆到使用」节（CLI Agent / WorkBuddy / 网页版 AI 三条上手套路 + 导航项）；body 补 data-species="document"。
+- 页面布局类与真源未改；分享版按当前 template.css 重新内联重建（仓库根 + 讲解展示页两副本，仅横幅注释差 2 字符）。门禁：ci-local 全绿；validate-spec dev 与两份分享版 0 HIGH（仅文档页自建布局类 MEDIUM，设计如此）；audit-spec dev / 分享版 exit 0。
+
+---
+## [规范展示页图表合规] — 2026-11-03 · 系列色 / 折线纵向覆盖 / 4px 网格
+
+- `web规范展示_框架版_20260806_1050.html`（及分享版）：SVG 系列元素绘制色由语义色 `--warn` / `--primary` 改为图表色 `--chart-wisdom-purple` / `--chart-tech-blue`；折线静态 points 拉伸至纵向覆盖 ≥70%（CHART-SPEC §3，上下对称）；主题按钮尺寸改 4px 网格（30→32px / 10→12px）。页面层修复，真源未改。
+
+---
+## [规范展示页框架升级] — 2026-11-03 · 对齐当前 page-template 框架（语言切换 / data-species / i18n）
+
+- `web规范展示_框架版_20260806_1050.html`（及其分享版）框架外壳升级到当前 `page-template.html` 规格：顶栏新增**语言切换**（.lang-sel 面板：简体中文 / English + 6 个待支持语言）与 `data-i18n` 标记（首页 / 管理员 / 修改密码 / 退出登录 / 全屏）、`<body data-species="document">`；移植框架 i18n JS（语言面板开合 + 文案替换 + localStorage 记忆）。
+- 页面内容与真源 token 未改；分享版按当前 `template.css` 重新内联生成。真源未改（仅人读展示页 + 产物）。
+
+---
+## [产物刷新] — 2026-11-03 · 分享版规范展示页 / USAGE 分享版按当前真源重建
+
+- `web规范展示_框架版_20260806_1050_分享版.html` 与根目录 `USAGE_分享版.html` 重新生成：内联**当前** `template.css`（含 1.9.46 登录页 v2 类与 `--radius-control` 等新 token），并删除 dev 页内冗余「内联 :root 变量（2026-08-06 同步）」副本——重复定义会压住真源新值（真源未改，仅产物刷新）。
+- 分享版属构建产物（门禁以 dev 态为准）；本轮产物内容审计 `audit-spec` 0 HIGH。
+
+---
+## [1.9.46] — 2026-10-30 · 登录页 v2（白卡浮层 + 手机号密码 + 卡外系统名）
+
+- 新增 token `--login-card-w:400px` / `--login-card-pad:40px` / `--login-hero-feather:160px`（tokens → map-tokens → globals → template 全链路重生成）。
+- 新增 `.login-*` 18 类 + `.login-lang`（卡外右上语言，白底版触发器）+ `.input-lg`（40 高）；`input.size` 契约高度放开 **32/40**。
+- 新契约 `login.card.width`（`.login-card` 宽 400，HIGH）。
+- `RULES §1.1b 登录页` 整段改写：58/42 分栏、系统名卡外、手机号+密码、卡内 3 步找回、暗色豁免。
+- 参考实现 `output/登录页v2_参考实现.html`：4 视图（登录 / 找回 3 步），`?view=r1|r2|r3`、`?state=error|locked|caps` 深链；validate **0 HIGH**（1 MED 图标库）。
+- 提示词模板 **v3.2**：diorama 五段式，「4:3 生成 → 裁 1:1」，交付强制「默认模板 + 行业映射模板」两份。
+- 默认图 `login-hero-default.webp`（2160²，373KB；@1x 92KB），源 `login-hero-default.png`；羽化 **160** 定稿。
+- 手机号区号 `.login-cc`（112×40，默认 +86，12 地区，选项带 16×12 国旗 data-URI）；数据驱动可扩展。
+- 密码眼睛**双态图标** `.ico-off/.ico-on`（`aria-pressed` 驱动）；连续输入框间距 16。
+- 找回密码 3 步：`.steps` + 验证码 60s 倒计时 + 两次密码一致性校验。
+- 登录三态：`.input.is-error` 字段错、`.login-alert` 表单错/锁定、`.login-hint` CapsLock。
+- 阈值（用户追认）：`template.css` 62000 → **64500**（实测 554 条规则零重复，无可安全回收冗余）；`components.json` 72455/77200 未超线。
+- 规范收口：登录段压缩（1710→约 1000 字符）；`DESIGN-TOKENS §7.7` 补 3 个 login token；`vendor-coverage` 清 `.login-prefix`。
+
+---
+## [1.9.45] — 2026-10-20 · `.tag` 物理删除 + 全库迁移（用户追认）
+
+- **删除 `.tag` 组件**：`template.css` 移除 `.tag/.tag-suc/.tag-warn/.tag-err/.tag-run/.tag-def` 及 hover/disabled 规则；`components.json` 删除 tag 组件条目与 `tag.size` 契约、两处 selector 去 `.tag`；`DESIGN-TOKENS §7.3` 改为「标签 Badge」规格；组件数 22 → **25**（-tag +empty/steps/timeline/descriptions）。
+- **迁移**：`web规范展示_框架版_20260806_1050.html` 与其分享版共 **22 处** `class="tag tag-*"` → `badge badge-*`（tag-def → badge-muted），分享版内联 `.tag*` CSS 同步删除；文档（RULES ×5、VISUAL-SPEC、packages/web-ui/README）同步为 `.badge`/徽章。
+- **体积上限追认**（用户 2026-10-20 确认）：`components.json` 77200、`template.css` 62000、`components.md` 16800、`DESIGN-TOKENS.md` 15600。
+- **焦点环不做**（用户 2026-10-20 决策）：现 20% primary 环保留，理由「视觉上无问题，符合科技克制的设计哲学」；`--focus-ring` 与 11 处 focus 规则维持原状，HANDOFF 不再列为待办。
+
+---
+
+---
+## [1.9.44] — 2026-10-20 · 视觉缺口整改批（用户采纳 8 条 Web 项）
+
+- **暗色卡面层次**：`dark.shadow.card` 改为 `0 8px 24px rgba(0,0,0,.35), 0 0 0 1px rgba(168,197,231,.14)`（描边并入 shadow 第二层，卡面对页面 1.21→描边 1.34）；新增 `--table-header-bg`（亮 #FAFAFA / 暗 #26364F，表头对卡面 1.10→1.20）。
+- **文字三级**：`--text-1/2/3` 改为 N11/N10/N9（原 N11/N9/N8，N8 对白仅 2.07）；`.card-title/.page-title/.tabs .tab/.pager .pg-tot/.breadcrumb-item/::placeholder` 全部改用该三元组，不再零引用。
+- **暗色图表色**：`dark.colors.chart` 换独立阶梯 8 色（tech-blue #4C9BE8 等，全部 ≥3:1；原 #0066CC 仅 2.63）。
+- **控件圆角统一**：新增 `--radius-control:6`，`.btn/.input/.textarea/.sel-trigger/.dp-trigger` 由 8/4 混用改为 6；`.filter-chip` 保持胶囊。
+- **表头规格**：`.table th` 48/13 → **44/14** + `border-bottom N6`；契约 `table.head` height 48→44、新增 font-size 14，`table.head.font` note 同步。
+- **新组件**：`.empty` / `.steps` / `.timeline` / `.descriptions` 四件入真源（含 components.json 登记与 components.md 规格表）。
+- **`.tag` 收敛**：就地改为 `.badge` 同款（inline-block、22/500、nowrap+ellipsis、`--text-2`），类名保留兼容 52 处示例页，文档标 deprecated 别名；契约 `tag.size` 字重 400→500。
+- **图标描边按尺寸**：`.ico/.btn-ico svg/.tree-ico svg` 16px→2.2，`.kpi-ico svg` 20px→2.0，logo/empty 24px→1.8。
+- **体积上限调整（须追认）**：`check-size.js` 中 `components.json` 74600→77200、`template.css` 57500→59500——因新增 4 组件 + 4 条契约产生的真实增长（实测 74530 / 58848），非阈值放水。
+
+---
+
+---
+## [1.9.43] — 2026-10-20 · 三处同根因缺陷修复（暗色选中 / badge-muted / badge 溢出）
+
+- **暗色白底表面选中 1.99:1 → 10.56:1**：新增 `--select-item-bg` / `--select-item-fg`（亮 `#DAEAFA`/`#004A8F`，暗 `#23395D`/`#F1F5F9`），`.sel-opt.on` / `.tree-node.on` / `.filter-chip.on` / `.lang-opt.on` 改用这对 token；品牌蓝底侧栏变体仍走自己的覆盖，不受影响。
+- **`.badge-muted` 4.44:1 → 9.40:1**：文字由 N9 提为 N10（`#334155` on `#F6F9FC`）；暗色同理达标。
+- **`.badge` 文字溢出定高盒**：改 `display:inline-block` + `line-height:22px` + `white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%`（原内容 38px 撑不进 22px 盒、第二行无底色溢出；现超宽显示 `…`）；窄列仍按 RULES §1.1b 收敛为「2 个 + +N」。
+- 派生产物：`globals.css` / `template.css` 重生成，`page-template.html` 内联 `:root` 同步两个新变量，`DESIGN-TOKENS.md` §2.8 补两行。
+
+---
+
+---
+## [1.9.42] — 2026-10-20 · 表格行选中态 v2（用户拍板：底 + 左条，单选无控件）
+
+- **行态收敛为一种视觉**：单选 / 多选选中后都是「底色 `--row-selected-bg` + 2px `--row-selected-bar` 左条」（首列 `padding-left:14` + 边框 2 = 16，内容不位移）。
+- **取消「当前行」**：删除 `.table tbody tr.is-current` 三条规则（未选中行点击/悬停只表现为 hover N3，不再出现左条）与 `.row-key` 600 规则。
+- **单选无空间控件**：删除 `.cbx--radio`；单选表格用 `table[data-select="single"]`，行点击即选中（互斥）。多选表格 `data-select="multi"` 仍由 `.cbx` 复选触发。
+- **token 改名**：`--row-current-bar` → `--row-selected-bar`（`tokens.json` 键 `selection.rowBar` 不变），`page-template.html` 内联 `:root` 同步。
+- **门禁**：`table.row.selected.cue` 改为「已选行须有 `.cbx`，或所在表格声明 `data-select=single`」，不再接受 `role=radio`。
+- **指针反馈**：`.table[data-select="single"] tbody tr` 整行 `cursor:pointer`。
+- **规范**：RULES §3.3 重写为「两种选择方式 / 同一选中视觉」；§3.6 注记与移动端 §3.3 补注同步更新。
+
+---
+
+---
+## [1.9.41] — 2026-10-20 · 复选框补单选变体（`.cbx--radio`）
+
+- `components.css` 增 `.cbx--radio`：同 `.cbx` 尺寸/边框（16/3.03:1），圆形 + 主色内点 8px；用于表格「单选」列（互斥）。
+- `components.json` checkbox `variants` 补「单选（圆形 .cbx--radio）」。
+- `.cbx svg` 默认 `opacity:0`，仅勾选/半选显示（防未选行露出勾）；
+- `validate-spec` 的 `table.row.selected.cue` 接受单选控件（`role=radio` / `input[type=radio]`），不再只认 checkbox。
+- 语义：`.is-selected` = 被选中（多选 checkbox / 单选 radio 均可）；`.is-current` = 键盘/定位当前行，两者独立。
+
+---
+
+---
+## [1.9.40] — 2026-10-20 · 表格行选中态落地（方案 D：已选 = 复选框 + 底 / 当前 = 左条）
+
+- **tokens.json**：新增 `colors.selection`（亮 `rowBg #DAEAFA` / `rowBar #005EAE` / `checkboxBorder #949494` / `checkboxCheck #FFFFFF`；暗 `#23395D` / `#3B82F6` / `#94A3B8` / `#FFFFFF`）→ `map-tokens.js` 发射 `--row-selected-bg` / `--row-current-bar` / `--cbx-border` / `--cbx-check-fg`（亮暗双段）；`DESIGN-TOKENS.md` 增 §2.8。
+- **components.css**：`.table tbody tr.is-selected`（底 + `:hover` 保底，防同权重覆盖）、`.table tbody tr.is-current>td:first-child`（2px 左条，`padding-left:14px` 与边框合计 16 不位移）、`.row-key` 600；新增 `.cbx` 复选框（16×16 / 边框 3.03:1 / 勾选主色底 + 白勾 / `:focus-visible` 环 / 禁用态）+ `th.ck/td.ck` 列宽 40。
+- **components.json**：`table.states` 增 `row.selected`（bg + nonColorCue）与 `row.current`（bar + weight），组件新增 `checkbox`（22 个）；`components.md` 镜像同步（含表格行态说明）。
+- **规范**：RULES §3.3 重写为「已选 / 当前」双态表 + selectable 默认关 + 标识列 `.row-key` + **表格内禁 N9 次级文字**（任何行底色击穿 4.5）；§3.6 注明表格行不适用单选语义。移动端 RULES §3.3 补口径注释（双端不统一）。
+- **门禁**（validate-spec）：新增 `table.row.selected.cue`（已选行无 `.cbx`/checkbox → MED，1.4.1 颜色单信号）与 `table.row.state.classname`（`tr` 用 `.sel/.cur/.hov/.on/.col/.sheet` 通用短名 → MED，实测撞组件类整行塌陷）。
+- **page-template.html**：内联 `:root` 同步 4 个新变量（`template.root.sync`）。
+- **验证**：反例页命中 2 条新 MED、正例页 0 违反；`ci-local` 全绿（项数以输出为准）。
+
+---
+
+## [1.9.39] — 2026-10-20 · 跨智能体交接制度（HANDOFF 活文档 + 每轮更新铁律）
+
+- `HANDOFF.md` 重构为活文档（现状快照 / 未决事项 / 命令 / 权限 / 更新记录 ≤10 轮），取代 2026-09-23「HANDOFF 冻结」决议。
+- 更新铁律入 `AGENTS.md` 顶部 + `GENERATION-SOP.md §0`：任何 Agent 任何轮次结束未更新 HANDOFF = 本轮未完成。
+- **真源区未改**（template.css / tokens.json / components.json / 门禁脚本零改动），本轮仅动流程文档。
+
+---
+
+## [1.9.38] — 2026-10-10 · 门禁复盘遗留拍板落地（T-6 三档登记 / T-7 结案 / T-8 治理约束）
+
+- **T-6（RED-002 三档）**：check-sync 新增检查三「真源未覆盖类登记闭环」——Web 真源 282 类中 vendor 未覆盖 163 类原「从不比对即静默通过」，现须全部登记 vendor-coverage.json（tokenProjection 豁免 30 / gaps 真缺口 133），未登记 → FAIL。负向验证：删登记项 / 登记真源缺失均 exit 1，恢复回绿。
+- **T-7 结案**：Mobile vendor 同构段 0 类定性「不适用」（mn-* Taro 组件层自有命名空间，设计如此，非遗漏），check-sync 输出 ⏭️ 非 ⚠️，不阻断、不读作一致。
+- **T-8 治理约束**：check-size.js 新增规则 4——阈值上调须 CHANGELOG 留痕 + 复盘轮内用户追认，归位治理优先于调阈值。
+- **阈值重测留痕（T-8 口径，已追认 2026-10-10）**：check-sync.js 10900→13000（检查三落码实测 11997 + 8% 档）；check-size.js 6200→7500（注释+登记实测 6478 + 15% 档）；新登记 vendor-coverage.json 4000。
+- **回归**：ci-local 100 pass / 0 fail；本轮仅动门禁/工具层，真源 CSS/JSON/HTML 未动。
+
+---
+
+## [1.9.37] — 2026-09-23 · 消费应用侧报告 DS-20260923-01 核验回执：修复 page-template.html 畸形 `:root` 块
+
+- **修复内容**：删除 `page-template.html` 第 111–114 行的畸形块——L111 孤立 `:root` + L112–114 缩进重复的密度声明（`:root[data-density=compact/comfortable/spacious]`）。该块自仓库首个提交 `5aca169`（2026-08-06 init）即存在，属历史导入携带缺陷。
+- **定性修正（维护侧核验）**：非应用侧报告所称「4 行纯死代码」，实为 **1 条死规则 + 2 条活着的重复声明**——L111 与 L112 合成后代选择器 `:root :root[…]` 永不命中；L113/L114 各自独立成合法命中规则（取值与 L108/L109 正确块重复）。严重级维持 P2（无功能/视觉/门禁影响）。
+- **影响面**：仓内 12 个历史产物 + 应用侧克隆页共 13 处同构命中（模板克隆传播）——本次只修真源模板，存量产物不回改（历史快照纪律）。
+- **门禁未削弱**：核验实测 `extractRootScopeVars` 对畸形块不采信（投毒 token 不可见），无假阴性放行。
+- **回归验证**：删除后模板 `root[data-density]` 仅正确块 3 处、无孤立 `:root` 行、`<style>` 配对完整；ci-local 全绿（100 pass / 0 fail，项数以输出为准）。
+- **冻结指纹刷新**：page-template.html 在 web-ui `sha256-baseline.json` 冻结清单内，已跑 `freeze-baseline.js` 刷新（含此前批 2/3 未提交的 validate-spec.js 指纹一并归位）。
+
+---
+
+## [1.9.36] — 2026-09-23 · 监督闭环修复批（SUP-20260923-0855 audit · T-E2/E3/F1/F2）
+
+- **词典交付通道修复（ISSUE-02）**：.gitignore 改嵌套负向链（`**/.workbuddy/*` 逐级放行 `skills/tm-design-system/` 全目录）——vocabulary.json 此前被 `**/.workbuddy/` 目录级忽略，推送后 SKILL §2 指针在消费者侧悬空；验证 check-ignore 不再命中、嵌套子项目 .workbuddy 仍忽略。
+- **M-07 白名单双源化（ISSUE-01）**：buildTemplateMotionNames 并收 `@keyframes` 定义名（16→19）——shimmer/toast-in/toast-out 等规范动画只定义未在模板内引用，页面正常使用规范骨架屏/规范 toast 即误报 HIGH。四用例复测：模板页 0 / 白名单豁免 / 自造双动画 HIGH×1 / shimmer+toast-in 回归 0。
+- **species workbench 最小判据（T-F1）**：validate-spec 新增——声明 workbench 但无 `.stat-grid` 工作台骨架 → MEDIUM（提示级，防形式字段退化）；RULES §1.1c 门禁 bullet 同步。双用例实测：无骨架出现 / 有骨架不出现。
+- **check-size 清单封闭扩展名（T-F2）**：+`.txt`/`.log`，堵「换扩展名落根目录」的膨胀转移盲区（A1 FAIL 根因同源）。
+- **audit-rules.json v1.6.0 → v1.6.1**：M-07 predicate 补白名单双源口径。
+- **验证**：ci-local 全绿（项数以输出为准）；check-size 0 FAIL。
+
+---
+
+---
+## [1.9.35] — 2026-09-23 · 页面 species 正交维度 + register 口径显式化（批 2e · C-3/C-4）
+
+- **RULES 新增 §1.1c「页面 species 正交维度 + register 口径」**：①`<body data-species="workbench|document">` 与 §1.1b 页面类型**正交组合**（不新增平行页型，防物种爆炸——J2 修正形态）；语义约定：workbench 页首屏模块数 ≥3 且每模块带标题条，document 页禁 KPI 网格拼盘。②register 口径显式化（C-4，零行为变更）：B 端工具页 = `product` register（克制哲学显式登记，不引入新旋钮）；Brand Visual Kit = `brand` register（允许表现力），brand 手法带回工具页 = §2 违规。
+- **page-template.html**：body 预置 `data-species="document"`（克隆即带默认值）。
+- **validate-spec.js 新增 species 检查**：缺失 → MEDIUM（存量渐进补齐，不阻断）；值非法 → HIGH（防物种爆炸机器判据）。正反例实测：模板页 0 HIGH / 非法值页 HIGH 拦截。
+- **验证**：check-size 通过；ci-local 全绿（项数以输出为准）。
+
+---
+
+---
+## [1.9.34] — 2026-09-23 · M-07 节拍预算（机器实现）+ Design Read 停等（批 2d · C-5/C-6）
+
+- **audit-rules.json v1.5.0 → v1.6.0**：新增 **M-07 `motion.beat.budget` 节拍预算**——一页最多一个 heavy 动效。scope：页面内 `<style>`/inline 的 animation 声明（`<link>` CSS 不扫，template.css 规范动效合法；transition 微交互不计；@keyframes 定义行不算引用）；predicate：唯一 animation-name 去重 >1 → 超出部分每条 HIGH。
+- **audit-spec.js 实现并正反例实测**：正例（3 动画测试页）→ 报出超预算 HIGH、transition 正确豁免、重复 name 去重；反例（page-template.html）→ M-07 零违规零误报。
+- **GENERATION-SOP §① 新增步骤 1.6「Design Read 停等确认」**：生成前向用户输出设计读（选端/框架判定/页面类型/内容结构模块清单/规范依据）并停等——不确认不动手；跳过 = 流程违规（用户明示「直接做」可记录跳过）。
+- **验证**：check-size 通过（0 FAIL）；ci-local 全绿（项数以输出为准）。
+- **误报修正（同日）**：首版 M-07 对内联真源 CSS 的分享版产物误报 15 条 HIGH——模板真源动画名集合白名单化（buildTemplateMotionNames），预算只管页面自加动画；audit-spec 阈值 20,400→22,000（功能增长，六步留痕）。正反例三层复测通过。
+
+---
+
+---
+## [1.9.33] — 2026-09-23 · D 层 trap+pairs + 口语→术语词典（批 2c · T-C 落地）
+
+> finesse 借鉴项经监督修正后落地（J1/J2 修正形态）。另：批 2③ 复述收尾盘点结论——双端 RULES + SOP 共 158 行含 hex，全部为教学性提及（状态矩阵表/功能色对照/禁令表，且与 token 名并列、失真显式可见），**判定保留不治理**；「复述会失真」的害处集中在静默的数字基线，已于批 2a 治理收口。
+
+- **audit-rules.json v1.4.1 → v1.5.0**：migration_dimensions D-1~D-12 每维新增 `trap`（该维最常犯错误，AI 生成页典型病）+ `pairs`（正误对照 bad/good，12 维共 14 对）——审查与生成共用同一份「错误长什么样」的对照语料，供 LLM 对照识别，非机器断言（机器断言仍走 M/R 层）。
+- **语汇词典（C-1，data 与 prompt 分离）**：`.workbuddy/skills/tm-design-system/data/vocabulary.json` 新建（24 词条：say 口语数组 → map 弘讯术语/组件类 → rule 规范落点指针）；SKILL.md §2 新增第 5 条指针（触发条件：解析口语需求、不确定组件归属时按需检索，**不整份进上下文**）。J1 修正口径：正文留指针+触发条件，内容下沉 data。
+- **check-size 阈值调整（维护者六步）**：audit-rules.json 25,600 → 28,600（D 层新增字段属合法内容增长，26,263 现值 + 8% 余量；归位治理优先于调阈值的原则不受影响）。
+- **漏网补清**：`.workbuddy/` 为隐藏目录，ripgrep 默认跳过致 A-1 漏扫——tm-design-system SKILL.md「99 pass」复述已补改指针，深层复扫零残留。
+- **验证**：ci-local 全绿（项数以输出为准）；audit-rules.json JSON 合法 + 12 维 trap/pairs 复测齐全。
+
+---
+
+---
+## [1.9.32] — 2026-09-22 · 文档体积门禁 check-size 接入 ci-local（批 2b · T-B）
+
+> 承 [1.9.31] 批 2a——体积门禁按监督实战沉淀的 J5 修正实现：字符数为主行数为辅、阈值先实测现值、先归位治理、防膨胀转移。
+
+- **check-size.js 新增（根目录，与 check-sync.js 并列）**：①清单内真源文件字符数超限阻断（阈值 = 2026-09-22 实测现值 + 分级余量：≤10k +15% / 10~50k +8% / >50k +5%，共 42 项）；②**清单封闭防膨胀转移**——根 / 双端目录顶层新增 .md/.json/.js/.html/.css 未登记且未豁免即 FAIL（堵「拆文件绕阈值」）；③预警口径 = 剩余增长空间 <2%（首版 90% 线在 +8% 余量下数学上必然低于现值，全表误报，已修正）；④豁免清单登记产物与过程记录（USAGE.html、规范展示页、创作记录等）。
+- **ci-local.js 挂载**：check-sync 之后新增 check-size 阻断段（子进程 + ok() 断言，同构现有模式）。门禁基线相应 +1。
+- **阈值调整纪律**：走维护者六步（登记 → 改 check-size.js → ci-local 全绿 → 双端 CHANGELOG 留痕）；**归位治理优先于调阈值**。
+- **验证**：`node check-size.js` 独立通过（0 FAIL / 8 WARN，WARN 为信息性）；ci-local 全绿（项数以输出为准）。
+
+---
+
+---
+## [1.9.31] — 2026-09-22 · 加载纪律（批 2a）：基线治理——SSOT 复述指针化 + CHANGELOG 滚动归档 + 数字引用纪律
+
+> 背景：跨窗口监督实战（SUP-20260922-1640）暴露「以记忆/旧值代替实测」系统性缺口——3 条断言同源失真于引用旧提交基线值（7789a2c 时的行数/项数，实际 main 已 d3c83dd）。归因：执行缺口（活文档复述数字会漂移）+ 制度缺口（无数字引用规则）。
+
+- **SSOT 复述指针化（A-1）**：AGENTS / README / USAGE-GUIDE / USAGE.html / USAGE_分享版 / 团队使用指南 / HANDOFF 共 17 处「99 pass」类门禁项数复述改为指针（「项数以输出为准」）；CHANGELOG 条目与 `output/` 复盘中的数字属历史快照，按新纪律不回改。
+- **CHANGELOG 滚动归档（A-2）**：web 主文件 29,906 → 9,352 字符（[1.9.21] 及更早 21 条原样移入 `CHANGELOG-archive.md`）；切割由确定性脚本完成（行数 + 锚点双重断言），主文件头部加归档指针。
+- **数字引用纪律（A-3）**：SOP §0 新增第五节——①活文档禁复述会漂移的数字（一律指针化）；②快照值须标注「实测命令 + 实测日期」；③历史记录不回改、不作当前基线引用。
+- **验证**：`node ci-local.js` 全绿（项数以输出为准）。本批不动样式真源与冻结区，指纹无需刷新。
+
+---
+## [1.9.30] — 2026-09-10 · 维护侧自发现：M-06 判级与文案自相矛盾（v1.4.1）
+
+> 背景：维护侧复核应用侧报告 DS-20260910-01 的 §10 自愈结论时**主动实测**发现的新题（应用侧未提请）——11242 `page_dashboard.html` 报「HIGH 0」，实际 `content/shared/tm-ui-design.css` **L163/L183** 的 `color:#94a3b8`（∈ web 色板 `dark.colors.neutral.N8`）是**色板内裸 hex 引用行**，按 M-01 同口径应判 HIGH 却被放行。归因：设计系统问题（真源谓词未声明分层 + 实现私自套用他规则语义），无执行缺口。
+
+- **根因**：`audit-spec.js` M-06 分支写成 `severity = frozen ? 'MEDIUM' : (inPalette ? 'MEDIUM' : 'HIGH')`——`inPalette ? MEDIUM` 是**从 M-01 私自套用**的；而 M-06 真源只定义 frozen(dist) 一条降级路径、谓词明写自维护层「维持 HIGH 口径」。**同一行代码判 MEDIUM、文案却说「维持 HIGH 口径」→ 实现与规则自相矛盾**。
+- **真源 v1.4.0 → v1.4.1**（**用户拍板方案 A：对齐 M-01 口径**）：M-06 `predicate` 补「色板内外分层」明写——自维护层 ∈ 色板 → MEDIUM（合法色，必须改 `var()`）/ ∉ 色板 → HIGH（自造色，须映射 token 或回 tokens.json）；`severity` 字段由二分改三分（`HIGH(自维护·自造色)/MEDIUM(自维护·色板内应改引用)/MEDIUM(冻结 dist 产物)`）。
+- **audit-spec.js**：M-06 文案拆三分支并与判级一致；沿用 M-01 同款措辞（「合法色但必须改用 var(--token)」/「自造色」），消除跨规则措辞漂移。
+- **选 A 的理由（第一性）**：M-01 的 `HIGH(非色板)/MEDIUM(色板内)` 分层是有意义的设计——**自造色是规则缺口（须映射），色板内是执行惰性（改 var 即可）**。M-06 必须同口径，否则「同一个 `#005EAE` 裸 hex，写在 `<style>` 里判 MEDIUM、写在 `<link>` CSS 里判 HIGH」这类荒谬判定会持续。真正要修的是**文案说谎** + **真源缺分层声明**，而非收紧判级。
+- **对应用侧结论的影响**：11242「2 项 MEDIUM」**判级结论有效、无需回改**（色板内 MEDIUM 与 M-01 一致）；但其「按 MEDIUM 可接受口径保留」的理由须更正为「色板内合法色 → MEDIUM，应改 `var()`」，而非「色板内无对应 var 故保留」。§10 其余处置（token 化收敛、纯 `:root{}` 块下沉）**依然合规、无需回滚**。
+- **报告 §3 根因勘误**：报告称根因是「掩码正则 `:root\s*\{[^}]*\}` 不覆盖 `:root:not(...){...}` 条件根块」——**v1.4.0 实测不成立**：条件根块内 `--bg-deep:#070b12` → MEDIUM `css.vardef.hex`（正确）、引用行 → HIGH（正确）。`css.vardef.hex` 是**行级谓词（属性名以 `--` 开头）**，先于掩码生效，掩码非必经路径；**两处掩码（页面 L136 / 引用 CSS L345）均无需改**。该描述系应用侧在 v1.3.1 旧版下的推断、未在 v1.4.0 复测，已在 feedback_log 更正。
+- **回归验证**：`#94A3B8`（∈色板，引用行）→ MEDIUM + 文案「色板内·须改 var」；`#070B12`（∉色板，引用行）→ HIGH；`fixture` 复测判级不因所在文件（`<style>` vs `<link>` CSS）而异。ci-local 99 pass / 0 fail。
+
+---
+
+---
+## [1.9.29] — 2026-09-10 · 回灌应用侧报告 DS-20260910-01：M-06 口径修正（v1.4.0）
+
+> 背景：应用侧按新制度提交**首份合格报告**（`I:/workbuddy/弘讯设计系统应用/output/设计系统问题_20260910_01_M06口径.md`，P1，合格线三判据全过）。两题均复现属实：① M-06 把**自维护 CSS 的变量定义行**（`--x:#hex`）也判 HIGH「自造色」→ 自维护层陷入「定义违规、引用违规、平台无 token」死锁（11242 实测 147 处 HIGH）；② `audit-spec.js` 横幅硬编码 v1.2.0，真源已 v1.3.1。归因：规则缺口（设计系统问题），无执行缺口。
+
+- **audit-rules.json v1.3.1 → v1.4.0**：新增子契约 **`css.vardef.hex`**（M-01/M-06 共用）——声明属性名以 `--` 开头者 = **色板本体非用法**，判 MEDIUM 清单级不阻断（自造色板须可见：映射 token / 回 tokens.json / exemptions 按块登记）。根因是原豁免绑在 `:root`/`[data-theme]` **选择器**上（绑错维度），换作用域即误报；**修法比报告建议更进一步**：统一以**属性名**判定，M-01 页面侧同步（避免双规则口径不一致），不只改 M-06。
+- **audit-spec.js**：M-01/M-06 双路径加 `css.vardef.hex` 判定（抽 `declPropAt()`/`isVarDef()` helper 去重）；**版本号改动态读取** `audit-rules.json $meta.version`——横幅（L368）与 `--json` 输出 `ruleset` **两处**均修（报告只发现横幅一处，JSON 侧仍硬编码 v1.0.0，已一并修，符合 §0 SSOT「不复述数字」原则）。
+- **双端 RULES 自造底线**补「自维护色板定义出口」条：定义行不计「裸 hex 用法」违规，**引用处仍必须 `var()`**。
+- **回归验证（报告 §9 样例）**：定义行 → MEDIUM `css.vardef.hex`；引用行 → 维持 HIGH `css.asset.hex`；横幅/JSON 版本随真源。**应用侧因此可达 0 HIGH**——其 §10 拟定豁免预案（定义行按 exemptions 登记）**无需执行，可撤**。ci-local 99 pass / 0 fail。
+
+---
+
+---
+## [1.9.28] — 2026-09-10 · 加载纪律（批 1）：必读集预算 + 章节索引 + SSOT 清单
+
+> 背景：实测文档层 23 份核心文本 = 468k 字符；单端「skill 声称必读」≈300~340k 字符 ≈100~140k tokens，最小必读集（SOP §① 13.3k + 单端 RULES 46k + tokens 12k = 71k）≈45~55k tokens。根因（设计系统问题）：全文加载无章节检索 / 同一事实多处复述（#005EAE 72 次 · 44px 36 次 · 0 HIGH 44 次）/ 机器资产被列入必读（components.json 70k、validate-spec.js 107k）/ 无体积预算。
+
+- **GENERATION-SOP 新增 §0「加载预算与章节索引」**：必读 3 项（SOP §① + 端 RULES 命中章节 + tokens.json colors 段）；**不通读清单**（components.json / template.css / validate-spec.js / ci-local.js）；章节索引（SOP §①②③ 各附录字符数）；**单点事实源 SSOT 表**（品牌色→tokens.json / 组件契约→components.json / 审计规则→audit-rules.json / 图表→CHART-SPEC / 治理契约→RULES 页首 / 交付线→ci-local 输出：同一事实只认一处，其余写指针）。**预算 ≤35k 字符**。
+- **双端 RULES.md 页首新增「章节索引」**：逐章字符数 + 何时读 + [软]/[硬] 标记，明确「别整份加载」与机器资产不通读。
+- **AGENTS.md 阅读策略重写**：必读 3 项 / 按需检索 / 不通读清单 / SSOT / 禁用整份加载（实测数字替换旧的「~80KB」）；流程步骤 3 的 components.json·template.css 处标注「门禁与构建消费，Agent 不通读」。
+- **tm-design-system skill §2 重写**：加载预算 ≤35k + 必读 3 项 + 按需检索 + 不通读清单（薄壳原则，不复制规范本体）。
+- **批 2 遗留（未做）**：正文复述文本按 SSOT 表替换为指针（需逐处核对语义）；CHANGELOG 滚动归档；文档体积门禁。
+- **同批追加（v1.3.1 · 制度冲突实证收口）**：应用侧克隆内发现未提交的真源改动（自行登记 11242 `page_dashboard.html` FOUC 启动色 `#0a0e17` 豁免）——旧 change_policy 要求无写权角色回灌所致的越权写入。维护侧**吸收进真源 `exemptions`**（内容合法：与平台 dist `--bg-deep` 精确同值 + 用户已拍板），`registered_by` 注明来源与回灌确认；应用侧回滚本地改动后从 GitHub 拉取。**分发口径同时确立：下游唯一来源 = GitHub 拉取**，维护侧不做跨项目巡检（与 `issue_reporting.consumption_model` 被动消费一致）。
+
+---
+
+---
+## [1.9.27] — 2026-09-10 · 报告制度闭环补齐 v1.3.0（模板文件 + schema + 通道 + 回执/仲裁 + 被动消费）
+
+> 背景：按工作流五拍（发现→记录→反馈→消费→回执）复盘报告制度，查出 8 缺口（两处 P0：无应用项目登记表导致维护侧「扫描各应用项目」义务无法执行；无回执闭环且临时处置无回收机制）。用户拍板：G3 通道=对话内告知用户转交（可接受）；G5 **不建注册表**——应用者反馈，不去打扰；其余按推荐执行。归因：制度设计缺口（设计系统问题）。
+
+- **audit-rules.json v1.2.1 → v1.3.0**：`issue_reporting` 全面补齐——新增 `template_file`（templates/设计系统问题报告模板.md）、`report_schema`（报告头六字段 + 必填六项 + 执行关键五项：最小复现片段/环境/证据原文/应用侧临时处置/建议回归样例）、`report_quality_bar`（读懂·能修·能验三判据）、`channel`（落盘 + 对话内声明转交，禁直连维护者）、`consumption_model`（**被动消费**：不建注册表/不主动巡检/不建自动化）、`maintainer_duty`（六步回灌 + **回执三件套** = 报告状态栏回写 / feedback_log / 双端 CHANGELOG + 仲裁须写理由 + 临时处置回滚清单）、`feedback_log_contract`（含 `related_reports` 去重）；`severity_policy` 补转交动作。
+- **新增 `templates/设计系统问题报告模板.md`**：可复制骨架（报告头表 + 12 节 + 转交声明话术 + 合格线自检清单）。
+- **GENERATION-SOP**：记录义务节升级（模板路径 / 合格线三判据 / 通道话术 / 回执三件套 / 临时处置回收）+ 新增「维护会话入口检查（G6，不主动扫描）」，§② 报告流段同步 v1.3.0。
+- **tm-design-system skill**：§2 加载清单加 §①/§② 记录义务与 `issue_reporting` + 模板文件指路；§4 铁律加「发现设计系统问题必须记录」。
+
+---
+
+
+---
+## [1.9.26] — 2026-09-10 · 设计系统问题报告制度（单向报告流全量泛化）
+
+> 背景：用户提出——应用侧使用过程中（从零生成/存量改造/日常使用）发现的任何设计系统问题都应自动记录并可返还维护者，不止审计漏检。核对真源：漏检单向报告流只覆盖审计漏检子集，其余仅有零散『上报维护者』措辞（图标缺 §7.9③ / 组件补库 §10.10 / token 缺值 / 门禁误报），无统一格式、无记录义务、无反馈时机、无维护侧消费义务。归因：制度缺口（设计系统问题）。
+
+- **audit-rules.json v1.2.0 → v1.2.1**：① 新增根级 `issue_reporting` 制度块——报告文件名（output/设计系统问题_*.md）、六要素模板（现象/根因/归因/建议归层/建议方案/严重级，比漏检四要素多归因与严重级）、严重级反馈时机（P0 即时 / P1 攒批每 2 周或 5 条 / P2 攒批可选）、维护侧消费义务、散落条款收口声明；② change_policy 泛化——报告流输入不只漏检，漏检为 machine 层特例；执行问题不进报告直接改页面。
+- **GENERATION-SOP**：§①/§② 通用新增「生成中发现设计系统问题的记录义务」节（先归因后记录 / 六要素 / P0-P2 反馈时机 / 禁碰真源 / 收口声明）；§② 审计真源段「漏检单向报告流」改泛化措辞并指回统一制度。
+- 零散上报条款不改文本，由 issue_reporting 的 scattered_clause_collation 统一收口（避免双端 RULES 多处改动）。
+
+---
+
+
+---
+## [1.9.25] — 2026-09-10 · 漏检回灌（11242 报告）：M-01 渐变扩展 + M-06 引用 CSS 扫描 + R-05~07/H-06~07 + 单向报告流
+
+> 背景：维护侧消费应用侧结构化漏检报告（`report_source`：I:/workbuddy/弘讯设计系统应用/output/漏检报告与制度修正_给维护者_20260910.md，11242-designer-preview 迁移审计 7 单漏检）。归因：规则/制度/流程缺口（设计系统体系问题），无执行缺口。
+
+- **audit-rules.json v1.2.0**：① M-01 扩展——渐变色标点（linear/radial/conic-gradient）内 hex 参与判定，白字豁免在色标点内不适用（案例一：暗皮渐变起点 `#fff` 露白顶）；data-audit-exempt 豁免标记机制补登规则文本。② 新增 M-06 css.asset.hex——`<link>` 引用本地 CSS 纳入裸 hex 扫描：冻结 dist 降级 MEDIUM『硬编码清单』供映射决策，自维护合规层维持 HIGH；白字豁免仅限 `color:` 声明（案例二：dist 分页条 `background:#fff` 页面源码假阴性）。③ 新增 R-05 滚动中间态 / R-06 有数据态 / R-07 图片可辨识度（运行时层语义登记）。④ 新增 H-06 逐 tab×逐皮×滚动态审查矩阵 / H-07 UX 语义人审兜底。⑤ **change_policy 修正为单向报告流**：应用侧只报告不回灌（旧『强制回灌』与真源治理契约冲突，废止），feedback_log 条目新增 `report_source` 字段。
+- **audit-spec.js**：实现 M-01 渐变扩展 + M-06（`checkLinkedCss`：声明上下文感知、注释/:root 掩码、路径分类冻结产物）；已接入 ci-local 既有阻断段，回归样例验证案例一/二均自动抓出。
+- **GENERATION-SOP §②**：铁律 5 遮挡类结构禁当装饰删除（案例五：二十轮删 sticky 盖板穿透回归）；新增「布局改动专项回归清单」（滚动模型变更四项：sticky top 偏移 / 滚动条位置语义 / 防穿透盖板 / 高度链）；P3 审查矩阵升级逐 tab×逐皮×滚动态；漏检回灌段同步单向报告流。
+
+---
+
+
+---
+## [1.9.22] — 2026-09-10 · 真源治理契约（分级治理）+ 审计体系配套
+
+> 背景：存量改造审计体系落地后，用户提出「使用者不能随意修改设计系统」的治理诉求。归因：现有门禁已拦「页面篡改真源」（css.override）与「冻结文件改动」（sha256），但 template.css/components.css 等真源文件的**维护者级修改**无流程看护、双端同步靠人肉——治理语义缺失（设计系统问题）。
+
+- **RULES.md 新增「真源治理契约」段**（分级治理）：角色由**行为**定义不由人名定义——改真源区文件即进入维护者六步流程（缺口登记 → 改真源 → 双端同步 → 门禁全绿 → 刷指纹 → CHANGELOG 留痕），无痕迹的维护者行为 = 违规；Agent 默认仅限使用者区，改真源须用户显式下发任务（P0–P4 台账即授权载体）。
+- **同批落地（关联台账 `output/审计台账P0-P1_sample-default-light_20260909.md`）**：`.btn` 家族补交互态（V1 闭环：primary/secondary/text 的 focus-visible 用 `--focus-ring`、secondary/text :active、text :hover）；仓库根新增 `audit-rules.json`（审计规则真源 M-01/02/03 + 豁免登记 + 漏检回灌）与 `audit-spec.js`（已接入 ci-local 阻断段，基线 86→98 pass / 0 fail）。
+
+---
+
+
+---
+## [1.9.24] — 2026-09-10 · 审计语义 v2（迁移维度 D-1~D-12 + 归因分场景 + 双向对账）
+
+> 背景：用户三连澄清审计语义——①被审查项目多为外部项目（非弘讯生成），无「执行问题」可言，归因二分法失效；②审查唯一目的 = 找出视觉不符合弘讯设计系统的地方并修改成符合；③「全」的保证不能靠经验枚举（首轮 6 维即漏图标/动效/暗色），须结构对偶。根因：审计语义按「弘讯内合规审计」设计（设计系统问题），执行无偏差。
+
+- **audit-rules.json v1.1.0**：新增 `migration_dimensions` **D-1~D-12**（规范真源结构树的对偶投影：框架/色彩/字阶/组件/间距栅格/圆角投影密度/动效/图标/图表/状态语义/暗色/审美，每维 check 怎么找 + map_to 改成什么 + ref 指回规范条目）；`change_policy` 新增「**规范-审查双向对账**」元规则（ref 指不回 = 伪维度删；规范新增条目审查侧必须同步长核对项）；`scope_note` 写明两种审查场景的归因差异。
+- **GENERATION-SOP §②**：铁律 2 改**归因分场景**（外部迁移 = 映射决策「每个差异定改成什么」/ 弘讯内自审 = 归因二分）；P1 改「映射决策」；P0 加 D 层逐维对照；审查目的唯一化写明。AGENTS / README / USAGE-GUIDE / 标准提示词模板（审计+迁移）/ SKILL.md 同步映射决策措辞。
+
+---
+
+
+---
+## [1.9.23] — 2026-09-10 · 双端真源一致性机器门禁（check-sync）
+
+> 背景：治理契约落地后，双端 template.css 同步仍靠人肉（治理契约第 3 步「双端同步」无机器看护）——同步语义缺失（设计系统问题）。实测双端类交集：web 281 / mobile 209 / 同名共享 33 个，15 类存在属性键差异。
+
+- **仓库根新增 `check-sync.js`（已接入 ci-local 阻断段，基线 98→99 pass / 0 fail）**：检查一 vendor `components.css` ↔ 真源 `template.css` 同构段逐声明一致（normalize 排序比对；mobile vendor 46 类 `.mn-*` 为 Taro 自有命名空间，信息性清点不比对）；检查二双端 template.css 同名类属性键差集比对，`SYNC_WHITELIST` 15 类登记平台合法差异（Web hover 交互 / Mobile 字阶 / 继承 vs 显式声明），白名单外新漂移即阻断。
+- Web 端涉及类：`.btn-variant` 系列、`.chart-line`、`.legend-item` 等双端同名类的结构性漂移现已冻结在白名单内，后续任何一侧改动必须显式更新白名单并注明理由。
+
+---
+
+
+---
+## [1.9.21] — 2026-08-28 · V12 六缺陷：外部生成页实战暴露的系统层修复（订单总览V2）
+
+> 背景：另一智能体用最新设计系统生成「订单总览V2」页——首份外部实战样本。组件层 8 项新守则全部被正确使用（filter-chip/badge-row/table--fixed/chart-grid/mono 兜底/i18n JS），但暴露 6 个系统层缺陷，本轮全数闭环：
+
+- **A1 fold-gate 判定盲区（漏报根治）**：旧判定只查「stat-grid 后首个 grid12」——V2 用裸 .card 排首屏直接绕过（表格卡被切 49% 门禁报 0）。修：判定改**通用口径**——content 内所有 .card 凡「起点在可视底边之上、终点越过底边」即报，次屏（起点在底边下）豁免。正反验证：V2 报出 订单列表 51% ✓、老订单页 0 切 ✓
+- **A4 table.fixed.no-budget（HIGH）**：.table--fixed 无列宽预算（th 无显式 width、无 colgroup）→ 拦截——fixed 只锁分配算法不锁总宽，V2 实测照样撑出 1308 vs 1120 横向滚动。V10 宽表守则的机器化落点
+- **A6 btn.variant.no-base（HIGH）**：.btn-* 变体（primary/secondary/text/ghost/danger/outline/link）脱离 .btn 基类单独使用 → 拦截——布局全在基类（inline-flex+gap6+height32），落单即退化（V2 实测 15 处图标文字上下排列）。Button SSoT 的「变体必须带基类」补锁
+- **A3 图表 x 轴标签组件化（SSoT）**：新增 `scripts/chart-x-labels.js` **renderChartXLabels()**——从 polyline points 反解数据点 x，标签与数据点共用同一坐标系（absolute+left%+translateX(-50%)+端点钳制），**禁页面自绘标签行**。x 标签「两套坐标系」缺陷连续两代页面复犯（V2 实测 delta -54/+36px、「7月」叠「客单价」）；组件注入实测 delta 归零 0/0。配套 RULES「图表底部结构顺序」硬规则（SVG→x-labels→legend→summary 四层独立行）
+- **A5 滚动列表条数无界禁令（RULES）**：等高行内条目数不定的列表卡必须 .scroll-fixed 定高滚动（窗口 ≤6 条 + 其余进抽屉），禁裸渲染无界条目——V2 预警卡 20 条裸渲染把等高行撑到 1152px，同排环形卡拉出 ~930px 死白
+- **A2 金额类 KPI 列数/字号守则（RULES）**：stat-num--lg 金额主值 KPI ≤6 列（单卡 ≥180px）；7–8 列等分降 stat-num--md 或数值+单位分离；卡宽 <160px 触发 stat-sub 逐字竖排同样降档——V2 的 8 卡等分 130px 装不下 ¥3,486@28px
+- **验证**：ci-local 97 pass / 0 fail；fold-gate 新口径正反例通过；x 标签组件注入 delta 0/0
+
+---
+
+---
+
+## [1.9.20] — 2026-08-27 · V11 首屏预算守则（用户原则拍板：滚动自由、切点只落 gap、核心区块禁截断）
+
+### Added
+- **V11 RULES §4.4c 首屏预算守则（七条款）**：A 预算公式 `= 视口高 − 120`（768→648/900→796/1080→960，实测三方验证，禁硬编码）；B 页面类型 × 首屏构成矩阵（看板/列表/详情/表单各有核心定义）；C 首屏行规则（禁叠加行、flex 弹性与预算闭环）；D minRow 冲突裁决；E 超预算裁决顺序（精简头部→收敛→移次屏→接受滚动并标注）；F 切点自查；G 生效范围（新页面即日、存量不回溯）。
+- **V11 GENERATION-SOP 步骤 3.5「首屏预算规划」**：生成 IA 前必做预算核算 + 裁决 + 交付切点自查。
+- **V11-T5 运行时门禁落地（提前执行）**：新增 `scripts/fold-gate-web.js`（Playwright + 系统 Chrome，浏览器不可用自动 SKIP）——判定看板页（含 stat-grid）主图行（stat-grid 后首个 grid12）内每卡完整在 content 可视底边内，次屏行不查（滚动形态豁免）；ci-local 新增接入段（**一期信息性不计 fail**，观察误报后另议阻断）。实测三看板页全过（辅机 3 卡/订单 1 卡）。**负例验证**：剥 hx-lang 副本被 template.i18n.missing HIGH 拦截 ✓（新门禁首版在 stripScriptTags 后找 JS 指纹的乌龙已修——指纹必须查原始 html）。
+
+### Fixed
+- **V11 订单总览按守则适配（示范页）**：① 通知行（40px）删除，三条业务提醒降级为**页头副标题行内嵌 mini 徽标**（保留 id/数据填充/点击筛选行为）；② 图表行重排——趋势卡升 **col-12 全宽**（box 定高 228，首屏预算内）、机型分布与预警中心降次屏 **col-6 + col-6**（消除叠加行与右空位）；③ 图例行与汇总行**合并单行**（省 55px）。实测：首屏内容 772px 预算内（764），**视口底边精确落在趋势行底与次屏之间的 gap——核心区块零截断**。
+- **V11 趋势图 aspect-ratio 全宽爆炸修复（执行教训）**：`chart-svg--fill` 的 `aspect-ratio:16/9` 兜底在**全宽容器**（1152px）下推出 648px 固有高、把行撑到 766——兜底比例在宽容器会反向爆炸。解：全宽独行场景 box 用**定高**（`chart-box` + 页面级 `--chart-height` 覆盖 228），不用 `--flex`（无等高兄弟、无死白风险，与 V8b 不冲突）。**教训：模式迁移必须盘点旧模式配套参数**（PB=42 底部预留同批回收：42→8，消除 102px 死空间）。
+
+---
+
+## [1.9.19] — 2026-08-27 · V10：--chart-grid 暗色网格 token + 宽表列宽预算 + 行内菜单 fixed 定位 + 多语言 JS 移植（订单总览页第二轮实战）
+
+### Changed
+- **V10-① 新增 `--chart-grid` token（治暗色分割线消失，对比度 0 实锤）**：亮 `#EAEAED`（`colors.chartGrid`）/ 暗 `#3E4C63`（`dark.colors.chartGrid`）——原网格线用 `--n5`，dark N5 恰等于暗色卡片表面色 → 暗色下网格全灭。真源 `.chart-grid` 改用新 token；`--chart-grid` 独立于 `colors.chart` 数据系列调色板（NEW-006 引擎逐项锁定约束，放 chart 内会破坏 8 色序列——初版踩坑已纠正）。map-tokens 亮/暗双块映射 + DESIGN-TOKENS 文档 + page-template 内联同步。
+- **V10-② 宽表列宽预算（RULES 新增）**：≥8 列或含宽内容列的宽表**必须 `.table--fixed` + 全部 th 显式 width 百分比**（合计 100%），禁裸 auto 放任 min-content 溢出；fixed 下长文本配 ellipsis；`.table--fixed` 补 `border-collapse:separate;border-spacing:0`（collapse + 百分比列宽的 Chromium 幻影 2px scrollWidth）。
+- **V10-③ 行内浮层菜单 fixed 定位（RULES 新增）**：表格操作 ⋯ 下拉禁 absolute 展开——overflow:auto 容器内 absolute 面板撑宽 scrollWidth（「点击操作按钮后出现横向滚动条」根因），用 fixed 定位（JS 按按钮坐标计算）。订单总览已按此修复，实测面板视口内、滚动条消失。
+- **V10-④ 多语言切换 JS 移植**：page-template 的框架 i18n IIFE（DICT/LANGS/apply/绑定）在克隆生成页时**丢失**（DOM 齐全、JS 缺失 → 语言切换无效）。订单总览已移植恢复（实测切 English：顶栏 Home/Admin、htmlLang=en、localStorage 持久化）。**脚手架/克隆流程需排查 lang JS 注入缺口**。
+- **V10-⑤ 趋势图数据逻辑重构（用户拍板：双量纲共轴无意义 + 数据失真）**：① 删「订单数量」第二折线（万元 vs 台归一化共轴后两线近乎重合、对比无意义），改单系列金额——数量保留在汇总行与数据点 tooltip；② 三组时间序列数据从「完美单调递增」改为带波动的真实形态（真实订单必有涨跌）；③ `ys()` 纵向改 min-max 归一映射（viewBox 12–88%，覆盖 76% 满足 `chart.line.vertical`）——原按 max 比例直接映射导致数据挤上半区、下半区空网格。RULES 图表结果约束新增第 3 条「禁不同量纲共单轴」+ 数据业务常识要求。
+- **V10-⑥ 月份标签与数据点对齐（用户红框实战）**：数据点 x 在绘图区 X0–X1(10.5%–94.3%)内均布，标签是 flex **全宽**均分（首格中心 6.3%）——两套坐标系错位。修复：标签改 absolute + `left = xs(i)%` + `translateX(-50%)`，容器 `relative` 定高，实测对齐 delta = **0**。
+- **V10-⑦ `.pg` 补 background（治暗色分页器文字不可见）**：真源漏设 background → button UA 默认浅灰底(#F0F0F0)在亮色恰好像设计效果、暗色暴露（浅底 + 暗色亮字 #F1F5F9 = 对比度趋零）。补 `background:var(--n1)` 亮暗自适应（暗色深底 #1E293B + 亮字）。button 类组件 audit 注意：凡未显式设 background 的 button 在暗色都会踩同雷。
+- **V10-⑧ content 滚动条统一细样式（用户拍板）**：纵向滚动条=框架 G8 设计（`.app` 100vh 固定 + `.content{overflow:auto}` 内容区滚动），非 bug；样式统一 **thin/悬停加深**（scrollbar-width:thin + webkit 8px/n6→n7 悬停，与侧栏树「滚动条视觉隐藏」条款同族）。RULES 显式化「≤12 列表格禁滚动条（预算内消化）」条款至表格主规格段（源头：常见问题表 L313「>12 列才横向滚动」+ 检查清单「无元素超出父容器」，原分散未被遵守）。
+- **V10-⑨ 表格徽章组间距 + td 垂直呼吸（用户红框实战）**：① 徽章组裸 span 堆叠无间距——真源 `.badge-row` 组件早已存在（flex wrap + gap 8）但执行未用，新增 `.table .badge-row{margin-top:0}`（badge-row 本体 margin-top:12 是卡片底部语义，td 场景清零）；② `.table td` 垂直 padding `0 → 8`——行高自适应（多行内容）时上下贴边无呼吸；单行 td 行高仍由 `height:44` 保证**不变**，多行行高收敛 **"+N" 折叠已实施（V10-B2 用户拍板 b）**：徽章最多显 2 个 + "+N"（title 悬停看全，详情抽屉有完整清单），行高统一 91/99 双行节奏——选配窄列 badge 竖排（每 badge 宽 > 列内容宽）是 11 列预算下的信息密度物理形态，非缺陷。RULES 宽表指引同步「表格内徽章组必须 badge-row + td 垂直 padding 8」。**归因：组件存在未用（执行）+ td 无垂直呼吸（真源缺陷）各半**。
+- **验证**：ci-local 93 pass / 0 fail；实测暗色网格 #3E4C63 可见、表格 fixed 1120 无横向滚动、x 标签归位无重叠、多语言切换正常。
+
+---
+
+## [1.9.18] — 2026-08-27 · V9 四连：mono 中文兜底 + 入场动画层叠地雷排除 + 筛选 chip 组件 + 弹性归属细则（订单总览页实战）
+
+### Changed
+- **V9-① `--font-mono` 栈补中文兜底（治「万」字宋体）**：栈尾追加 `'Source Han Sans CN', '思源黑体'`——mono 场景中文字符（KPI 单位「万」、JS 拼接文案）不再落 monospace 泛型（Windows = 宋体衬线），自动落黑体；数字/符号仍走西文等宽。根因：栈尾只有 monospace 泛型，中文无字形命中。全量页面自动修复。
+- **V9-② 入场动画层叠地雷排除（治下拉被 KPI 遮挡）**：**Chrome 行为**——fill 含 forwards/both 时，动过 transform 的元素动画结束后 computed 永远返回 identity matrix（即使 underlying=none）→ 挂 `.anim-float-up` 等入场类的区块成为**永久 stacking context**，区块内 absolute 浮层（下拉，z 再高也被封印）被 DOM 靠后区块整体盖住（角色下拉被 KPI 卡遮挡实战）。修复双管：① `float-up`/`slide-in-right`/`scale-in`/`list-in` keyframes 省略 to 的 transform（结束回归基准）；② 入场类 fill `both → backwards`（结束不保留帧，transform 归 none，结界消失，视觉不变）。退场类（float-down 等，配 display:none）与 toast-in（to 为功能性定位）不动。实测：page-head/stat-grid transform → **none**，面板上下缘 elementFromPoint 均命中自身。
+- **V9-③ 新增真源组件 `.filter-chip`（治筛选各页各造）**：数据范围/快速过滤专用互斥胶囊（高 32/圆角 round/字 13，选中 `.on` = primary-dis-bg 底 + primary 边框 + 500）。真源曾缺此组件 → 辅机总览自造 ord-chip、订单总览误用页签 `.tab`。RULES 列表页规格同步：**数据范围筛选禁用页签（tabs=导航语义）**。components.json 新增契约。
+- **V9-④ V8b 弹性归属细则**：吸收者**只能是图表本体**——图例行/汇总行（`.metric-row`）一律 `flex-shrink:0` **禁 flex:1**（订单总览实战：metric-row 被拉到 356px 死白，弹性职责安反 = 死白转移非消灭）。
+- **验证**：ci-local 93 pass / 0 fail；订单总览页实测——趋势卡 chart-box 320→589（弹性吃满）、metric-row 356→87（自然高）、面板点击命中自身、mono 栈含中文兜底、chip 交互正常。
+
+---
+
+## [1.9.17] — 2026-08-27 · V8 环形容器解耦 + V8b 等高行图表弹性吸收守则
+
+### Changed
+- **V8 `.chart-box--ring` 与基类定高解耦**：`--ring` 加 `height:auto`——环形容器高由内容（自带尺寸的 SVG 环）决定，与 `.chart-box` 基类 `--chart-height=320`（canvas/ECharts 渲染锚点）彻底解耦。**与基类连用从此安全**，误挂不再产生 320 定高大空白。实战背景（辅机总览页，Playwright 实测 1440×900）：160 环装 320 容器，容器内上下各空 77/83px；移动端真源 `--ring` 自带 height:200，Web 端环尺寸多样（160/240）故取 auto 更通用。
+- **V8b 等高行图表弹性吸收守则（用户拍板：居中是均分死白不是消灭死白）**：等高行内一切图表内容容器**必须弹性**（`flex:1 1 auto` + `min-height` 保底）、**禁止定高**——SVG 拉伸型折线用 `.chart-box--flex`（+ 页面级 `--chart-height` 覆盖压保底）、HTML flex 柱状区用 `flex:1;min-height:Npx`、环形卡用「环上 + 图例纵排下」布局自然填满（环 SVG 保留固定等宽高属性保证**正圆不拉伸**）。实测（辅机总览行1）：行高 449→402，三卡底部死白 57/107/0 → **0/0/0 全归零**，环形正圆。
+- **新增 `.card-body--center`**：`display:flex;flex-direction:column;justify-content:center`——**降级为文字类卡片兜底**，图表卡禁用（中间方案：环形卡居中后上下各 ~85px 仍违反内边距语义，被 V8b 取代，类保留供非图表场景）。与 `--scroll` 互斥。
+- **文档**：RULES §4.4b 第 3 条补 V8 解耦 + V8b 弹性守则；components.json chart-box 契约同步。
+- **V8c 拉伸 SVG 禁数据点 + 图表文字显式锁字体（用户实战反馈）**：① 守则升级——`preserveAspectRatio="none"` 拉伸 SVG **禁放一切需保形元素**（文字+数据点圆标，r=1.6 圆实测被拉成 10.9×8.7 椭圆），数据点一律 HTML 叠层（absolute span，left/top 百分比与 polyline 同源，天然正圆）；② `.chart-x-labels`（曾漏显式声明：字号错继承 body 14px、字体靠继承链——暗底细灰字渲染发虚被误读为衬线）等 5 类图表文字（x-labels/caption/hl/legend-item/metric-label）**显式锁定** `var(--font-cn)`/`var(--font-mono)` + x-labels 12px，兑现「显式 font-family 锁定黑体家族」守则。
+- **验证**：ci-local 93 pass / 0 fail。
+
+---
+
+## [1.9.16] — 2026-08-26 · 图表 SVG 1:1 回退修复 + 表格列宽变体 + 真源-产物漂移回写（19 项）
+
+### Changed
+- **V6 图表 SVG 1:1 回退修复**：`.chart-svg--fill` 加 `aspect-ratio:16/9` 兜底——阻断 auto 高度链（`.chart-box--flex` 置于 `.card--fill` 等 auto 高度容器）下 SVG `height:100%` 无基准 → 回退 viewBox 1:1 爆炸；`.chart-box--flex` 前置条件文档化（确定高度容器，auto 高度链须用定高 `.chart-box`）。
+- **V7 表格列宽分配**：新增 `.table--fixed{table-layout:fixed}` opt-in 变体——fixed 下按 th 显式 width 分配、无宽度列等宽均分，避免 auto 布局把剩余宽度全给最长文本列（「项目」列 67% 挤压其余列）；长文本列对 th 设 width 百分比（如 30%）、操作列建议 ≤12%。
+- **🔴 真源-产物漂移回写（19 项）**：template.css 是 build 产物（真源 = packages/web-ui/src/styles/ 四件 CSS + map-tokens.js 从 tokens.json 生成），历史上有大量「直接改产物不回写源」的手写补丁。build 后暴露并回写：**6 个 token**（`--focus-ring`/`--mask`/`--shadow-data-hover`/`--topbar-subtitle-fg`/`--topbar-sep-bg`/`--text-on-brand`）+ **13 个排版类**（`.t-display`/`.t-h1~h5`/`.t-body1/2`/`.t-caption`/`.t-label`/`.t-overline`/`.t-link`/`.t-mono`）。
+- **token 真源闭环**：`--chart-height` 从 tokens.json `layout.chartBoxHeight` 映射（map-tokens.js 补映射，此前是产物手写）；3 个固定值（`--mask`/`--topbar-subtitle-fg`/`--topbar-sep-bg`）补进 tokens.json；DESIGN-TOKENS.md 自动生成补 7 个 token 文档（generate-design-tokens-md.js）。
+- **page-template.html 内联 :root 同步**：补 `--focus-ring`/`--mask`/`--topbar-subtitle-fg`/`--topbar-sep-bg`（template.root.sync 校验）。
+- **验证**：ci-local 93 pass / 0 fail（build 曾暴露 91/2——19 项漂移被冲掉导致 USAGE.html HIGH 6，回写后恢复全绿；output/ 历史归档 HIGH 合计 60→21，token.undefined 全消）。
+- **教训**：改 Web 端样式必须「改源（四件 CSS 或 map-tokens.js）→ 跑 map-tokens.js + build-template-css.js → 跑 ci-local」，禁止直接改产物 template.css。
+
+---
+
+## [1.9.15] — 2026-08-25 · 门禁加固：文档图标计数门禁 + RED-003 升级阻断
+
+### Changed
+- **P0-1 文档图标计数门禁（治文档漂移）**：ci-local.js 新增 `iconCountAssertions()`——逐行解析双端 MASTER/RULES 的「图标库/图标集/Icon … N 个」声明，与 `icons/` 目录实际 SVG 数比对，漂移即 fail。正则限定图标语境（避免误抓「~38 个独立组件」等组件计数），逐行取首个声明（一行写双端数字时以首个即本端总数为准）。
+- **P0-2 RED-003 升级为阻断**：根目录 *.html 由「信息性」升级为硬门禁（任一 HIGH 即 fail）。前提核实：NEW-001 假阳性已在 validate-spec.js L624-628 彻底修复（类名判定分两级），当前根 USAGE.html / USAGE_分享版.html 实测 HIGH 0。
+- **output/ 历史归档扫描（信息性不阻断）**：分层决策——output/ 是历史产物（规范效果验证_20260807 实测 HIGH 17），非新交付标准，硬阻断会对历史欠账误红；交付物 0 HIGH 才是门禁本义。
+- **文档数字对齐**：MASTER.md「图标集 Icon 196 个」→ 185 个（2026-08-14 换新后，以目录为准）；RULES.md 图标库「84 个：B 端特有 14 + 通用 70」→「185 个，分类明细见 icons/icons.md」。
+- **验证**：ci-local 86 → **93 pass / 0 fail**（新增 7 项断言：P0-1 六项 + RED-003 阻断一项）。
+
+---
+
+## [1.9.14] — 2026-08-12 · 内容布局多样化（布局模式库）+ 分页器/面包屑修复 + 顶栏暗色切换
+
+### Changed
+- **顶栏多语言切换（框架级双语，2026-08-12 拍板）**：framework.css 新增 `.lang-sel` 系列（半透明胶囊下拉，同 theme-btn 视觉）；page-template 顶栏末位（暗色后）加语言下拉——简体中文（默认）/ English 可切换，日本語/한국어/Deutsch/Français/Русский/Español 置灰待支持；**框架级双语字典**（`data-i18n`/`data-i18n-title` 顶栏/底栏文案 + localStorage `hx-lang` 记忆，业务文案后续扩展）；`icons/language.svg` 手绘入库（B 端特有 16→17，共 199）；生成器 webPage 同步 + 7 测试页注入。RULES §0.1/§0.2 顶栏顺序加「语言」。
+- **顶栏 logo 占位符 + 亮暗按钮去胶囊（2026-08-12 拍板）**：framework.css `.topbar-logo` 高度固定 32（`.topbar-logo .ico{width:auto;height:32px}` 宽度自适应）+ page-template logo 加占位注释（后期替换项目 logo）；删 `.theme-btn` 胶囊背景（半透明圆角），亮暗按钮回退 `.topbar-item` 默认（纯图标、hover 降透明，与全屏/退出一致），HTML 同步删 `theme-btn` 类。
+- **作业树去菜单分类（2026-08-12 拍板）**：page-template 侧栏删 group-title 分类标题（生产监控/运营管理），顶级 tree-node（注塑车间/设备中心/运营中心/生产管理）直接并列；RULES §0.1 侧边栏 + §0.2 规则 8/9（并列 group-title → 顶级节点并列）同步；AGENTS/SOP 同步；7 测试页清理。
+- **布局模式库（用户拍板：框架/组件锁死、内容区构图开放）**：RULES §1.1b 重构为「必含区块 + 布局变体 A/B/C」（列表/详情/看板）+ 构图开放性总则 + 面包屑铁律（有父级路径必带）；SOP 步骤 5 新增「布局模式库」章节（Web 7 区块 + 移动 5 区块模式 + 选择路由表 + 论证式自造出口 + 示范页）；6 个同框架多样化示范页（`output/布局多样化测试/`：顶筛全宽表 / KPI 2×2+图告 / 图表主导+侧摘要 / 左右分栏 / 页签表单 / 左筛右表）。
+- **分页器**：门禁 `table.pager.required` 2500 字符窗口缺陷修复（列多/行多表格误报缺 pager，实测工单列表 pager 距表格 2876 字符）→ 改「本表格后至下一表格前」区间；RULES §1.1b 分页器规则（>5 行完整 `.pager` / ≤5 行尾部统一「共 N 条」复用 `.pg-tot` / 明细表豁免）。
+- **面包屑**：真源 `.breadcrumb` 改 **32px 高 + N5 底条带**（兑现 RULES §1.1b/§6.1「Breadcrumb 条 32 N5 底」规格）；margin `--space-lg` 24 → `--space-base` 16（页头组内档，§4.3 补录）。
+- **纵向溢出根治**：utilities.css `.col-* > .card` min-height:0 → **auto**（兑现 §4.4 文档承诺，表格/时间轴等定高内容不再溢出卡片）。
+- **顶栏暗色切换按钮（2026-08-12 拍板，推翻 2026-07-31「模板不内置切换」）**：framework.css 新增 `.theme-btn` 半透明胶囊；page-template 顶栏「全屏」后加「暗色模式」按钮（moon/sun svg + `data-theme` 切换 + localStorage 记忆）；RULES §0.1/§0.2 顶栏顺序加「暗色模式」。
+- **附录 B 双模式**：亮暗双映射（2a 亮色 `:root` + 2b 暗色 `:root[data-theme="dark"]` 块，palLight/palDark 各调一次）；C 段改「暗色骨架深色（framework.css 已兑现 `.topbar/.sidebar/.footer → var(--brand-surface)`）」。
+- **克隆流程**：SOP 克隆清单 3→6 件（补删 head 展示样式 `<style>` 块 + link 相对路径层级）；两端 RULES 视觉自检截图 `--virtual-time-budget` → `--timeout`（不驱动 CSS 动画）。
+- **5问/6问统一**：两端 RULES 软规则清单「布局决策 5 问」→「6 问」（与 SOP 一致）。
+- **验证**：ci-local 86 pass；6 测试页 + page-template 门禁 0 HIGH；森绿 #2E7D5B 双模式页实测（亮色森绿 / 暗色深绿黑 #020604）。
+
+---
+
+## [1.9.13] — 2026-08-07 · 图标库收编三阶段 + Web 图标重画替换（144 全量）
+
+### Changed
+- **三阶段收编（2026-08-07 拍板）**：① page-template 图标全部来自 `icons/` 库（克隆源根治，stroke 1.8 统一）② RULES §0.2 作业树业务化（结构零改动、节点文本/分组/选中态随业务）+ §7.9 图标守则（图标一律从 `icons/` 取，库缺才手写并上报）+ SOP/AGENTS/标准提示词模板入口 ③ validate `icon.source` 门禁（MEDIUM：内联 SVG path 未命中库即报，page-template/USAGE/规范展示页豁免）。
+- **图标重画替换**：用户 Figma 重画 144 个（线性 stroke 1.8 / viewBox 24 / currentColor），`icons/` 全量更新；page-template 重跑换库（19 svg 43 path 全命中）。
+- **icons.md 索引对齐**：头部 84→144（129 与移动端同源 + 15 Web 特有），批 3 补全 71 个缺失登记（144/144）。
+- **USAGE.html v3 活泼版**：品牌渐变 Hero + sticky 锚点导航 + 需求卡搜索/一键复制（线性图标 + 已复制反馈）+ 批量派发卡 + FAQ 折叠 + 资产地图徽章。
+- **图表规范补齐（执行 Agent 上报）**：结果约束新增第 9 条「网格线水平范围限于绘图区」（两侧 y 轴刻度标签留白 ≥20、不贯穿贴边；y 轴刻度与网格线同高对齐但水平错开）——CHART-SPEC §2/§3 + Web RULES §9 + 移动 RULES §9.7 + 移动自检同步；顺带清 `docs/examples/web-图表自适应测试.html` 死引用（文件已不在工作区）。
+- **字体守则（用户实测：衬线回退 + Agent 改字体"验证已改事实没改"）**：① 双端 `--font-cn` 栈补 `"Microsoft YaHei","微软雅黑"`（Windows 兜底，根治宋体衬线回退；Web 真源 globals.css rebuild）② validate 双端新增 `font.family` 门禁（MED：页面自造 CSS 写具体字体名即报）③ RULES 双端「字体守则」：字体只用 token 栈、tabular-nums 仅限纯数字、**headless computed font-family 会误判"已改"（无用户系统中文字体）——字体改动须真实浏览器渲染核对** ④ SOP/AGENTS 执行路径同步。
+- **验证**：page-template 0 HIGH、ci-local 86 pass、截图图标纤细 1.8 无异常。
+
+---
+
+## [1.9.12] — 2026-08-07 · 克隆框架三层机制（P1+P2+P0）：跳过克隆从提示变为门禁拦截
+
+> 事故：外部 Agent 多次跳过克隆 page-template.html 框架直接自搭 HTML（SOP 已写但不执行）。按用户拍板（P1+P2+P0 全上、P0 报 HIGH、存量不管、`.topbar+.sidebar` 即视为 B 端需框架）落地。
+
+### Changed
+- **P2 脚手架**：`scripts/new-page-web.js` / `new-page-mobile.js`——克隆 page-template → 目标 output/（命名防覆盖）+ CSS link 修正（同盘相对/跨盘警告）+ 注入克隆凭证 `<meta name="x-template-clone">`。
+- **P1 门禁** `template.clone.missing`（HIGH）：B 端框架页（`.app+.topbar+.sidebar`）/ 手机壳页（`.phone`）缺克隆 meta → 拦截。
+- **P0 门禁** `framework.fingerprint`（HIGH）：Web 框架 8 件套（app/topbar/sidebar/tree/collapse-btn/main/content/footer + 顺序）、移动 7 件套（phone-stage/phone/m-statusbar/navbar/screen-scroll/page-view/bottomnav + 顺序），缺件/错序 → 拦截。
+- **豁免**：page-template.html、USAGE.html（文档页）、规范展示页（`*规范展示*`/`*_框架版*`/`*展示页测试*`）。
+- **流程**：标准提示词模板第零步改脚手架命令；GENERATION-SOP 步骤 4 升级 V4.0（脚手架优先 + 克隆三件事）。
+- **验证**：ci-local 86 pass；正例（脚手架）双端 0 HIGH；负例（删 meta / 删 footer）双双 HIGH 拦截；展示页/agent-starter/USAGE 零误报。
+
+---
+
+## [1.9.11] — 2026-08-07 · 卡片高度诉求：定高卡 vs 弹性卡（§4.4b + scroll-fixed + 门禁）
+
+> 事故：注塑机实时监控看板——趋势大图卡（弹性）与报警列表卡（仅 max-height）并排，`col-* > .card{flex:1}` 行等高把滚动卡拉伸成空洞。归因：执行层空间预判盲区（LLM 无法预渲染），规范未表达「卡片高度诉求」维度。
+
+### Changed
+- **RULES §4.4b（新）**：卡片按内容确定方式分「定高卡 / 弹性卡」；同行组合铁律（定高配定高、弹性配弹性；混排 → 定高卡套 `.scroll-fixed`；禁仅 `max-height:100%` 对抗行高）。
+- **真源 utilities.css**：新增 `.scroll-fixed{height:320px;overflow-y:auto}` 定高滚动容器（build:template 后入 template.css）。
+- **门禁 `scroll.container.height`（MEDIUM）**：页面自造滚动类（overflow-y:auto/scroll）无 height/固定 max-height 即报；inlineClone 豁免。
+- **流程**：GENERATION-SOP 布局决策 5 问→6 问（追加「高度」）+ 软规则自查表「空间预判四查」；CHART-SPEC §3 补弹性/定高卡条款；移动端对称（RULES §8.3 + validate 同构门禁）。
+- **验证**：正例（.scroll-fixed 写法）门禁 0 误报；负例（旧写法不定高）被 `scroll.container.height` 精确拦截；看板页已按 §4.4b 修复（报警卡 scroll-fixed + 列表充实），截图确认空洞消失；ci-local 86 pass。
+
+---
+
+## [1.9.10] — 2026-08-07 · 阅读策略改造：RULES 事故记录迁移（只迁事故，保留现役约束）
+
+> 本次把 `RULES.md` 中的「事故记录」（何时发生/症状/根因）迁移至此，RULES 只保留规则正文 + 门禁名 + 设计理由。事故对应的现役约束位置见各条末尾。
+
+### 事故记录（Web RULES 迁出）
+
+1. **侧栏折叠按钮漂移**（§0.2-6）：旧版 `position:sticky` 折叠按钮随作业树滚动漂到内容流末尾。根因：sticky 定位随滚动容器移动。现役约束：折叠按钮固定右下角（flex-shrink:0 + 高 44 + z-index:2），作业树单独 flex 滚动区。
+2. **KPI 图标黑图标 bug**（§0 工具类清单）：SVG 图标渲染成黑色。根因：在 `<svg>` 上直接写颜色覆盖了 `currentColor`。现役约束：SVG 一律走 `currentColor`，禁止在 svg 上写颜色。
+3. **th.num 右对齐失效**（§3.3b，2026-08-06 实测）：给表头加 `.num` 类仍左对齐。根因：`.table th` 的 `text-align:left` 特异性（0-1-1）高于 `.num` 的 `right`（0-1-0）。现役约束：真源 `.table th.num{text-align:right}` 显式覆盖 + 契约 `table.head.num-align` HIGH。
+4. **中文表头回退宋体**（§3.3b，2026-08-06 用户实测）：表头「计划数/完成数」在真实浏览器被回退到宋体（衬线），与其余表头黑体不统一。根因：`.num` 的 `font-variant-numeric:tabular-nums` 在系统装有衬线字体时触发字体特性回退（headless 无衬线字体无法复现、computed style 全一致）。现役约束：表头 `th.num` 必须 `font-variant-numeric:normal`（真源写死）+ 契约 `table.head.font`。
+5. **机器群览页 3 类执行级缺陷**（§3.7，2026-08-04 实测）：按钮文字竖排截断 / 5 张 KPI 第 5 张掉行 / 折线图未撑开。根因：CSS 真源已就位、HTML 没按契约组 DOM。现役约束：`btn.label.required` / `stat-grid.count.match` / `chart.svg.fill` 三条 DOM 契约门禁。
+6. **chart-svg--fill viewBox 末端裁切**（§3.7-5，2026-08-04 实测）：viewBox `0 0 400` + 数据末端 `x=400`，`preserveAspectRatio="none"` 拉伸后被 card-body padding 16px 裁切（X 轴「21:00」变「21」）。现役约束：viewBox 右侧留 16-20px 内部边距（x 坐标 ≤ 宽-20）+ 门禁 `chart.svg.viewbox-edge` MEDIUM。
+7. **跨模块间距失控**（§4.3，2026-08-04）：KPI 区与图表区 0 间距贴死 / 卡片间距失控。根因有二：① `.stat-grid` 无底部间距；② 旧 `.grid12>.card{margin-bottom:0}` 只匹配直接子，实际 `.grid12 > .col-* > .card` 两层嵌套归零失效。现役约束：stat-grid→grid12 24px、grid12 兄弟 16px（utilities.css 真源）+ `layout.module-spacing` / `layout.grid12-margin` 门禁。
+8. **grid12 列内卡片高度不齐**（§4.4，2026-08-04）：表格数据不足（2 行）卡片缩到 240px、各列底部随机留白。用户裁定「col-* 内卡片先撑起来对齐、表格空数据用占位行」。现役约束：col-* 弹性容器 + card `flex:1` + minRow=8 占位 + `card.fill-in-grid` / `layout.table-minrow` 门禁。
+9. **x 轴标签叠柱**（§9 结果约束 2）：x 轴标签与柱体重叠。根因：标签作为柱子子级定位。现役约束：标签独立行（flex 与柱同列宽对齐）+ 柱多自动跳显。
+
+### 验证
+两端 RULES 瘦身后页面门禁 0 HIGH；ci-local 86 pass。
+
+---
+
+## [1.9.9] — 2026-08-06 晚 · KPI 两版定稿 + 图表五要素/三对齐 + 顶栏补全 + 生成器对齐
+### Changed
+- **KPI 两版定稿**：标准版 stat-card--icon（回滚点布局：图标块 + 数字 + 底部行标题左/趋势右）+ 环形版 stat-card--ring 保留；删除简约版（--row/--mini 变体）；门禁 kpi.simple.forbidden 拦截简约版。
+- **图表 CHART-SPEC 五要素 + 三对齐**：chart-grid / chart-bar+chart-v / polyline+dot / legend / x-labels；柱底基线对齐、柱区对称居中、chart-v 柱顶上方居中；chart-v 必须放 chart-box 内（门禁 chart.v.position 拦截，修复数值漂浮固定）；SVG var 必须真源 token（token.svg-var）；门禁 chart.baseline.align / chart.value.required。
+- **图表并排**：grid12 col-7（折线）+ col-5（柱状）布局（生成器模板）。
+- **表格分页器**：列表表格 >5 行必须 .pager（门禁 table.pager.required）。
+- **顶栏补全**：管理员 / 修改密码 / 退出登录 / 全屏（对齐 page-template 顶栏）。
+- **validate 修复**：checkOverride 加「与真源完全相同规则跳过」（页面内联 template.css 不再误报 css.override；canonMap 对比）。
+- **生成器对齐**：gen-examples.js webPage/mobilePage 内联 template.css 自包含 + 输出 docs/examples/（7 个视觉预览文件 + README）。
+- **移动暗色框架特例**（真源 template.css）：[data-theme="dark"] navbar/statusbar 用 bottomnav 同色（--n1/--n8），不用引擎提亮 --primary。
+
+---
+## [1.9.8] — 2026-08-06 · 页面类型规格并入 RULES §1.1b + 纯框架化 + 产出分离 + N=1 构建链
+### Changed
+- **pages/ 删除并入 RULES §1.1b**：6 个页面覆写文档删除，页面类型规格（登录/列表/详情/弹窗/看板）并入 `RULES.md §1.1b`；Agent 不再找近似模板，按规格自建。
+- **示例页删除**：`pages/examples/` 删除（生成器保留 `brand-color-engine/examples/gen-examples.js`）。
+- **page-template 纯框架化**：删 15 个 DEMO section，content 空壳 + 占位注释；规范展示由 `web规范展示_框架版_*.html`（移至端目录根）承担。
+- **产出分离**：生成页落「用户项目」`output/`，不再落设计系统仓库；仓库根 `output/` 仅历史归档。
+- **N=1 构建链恢复**：`packages/web-ui/src/styles/` 四件 CSS 为 `template.css` 构建真源（`node packages/web-ui/scripts/build-template-css.js`），build 产物与 template.css 逐字一致。
+- **视觉更新**：输入框白底（n1）+ 聚焦描边、表头 48px、表格 th.num 数值列右对齐（表头 13/数据 14 区分）、pager 上下居中、图表卡纵向撑满。
+- **Agent 入口**：新增 `AGENTS.md`（codex/通用）+ `.workbuddy/skills/tm-design-system/SKILL.md`（workbuddy）。
+### 验证
+两端 page-template + 展示页门禁 0 HIGH；ci-local 86 pass。
+
+## [1.9.7] — 2026-08-05 · 拍板 5 项落地（status-dot 语义 + tokens 键集 + shadow-float + Low 加固）
+
+### ① status-dot 机器状态独立语义
+机器状态 = run/中性灰/err，不用 suc/warn。m-dot 增 .idle/.off/.offline；Web .dot-idle/.dot-off/.dot-offline；设备台帐"待机" warn→idle；RULES §11.11 语义表。
+
+### ② tokens 解冻修补（T07-T10 + D-T2-16/17 + DEFECT-12）
+dark.colors 补 secondary/link/chart；light functional 4 色补 softActive/disabledFg（亮暗键集对称）；statusRunning 补 bgDisabled/borderActive；map-tokens 加 :undefined→:inherit 守卫；radius.btnIos 6。map-tokens 重跑 + build:template + DESIGN-TOKENS + freeze。
+
+### ③ shadow-float 废弃归 overlay
+components.json dropdown/datepicker referenceCss → --elev-overlay-shadow（2 处 + varUsage 清理）；tokens shadow.float 保留 deprecated。
+
+### ④ Low 安全加固批量放行
+D07 搜索大小写 / D08 navigateBack 守卫 / D09 连点节流 / D13 rem 死代码——tsc 0 错误；卫生类 D10/D11/D12/D05 保持 BLOCKED。
+
+### 验证
+设备台帐/注塑机 HIGH 0；ci-local 86 pass；分享版重生成；BLOCKED 拍板记录入档。

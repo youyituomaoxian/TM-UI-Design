@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>登录 · 弘设汇管理平台</title>
+<!-- 登录页示例（showcase）：按 RULES §1.1b 登录页规格自建；样式全部来自 template.css，无页面级覆写 -->
+<link rel="stylesheet" href="../template.css">
+<style>html{height:auto;overflow:visible}body{overflow:visible}</style>
+</head>
+<body data-species="document">
+<div class="login-shell">
+
+  <!-- 左：纯装饰图槽（≥1200 cover / <1200 contain 由真源断点处理） -->
+  <div class="login-hero" aria-hidden="true">
+    <img src="../assets/login-hero/login-hero-default.webp" alt="">
+  </div>
+
+  <!-- 右：登录面板 -->
+  <div class="login-panel">
+    <span class="login-lang lang-sel" id="langSel">
+      <button class="lang-trigger" id="langTrigger" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="切换语言">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a15 15 0 0 1 0 18"/><path d="M12 3a15 15 0 0 0 0 18"/></svg>
+        <span id="langLabel">简体中文</span>
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 6 9 L 12 15 L 18 9"/></svg>
+      </button>
+      <div class="lang-panel" role="menu">
+        <div class="lang-opt on" role="menuitem" data-lang="zh">简体中文</div>
+        <div class="lang-opt" role="menuitem" data-lang="en">English</div>
+      </div>
+    </span>
+
+    <div class="login-col">
+      <div class="login-head">
+        <img src="../assets/logo/弘设汇logo.svg" alt="弘设汇" width="401" height="106">
+      </div>
+
+      <!-- 登录卡 -->
+      <form class="login-card" id="loginForm" novalidate>
+        <div class="login-card-title login-head-text">
+          <h1 class="login-name" data-i18n="login.sys">弘设汇管理平台</h1>
+          <p class="login-desc" data-i18n="login.sysdesc">注塑机 · 智能工厂数据管理</p>
+        </div>
+
+        <h2 class="login-card-title" data-i18n="login.title">登录</h2>
+
+        <div class="login-alert" id="loginAlert" role="alert" hidden></div>
+
+        <div class="login-field">
+          <label class="t-body1 login-label" for="account" data-i18n="login.account">账号</label>
+          <input id="account" name="account" class="input input-lg login-input" type="text"
+                 placeholder="请输入账号" data-i18n-ph="login.account.ph" autocomplete="username" spellcheck="false"
+                 aria-label="账号" aria-describedby="loginAlert">
+        </div>
+
+        <div class="login-field">
+          <label class="t-body1 login-label" for="password" data-i18n="login.password">密码</label>
+          <div class="login-password">
+            <input id="password" name="password" class="input input-lg login-input login-input--pwd" type="password"
+                   placeholder="请输入密码" data-i18n-ph="login.password.ph" autocomplete="current-password"
+                   aria-label="密码" aria-describedby="loginAlert loginHint">
+            <button class="login-eye" id="pwdToggle" type="button" aria-label="显示密码" aria-pressed="false">
+              <svg class="ico ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 3 3 L 21 21"/><path d="M 20 15 C 20 15 20.5 14 21 13.5 C 21.5 13 22 12 22 12 C 22 12 21 9 17.5 6.5 C 14 4 10 5 10 5"/><path d="M 6 7 C 6 7 4.5 8.5 3.5 9.5 C 2.5 10.5 2 12 2 12 C 2 12 3.5 16.5 8 18.5 C 12.5 20.5 17 17.5 17 17.5"/><path d="M 14 14 C 13.5 14.5 13 15 12 15 C 10.5 15 9 13.5 9 12 C 9 11 9.5 10.5 10 10"/></svg>
+              <svg class="ico ico-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 2 12 C 2 12 5.5 6 12 6 C 18.5 6 22 12 22 12 C 22 12 18.5 18 12 18 C 5.5 18 2 12 2 12 Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <p class="login-hint" id="loginHint" hidden data-i18n="login.caps">大写锁定已开启</p>
+        </div>
+
+        <div class="login-opt">
+          <label class="login-check"><input type="checkbox" id="remember" name="remember" checked><span data-i18n="login.remember">记住我</span></label>
+          <a class="t-link login-link" href="#" id="forgotLink" data-i18n="login.forgot">忘记密码？</a>
+        </div>
+
+        <button class="btn btn-primary btn-lg login-submit" id="loginSubmit" type="submit">
+          <span class="spinner" id="loginSpin" hidden aria-hidden="true"></span>
+          <span class="btn-label" id="loginSubmitText" data-i18n="login.submit">登录</span>
+        </button>
+
+        <p class="login-help" data-i18n="login.help">账号由系统管理员开通，登录问题请联系管理员</p>
+
+        <div class="login-legal">
+          <span class="login-legal-links">
+            <a href="#" data-i18n="login.terms">服务条款</a>
+            <a href="#" data-i18n="login.privacy">隐私政策</a>
+          </span>
+          <span class="login-copy" data-i18n="login.copy">© 2013-2026 弘讯科技</span>
+        </div>
+      </form>
+
+      <!-- 找回密码卡：3 步，不跳页 -->
+      <form class="login-card" id="resetForm" hidden novalidate>
+        <h2 class="login-card-title" data-i18n="reset.title">找回密码</h2>
+
+        <div class="steps login-steps" id="resetSteps">
+          <div class="step is-active" data-step="1"><span class="step-dot">1</span><span class="step-text" data-i18n="reset.s1">账号</span></div>
+          <div class="step-line"></div>
+          <div class="step" data-step="2"><span class="step-dot">2</span><span class="step-text" data-i18n="reset.s2">验证</span></div>
+          <div class="step-line"></div>
+          <div class="step" data-step="3"><span class="step-dot">3</span><span class="step-text" data-i18n="reset.s3">新密码</span></div>
+        </div>
+
+        <div class="login-alert" id="resetAlert" role="alert" hidden></div>
+
+        <div class="login-view" id="resetStep1">
+          <div class="login-field">
+            <label class="t-body1 login-label" for="resetAccount" data-i18n="login.account">账号</label>
+            <input id="resetAccount" name="reset-account" class="input input-lg login-input" type="text"
+                   placeholder="请输入账号" data-i18n-ph="login.account.ph" autocomplete="username" aria-label="账号">
+          </div>
+          <button class="btn btn-primary btn-lg login-submit" type="button" data-reset-go="2" data-i18n="reset.next">下一步</button>
+          <p class="login-help"><a class="t-link login-link" href="#" data-login-back data-i18n="reset.back">返回登录</a></p>
+        </div>
+
+        <div class="login-view" id="resetStep2" hidden>
+          <div class="login-field">
+            <label class="t-body1 login-label" for="resetCode" data-i18n="reset.code">验证码</label>
+            <div class="login-code">
+              <input id="resetCode" name="reset-code" class="input input-lg" type="text" inputmode="numeric" maxlength="6"
+                     placeholder="请输入 6 位验证码" data-i18n-ph="reset.code.ph" autocomplete="one-time-code" aria-label="验证码">
+              <button class="btn btn-secondary login-code-btn" id="sendCode" type="button" data-i18n="reset.send">获取验证码</button>
+            </div>
+            <p class="login-hint" data-i18n="reset.code.hint">验证码 10 分钟内有效</p>
+          </div>
+          <button class="btn btn-primary btn-lg login-submit" type="button" data-reset-go="3" data-i18n="reset.next">下一步</button>
+          <p class="login-help"><a class="t-link login-link" href="#" data-reset-back="1" data-i18n="reset.backstep">上一步</a></p>
+        </div>
+
+        <div class="login-view" id="resetStep3" hidden>
+          <div class="login-field">
+            <label class="t-body1 login-label" for="newPwd" data-i18n="reset.new">新密码</label>
+            <input id="newPwd" name="new-password" class="input input-lg login-input" type="password"
+                   placeholder="8–20 位，含字母与数字" data-i18n-ph="reset.new.ph" autocomplete="new-password" aria-label="新密码">
+          </div>
+          <div class="login-field">
+            <label class="t-body1 login-label" for="newPwd2" data-i18n="reset.confirm">确认新密码</label>
+            <input id="newPwd2" name="new-password-confirm" class="input input-lg login-input" type="password"
+                   placeholder="请再次输入新密码" data-i18n-ph="reset.confirm.ph" autocomplete="new-password" aria-label="确认新密码">
+          </div>
+          <button class="btn btn-primary btn-lg login-submit" type="submit" data-i18n="reset.done">重置密码</button>
+          <p class="login-help"><a class="t-link login-link" href="#" data-login-back data-i18n="reset.back">返回登录</a></p>
+        </div>
+      </form>
+
+      <!-- 完成态卡（重置成功 / 登录成功共用） -->
+      <div class="login-card" id="doneCard" hidden>
+        <div class="login-done">
+          <span class="login-done-ico">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 4 12 L 9 17 L 20 6"/></svg>
+          </span>
+          <span class="login-done-title" id="doneTitle" data-i18n="done.gotitle">登录成功</span>
+          <span class="login-done-desc" id="doneDesc" data-i18n="done.godesc">正在进入工作台…</span>
+        </div>
+        <p class="login-help"><a class="t-link login-link" href="#" data-login-back data-i18n="done.back">返回登录</a></p>
+      </div>
+
+      <p class="login-help">示例：填写任意账号 / 密码即进入成功态；留空提交显示错误态。</p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var dict = {
+    zh: {
+      'login.sys': '弘设汇管理平台', 'login.sysdesc': '注塑机 · 智能工厂数据管理', 'login.title': '登录',
+      'login.account': '账号', 'login.account.ph': '请输入账号', 'login.password': '密码', 'login.password.ph': '请输入密码',
+      'login.caps': '大写锁定已开启', 'login.remember': '记住我', 'login.forgot': '忘记密码？',
+      'login.showpwd': '显示密码', 'login.hidepwd': '隐藏密码',
+      'login.submit': '登录', 'login.help': '账号由系统管理员开通，登录问题请联系管理员',
+      'login.terms': '服务条款', 'login.privacy': '隐私政策', 'login.copy': '© 2013-2026 弘讯科技',
+      'reset.title': '找回密码', 'reset.s1': '账号', 'reset.s2': '验证', 'reset.s3': '新密码',
+      'reset.next': '下一步', 'reset.back': '返回登录', 'reset.backstep': '上一步',
+      'reset.code': '验证码', 'reset.code.ph': '请输入 6 位验证码', 'reset.code.hint': '验证码 10 分钟内有效', 'reset.send': '获取验证码',
+      'reset.new': '新密码', 'reset.new.ph': '8–20 位，含字母与数字', 'reset.confirm': '确认新密码', 'reset.confirm.ph': '请再次输入新密码',
+      'reset.done': '重置密码', 'done.gotitle': '登录成功', 'done.godesc': '正在进入工作台…',
+      'done.rtitle': '密码重置成功', 'done.rdesc': '请使用新密码重新登录', 'done.back': '返回登录',
+      'err.empty': '请输入账号和密码', 'err.bad': '账号或密码错误，请重试', 'err.code': '验证码错误，请重试',
+      'err.pwd': '新密码需 8–20 位且包含字母与数字', 'err.pwd2': '两次输入的新密码不一致', 'sending': '重新发送(', 'send': '获取验证码'
+    },
+    en: {
+      'login.sys': 'Hongshi Hui Platform', 'login.sysdesc': 'Injection Molding · Smart Factory', 'login.title': 'Sign in',
+      'login.account': 'Account', 'login.account.ph': 'Enter account', 'login.password': 'Password', 'login.password.ph': 'Enter password',
+      'login.caps': 'Caps Lock is on', 'login.remember': 'Remember me', 'login.forgot': 'Forgot password?',
+      'login.showpwd': 'Show password', 'login.hidepwd': 'Hide password',
+      'login.submit': 'Sign in', 'login.help': 'Accounts are issued by admins. Contact your administrator for help.',
+      'login.terms': 'Terms', 'login.privacy': 'Privacy', 'login.copy': '© 2013-2026 Techmation',
+      'reset.title': 'Reset password', 'reset.s1': 'Account', 'reset.s2': 'Verify', 'reset.s3': 'New password',
+      'reset.next': 'Next', 'reset.back': 'Back to sign in', 'reset.backstep': 'Previous',
+      'reset.code': 'Code', 'reset.code.ph': '6-digit code', 'reset.code.hint': 'Valid for 10 minutes', 'reset.send': 'Send code',
+      'reset.new': 'New password', 'reset.new.ph': '8–20 chars, letters and numbers', 'reset.confirm': 'Confirm', 'reset.confirm.ph': 'Repeat new password',
+      'reset.done': 'Reset password', 'done.gotitle': 'Signed in', 'done.godesc': 'Opening workspace…',
+      'done.rtitle': 'Password reset', 'done.rdesc': 'Sign in with your new password', 'done.back': 'Back to sign in',
+      'err.empty': 'Enter account and password', 'err.bad': 'Incorrect account or password', 'err.code': 'Incorrect code',
+      'err.pwd': 'Use 8–20 characters with letters and numbers', 'err.pwd2': 'Passwords do not match', 'sending': 'Resend(', 'send': 'Send code'
+    }
+  };
+  var lang = 'zh';
+  function t(k) { return (dict[lang] && dict[lang][k]) || k; }
+  function applyLang() {
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      var k = el.getAttribute('data-i18n');
+      if (dict[lang][k]) el.textContent = dict[lang][k];
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(function (el) {
+      var k = el.getAttribute('data-i18n-ph');
+      if (dict[lang][k]) el.setAttribute('placeholder', dict[lang][k]);
+    });
+    document.getElementById('langLabel').textContent = lang === 'zh' ? '简体中文' : 'English';
+    document.querySelectorAll('.lang-opt[data-lang]').forEach(function (o) {
+      o.classList.toggle('on', o.getAttribute('data-lang') === lang);
+    });
+  }
+
+  var langSel = document.getElementById('langSel');
+  document.getElementById('langTrigger').addEventListener('click', function (e) {
+    e.stopPropagation();
+    langSel.classList.toggle('open');
+    this.setAttribute('aria-expanded', langSel.classList.contains('open') ? 'true' : 'false');
+  });
+  document.querySelectorAll('.lang-opt[data-lang]').forEach(function (o) {
+    o.addEventListener('click', function (e) {
+      e.stopPropagation();
+      lang = this.getAttribute('data-lang');
+      langSel.classList.remove('open');
+      applyLang();
+    });
+  });
+  document.addEventListener('click', function () { langSel.classList.remove('open'); });
+
+  var loginForm = document.getElementById('loginForm');
+  var resetForm = document.getElementById('resetForm');
+  var doneCard = document.getElementById('doneCard');
+  var alertBox = document.getElementById('loginAlert');
+  var resetAlert = document.getElementById('resetAlert');
+  var submitBtn = document.getElementById('loginSubmit');
+  var spin = document.getElementById('loginSpin');
+  var submitText = document.getElementById('loginSubmitText');
+
+  function showAlert(el, msg) { el.textContent = msg; el.hidden = false; }
+  function hideAlert(el) { el.textContent = ''; el.hidden = true; }
+  function view(name) {
+    loginForm.hidden = name !== 'login';
+    resetForm.hidden = name !== 'reset';
+    doneCard.hidden = name !== 'done';
+  }
+  function done(kind) {
+    document.getElementById('doneTitle').textContent = t(kind === 'reset' ? 'done.rtitle' : 'done.gotitle');
+    document.getElementById('doneDesc').textContent = t(kind === 'reset' ? 'done.rdesc' : 'done.godesc');
+    view('done');
+  }
+  function goStep(n) {
+    [1, 2, 3].forEach(function (i) {
+      document.getElementById('resetStep' + i).hidden = i !== n;
+      var s = document.querySelector('#resetSteps .step[data-step="' + i + '"]');
+      s.classList.toggle('is-active', i === n);
+      s.classList.toggle('is-done', i < n);
+    });
+    hideAlert(resetAlert);
+  }
+
+  var pwd = document.getElementById('password');
+  var eye = document.getElementById('pwdToggle');
+  eye.addEventListener('click', function () {
+    var on = pwd.type === 'password';
+    pwd.type = on ? 'text' : 'password';
+    eye.setAttribute('aria-pressed', on ? 'true' : 'false');
+    eye.setAttribute('aria-label', on ? t('login.hidepwd') : t('login.showpwd'));
+  });
+  pwd.addEventListener('keyup', function (e) {
+    document.getElementById('loginHint').hidden = !(e.getModifierState && e.getModifierState('CapsLock'));
+  });
+  pwd.addEventListener('keydown', function (e) {
+    document.getElementById('loginHint').hidden = !(e.getModifierState && e.getModifierState('CapsLock'));
+  });
+
+  loginForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    hideAlert(alertBox);
+    var account = document.getElementById('account').value.trim();
+    if (!account || !pwd.value) { showAlert(alertBox, t('err.empty')); return; }
+    spin.hidden = false;
+    submitBtn.disabled = true;
+    submitText.textContent = t('login.submit');
+    setTimeout(function () {
+      spin.hidden = true;
+      submitBtn.disabled = false;
+      if (!account || !pwd.value) { showAlert(alertBox, t('err.bad')); return; }
+      done('login');
+    }, 700);
+  });
+
+  document.getElementById('forgotLink').addEventListener('click', function (e) {
+    e.preventDefault();
+    hideAlert(alertBox);
+    goStep(1);
+    view('reset');
+  });
+  document.querySelectorAll('[data-login-back]').forEach(function (a) {
+    a.addEventListener('click', function (e) { e.preventDefault(); view('login'); });
+  });
+  document.querySelectorAll('[data-reset-go]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      hideAlert(resetAlert);
+      var n = parseInt(this.getAttribute('data-reset-go'), 10);
+      if (n === 2) {
+        if (!document.getElementById('resetAccount').value.trim()) { showAlert(resetAlert, t('err.empty')); return; }
+      } else if (n === 3) {
+        if (!/^\d{6}$/.test(document.getElementById('resetCode').value.trim())) { showAlert(resetAlert, t('err.code')); return; }
+      }
+      goStep(n);
+    });
+  });
+  document.querySelectorAll('[data-reset-back]').forEach(function (a) {
+    a.addEventListener('click', function (e) { e.preventDefault(); goStep(parseInt(this.getAttribute('data-reset-back'), 10)); });
+  });
+
+  var sendBtn = document.getElementById('sendCode');
+  var timer = null;
+  sendBtn.addEventListener('click', function () {
+    if (timer) return;
+    var left = 60;
+    sendBtn.disabled = true;
+    sendBtn.textContent = t('sending') + left + 's)';
+    timer = setInterval(function () {
+      left--;
+      if (left <= 0) {
+        clearInterval(timer); timer = null;
+        sendBtn.disabled = false;
+        sendBtn.textContent = t('send');
+      } else {
+        sendBtn.textContent = t('sending') + left + 's)';
+      }
+    }, 1000);
+  });
+
+  resetForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    hideAlert(resetAlert);
+    var p1 = document.getElementById('newPwd').value;
+    var p2 = document.getElementById('newPwd2').value;
+    if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*_.-]{8,20}$/.test(p1)) { showAlert(resetAlert, t('err.pwd')); return; }
+    if (p1 !== p2) { showAlert(resetAlert, t('err.pwd2')); return; }
+    done('reset');
+  });
+
+  applyLang();
+})();
+</script>
+</body>
+</html>

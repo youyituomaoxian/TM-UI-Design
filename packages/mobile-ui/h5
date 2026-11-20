@@ -1,0 +1,60 @@
+/*
+ * ProbeH5 — 移动端页起步模板（生成器克隆源）
+ * 用法：node packages/mobile-ui/scripts/new-page-mobile.js <PageName>
+ * 一切视觉来自 @nutui/nutui-react-taro 真实组件 + globals.css token（var(--*)），
+ * 禁止手写 HTML 重搓组件、禁止裸 hex 硬编码色。
+ * 开发者在「占位区」按 弘讯移动端design-system/RULES.md §1.1b 覆写文档填充内容
+ * （导航栏标题、列表/卡片数据、底部操作）。
+ */
+import { useState } from 'react';
+import { View, Text, ScrollView } from '@tarojs/components';
+import { NavBar, Button, Cell, CellGroup, Icon } from '@nutui/nutui-react-taro';
+
+export default function ProbeH5() {
+  // 状态管理示例：真实页面按 RULES.md §1.1b 替换或扩展
+  const [count, setCount] = useState(0);
+
+  return (
+    <View className="biz-page" style={{ background: 'var(--bg-page)', minHeight: '100vh' }}>
+      {/* 顶部导航：标题由开发者按页面替换；left/right 为占位图标槽位 */}
+      <NavBar
+        className="biz-navbar"
+        title="页面标题"
+        left={<Icon name="left" />}
+        right={<Icon name="more-x" />}
+        style={{ background: 'var(--primary)', color: 'var(--n1)' }}
+      />
+
+      {/* 内容区：列表/卡片占位，落位宽 343（375 - 16×2），gutter 16 */}
+      <ScrollView className="biz-content" scrollY style={{ padding: 'var(--space-16)' }}>
+        <CellGroup>
+          <Cell title="列表项标题" description="副标题说明" />
+          <Cell title="列表项标题" description="副标题说明" />
+          <Cell title="列表项标题" description="副标题说明" />
+        </CellGroup>
+
+        <View
+          className="biz-card"
+          style={{
+            background: 'var(--bg-surface)',
+            borderRadius: 'var(--radius-lg)',
+            padding: 'var(--space-16)',
+            marginTop: 'var(--space-16)',
+          }}
+        >
+          <Text style={{ color: 'var(--text-1)', fontWeight: 500 }}>卡片标题</Text>
+          <Text style={{ color: 'var(--text-3)', display: 'block', marginTop: 'var(--space-8)' }}>
+            在此放置页面内容，全部使用 NutUI 真实组件 + var(--*) token。
+          </Text>
+        </View>
+      </ScrollView>
+
+      {/* 底部操作区（可选）：主操作按钮走 NutUI primary token */}
+      <View className="biz-footer" style={{ padding: 'var(--space-16)' }}>
+        <Button type="primary" block onClick={() => setCount(count + 1)}>
+          主操作（{count}）
+        </Button>
+      </View>
+    </View>
+  );
+}

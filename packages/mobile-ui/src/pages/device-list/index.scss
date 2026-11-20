@@ -1,0 +1,116 @@
+/* pages/device-list/index.scss — 设备列表页布局（token 驱动，禁裸 hex）
+ * 对齐 RULES.md §1.1b 列表-详情页：375×812、底部无导航、内容区落位宽 343（375-16×2）、列表项 gap 16 */
+
+.page-page {
+  height: 100vh;
+  background: var(--bg-page);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* 顶部导航（品牌蓝底 + 白字，安全区兜底） */
+.page-navbar {
+  flex: 0 0 auto;
+  background: var(--primary);
+  color: var(--n1);
+}
+
+/* 搜索栏区域：N2 页面底，输入框白底由 NutUI SearchBar 提供 */
+.page-search {
+  flex: 0 0 auto;
+  background: var(--bg-page);
+  padding: var(--space-8) var(--space-16) var(--space-8);
+  box-sizing: border-box;
+}
+
+/* 列表区：滚动容器，343 落位（左右各 16），底部留白 16 */
+.page-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  background: var(--bg-page);
+  padding: var(--space-16);
+  box-sizing: border-box;
+}
+
+/* 列表项：343 × 116，白底圆角，gap 16 由 margin-bottom 控制 */
+.page-item {
+  display: flex;
+  align-items: flex-start;
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-16);
+  margin-bottom: var(--space-16);
+  box-sizing: border-box;
+}
+
+/* 左侧缩略图占位：52×52 中圆角，浅灰底 + 1px 描边（token） */
+.page-thumb {
+  flex: 0 0 52px;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  background: var(--n3);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-3);
+  margin-right: var(--space-16);
+}
+
+/* 中间文字区：双行 + 辅助行，纵向 gap 8 */
+.page-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.page-row1 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.page-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-1);
+}
+
+.page-tag {
+  flex: 0 0 auto;
+}
+
+.page-sub {
+  font-size: 14px;
+  color: var(--text-3);
+}
+
+.page-foot {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+/* 右侧 ⋮ 更多：对齐标题行，浅灰图标 */
+.page-more {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  margin-left: var(--space-8);
+  padding: var(--space-4);
+  color: var(--text-3);
+}
+
+/* 空状态 */
+.page-empty {
+  text-align: center;
+  padding: var(--space-40) 0;
+}
+
+.page-empty-text {
+  font-size: 14px;
+  color: var(--text-3);
+}

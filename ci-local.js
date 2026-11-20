@@ -1,0 +1,383 @@
+#!/usr/bin/env node
+/*
+ * ci-local.js — 弘讯设计系统 A 包本地 CI 等效验证（2026-07-30）
+ * ---------------------------------------------------------------------------
+ * 串联：两端门禁 validate-spec.js page-template.html + tokens 结构断言 + 模板值断言
+ * 全绿 exit 0；任一失败 exit 1。CI 文件本身不动（待 push 后接入 .github/workflows/validate.yml）。
+ * 自包含：不依赖 .workbuddy/tmp 脚本，断言逻辑内联。
+ * ---------------------------------------------------------------------------
+ */
+const fs = require('fs');
+const path = require('path');
+const { execSync } = require('child_process');
+const { generatePalette } = require('./brand-color-engine/generate.js');
+// VERDICT-A（2026-10-08）：子进程捕获统一走 gate-capture.js，退出码=权威判据。
+// 原实现捕获 stdout 取 HIGH 数，本机 EBUSY 下恒为空 → audit 阻断「看起来全绿实则从未执行」。推导见 .workbuddy/review/03_verdict.md
+const { runGateCapture, renderCap, capPassed } = require('./gate-capture.js');
+
+const NODE = process.execPath; // RED-022 修复：不再硬编码具体用户名/Node 版本绝对路径
+const ROOT = __dirname;
+const WEB = path.join(ROOT, '弘讯web端design-system');
+const MOB = path.join(ROOT, '弘讯移动端design-system');
+// VERDICT-A：norm() 双侧缺失会自证通过（String(undefined)==='undefined'）→ 先判空
+const norm = (s) => {
+  if (s === undefined || s === null) return ' MISSING';
+  return String(s).replace(/\s+/g, '').replace(/;$/, '');
+};
+// RED-010：双缺失 = 令牌字段缺失 = FAIL，不等于「一致」
+const bothMissing = (a, b) => (a === undefined || a === null) && (b === undefined || b === null);
+
+let pass = 0, fail = 0;
+function ok(name, cond) { console.log(`  ${cond ? '✅' : '❌'} ${name}`); cond ? pass++ : fail++; }
+// RED-012 修复：任何遗漏异常都应以 exit 1 收场（fail-closed），而非栈回溯
+process.on('uncaughtException', e => { console.error('❌ ci-local 异常:', e.message); process.exit(1); });
+
+function runGate(label, cwd) {
+  process.stdout.write(`\n▶ ${label}\n`);
+  try {
+    execSync(`"${NODE}" validate-spec.js page-template.html`, { cwd, stdio: 'inherit' });
+    return true;
+  } catch (e) { return false; }
+}
+
+// ===== tokens 结构 + 模板值断言（两端） =====
+function checkEnd(label, dir, isMobile) {
+  const t = JSON.parse(fs.readFileSync(path.join(dir, 'tokens.json'), 'utf8'));
+  const html = fs.readFileSync(path.join(dir, 'page-template.html'), 'utf8');
+  // 仅取亮色 :root{...}（无属性选择器）作为变量真源；[data-theme="dark"] / [data-density] 块忽略，
+  // 否则暗色块重定义的同名变量会覆盖亮色值，导致与亮色 tokens 比较失败。
+  // 2026-11-19：page-template 已改为 link template.css（不再内联 :root），
+  // token 断言改从 template.css 的亮色 :root 读取；旧内联模板仍优先读页面。
+  const rootMatch = html.match(/:root\s*\{([^}]*)\}/);
+  const tplCss = fs.readFileSync(path.join(dir, 'template.css'), 'utf8');
+  const tplRoot = tplCss.match(/:root\s*\{([^}]*)\}/);
+  const rootCss = rootMatch ? rootMatch[1] : (tplRoot ? tplRoot[1] : html);
+  const vars = {};
+  const re = /(--[\w-]+)\s*:\s*([^;]+)/g;
+  let m; while ((m = re.exec(rootCss))) vars[m[1]] = m[2].trim();
+
+  console.log(`\n▶ ${label} tokens + 模板值断言`);
+  // elevation 5 级 + 模板变量
+  ok('elevation 恰 5 级', JSON.stringify(Object.keys(t.elevation)) === JSON.stringify(['sunken','default','raised','overlay','overflow']));
+  Object.entries(t.elevation).forEach(([lv, obj]) => {
+    // RED-010 修复：双侧同时缺失不再自证通过（norm 已把 undefined 映射为 MISSING，此处显式拦）
+    const sv = vars[`--elev-${lv}-surface`], tv = obj.surface;
+    ok(`--elev-${lv}-surface 模板值=tokens`, !bothMissing(sv, tv) && norm(sv) === norm(tv));
+    const shv = vars[`--elev-${lv}-shadow`], thv = obj.shadow;
+    ok(`--elev-${lv}-shadow 模板值=tokens`, !bothMissing(shv, thv) && norm(shv) === norm(thv));
+  });
+  // motion duration 4 档 + 模板
+  ok('motion.duration 恰 6 档', JSON.stringify(Object.keys(t.motion.duration)) === JSON.stringify(['instant','fast','normal','slow','slower','slowest']));
+  Object.entries(t.motion.duration).forEach(([k, v]) => {
+    ok(`--motion-duration-${k} 模板值=${v}ms`, norm(vars[`--motion-duration-${k}`]) === norm(v + 'ms'));
+  });
+  // motion easing 模板值
+  Object.entries(t.motion.easing).forEach(([k, v]) => {
+    ok(`--motion-${k} 模板值=tokens`, norm(vars[`--motion-${k}`]) === norm(v));
+  });
+  // shadow 旧名 + 双层(rgba≥2)
+  const shadowMap = isMobile
+    ? [['--shadow-s', t.shadows.s.value], ['--shadow-m', t.shadows.m.value], ['--shadow-l', t.shadows.l.value]]
+    : [['--shadow-card', t.shadow.card], ['--shadow-modal', t.shadow.modal], ['--shadow-float', t.shadow.float], ['--shadow-row-hover', t.shadow.tableRowHover]];
+  shadowMap.forEach(([cv, tv]) => {
+    ok(`${cv} 模板值=tokens`, norm(vars[cv]) === norm(tv));
+    ok(`${cv} 双层(rgba≥2)`, typeof vars[cv] === 'string' && (vars[cv].match(/rgba\(/g) || []).length >= 2); // RED-012 修复：缺失变量时 guard，避免崩溃
+  });
+  // B 包：字阶 13 级（Web）+ familyMono + density + bottom-nav（移动端）
+  if (!isMobile) {
+    ok('Web font.scale ≥12 级', Object.keys(t.font.scale).length >= 12);
+    ok('Web H1(display) size∈[28,32]', t.font.scale.display.size >= 28 && t.font.scale.display.size <= 32);
+    ok('Web font.familyMono 存在', !!t.font.familyMono);
+    ok('Web --font-mono 模板存在', !!vars['--font-mono']);
+    ok('Web density 三档键齐全', JSON.stringify(Object.keys(t.density)) === JSON.stringify(['compact','comfortable','spacious']));
+    ok('Web --density-row-height 模板存在', !!vars['--density-row-height']);
+  } else {
+    ok('移动端 typography.fontFamilyMono 存在', !!t.typography.fontFamilyMono);
+    ok('移动端 --font-mono 模板存在', !!vars['--font-mono']);
+    ok('移动端 density comfortable only', t.density.compact === null && t.density.spacious === null && !!t.density.comfortable);
+    ok('移动端 shadows 含 bottom-nav', !!t.shadows['bottom-nav']);
+    ok('移动端 --density-row-height 模板存在', !!vars['--density-row-height']);
+  }
+}
+
+// ===== C 包：dark 节 = 引擎快照等式断言（防手改；值唯一真源 = brand-color-engine） =====
+function verifyDark(label, dir, isMobile) {
+  const t = JSON.parse(fs.readFileSync(path.join(dir, 'tokens.json'), 'utf8'));
+  console.log(`\n▶ ${label} dark 节 = 引擎快照等式`);
+  const platform = isMobile ? 'mobile' : 'web';
+  const p = generatePalette('#005EAE', { mode: 'dark', platform });
+  const d = t.dark;
+  ok(`${label} dark 节存在`, !!d);
+  if (!d) return;
+  // primary（移动端按下态键名=pressed，Web=click）
+  const pk = isMobile ? 'pressed' : 'click';
+  const primeOk = ['default','hover','disabledBg','disabledText'].every(k => d.colors.primary[k] === p.primary[k])
+                 && d.colors.primary[pk] === p.primary[pk];
+  ok(`${label} dark.primary 5 键 = 引擎`, primeOk);
+  // neutral（Web 11 级 / 移动端 10 级，独立暗色阶）
+  const steps = isMobile ? 10 : 11;
+  let neuOk = true;
+  for (let i = 0; i < steps; i++) {
+    const name = 'N' + (i + 1);
+    const tv = isMobile ? d.colors.neutral[name].hex : d.colors.neutral[name];
+    if (tv !== p.neutral[i].hex) neuOk = false;
+  }
+  ok(`${label} dark.neutral N1..N${steps} = 引擎`, neuOk);
+  // functional × {default,bg,border,text}
+  let fnOk = true;
+  for (const role of ['success','warning','error','running']) {
+    const df = d.colors.functional[role], pf = p.functional[role];
+    if (!df || !pf) { fnOk = false; continue; }
+    for (const k of ['default','bg','border','text']) if (df[k] !== pf[k]) fnOk = false;
+  }
+  ok(`${label} dark.functional 4 角色×4 键 = darkDefaults`, fnOk);
+  // brandSurface / background
+  ok(`${label} dark.brandSurface = 引擎`, d.colors.brandSurface === p.background.brandSurface);
+  let bgOk = true;
+  for (const k of ['page','surface','elevated','textPrimary','textSecondary','textTertiary','border'])
+    if (d.background[k] !== p.background[k]) bgOk = false;
+  ok(`${label} dark.background 7 键 = 引擎`, bgOk);
+  // 2026-11-06 方案 A：暗色固定、不随品牌（darkBrandMode=fixed）
+  const alt = generatePalette('#2E7D5B', { mode: 'dark', platform });
+  ok(`${label} dark 不随品牌（另一品牌背景全等）`, JSON.stringify(alt.background) === JSON.stringify(p.background));
+}
+
+// ===== NEW-006 修复：引擎输入(base-spec.json) 与 值真源(tokens.json) 亮色图表色一致性 =====
+// 此前无任何检查横跨这两份「真源」，结果移动端亮色图表在 tokens.json 是 13 色、
+// 在 base-spec.json 只有 12 色（缺 gray #64748B），读不同源的消费者拿到不同调色板且长期无感。
+function verifyEngineVsTokens(label, dir, isMobile) {
+  const t = JSON.parse(fs.readFileSync(path.join(dir, 'tokens.json'), 'utf8'));
+  const p = generatePalette('#005EAE', { mode: 'light', platform: isMobile ? 'mobile' : 'web' });
+  console.log(`\n▶ ${label} 引擎 vs tokens.json 亮色图表色一致性（NEW-006）`);
+  const raw = t.colors && t.colors.chart;
+  if (!raw) { ok(`${label} tokens.json 存在 colors.chart`, false); return; }
+  const tokenHex = (Array.isArray(raw) ? raw.map((c) => c.hex || c) : Object.values(raw).map((v) => v.hex || v))
+    .map((h) => String(h).toUpperCase());
+  const engineHex = p.chart.map((c) => c.hex.toUpperCase());
+  ok(`${label} 图表色条数一致（tokens ${tokenHex.length} / 引擎 ${engineHex.length}）`, tokenHex.length === engineHex.length);
+  const diff = [];
+  for (let i = 0; i < Math.max(tokenHex.length, engineHex.length); i++) {
+    if (tokenHex[i] !== engineHex[i]) diff.push(`  #${i + 1} tokens=${tokenHex[i] || '(缺)'} 引擎=${engineHex[i] || '(缺)'}`);
+  }
+  if (diff.length) console.log(diff.join('\n'));
+  ok(`${label} 图表色逐项一致`, diff.length === 0);
+}
+
+console.log('========== 弘讯设计系统 A+B+C 包 ci-local ==========');
+const gW = runGate('Web 门禁 page-template.html', WEB);
+const gM = runGate('移动端门禁 page-template.html', MOB);
+ok('Web 门禁 0 HIGH exit 0', gW);
+ok('移动端门禁 0 HIGH exit 0', gM);
+function guard(name, fn) { try { fn(); } catch (e) { console.log(`  ❌ ${name} 执行异常: ${e.message}`); fail++; } }
+guard('Web tokens 断言', () => checkEnd('Web', WEB, false));
+guard('移动端 tokens 断言', () => checkEnd('移动端', MOB, true));
+guard('Web dark 断言', () => verifyDark('Web', WEB, false));
+guard('移动端 dark 断言', () => verifyDark('移动端', MOB, true));
+
+guard('Web 引擎vs tokens 图表色', () => verifyEngineVsTokens('Web', WEB, false));
+guard('移动端 引擎vs tokens 图表色', () => verifyEngineVsTokens('移动端', MOB, true));
+
+// RED-015 修复：引擎亮/暗对等性自检接入门禁。
+// 此前「亮色有、暗色没有」的 CSS 变量缺口（如 web 暗色缺 --color-primary-active）
+// 没有任何信号，一路静默流到页面上变成失效声明。
+console.log(`\n▶ brand-color-engine 亮/暗对等性自检（RED-015）`);
+guard('引擎对等性自检', () => {
+  const { assertParity } = require('./brand-color-engine/generate.js');
+  const { warnings } = assertParity();
+  warnings.forEach((w) => console.log(`  ⚠ ${w}`));
+  ok('引擎亮/暗对等性无硬错误', true);
+});
+
+// ===== P0-1 文档计数门禁（2026-08-25）：解析双端 MASTER/RULES 的「N 个」声称，比对 icons/ 实际数 =====
+// 背景：文档数字曾长期漂移（196/84/185…）无信号；数字该被机器管住，而非删数字留指针。
+function iconCountAssertions() {
+  console.log(`\n▶ 文档图标计数 vs 目录实际（P0-1 · 阻断）`);
+  const ends = [['Web', WEB], ['移动端', MOB]];
+  for (const [label, dir] of ends) {
+    const iconsDir = path.join(dir, 'icons');
+    if (!fs.existsSync(iconsDir)) { ok(`${label} icons/ 目录存在`, false); continue; }
+    const actual = fs.readdirSync(iconsDir).filter(f => /\.svg$/i.test(f)).length;
+    ok(`${label} icons/ 实际 ${actual} 个 SVG`, actual > 0);
+    for (const doc of ['MASTER.md', 'RULES.md']) {
+      const docPath = path.join(dir, doc);
+      if (!fs.existsSync(docPath)) { ok(`${label} ${doc} 存在`, false); continue; }
+      const text = fs.readFileSync(docPath, 'utf8');
+      // 限「图标库/图标集/Icon」语境防误抓组件计数；每行取首个数字（本端在前）。
+      const claimed = [];
+      for (const line of text.split('\n')) {
+        const m = line.match(/(图标库|图标集|Icon)[^\n]*?(\d+)\s*个|(\d+)\s*个[^\n]*?(图标库|图标集|Icon)/);
+        if (m) claimed.push(parseInt(m[2] || m[3], 10));
+      }
+      // RED-009：无声明判 FAIL（防删声明绕过）。
+      ok(`${label} ${doc} 图标数声明 ${claimed.join('/') || '(无声明)'} = 目录 ${actual}`,
+        claimed.length > 0 && claimed.every(c => c === actual));
+    }
+  }
+}
+guard('文档图标计数断言', iconCountAssertions);
+
+// ===== 登录背景图资产准入（DS-20261118-02）：1:1 / 2160² / ≤400KB =====
+function heroAssetAssertions() {
+  const { check } = require(path.join(WEB, 'assets/login-hero/validate-hero.js'));
+  const bad = check();
+  ok('登录背景图资产', bad.length === 0);
+  bad.forEach(m => console.error(`  ✗ ${m}`));
+}
+guard('登录背景图资产', heroAssetAssertions);
+
+// RED-003 升级（2026-08-25）：根目录 *.html 由「信息性」升级为「阻断」。
+// 前提已核实：NEW-001 假阳性已在 validate-spec.js L624-628 彻底修复（类名判定分两级，
+// 页面自带 <style> 定义即可通过），且当前根目录 2 个 HTML（USAGE.html / USAGE_分享版.html）实测 HIGH 0。
+// 范围分层（第一性原理）：根目录 *.html = 交付物 → 任一 HIGH 即 fail；
+// output/ = 历史归档（非交付标准下的旧产物，如规范效果验证_20260807 实测 HIGH 17）→ 报告但信息性，
+// 阻断会让 ci-local 对历史欠账立即红，且这些文件本就不是新标准产物。交付物 0 HIGH 才是门禁本义。
+console.log(`\n▶ 仓库根 *.html 门禁覆盖扫描（RED-003 · 阻断）`);
+let scanned = 0, anyHigh = 0, capBroken = 0;
+for (const f of fs.readdirSync(ROOT)) {
+  if (!/\.html?$/i.test(f)) continue;
+  if (!fs.statSync(path.join(ROOT, f)).isFile()) continue;
+  const end = /mobile|移动/i.test(f) ? MOB : WEB;
+  const spec = path.join(end, 'validate-spec.js');
+  // VERDICT-A 修复：退出码为权威判据（HIGH 时 validate-spec exit 1），stdout 仅信息性展示
+  const r = runGateCapture(f, `"${NODE}" "${spec}" "${path.resolve(ROOT, f)}"`);
+  scanned++;
+  if (!r.countAvailable) capBroken++;
+  if (r.high) anyHigh += r.high;
+  // fail-closed：子进程异常终止 或 计数不可用 均视为不通过（不再默认 HIGH 0 放行）
+  console.log(`  ${capPassed(r) ? '✅' : '❌'} ${renderCap(r)}`);
+}
+ok(`根目录 ${scanned} 个 HTML 交付物 0 HIGH（阻断·退出码判定）`, scanned > 0 && anyHigh === 0 && capBroken === 0);
+
+// ===== 存量改造增量审计（audit-rules.json M-01/02/03 · audit-spec.js · 2026-09-09）=====
+// 与 validate-spec（生成门禁）互补的 machine 类审计规则：CSS 裸 hex / 按钮状态矩阵 / 状态点语义白名单。
+// 范围分层与 RED-003 同构：双端 page-template 真源模板 + 根目录交付物（阻断）。
+console.log(`\n▶ 存量改造增量审计 audit-spec（M-01/02/03 · 阻断）`);
+// VERDICT-A 修复（2026-10-08）：这是本轮最严重的一处 fail-open。
+// 原实现捕获 stdout 文本取 HIGH 数，在本机（EBUSY → e.stdout 恒 undefined → 空串 → 正则无匹配
+// → parseInt(...||'0') → 恒 0）使 M-01/02/03/06/07 五条machine 规则与本阻断整体静默失效，
+// 却仍打印「✅ audit HIGH 0」并计入全绿。已实测：同一违规页直接跑 audit-spec 得 HIGH 2，
+// 经捕获路径得 stdout 长度 0 → 计0。
+// 现改为：退出码为权威（HIGH 时 audit-spec exit 1，已实证），stdout 计数仅信息性展示；
+// 子进程异常终止或摘要行缺失一律 fail-closed，不再默认放行。
+function runAudit(file, end) {
+  const r = runGateCapture(path.basename(file),
+    `"${NODE}" "${path.join(ROOT, 'audit-spec.js')}" "${file}" --end ${end}`);
+  console.log(`  ${capPassed(r) ? '✅' : '❌'} ${renderCap(r)}`);
+  // 返回阻断信号：HIGH 计数、子进程异常、计数不可用——三者任一即视为阻断
+  return { blocked: !capPassed(r), high: r.high || 0 };
+}
+let auditBlocked = 0, auditHighSum = 0;
+for (const t of [
+  runAudit(path.join(WEB, 'page-template.html'), 'web'),
+  runAudit(path.join(MOB, 'page-template.html'), 'mobile'),
+]) { if (t.blocked) auditBlocked++; auditHighSum += t.high; }
+for (const f of fs.readdirSync(ROOT)) {
+  if (!/\.html?$/i.test(f) || !fs.statSync(path.join(ROOT, f)).isFile()) continue;
+  const t = runAudit(path.join(ROOT, f), /mobile|移动/i.test(f) ? 'mobile' : 'web');
+  if (t.blocked) auditBlocked++; auditHighSum += t.high;
+}
+ok(`audit 增量审计（双端page-template + 根目录交付物）0 HIGH（阻断·退出码判定）`, auditBlocked === 0);
+
+// ===== 真源一致性 check-sync（vendor↔真源同构 + 双端同名类漂移白名单 · 2026-09-09）=====
+// 检查一：packages/*/dist-static components.css ↔ template.css 同构段逐声明一致（阻断）；
+// 检查二：双端 template.css 同名类属性键差集比对，SYNC_WHITELIST 白名单外阻断。
+console.log(`\n▶ 真源一致性 check-sync（vendor 同构 + 双端同名类 · 阻断）`);
+let syncOk = false;
+try {
+  execSync(`"${NODE}" "${path.join(ROOT, 'check-sync.js')}"`, { stdio: 'inherit' });
+  syncOk = true;
+} catch (e) { syncOk = false; }
+ok('check-sync：vendor 同构段一致 + 双端同名类白名单外零漂移（阻断）', syncOk);
+
+let themeOk = false;
+try { execSync(`"${NODE}" "${path.join(ROOT, 'scripts', 'check-themes.js')}"`, { stdio: 'inherit' }); themeOk = true; } catch (e) {}
+ok('主题契约', themeOk);
+
+// ===== 文档体积门禁 check-size（SSOT T-B · 2026-09-22）=====
+// 清单内文件字符数超限阻断 + 清单封闭防膨胀转移（未登记新文件即 FAIL）。
+console.log(`\n▶ 文档体积门禁 check-size（清单封闭 · 阻断）`);
+let sizeOk = false;
+try {
+  execSync(`"${NODE}" "${path.join(ROOT, 'check-size.js')}"`, { stdio: 'inherit' });
+  sizeOk = true;
+} catch (e) { sizeOk = false; }
+ok('check-size：真源文件体积限额 + 清单封闭（未登记新文件即阻断）', sizeOk);
+
+// ===== 规范可达性 check-reach（索引 / 引用 / 加载预算 · 2026-11-12 P0）=====
+// 目的：不测「文件多大」，只测「规范能不能被准确读到」——索引 0 漂移 + 引用 0 断链 + 加载集 ≤ 预算。
+console.log(`\n▶ 规范可达性 check-reach（索引 / 引用 / 加载预算 · 阻断）`);
+let reachOk = false;
+try {
+  execSync(`"${NODE}" "${path.join(ROOT, 'check-reach.js')}"`, { stdio: 'inherit' });
+  reachOk = true;
+} catch (e) { reachOk = false; }
+ok('check-reach：索引 0 漂移 + 引用 0 断链 + 加载集 ≤ 预算（阻断）', reachOk);
+
+// RED-003 扩展：output/ 历史归档扫描（信息性，不阻断）——展示历史产物规范漂移趋势，不追溯交付。
+console.log(`\n▶ output/ 历史归档门禁覆盖扫描（RED-003-ext · 信息性，不阻断）`);
+const outDir = path.join(ROOT, 'output');
+let scannedOut = 0, outHigh = 0;
+if (fs.existsSync(outDir)) {
+  for (const f of fs.readdirSync(outDir)) {
+    if (!/\.html?$/i.test(f)) continue;
+    if (!fs.statSync(path.join(outDir, f)).isFile()) continue;
+    const end = /mobile|移动/i.test(f) ? MOB : WEB;
+    const spec = path.join(end, 'validate-spec.js');
+    const r = runGateCapture(f, `"${NODE}" "${spec}" "${path.resolve(outDir, f)}"`);
+    scannedOut++;
+    if (r.high) outHigh += r.high;
+    const mark = !r.countAvailable ? '⚠️' : (r.high > 0 ? '⚠️' : '✅');
+    console.log(`  ${mark} ${renderCap(r)}`);
+  }
+}
+console.log(scannedOut > 0
+  ? `  ℹ️ 共扫描 ${scannedOut} 个 output/ HTML，HIGH 合计 ${outHigh}（信息性，历史归档不阻断）`
+  : `  ℹ️ output/ 未发现 HTML 归档，跳过。`);
+
+// ===== V11-T5 运行时首屏截断检查（RULES §4.4c · 一期信息性，观察误报后另议升级阻断）=====
+console.log(`\n▶ V11 运行时首屏截断检查（看板页核心卡完整性 · 信息性一期）`);
+try {
+  const foldGate = path.join(WEB, 'scripts', 'fold-gate-web.js');
+  if (!fs.existsSync(foldGate)) throw new Error('fold-gate-web.js 不存在');
+  if (!fs.existsSync(outDir)) throw new Error('无 output/ 目录');
+  const boards = fs.readdirSync(outDir)
+    .filter(f => /\.html?$/i.test(f))
+    .filter(f => { try { return fs.readFileSync(path.join(outDir, f), 'utf8').includes('stat-grid'); } catch (e) { return false; } })
+    .map(f => path.join(outDir, f));
+  if (!boards.length) throw new Error('无看板页（含 stat-grid）');
+  // VERDICT-A 修复：原实现 execSync 捕获 + indexOf('[') 截取 JSON，在本机 EBUSY 下 stdout 恒空
+  // → JSON.parse 失败 → 被外层 catch 吞成「跳过：输出解析失败（环境不可用，不计失败）」。
+  // 这是「装了但没生效的假安全」：检查实际从未运行，却呈现为一条温和的 SKIP 提示。
+  // 现改走文件 fd 捕获（绕过管道 EBUSY 且免疫 maxBuffer），并把「解析失败」与
+  // 「确实无可检看板页」区分开——前者为门禁自身故障，必须显式暴露而非静默跳过。
+  const r = runGateCapture('fold-gate', `"${NODE}" "${foldGate}" ${boards.map(b => `"${b}"`).join(' ')}`);
+  let results = null;
+  const jsonStart = r.out.indexOf('[');
+  if (jsonStart >= 0) { try { results = JSON.parse(r.out.slice(jsonStart)); } catch (e) { results = null; } }
+  if (!results) {
+    // 显式暴露：不再伪装成「环境不可用」的 SKIP
+    console.log(`  ❌ fold-gate 未取得可解析结果（退出码 ${r.status}，输出 ${r.out.length} 字节）——`);
+    console.log('     该项检查本轮实际未执行，属门禁自身故障，不应读作「检查通过」。');
+    fail++;
+  } else {
+    for (const fr of results) {
+      if (fr.skip) { console.log(`  ⏭️ ${fr.file} — ${fr.skip}（SKIP）`); continue; }
+      if (fr.error) { console.log(`  ⚠️ ${fr.file} — 检查异常：${fr.error}`); continue; }
+      if (fr.cut && fr.cut.length) {
+        console.log(`  ⚠️ ${fr.file} — 首屏核心卡被截断：${fr.cut.map(c => `${c.title}（可见 ${c.visiblePct}%）`).join('、')}`);
+      } else {
+        console.log(`  ✅ ${fr.file} — 主图行 ${fr.cards} 卡首屏完整（切点落 gap）`);
+      }
+    }
+    console.log('  ℹ️ 一期信息性：截断结论不计入 fail，但「检查未执行」计入 fail。');
+  }
+} catch (e) {
+  // 仅「客观前提不满足」才 SKIP：脚本/目录/看板页缺失属环境事实
+  console.log(`  ⏭️ 跳过：${e.message.slice(0, 60)}（客观前提不满足，不计失败）`);
+}
+
+console.log(`\n========== ci-local 总结 ==========`);
+console.log(`📊 ${pass} pass / ${fail} fail | 门禁 ${gW && gM ? '✅' : '❌'}`);
+const allOk = gW && gM && fail === 0;
+console.log(allOk ? '✅ 全绿 exit 0' : '❌ 存在失败 exit 1');
+process.exit(allOk ? 0 : 1);

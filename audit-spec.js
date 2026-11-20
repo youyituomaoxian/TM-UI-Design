@@ -1,0 +1,596 @@
+#!/usr/bin/env node
+/*
+ * audit-spec.js — 弘讯设计系统 · 存量改造增量审计（2026-09-09）
+ * ---------------------------------------------------------------------------
+ * 与 validate-spec.js（生成门禁）互补：本脚本只实现 validate-spec 未覆盖的
+ * machine 类审计规则（audit-rules.json M-01/M-02/M-03 + M-06 引用 CSS 资产扫描
+ * 2026-09-10），用于存量项目按弘讯设计系统改造时的 P0 盘点。不重复实现已有规则。
+ *
+ * 规则真源：../audit-rules.json（变更须经漏检回灌，见其 change_policy）
+ *
+ * 用法：
+ *   node audit-spec.js <目标.html> [--end web|mobile] [--json 输出.json]
+ *   --end 决定 tokens.json 色板真源与状态点白名单（默认 web）
+ *   --json 额外输出结构化台账（P0 盘点产物，供 P1 分类 / agent 分批消费）
+ *
+ * exit：HIGH > 0 → 1（阻断）；否则 0。
+ * ---------------------------------------------------------------------------
+ */
+const fs = require('fs');
+const path = require('path');
+
+const ROOT = __dirname;
+const TOKENS = {
+  web: path.join(ROOT, '弘讯web端design-system', 'tokens.json'),
+  mobile: path.join(ROOT, '弘讯移动端design-system', 'tokens.json'),
+};
+// tokens 之外的合法示例/文档色（与 validate-spec PALETTE_EXTRA 同口径，保守子集）
+const PALETTE_EXTRA = new Set([
+  '#005EAE', '#1A75D2', '#004A8F', '#DAEAFA', '#A0B4C0',
+  '#FFFFFF', '#FAFAFA', '#F6F9FC', '#F5F7FB', '#EAEAED', '#DEE2E6', '#CED4DA', '#ADB5BD', '#6C757D', '#334155', '#212532',
+  '#389E0D', '#52C41A', '#237804', '#F6FFED', '#FA8C16', '#FFF7E6', '#FFA940', '#D46B08', '#F5222D', '#FFF1F0', '#FF4D4F', '#CF1322',
+  '#16A34A', '#ECFDF5', '#BBF7D0', '#22C55E', '#15803D',
+  '#00A3E0', '#00C7BE', '#00D4A1', '#FF9500', '#8A5CF5', '#FF66C2',
+  '#10B981', '#059669', '#F59E0B', '#EF4444', '#0E7490', '#003868', '#0061FF', '#1D4ED8', '#D97706', '#DC2626', '#A78BFA', '#8B5CF6', '#06B6D4', '#EC4899',
+].map(c => c.toUpperCase()));
+
+const DOT_WHITELIST = new Set(['run', 'idle', 'off', 'offline', 'err', 'ok', 'warn']);
+
+// 规则版本 = 单一事实源（SSOT）：从 audit-rules.json $meta.version 动态读取，脚本内禁复述版本号
+// （2026-09-10 DS-20260910-01 题 2：横幅/JSON 曾硬编码 v1.2.0 / v1.0.0，真源升版后显示漂移）
+function loadRulesMeta() {
+  try { return JSON.parse(fs.readFileSync(path.join(ROOT, 'audit-rules.json'), 'utf8')).$meta || {}; }
+  catch (e) { return {}; }
+}
+const RULES_META = loadRulesMeta();
+const RULES_VERSION = RULES_META.version || '(版本未知)';
+
+// 声明上下文：取 index 所在声明的属性名（向前后扫到 ; { } 边界）
+// 用途（2026-09-10 DS-20260910-01 题 1）：属性名以 `--` 开头 = **色板定义行（本体）**，
+// 不是颜色用法——规则该管用法，色板本体降为 MEDIUM 清单保持可见但不阻断。
+function declPropAt(css, idx) {
+  let st = idx - 1;
+  while (st >= 0 && !';{}'.includes(css[st])) st--;
+  let en = idx;
+  while (en < css.length && !';}'.includes(css[en])) en++;
+  const decl = css.slice(st + 1, en).trim();
+  const pm = decl.match(/^([-a-zA-Z]+)\s*:/);
+  return { prop: pm ? pm[1].toLowerCase() : '', decl };
+}
+const isVarDef = (prop) => prop.startsWith('--');
+
+// ---- 工具 ----
+function collectHexLeaves(node, out) {
+  if (typeof node === 'string') {
+    const s = node.trim();
+    if (/^#[0-9a-fA-F]{3,8}$/.test(s)) out.add(s.toUpperCase());
+    return out;
+  }
+  if (Array.isArray(node)) { for (const n of node) collectHexLeaves(n, out); return out; }
+  if (node && typeof node === 'object') { for (const n of Object.values(node)) collectHexLeaves(n, out); return out; }
+  return out;
+}
+
+function buildPalette(end) {
+  const tokensPath = TOKENS[end];
+  if (!fs.existsSync(tokensPath)) throw new Error(`tokens.json 缺失：${tokensPath}`);
+  const tokens = JSON.parse(fs.readFileSync(tokensPath, 'utf8'));
+  const set = new Set(PALETTE_EXTRA);
+  collectHexLeaves(tokens, set);
+  return set;
+}
+
+function stripScriptTags(html) {
+  return html.replace(/<script[\s\S]*?<\/script>/gi, '');
+}
+
+// 行号映射：index → 行号（1-based）
+function lineOf(index, lineStarts) {
+  let lo = 0, hi = lineStarts.length - 1;
+  while (lo < hi) {
+    const mid = (lo + hi + 1) >> 1;
+    if (lineStarts[mid] <= index) lo = mid; else hi = mid - 1;
+  }
+  return lo + 1;
+}
+function buildLineStarts(text) {
+  const starts = [0];
+  for (let i = 0; i < text.length; i++) if (text[i] === '\n') starts.push(i + 1);
+  return starts;
+}
+
+// ---- 渐变色标点定位（M-01 扩展 2026-09-10）----
+// 11242 案例一：linear-gradient(180deg,#fff 0%,var(--n2) 100%) 暗皮露白顶——
+// 渐变定义的是面/边界，白字豁免（#FFF）在色标点内不适用；色标点内 hex 必须参与判定。
+function findGradientRanges(text) {
+  const ranges = [];
+  const re = /(?:linear|radial|conic)-gradient\s*\(/gi;
+  let m;
+  while ((m = re.exec(text))) {
+    let depth = 1, i = m.index + m[0].length;
+    for (; i < text.length && depth > 0; i++) {
+      if (text[i] === '(') depth++;
+      else if (text[i] === ')') depth--;
+    }
+    ranges.push([m.index, i]);
+  }
+  return ranges;
+}
+function inRanges(idx, ranges) {
+  for (const [s, e] of ranges) if (idx >= s && idx < e) return true;
+  return false;
+}
+
+// ---- RED-007 修复（2026-10-08）：豁免判定由「整行子串」收紧为结构化 ----
+// 原判定 /swatch|data-audit-exempt/i.test(lineText) 无锚定无名单核验 → 同一物理行内放入任意
+// 子串即豁免该行所有 hex 违规。实测滥用：/* swatch */ 注释、.not-a-swatch-at-all 类名、
+// data-audit-exempt-toggle 属性，单行 <style data-audit-exempt> 可吞 4 条 HIGH（自证合规）。
+// 现收紧：① 独立 data-audit-exempt 记号（属性或注释，须 = / 冒号 / 空白收尾，排除 -toggle
+//   派生名）；② 命中已登记色板容器类（.swatch/.color-swatch/.palette-swatch，class token 精确
+//   匹配）；③ 令牌定义本体另走 css.vardef.hex MEDIUM 可见清单（见下）。意图仍是「色板区按需豁免」。
+function isExemptLine(lineText) {
+  // ① 独立记号（属性或注释）。注释形式本仓库大量使用（如 page-template L147 行尾
+  //    `/* data-audit-exempt: 预览壳舞台色… */` M-06 已登记豁免），须一并识别否则误报。
+  if (/(?:^|[\s"'/*])data-audit-exempt(?:\s*[=:]|\s|["'>]|$)/i.test(lineText)) return true;
+  // ② 色板容器类：按 class token 精确匹配（.swatch / .color-swatch / .palette-swatch）
+  const clsRe = /\.[a-zA-Z][\w-]*/g;
+  const SWATCH_CLASSES = new Set(['swatch', 'color-swatch', 'palette-swatch']);
+  let cm;
+  while ((cm = clsRe.exec(lineText))) if (SWATCH_CLASSES.has(cm[0].slice(1))) return true;
+  return false;
+}
+// RED-007b：豁免注释常登记在**紧邻下一行**（长说明塞不进行尾），现允许「本行 + 下一行」命中。
+// RED-007c（2026-10-10 复盘 T-3）：三路径豁免统一入口——本行 + 紧邻下一行对称判定。
+// 原先只有 checkLinkedCss（外链 CSS）路径支持「豁免注释写在下一行」，<style> 块与 inline style
+// 两路径只看本行 → 同一登记豁免在不同载体下行为不一致（内联写法会误报 HIGH）。
+function exemptWithNext(text, starts, line) {
+  const cur = text.slice(starts[line - 1], starts[line] || undefined);
+  const next = starts[line] !== undefined ? text.slice(starts[line], starts[line + 1] || undefined) : '';
+  return isExemptLine(cur) || isExemptComment(cur) || isExemptComment(next);
+}
+function isExemptComment(text) {
+  if (!text) return false;
+  const re = /\/\*([^*]*(?:\*(?!\/)[^*]*)*)\*\//g;
+  let m;
+  while ((m = re.exec(text))) {
+    if (/(?:^|[\s"'])data-audit-exempt(?:\s*[:=]|\s|["'>]|$)/i.test(m[1])) return true;
+  }
+  return false;
+}
+
+// ---- M-01 css.hex.literal ----
+function checkHexLiteral(noScript, palette, lineStarts) {
+  const violations = [];
+  // 1) <style> 块（RED-008 后不再预剥离 :root，令牌定义行由 declPropAt 判为 vardef MEDIUM）
+  const styleRe = /<style[^>]*>([\s\S]*?)<\/style>/gi;
+  let m;
+  while ((m = styleRe.exec(noScript))) {
+    const css = m[1];
+    const base = m.index + m[0].indexOf(m[1]);
+    const cssStarts = buildLineStarts(css);
+    // RED-008 修复（2026-10-08）：原实现先用/:root\s*\{[^}]*\}/g 把令牌定义区整块删除再扫 hex，
+    // 定义在 :root/[data-theme] 内的自造色**根本不进扫描循环** → 下方 isVarDef→MEDIUM 分支
+    // 永不可达（死代码），与 audit-rules.json L24 声称的「定义行降为清单级保持可见」矛盾。
+    // 现不预剥离：全量扫描后由 declPropAt 判定是否 --* 定义，是则走 vardef MEDIUM。
+    const stripped = css;
+    const hexRe = /#([0-9a-fA-F]{3,8})\b/g;
+    const gradRanges = findGradientRanges(stripped);
+    let h;
+    while ((h = hexRe.exec(stripped))) {
+      const abs = base + h.index;
+      const line = lineOf(abs, lineStarts);
+      const lineText = noScript.slice(lineStarts[line - 1], lineStarts[line] || undefined);
+      if (exemptWithNext(noScript, lineStarts, line)) continue; // RED-007c 三路径对称
+      const hex = ('#' + h[1]).toUpperCase();
+      const isGradStop = inRanges(h.index, gradRanges);
+      if (!isGradStop && (hex === '#FFFFFF' || hex === '#FFF')) continue; // 白字约定豁免（渐变色标点内不适用，M-01 扩展 2026-09-10）
+      const { prop } = declPropAt(stripped, h.index);
+      const inPalette = palette.has(hex) || palette.has(normalizeShort(hex));
+      // 色板定义行（--x: <hex>）：本体非用法 → MEDIUM 可见清单，不阻断（DS-20260910-01 题 1）
+      // RED-008：原先因 :root 预剥离而不可达，现已能正常触达。
+      if (isVarDef(prop)) {
+        violations.push({
+          rule: 'M-01', contract: 'css.vardef.hex', line,
+          severity: 'MEDIUM', excerpt: `${hex} @vardef`,
+          msg: `色板定义行 \`${prop}: ${hex}\`——定义本体不计入「裸 hex 用法」违规，但自造色板须可见：核对能否映射弘讯 token；确需自建走 brand-color-engine 回 tokens.json，或在 audit-rules.json exemptions 按块登记`,
+        });
+        continue;
+      }
+      violations.push({
+        rule: 'M-01', contract: isGradStop ? 'css.hex.gradient-stop' : 'css.hex.literal', line,
+        severity: inPalette ? 'MEDIUM' : 'HIGH',
+        excerpt: hex + (isGradStop ? ' @gradient' : ''),
+        msg: isGradStop
+          ? `渐变色标点裸 hex ${hex}${inPalette ? '（色板内）' : '（自造色）'}——渐变是面/边界非文字，白字豁免不适用；改用 var(--token) 色标点，防暗色模式露白底`
+          : inPalette
+          ? `CSS 裸 hex ${hex} 在 token 色板内——合法色但必须改用 var(--token) 引用（禁字面量，防漂移）`
+          : `CSS 裸 hex ${hex} 不在 token 色板——自造色，改用 var(--token)；确需新色走 brand-color-engine 回 tokens.json`,
+      });
+    }
+  }
+  // 2) inline style="..." 属性值
+  // F10（2026-11-12）：支持单引号 / 无引号 inline style——原实现只认双引号，
+  //   `style='background:#123456'` 与 `style=background:#123456` 全部漏检。
+  const inlineRe = /\sstyle\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))/gi;
+  while ((m = inlineRe.exec(noScript))) {
+    const val = m[1] || m[2] || m[3] || '';
+    const abs = m.index + m[0].indexOf(val);
+    const line = lineOf(abs, lineStarts);
+    const lineText = noScript.slice(lineStarts[line - 1], lineStarts[line] || undefined);
+    if (exemptWithNext(noScript, lineStarts, line)) continue; // RED-007c 三路径对称
+    const hexRe = /#([0-9a-fA-F]{3,8})\b/g;
+    const gradRanges = findGradientRanges(val);
+    let h;
+    while ((h = hexRe.exec(val))) {
+      const hex = ('#' + h[1]).toUpperCase();
+      const isGradStop = inRanges(h.index, gradRanges);
+      if (!isGradStop && (hex === '#FFFFFF' || hex === '#FFF')) continue;
+      const inPalette = palette.has(hex) || palette.has(normalizeShort(hex));
+      const { prop: inlineProp } = declPropAt(val, h.index);
+      if (isVarDef(inlineProp)) {
+        violations.push({
+          rule: 'M-01', contract: 'css.vardef.hex', line,
+          severity: 'MEDIUM', excerpt: `${hex} @vardef`,
+          msg: `inline 色板定义 \`${inlineProp}: ${hex}\`——定义本体降为清单级；自造色板须可见（映射 token / 回 tokens.json / exemptions 登记）`,
+        });
+        continue;
+      }
+      violations.push({
+        rule: 'M-01', contract: isGradStop ? 'css.hex.gradient-stop' : 'css.hex.literal', line,
+        severity: inPalette ? 'MEDIUM' : 'HIGH',
+        excerpt: hex + (isGradStop ? ' @gradient' : ''),
+        msg: isGradStop
+          ? `inline 渐变色标点裸 hex ${hex}——白字豁免不适用于色标点，改用 var(--token)`
+          : inPalette
+          ? `inline style 裸 hex ${hex} 在 token 色板内——改用 var(--token) 引用`
+          : `inline style 裸 hex ${hex} 不在 token 色板——自造色，改用 var(--token)`,
+      });
+    }
+  }
+  return violations;
+}
+function normalizeShort(hex) {
+  // #ABC → #AABBCC，与 tokens 中长写法比对
+  if (/^#[0-9a-fA-F]{3}$/.test(hex)) {
+    return '#' + hex.slice(1).split('').map(c => c + c).join('').toUpperCase();
+  }
+  return hex.toUpperCase();
+}
+
+// ---- M-02 btn.state.matrix（组合语义版 2026-09-10）----
+// 判定谓词（与 audit-rules.json M-02 同步）：
+//   只审「类自身定义了 background」的按钮类（含伪类的选择器不参与背景归属，.btn:disabled 不算基类背景）；
+//   变体类（.btn-xxx）的某态若自身或基类提供 → 覆盖；基类（.btn）的 hover/active 若任一变体提供 → 覆盖；
+//   :focus-visible 无组合兜底惯例，全家族必须显式存在（键盘可达）。
+function checkBtnState(noScript, lineStarts) {
+  const violations = [];
+  const styleRe = /<style[^>]*>([\s\S]*?)<\/style>/gi;
+  let m;
+  while ((m = styleRe.exec(noScript))) {
+    const css = m[1];
+    const base = m.index + m[0].indexOf(m[1]);
+    const cssStarts = buildLineStarts(css);
+    const blockRe = /([^{}]+)\{([^}]*)\}/g;
+    const defs = new Map(); // cls -> {line, hasBg, states:Set}
+    let b;
+    while ((b = blockRe.exec(css))) {
+      const sel = b[1], body = b[2];
+      // 按 token 定位按钮类：先剥掉伪类再匹配（.btn-primary:focus-visible 整段含 ':'，须 strip 后匹配）
+      const seg = sel.split(/[\s,>+~]+/).find(t => /\.(btn|button)[\w-]*/i.test(t.replace(/:.*$/, '')));
+      if (!seg) continue;
+      const cls = seg.replace(/:.*$/, '').match(/\.[\w-]+/)[0].slice(1);
+      const pseudoMatch = seg.match(/:(hover|active|focus-visible|focus)\b/i);
+      const entry = defs.get(cls) || { line: lineOf(base + b.index, cssStarts), hasBg: false, states: new Set() };
+      if (pseudoMatch) {
+        const st = pseudoMatch[1].toLowerCase() === 'focus' ? 'focus-visible' : pseudoMatch[1].toLowerCase();
+        entry.states.add(st);
+      } else if (!seg.includes(':') && /background/i.test(body)) {
+        entry.hasBg = true; // 纯类选择器才算背景归属；:disabled 等其他伪类块不参与
+      }
+      defs.set(cls, entry);
+    }
+    for (const [cls, info] of defs) {
+      if (!info.hasBg) continue;
+      const baseName = cls.split('-')[0];
+      const baseEntry = defs.get(baseName);
+      const isBase = cls === baseName;
+      const variantCovers = (state) => [...defs.entries()].some(
+        ([k, v]) => k !== baseName && k.startsWith(baseName + '-') && v.states.has(state)
+      );
+      const has = (state) => info.states.has(state) || (!isBase && baseEntry && baseEntry.states.has(state));
+      const missing = [];
+      if (!has('hover') && !(isBase && variantCovers('hover'))) missing.push(':hover');
+      if (!has('active') && !(isBase && variantCovers('active'))) missing.push(':active');
+      if (!has('focus-visible') && !(isBase && variantCovers('focus-visible'))) missing.push(':focus-visible');
+      if (missing.length) {
+        violations.push({
+          rule: 'M-02', contract: 'btn.state.matrix', line: info.line,
+          severity: 'MEDIUM', excerpt: `.${cls}`,
+          msg: `按钮类 .${cls} 缺交互态：${missing.join(' / ')}——按 RULES §3.1 补齐四态（token 化）；focus-visible 无组合兜底，须显式定义`,
+        });
+      }
+    }
+  }
+  return violations;
+}
+
+// ---- M-03 status.dot.unknown ----
+function checkStatusDot(noScript, end, lineStarts) {
+  const violations = [];
+  const classAttrRe = /class\s*=\s*"([^"]*)"/g;
+  let m;
+  while ((m = classAttrRe.exec(noScript))) {
+    const tokens = m[1].trim().split(/\s+/);
+    const line = lineOf(m.index, lineStarts);
+    if (end === 'web') {
+      if (!tokens.includes('status-dot')) continue;
+      for (const t of tokens) {
+        const mm = t.match(/^dot-([\w-]+)$/);
+        if (mm && !DOT_WHITELIST.has(mm[1])) {
+          violations.push({
+            rule: 'M-03', contract: 'status.dot.unknown', line,
+            severity: 'HIGH', excerpt: t,
+            msg: `状态点 ${t} 不在语义白名单（run/idle/off/offline/err/ok/warn）——机器状态禁自造语义色，新语义先回 RULES §11.11 登记`,
+          });
+        }
+      }
+    } else {
+      if (!tokens.includes('m-dot')) continue;
+      for (const t of tokens) {
+        if (t === 'm-dot') continue;
+        if (!DOT_WHITELIST.has(t)) {
+          violations.push({
+            rule: 'M-03', contract: 'status.dot.unknown', line,
+            severity: 'HIGH', excerpt: t,
+            msg: `m-dot 状态类 ${t} 不在语义白名单（run/idle/off/offline/err/ok/warn）——机器状态禁自造语义色`,
+          });
+        }
+      }
+    }
+  }
+  return violations;
+}
+
+// ---- M-06 css.asset.hex（2026-09-10 新增）----
+// 11242 案例二：dist 分页条 background:#fff 白底横条——脏值在被 <link> 引用的冻结 CSS 里，
+// 只扫页面 HTML 是假阴性。冻结 dist 降级 MEDIUM『硬编码清单』（供映射决策）；自维护 CSS 维持 HIGH。
+// 白字豁免仅适用于 color: 声明（文字白约定）；background/border 等面性声明中的 #fff 照判。
+function checkLinkedCss(targetFile, palette) {
+  const violations = [];
+  const html = fs.readFileSync(targetFile, 'utf8');
+  const dir = path.dirname(path.resolve(targetFile));
+  const seen = new Set();
+  const linkRe = /<link\b[^>]*>/gi;
+  let lk;
+  while ((lk = linkRe.exec(html))) {
+    const tag = lk[0];
+    if (!/stylesheet/i.test(tag)) continue;
+    const hm = tag.match(/href\s*=\s*["']([^"']+)["']/i);
+    if (!hm) continue;
+    const href = hm[1].trim();
+    if (/^(https?:)?\/\//i.test(href) || /^data:/i.test(href)) continue;
+    const abs = path.resolve(dir, href.split('?')[0].split('#')[0]);
+    if (!/\.css$/i.test(abs) || seen.has(abs)) continue;
+    seen.add(abs);
+    if (!fs.existsSync(abs)) continue; // 缺失引用由浏览器/其他门禁管，不在此报
+    const css = fs.readFileSync(abs, 'utf8');
+    const normPath = abs.replace(/\\/g, '/');
+    const frozen = /(^|[\\/])(dist|dist-static|vendor|node_modules|build)([\\/]|$)/i.test(normPath);
+    const rel = path.relative(path.dirname(targetFile), abs).replace(/\\/g, '/') || path.basename(abs);
+
+    // 掩码区：注释 + :root/[data-theme] 令牌定义区（与页面侧同口径豁免）
+    const masks = [];
+    let cm;
+    const commentRe = /\/\*[\s\S]*?\*\//g;
+    while ((cm = commentRe.exec(css))) masks.push([cm.index, cm.index + cm[0].length]);
+    let rb;
+    const rootRe = /:root\s*\{[^}]*\}|\[data-theme[^\]]*\]\s*\{[^}]*\}/g;
+    while ((rb = rootRe.exec(css))) masks.push([rb.index, rb.index + rb[0].length]);
+
+    const lineStartsCss = buildLineStarts(css);
+    const hexRe = /#([0-9a-fA-F]{3,8})\b/g;
+    let h;
+    while ((h = hexRe.exec(css))) {
+      const idx = h.index;
+      if (inRanges(idx, masks)) continue;
+      const line = lineOf(idx, lineStartsCss);
+      const lineText = css.slice(lineStartsCss[line - 1], lineStartsCss[line] || undefined);
+      // RED-007b：豁免注释常写在违规行的**下一行**（行尾塞不下长说明），故本行+紧邻下一行都参与判定
+      if (exemptWithNext(css, lineStartsCss, line)) continue; // RED-007c 归一
+      // 所在声明上下文（helper 去重）：属性名以 `--` 开头 = 色板定义行
+      const { prop, decl } = declPropAt(css, idx);
+      const hex = ('#' + h[1]).toUpperCase();
+      if ((hex === '#FFFFFF' || hex === '#FFF') && prop === 'color') continue; // 白字豁免仅限文字声明
+      const inPalette = palette.has(hex) || palette.has(normalizeShort(hex));
+      // 色板定义行（--x: <hex>）：本体非用法 → MEDIUM 可见清单（2026-09-10 DS-20260910-01 题 1 吸收）
+      if (isVarDef(prop)) {
+        violations.push({
+          rule: 'M-06', contract: 'css.vardef.hex', line,
+          severity: 'MEDIUM', excerpt: `${hex} @${rel} @vardef`,
+          msg: `引用${frozen ? '冻结 dist' : '自维护'} CSS（${rel} L${line}）色板定义行 \`${decl}\`——定义本体不计入「裸 hex 用法」违规；自造色板须可见：核对能否映射弘讯 token，确需自建走 brand-color-engine 回 tokens.json 或在 audit-rules.json exemptions 按块登记`,
+        });
+        continue;
+      }
+      // 严重级分层（2026-09-10 DS-20260910-01 题 3 吸收，对齐 M-01 口径）：
+      //   冻结 dist → MEDIUM（不可改，只能覆盖）；自维护层 → 色板外 HIGH（自造色）/ 色板内 MEDIUM（合法色但须改 var）
+      const severity = frozen ? 'MEDIUM' : (inPalette ? 'MEDIUM' : 'HIGH');
+      violations.push({
+        rule: 'M-06', contract: 'css.asset.hex', line,
+        severity,
+        excerpt: `${hex} @${rel}`,
+        msg: frozen
+          ? `引用冻结 dist CSS（${rel} L${line}）声明 \`${decl}\` 含裸 hex ${hex} —— dist 硬编码清单（信息级，供映射决策；dist 不可改，修法=页面/合规层同优先级覆盖）`
+          : inPalette
+          ? `引用自维护 CSS（${rel} L${line}）声明 \`${decl}\` 含裸 hex ${hex}（色板内）—— 合法色但必须改用 var(--token) 引用（禁字面量，防漂移）`
+          : `引用自维护 CSS（${rel} L${line}）声明 \`${decl}\` 含裸 hex ${hex}（自造色）—— 自造色，改用 var(--token)；确需新色走 brand-color-engine 回 tokens.json`,
+      });
+    }
+  }
+  return violations;
+}
+
+// ---- M-07 辅助：模板真源动画名集合（2026-09-23 误报修正）----
+// 分享版产物内联 template.css 全量 CSS，M1–M5 规范动画随之进入页面 <style>。
+// 白名单口径：命中模板真源动画名的引用不计节拍预算——预算只管「页面自加」的动画。
+function buildTemplateMotionNames(end) {
+  const cssPath = path.join(ROOT, end === 'web' ? '弘讯web端design-system/template.css' : '弘讯移动端design-system/template.css');
+  const css = fs.readFileSync(cssPath, "utf8");
+  const names = new Set();
+  // 白名单双源：animation 声明名 + @keyframes 定义名（2026-09-23 监督 ISSUE-01：
+  // 模板 @keyframes 19 名 > animation 声明 16 名，shimmer/toast-in/toast-out 等规范动画
+  // 只定义未在模板内引用会被漏收 → 页面正常使用规范骨架屏/规范 toast 即误报 HIGH）
+  const kfRe = /@keyframes\s+([\w-]+)/g;
+  let k;
+  while ((k = kfRe.exec(css))) names.add(k[1]);
+  const re = /(?:^|[^-\w])animation(?:-name)?\s*:\s*([^;}]+)/g;
+  let m;
+  while ((m = re.exec(css))) {
+    for (const piece of m[1].split(',')) {
+      const first = piece.split('!important')[0].trim().split(/\s+/)[0];
+      if (first && !/^(none|inherit|initial|unset)$/i.test(first)) names.add(first);
+    }
+  }
+  return names;
+}
+// ---- M-07 motion.beat.budget（2026-09-23 新增，finesse 借鉴 C-5）----
+// 节拍预算：一页最多一个 heavy 动效。扫页面内 <style>/inline 的 animation 声明；
+// <link> CSS 不扫（template.css 规范动效合法）；transition 不计；@keyframes 定义行不算引用。
+function checkMotionBeat(noScript, lineStarts, templateMotion) {
+  const violations = [];
+  const seen = new Map(); // name -> first index
+  const re = /(?:^|[^-\w])animation(?:-name)?\s*:\s*([^;}]+)/g;
+  let m;
+  while ((m = re.exec(noScript))) {
+    const line = lineOf(m.index, lineStarts);
+    const raw = m[1].split("!important")[0];
+    for (const piece of raw.split(',')) {
+      const first = piece.trim().split(/\s+/)[0];
+      if (!first || /^(none|inherit|initial|unset)$/i.test(first)) continue;
+      if (templateMotion && templateMotion.has(first)) continue; // 模板真源动画：不计预算
+      if (!seen.has(first)) seen.set(first, line);
+    }
+  }
+  let n = 0;
+  for (const [name, line] of seen) {
+    n++;
+    if (n === 1) continue; // 一个 heavy 预算内
+    violations.push({
+      rule: 'M-07',
+      severity: 'HIGH',
+      line,
+      contract: 'motion.beat.budget',
+      excerpt: `animation \`${name}\``,
+      msg: `节拍预算超限（页面内第 ${n} 个自声明动画）：一页最多一个 heavy 动效——删多余入场/装饰动画，规范动效只用 template.css 的 M1–M5 类`,
+    });
+  }
+  return violations;
+}
+// ---- M-10 css.js.injected（2026-11-12 F10）：<script> 内的样式注入 ----
+// 既有扫描先 stripScriptTags，JS 里 `el.style.background='#123456'` / `cssText` /
+// `innerHTML='<div style=…>'` / `appendChild(<style>)` 全部不可见（实测 0 命中）。
+// 不判死（脚本设主题色可能合法）：只对「上下文出现 style/cssText/innerHTML/<style>」的 hex 报 MEDIUM，
+// 要求凭运行时截图复核（R-08），能改 class 切换就别用 JS 写色值。
+function checkJsInjected(html, lineStarts) {
+  const violations = [];
+  const scriptRe = /<script\b[^>]*>([\s\S]*?)<\/script>/gi;
+  let m;
+  while ((m = scriptRe.exec(html))) {
+    const body = m[1], base = m.index + m[0].indexOf(body);
+    const hexRe = /#([0-9a-fA-F]{3,8})\b/g;
+    let h;
+    while ((h = hexRe.exec(body))) {
+      const ctx = body.slice(Math.max(0, h.index - 120), h.index);
+      if (!/(\.style|cssText|setProperty|innerHTML|insertAdjacentHTML|createElement\(\s*['"]style|textContent\s*=)/.test(ctx)) continue;
+      violations.push({
+        rule: 'M-10', contract: 'css.js.injected',
+        severity: 'MEDIUM',
+        line: lineOf(base + h.index, lineStarts),
+        excerpt: `#${h[1]} @script`,
+        msg: '脚本内注入样式含裸 hex（style./cssText/innerHTML/<style>）——静态扫描判不了生效结果，须凭运行时截图（R-08）复核；能改成 class 切换就别用 JS 写色值',
+      });
+    }
+  }
+  return violations;
+}
+// ---- 主流程 ----
+
+// ===== M-11 页头标题语义（2026-11-17 与 validate-spec 同口径）=====
+// 复核修正：先剥 HTML 注释（此前注释掉的旧标题会漏检）；只认 main 内 h1.page-title（div/顶层类名不放行）；
+// 文档/规范展示页与 validate 的 isFrameworkExempt 同口径跳过；main 标签允许附加属性。
+function checkPageTitle(noScript, lineStarts, targetPath) {
+  const out = [];
+  if (/规范展示|_框架版|展示页测试|USAGE/i.test(targetPath || '')) return out;
+  const clean = noScript.replace(/<!--[\s\S]*?-->/g, m => m.replace(/[^\n]/g, ' '));
+  if (!clean.includes('class="app"') || !clean.includes('class="topbar"')) return out; // 仅 B 端框架页
+  const mainMatch = clean.match(/<main\b[^>]*\bclass=["'][^"']*\bcontent\b[^"']*["'][^>]*>/);
+  if (!mainMatch) return out;
+  const s = mainMatch.index + mainMatch[0].length;
+  const e = clean.indexOf('</main>', s);
+  if (e < 0) return out;
+  const mainInner = clean.slice(s, e);
+  if (mainInner.replace(/<[^>]*>/g, '').trim().length < 20) return out; // 空壳不查(同阈)
+  if (!/<h1\b[^>]*\bclass=["'][^"']*\bpage-title\b[^"']*["']/.test(mainInner)) {
+    out.push({ severity: 'HIGH', contract: 'page.title.missing', line: lineOf(s, lineStarts),
+      excerpt: '页头标题缺失(main 内无 h1.page-title)',
+      msg: '内页有内容但缺页头标题——RULES §1.1b：页头= h1.page-title（18/500 纯文本）+ .page-actions，禁按钮冒充。' });
+  }
+  return out;
+}
+
+function main() {
+  const args = process.argv.slice(2);
+  const target = args[0];
+  let end = 'web', jsonOut = null;
+  for (let i = 1; i < args.length; i++) {
+    if (args[i] === '--end') end = args[++i];
+    else if (args[i] === '--json') jsonOut = args[++i];
+  }
+  if (!target) { console.error('用法: node audit-spec.js <目标.html> [--end web|mobile] [--json out.json]'); process.exit(2); }
+  if (!fs.existsSync(target)) { console.error('目标文件不存在: ' + target); process.exit(2); }
+  if (!['web', 'mobile'].includes(end)) { console.error('--end 仅支持 web|mobile'); process.exit(2); }
+
+  const palette = buildPalette(end);
+  const html = fs.readFileSync(target, 'utf8');
+  const noScript = stripScriptTags(html);
+  const lineStarts = buildLineStarts(noScript);
+
+  const violations = [
+    ...checkHexLiteral(noScript, palette, lineStarts),
+    ...checkBtnState(noScript, lineStarts),
+    ...checkStatusDot(noScript, end, lineStarts),
+    ...checkLinkedCss(target, palette),
+    ...checkMotionBeat(noScript, lineStarts, buildTemplateMotionNames(end)),
+    ...checkJsInjected(html, buildLineStarts(html)),
+    ...checkPageTitle(noScript, lineStarts, target),
+  ].sort((a, b) => (a.severity === b.severity ? a.line - b.line : a.severity === 'HIGH' ? -1 : 1));
+
+  const high = violations.filter(v => v.severity === 'HIGH').length;
+  const med = violations.filter(v => v.severity === 'MEDIUM').length;
+
+  console.log(`\n🔍 存量改造增量审计 audit-spec（规则真源 audit-rules.json v${RULES_VERSION} · ${end} 色板）`);
+  console.log(`   目标: ${path.basename(target)}`);
+  console.log('');
+  for (const v of violations) {
+    const tag = v.severity === 'HIGH' ? '🔴 HIGH' : '🟡 MED';
+    console.log(`${tag}  L${v.line}  [${v.contract}]  ${v.excerpt}`);
+    console.log(`       ↳ ${v.msg}`);
+  }
+  console.log(`\n📊 audit 增量审计共 ${violations.length} 项：HIGH ${high} / MEDIUM ${med}`);
+
+  if (jsonOut) {
+    fs.writeFileSync(jsonOut, JSON.stringify({
+      target: path.resolve(target),
+      end, generatedAt: new Date().toISOString(),
+      ruleset: `audit-rules.json v${RULES_VERSION}`,
+      summary: { high, medium: med, total: violations.length },
+      violations,
+    }, null, 2));
+    console.log(`📝 台账已写出: ${jsonOut}`);
+  }
+
+  if (high > 0) { console.log('❌ 存在 HIGH，exit 1（P0 台账需先归零/豁免）。'); process.exit(1); }
+  console.log('✅ 无 HIGH，exit 0。');
+  process.exit(0);
+}
+
+if (require.main === module) main();

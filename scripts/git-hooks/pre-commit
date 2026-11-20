@@ -1,0 +1,41 @@
+#!/bin/bash
+# 弘讯设计系统 · 交付门禁 pre-commit hook（团队共享：scripts/git-hooks/pre-commit）
+# 启用（一次性）：bash scripts/setup-hooks.sh  （即 git config core.hooksPath scripts/git-hooks）
+#
+# 行为：提交前跑 Web + 移动端两套 validate-spec.js，任一存在 HIGH 违反即拦截提交（exit 1）。
+#       两套模板当前均 0 HIGH，故此门禁常态放行；一旦有人改出非合规组件即被拦下。
+set -o pipefail
+
+ROOT="$(git rev-parse --show-toplevel)"
+
+# Node 探测：优先 PATH 上的 node，回退到已知 managed 路径
+if command -v node >/dev/null 2>&1; then
+  NODE="node"
+elif [ -x "/c/Users/mask/.workbuddy/binaries/node/versions/22.22.2/node.exe" ]; then
+  NODE="/c/Users/mask/.workbuddy/binaries/node/versions/22.22.2/node.exe"
+else
+  echo "⚠️  未找到 node，门禁无法执行 —— 提交被拦截（请安装 Node.js 或配置 PATH 后重试）。"
+  exit 1
+fi
+
+run_one () {
+  local dir="$1"
+  local target="$2"
+  if [ ! -f "$dir/validate-spec.js" ]; then
+    echo "⚠️  跳过 $dir（无 validate-spec.js）"
+    return 0
+  fi
+  echo "▶ 校验 $dir / $target"
+  ( cd "$dir" && "$NODE" validate-spec.js "$target" )
+  local code=$?
+  if [ "$code" -ne 0 ]; then
+    echo "❌ $dir 存在 HIGH 违反，提交被拦截。请先修复规范后再 commit。"
+    exit 1
+  fi
+}
+
+run_one "$ROOT/弘讯web端design-system" "page-template.html"
+run_one "$ROOT/弘讯移动端design-system" "page-template.html"
+
+echo "✅ 设计系统规范门禁通过（Web + 移动端均 0 HIGH）"
+exit 0

@@ -1,0 +1,515 @@
+{
+  "$meta": {
+    "title": "弘讯设计系统 · 审计规则真源（audit-rules）",
+    "version": "1.10.0",
+    "updated": "2026-11-19",
+    "purpose": "存量项目按弘讯设计系统改造时的单一审计真源。RULES.md 管生成语义（怎么写），本文件管审计语义（怎么查）：每条规则声明 判定谓词 / 严重级 / 可判定性 / 修复策略。机器类规则由 audit-spec.js 与 validate-spec.js 执行，运行时类由截图×状态验证，语义类由 agent+人审查。三层互补，缺一不可。",
+    "scope_note": "⚠️ 两种审查场景归因不同（2026-09-10 澄清）：① 弘讯内项目缺陷审计 → P1 归因二分（设计系统问题 / 执行问题）+ machine_rules；② 外部项目迁移改造 → 归因只有『未对齐弘讯规范』，决策点 = 映射到什么（token / 组件类 / 字阶），用 migration_dimensions 逐层盘点。M 层抓硬违规（迁移同样清零），D 层管维度映射。",
+    "change_policy": "新增规则须经『设计系统问题报告』进入，走**单向报告流**（2026-09-10 拍板；输入含从零生成/存量改造/日常使用中任何**设计系统问题**：真源/规范缺失、token/组件/图标缺口、门禁漏洞、文档缺陷；审计漏检是 machine 层特例。执行问题不进报告，应用侧直接改页面）：① **应用侧** = 归因 + 记录 + 提请转交，落盘自己项目 `output/设计系统问题_*.md`（schema 见 issue_reporting），禁碰真源；② **维护侧** = 被动消费回灌：收到报告或被 @ 时走维护者六步，登记 feedback_log（带 report_source，同题用 related_reports）并出回执三件套（报告状态栏 + feedback_log + 双端 CHANGELOG）；③ 维护者自己的维护会话可直接回灌。**规范-审查双向对账**：migration_dimensions 每条带 ref 指回规范条目（指不回 = 伪维度，删）；规范新增条目时审查侧同步长出核对项（指不到 = 审查缺口，补 D 层）。"
+  },
+  "layers": {
+    "machine": "脚本全量召回（零漏检）。判定谓词完全可静态判定。audit-spec.js 覆盖增量审计规则，validate-spec.js 覆盖生成门禁规则。",
+    "runtime": "机器扫不到、读代码也读不到的表现层。起本地服务 → Playwright 截关键页面×关键状态 → 视觉模型/人审。",
+    "human": "信息层级、组件选型、文案等语义判断。agent 只消费结构化台账 + 本批片段，逐遍审查。"
+  },
+  "machine_rules": [
+    {
+      "id": "M-01",
+      "contract": "css.hex.literal",
+      "title": "CSS 裸 hex 字面量必须 token 化",
+      "severity": "HIGH(非色板)/MEDIUM(色板内应改引用)",
+      "scope": "目标 HTML 的 <style> 块 + inline style（script 剥离后）+ 渐变色标点（2026-09-10 扩展）",
+      "predicate": "出现 #RGB/#RRGGBB/#RRGGBBAA：∉ token 色板 → HIGH（自造色）；∈ 色板 → MEDIUM（合法色须 `var()`）。**渐变色标点**：linear/radial-gradient 内 hex 同判，且白字豁免在色标点内不适用（渐变定义面/边界非文字；11242 案例一：dist 面板头渐变露白顶，只查 backgroundColor 抓不到）。**色板定义行**：属性名以 `--` 开头为**色板本体非用法** → `css.vardef.hex` MEDIUM（不阻断但须可见：能否映射 token / 回 tokens.json / exemptions 登记），不判 HIGH（原绑 `:root`/`[data-theme]` 属绑错维度，换作用域即误报死锁）；白字豁免在定义行照旧生效。",
+      "exempt": [
+        ":root{...} 与 [data-theme]{...} 令牌定义/投影区",
+        "含 swatch 类或 data-audit-exempt 的行（色板展示区）",
+        "SVG paint 属性 stroke=/fill=/stop-color=（由 M-04 专管，避免双报）",
+        "#FFFFFF/#FFF 白字约定（validate-static 规则①同口径，RULES §10.3b 白字美学优先；⚠️ 渐变色标点内不适用，见 predicate）"
+      ],
+      "exempt_mechanism": "data-audit-exempt 豁免标记机制（2026-09-10 补登规则文本，机制早已在 audit-spec.js 实现）：给目标元素或所在行加 data-audit-exempt 属性即豁免该行色值判定，专供色板展示/示例区使用；与 swatch 类豁免同口径，禁止用于掩盖真实违规",
+      "fix": "改用 var(--token) 或 components.json 契约色；确需新色走 brand-color-engine 衍生并回 tokens.json",
+      "implemented_in": "audit-spec.js"
+    },
+    {
+      "id": "M-02",
+      "contract": "btn.state.matrix",
+      "title": "页面自造按钮类必须带交互态矩阵",
+      "severity": "MEDIUM",
+      "scope": "目标 HTML <style> 中新定义的按钮类（类名含 btn/button 且声明块含 background）",
+      "predicate": "只审类自身定义了 background 的按钮类（含伪类的选择器不参与背景归属）。组合语义：变体(.btn-xxx)某态由自身或基类提供即覆盖；基类(.btn) hover/active 由任一变体提供即覆盖；:focus-visible 无组合兜底，须显式定义。缺项 → MEDIUM（列明缺哪几个）",
+      "fix": "按 RULES §3.1 补齐四态：default 主色 / pressed 加深 / disabled 禁用对 / hover-focus 聚焦色，全部 token 化",
+      "implemented_in": "audit-spec.js"
+    },
+    {
+      "id": "M-03",
+      "contract": "status.dot.unknown",
+      "title": "状态点语义色必须用白名单语义",
+      "severity": "HIGH",
+      "scope": "HTML class 属性中 status-dot(Web)/m-dot(移动) 上下文的状态类",
+      "predicate": "Web: dot-* 子类 ∉ {run,idle,off,offline,err,ok,warn} → HIGH；移动: m-dot 兄弟类 ∉ {run,idle,off,offline,err,ok,warn} → HIGH。机器状态禁用 suc/warn 表达（RULES §11.11：运行≠成功）",
+      "fix": "改用语义白名单类；新状态语义先回 RULES §11.11 登记再使用",
+      "implemented_in": "audit-spec.js"
+    },
+    {
+      "id": "M-04",
+      "contract": "svg.paint.non-token",
+      "title": "SVG 绘制属性 stroke=/fill=/stop-color= 裸 hex 必须走 token",
+      "severity": "HIGH(自造)/MEDIUM(调色板内)",
+      "implemented_in": "validate-spec.js（任务书 S 2026-08-03 已落地）",
+      "note": "2026-09-09 核实：此前记忆中的『validate-spec 未扫 SVG paint』已过时，该门禁已存在"
+    },
+    {
+      "id": "M-05",
+      "contract": "token.undefined / css.override / grid.4px / text.layer / class.undefined / class.self-defined / wcag.contrast.banned / chart.*(baseline|viewbox-edge|symmetry|series.color) / template.clone.missing / template.root.sync",
+      "title": "生成门禁规则集（指针）",
+      "severity": "见 validate-spec.js 各规则定义",
+      "implemented_in": "validate-spec.js（双端各自实现）",
+      "note": "audit-spec.js 不重复实现；存量改造审计 = validate-spec.js（生成门禁）+ audit-spec.js（增量审计）两表合并出台账"
+    },
+    {
+      "id": "M-06",
+      "contract": "css.asset.hex",
+      "title": "页面 <link> 引用的本地 CSS 资产纳入裸 hex 扫描（2026-09-10 新增）",
+      "severity": "HIGH(自维护·自造色)/MEDIUM(自维护·色板内应改引用)/MEDIUM(冻结 dist 产物·硬编码清单)",
+      "scope": "目标 HTML <link rel=stylesheet> 引用的本地 .css 文件（http(s) 外链不扫；同文件多引用去重）",
+      "predicate": "引用 CSS 内出现裸 hex：白字豁免仅适用于 `color:`（文字白约定）；background/border 等面性声明的 #fff 同样违规（11242 案例二：冻结 CSS 里 `background:#fff` 白底横条 → 页面源码 0 裸 hex 属假阴性）。**色板定义行出口**：声明属性名以 `--` 开头（`--x: <hex>`）判 `css.vardef.hex` **MEDIUM 清单级**、不判 HIGH（合法自建色板路径：定义可见 + 引用仍须 `var()`）；其余声明：路径含 dist / dist-static / vendor / node_modules / build → 冻结产物，降级 MEDIUM『dist 硬编码清单』；其余（应用侧自维护合规层）按**色板内外分层**（与 M-01 同口径）：∈ token 色板 → MEDIUM（合法色须 `var()`）；∉ 色板 → HIGH（自造色，映射 token 或走 brand-color-engine）。**判级必须与文案一致**（v1.4.0 曾实现与文案矛盾，已修）。",
+      "fix": "自维护 CSS 改 var(--token)；冻结 dist 缺陷禁止手改 dist——在页面/合规层用同优先级覆盖规则修正，并在台账登记映射决策",
+      "implemented_in": "audit-spec.js（2026-09-10）"
+    },
+    {
+      "id": "M-07",
+      "contract": "motion.beat.budget",
+      "title": "节拍预算——一页最多一个 heavy 动效（2026-09-23 新增，finesse 借鉴 C-5）",
+      "severity": "HIGH(超出预算的每个多余动画一条)",
+      "scope": "目标 HTML 内 <style> 与 inline style 中的 animation / animation-name 声明；<link> 引用 CSS 不扫（template.css 规范动效属合法微交互，不计预算）",
+      "predicate": "页面内自声明的唯一 animation-name 去重计数 > 1 即超预算：animation 简写取第一个标识符；逗号多值逐个计数；none/inherit/initial/unset 不计；@keyframes 定义行不算引用；transition 不计（hover 微交互非 heavy 入场）。模板白名单：命中对应端 template.css 真源动画名的引用不计预算——分享版内联真源 CSS 时 M1–M5 属合法存在，预算只管页面自加动画；白名单双源（2026-09-23 监督 ISSUE-01）：animation 声明名 ∪ @keyframes 定义名，规范 shimmer/toast-in/toast-out 等只定义未引用的不漏收。",
+      "fix": "删多余自加动画（AI 生成页典型病：全元素 fade-in-up 入场）；保留至多一个 heavy 动效；规范动效只用 template.css 的 M1–M5 类",
+      "implemented_in": "audit-spec.js（2026-09-23）"
+    },
+    {
+      "id": "M-08",
+      "contract": "logo.asset.format / logo.asset.missing",
+      "title": "品牌 logo 一律 SVG 真源资产、锁高宽自适应（2026-11-12 新增）",
+      "severity": "HIGH",
+      "scope": "页面内 src 含 logo 的 <img>（.topbar-logo / .login-logo 等）；展示页/_框架版/USAGE 豁免；data: URI 跳过",
+      "predicate": "src 非 .svg → HIGH（位图无法锁比例、缩放失真）；src 指向 assets/logo/ 不存在的文件 → HIGH。尺寸由 template.css 锁定（顶栏高 32 反白 / Web 登录高 40 彩标 / 移动登录高 40 长标），页面禁自写宽高覆盖。真源 = assets/logo/（弘设汇/弘塑云/弘智造 logo.svg 彩标 + 同名 -white.svg 反白，按系统名选用）",
+      "fix": "改引 assets/logo/ 真源 SVG（带 viewBox）；尺寸交给容器类（.topbar-logo .ico 高 32 宽 auto），禁内联宽高、禁自造 logo 文件",
+      "implemented_in": "validate-spec.js（Web 端 2026-11-12；2026-11-18 logo 库收敛为三套长标 + 反白）"
+    },
+    {
+      "id": "M-09",
+      "contract": "contrast.invisible / contrast.near-invisible",
+      "title": "同色 / 近同色前景背景对必须可读（2026-11-12 新增，F9）",
+      "severity": "HIGH（对比度 ≤1.02 = 同色不可见）/ MEDIUM（<1.5 近同色）",
+      "scope": "目标 HTML `<style>` + 本地 `<link>` CSS 中「同一选择器块内同时声明 color 与 background(-color)」的规则；disabled 态豁免",
+      "predicate": "两值各自 resolve() 到实际颜色（含 token 级联；F7 后真源 token 也在定义集）→ 算 WCAG 对比度：≤1.02 → HIGH `contrast.invisible`；<1.5 → MEDIUM `contrast.near-invisible`。gradient / url() / transparent / currentColor / 半透明不判（交人审）；`:disabled`、`.is-disabled`、`.disabled`、`[disabled]` 豁免（WCAG 豁免禁用控件）",
+      "known_limit": "只判「同块双声明」——继承背景场景（如白色卡片内的 `color:var(--n5)` 正文）不在本规则内；该形态先由 `wcag.contrast.banned`（已知禁配表）覆盖，全量需运行时像素采样（R-07）",
+      "fix": "前景改 --text-1/--text-2 或 n9+，背景保持 --n1/--n2/--bg-*；确属装饰（隐形占位/色板展示）登记 exemptions",
+      "implemented_in": "validate-spec.js（双端 2026-11-12）"
+    },
+    {
+      "id": "M-10",
+      "contract": "css.js.injected",
+      "title": "脚本内样式注入中的裸 hex（2026-11-12 新增，F10）",
+      "severity": "MEDIUM（提示级，须运行时复核）",
+      "scope": "目标 HTML 的 `<script>` 内容（原实现先 stripScriptTags，JS 写色全部漏检）",
+      "predicate": "hex 前 120 字符内出现 `.style` / `cssText` / `setProperty` / `innerHTML` / `insertAdjacentHTML` / `createElement('style')` / `textContent=` → MEDIUM。不判死：脚本按主题设色可能合法",
+      "fix": "改 class/属性切换（`data-theme` + CSS 变量），不用 JS 写色值；无法避免时凭 R-08 截图复核",
+      "implemented_in": "audit-spec.js（2026-11-12）",
+      "regression": "夹具 JS 注入 → 2 MED；控制组（脚本无样式写入）0 项；模板 80 MED 不变"
+    },
+    {
+      "id": "M-11",
+      "contract": "page.title.missing",
+      "title": "B端内页页头必须用 h1.page-title，禁按钮冒充",
+      "severity": "HIGH",
+      "scope": "B端框架页（class=\"app\" + class=\"topbar\"），main 内容去标签后 ≥20 字符（空壳/占位豁免）",
+      "predicate": "先剥 HTML 注释；main（class 含 content，允许附加属性）内无 h1.page-title → HIGH。规范展示/USAGE 等文档页跳过；与 validate-spec.js page.title.missing 同口径双跑（audit 通过≠可交付，单页须双门禁各自 0 HIGH）",
+      "fix": "页头改为 <h1 class=\"page-title\">标题</h1>（18/500 纯文本），操作按钮挪入 .page-actions",
+      "implemented_in": "audit-spec.js + validate-spec.js（2026-11-17 同步）"
+    },
+    {
+      "id": "M-12",
+      "contract": "component.reuse",
+      "title": "已有组件能满足时禁止页面自造/变形同族组件",
+      "severity": "HIGH",
+      "scope": "目标 HTML 页面 <style> 内定义的类名（template.css 真源外）",
+      "predicate": "类名不在 template.css，命中组件命名空间前缀（kpi/stat/card/table/modal/btn/form/input/tabs/tag/badge/...），且不属于页面布局白名单（page-/workspace-/layout-/grid-/stack-/cluster-/demo-/showcase-/section-/col-/row-/flex-/gap-/mt-/mb-/pt-/pb-）→ HIGH `component.reuse`。已有组件优先：KPI 用 stat-card--icon，表格用 table/table-card，弹窗用 modal，机器状态用 machine-card，图表用 chart-*。",
+      "fix": "改用 template.css 已有类；确需新变体，先入 components.css + components.json（并跑 build:template），页面不得私有变形。禁页面级覆写组件（css.override 已单独 HIGH）。",
+      "implemented_in": "scripts/audit-component-reuse.js（2026-11-19）",
+      "verify": "node scripts/verify.js reuse <页面.html>"
+    }
+  ],
+  "runtime_checks": [
+    {
+      "id": "R-01",
+      "contract": "btn.states.render",
+      "title": "按钮四态实际渲染正确（hover/active/focus-visible/disabled）",
+      "method": "Playwright 对每个按钮态截图，视觉模型/人核对照 RULES §3.1 状态矩阵",
+      "covers": "静态审计判定不了『伪类是否真的生效』『对比度是否可感』"
+    },
+    {
+      "id": "R-02",
+      "contract": "chart.render.integrity",
+      "title": "图表渲染无重叠/裁切/拉伸（X 轴标签压柱体、preserveAspectRatio 拉伸变形）",
+      "method": "渲染后截图核对 RULES §9.7 三段式（绘图区/标签保护区/标签区）",
+      "covers": "viewBox 静态规则已管数字边界，渲染层复核视觉结果"
+    },
+    {
+      "id": "R-03",
+      "contract": "scroll.behavior",
+      "title": "滚动容器行为正确（禁 body 全局滚动、容器定高、筛选后滚动位置重置）",
+      "method": "Playwright 触发筛选/滚动，检查 scrollTop 行为"
+    },
+    {
+      "id": "R-04",
+      "contract": "kpi.icon.color",
+      "title": "KPI 图标底色/图标色用功能色 bg+default 对（图标不裸白不裸色）",
+      "method": "截图核对 stat-card--icon 色对与 tokens.json functional 定义一致"
+    },
+    {
+      "id": "R-05",
+      "contract": "scroll.midstate",
+      "title": "滚动中间态吸附正确：sticky 空带/穿透 + 吸附位偏移（2026-09-10 新增）",
+      "method": "每个滚动容器取 scrollTop=50% 截图对比：① sticky 吸附位上方/下方是否露出滚动内容空带（穿透）；② sticky 元素 rect 与滚动容器顶距离是否等于设定 top 偏移",
+      "covers": "默认态截图与静态规则均不可见——穿透只出现在滚动后；sticky 参照滚动容器随 overflow 布局变化而变化（11242 案例五/七：二十轮删盖板滚动穿透 + 内滚改造后 141px/21px 偏移×2，吸附加空带露行、右列被下推）"
+    },
+    {
+      "id": "R-06",
+      "contract": "data.present",
+      "title": "有数据态保证：条件渲染组件空态不可见缺陷不漏检（2026-09-10 新增）",
+      "method": "审计前驱动 mock 填充数据；或对 v-if/条件组件做存在性对照——源码声明了条件组件但审计 DOM 缺失 → 提示补状态再审",
+      "covers": "运行时审计状态集缺『有数据态』时，空态不渲染的组件缺陷全部假阴性（11242 案例三：分页条 v-if=\"adjTotal>0\" 空态不渲染，白底横条不可见）"
+    },
+    {
+      "id": "R-07",
+      "contract": "image.legibility",
+      "title": "图片可辨识度：暗底上图片乘黑不可见（2026-09-10 新增）",
+      "method": "对页面 <img> 的截图裁剪区域做像素采样（亮度均值 / 与容器底色对比度），低于阈值报违规；采样前先探 mix-blend-mode——混合模式改变有效观感，必须在合成后像素上分析（截图裁剪区域分析比 canvas 读原图可靠）",
+      "covers": "无任何『元素可辨识度』检查时，滤镜/混合模式类缺陷全穿透；且滤镜修复对混合模式无效（滤镜在混合前应用）（11242 案例四：辅机设备图 mix-blend-mode:multiply 在暗卡上乘黑不可见）"
+    },
+    {
+      "id": "R-08",
+      "contract": "shot.evidence",
+      "title": "表现层截图证据完整性（2026-11-12 新增，F12）",
+      "method": "`node scripts/audit-shots.js <项目> --shots output/audit-shots`：按 页面 × 主题（亮/暗）× 状态（默认/滚动50%）校验截图存在性；缺图即 exit 1（fail-closed）。截图内容判定仍由人/视觉模型做，脚本只管「该看的都看了」",
+      "covers": "P3 此前无产物、无门禁：审查矩阵只写在文档里，是否真看无法核对——「已人工审查」不可验证"
+    }
+  ],
+  "human_checks": [
+    {
+      "id": "H-01",
+      "contract": "info.hierarchy",
+      "title": "信息层级不跳级、每屏唯一视觉焦点",
+      "ref": "RULES §10.1-10.3"
+    },
+    {
+      "id": "H-02",
+      "contract": "component.choice",
+      "title": "组件选型合理（该用 Tag 的地方不是按钮、该用 kv-row 的地方不是 · 串）",
+      "ref": "RULES §1.2"
+    },
+    {
+      "id": "H-03",
+      "contract": "brand.color.area",
+      "title": "品牌蓝面积 ≤30%，语义色只点状态不铺底",
+      "ref": "RULES §10.5"
+    },
+    {
+      "id": "H-04",
+      "contract": "density.breathing",
+      "title": "间距节奏（16/20px）与留白呼吸感，无『贴一起』",
+      "ref": "RULES §10.4"
+    },
+    {
+      "id": "H-05",
+      "contract": "copy.tone",
+      "title": "文案语义与工控语境一致，状态文案与 dot 语义匹配",
+      "ref": "RULES §6"
+    },
+    {
+      "id": "H-06",
+      "contract": "review.matrix.stateful",
+      "title": "审查矩阵逐 tab × 逐皮 × 滚动态（默认态 + 滚动 50% 态），不接受只看默认态（2026-09-10 新增）",
+      "ref": "R-05 + GENERATION-SOP §② 布局改动专项回归清单"
+    },
+    {
+      "id": "H-07",
+      "contract": "ux.visual.semantics",
+      "title": "纯 UX 语义人审兜底：滚动条位置语义（应贴滚动内容容器边缘，贴窗口右缘=整页滚动误读）/ 空带·遮挡·穿透 / 设备图片可辨识度 / 数值+单位换行（2026-09-10 新增）",
+      "ref": "R-05/R-07 + 11242 案例六（机器不可判，人审清单兜底）"
+    }
+  ],
+  "migration_dimensions": [
+    {
+      "id": "D-1",
+      "title": "框架骨架",
+      "check": "Web B 端后台是否套弘讯固定框架（顶栏 72 / 侧栏 240 折叠 80 / 内容区 / 底栏 32 / 作业树带图标节点）；移动端是否手机壳 375×812 + 导航三槽位 + 底部导航 3-5 项 + 屏内滚动；页面是否残留自搭框架（自造 topbar/sidebar）",
+      "map_to": "克隆对应端 page-template.html 框架外壳（脚手架 new-page-web/mobile.js 自动注入克隆凭证），业务内容重建；非 B 端页面（营销/门户/大屏）合法豁免框架",
+      "ref": "Web RULES §0 + GENERATION-SOP §① 步骤 1.5/4；移动 RULES §1.1b",
+      "trap": "自搭顶栏/侧栏/底栏（AI 生成页最典型：不克隆模板自由发挥 B 端版式）",
+      "pairs": [
+        {
+          "bad": "<div class='my-topbar'> 自造顶栏 + 自造侧栏",
+          "good": "克隆对应端 page-template.html 框架外壳（脚手架自动注入克隆凭证），业务内容只落内容区"
+        }
+      ]
+    },
+    {
+      "id": "D-2",
+      "title": "色彩系统",
+      "check": "全项目色值盘点（M-01 同步清零裸 hex）：现有品牌色 / 中性阶 / 功能色 / 图表色是否对应弘讯 token 语义；暗色模式是否有 [data-theme] 完整定义",
+      "map_to": "tokens.json colors 短名变量（--primary 系 / --n1..n11 / --suc/--warn/--err/--run 系 / --chart-* / --brand-surface）；非 #005EAE 品牌色走 brand-color-engine 重推导（亮暗双模式）",
+      "ref": "tokens.json colors + DESIGN-TOKENS.md §2 + CROSS-PLATFORM-COLORS.md + GENERATION-SOP 附录 B 映射表",
+      "trap": "页面写死 hex 或自造近似色（如拿 #1677FF 当主色、#999 当中性色）",
+      "pairs": [
+        {
+          "bad": "color:#005EAE（裸 hex 引用行）",
+          "good": "color:var(--tm-primary)（token 引用）"
+        },
+        {
+          "bad": "background:#1677FF（近似主色自造）",
+          "good": "主色只认 tokens.json 的 primary，近似色一律视为自造色 HIGH"
+        }
+      ]
+    },
+    {
+      "id": "D-3",
+      "title": "字体与字阶",
+      "check": "现有字号/字重/行高盘点 → 是否落在弘讯字阶内（越界字号标记）；正文/数值/代码字体是否正确；是否有裸 font-size（text.layer 门禁同步清零）",
+      "map_to": "Web .t-* 12 级字阶 / 移动 .m-text-* 语义类（android+iOS 双套 9 级）；正文 var(--font-cn)（Source Han Sans CN）、数值 var(--font-mono)（JetBrains Mono，tabular-nums 仅纯数字），禁具体字体名",
+      "ref": "tokens.json typography + MASTER §2 字阶 + DESIGN-TOKENS typography",
+      "trap": "任意字号/行高（13px、15px、17px 混用），不走规范字阶",
+      "pairs": [
+        {
+          "bad": "font-size:15px; line-height:22px（字阶外任意值）",
+          "good": "按字阶类或字体 token 取规定档位（12/14/16/20/24…）"
+        }
+      ]
+    },
+    {
+      "id": "D-4",
+      "title": "组件映射",
+      "check": "现有 UI 元素逐个对照弘讯组件清单：按钮（变体/状态矩阵 M-02 同步清零）/ 标签 / 表格 / 表单（input/textarea/select）/ 弹窗 / 分页 / 进度 / 空态 / 徽章 / 筛选 chip / KPI 卡（图标卡/环形卡二选一）；自造组件类标记",
+      "map_to": "components.json 契约组件（尺寸/状态/色值 contract）+ template.css 同名类；无对应组件的自造元素按自造守则（值落现有 token）处理，成熟形态上报补库",
+      "ref": "components.json + components.md + Web RULES §3.7 DOM 契约 / 移动 RULES §9 组件体系",
+      "trap": "规范组件类已存在却手写 CSS 复刻（按钮/卡片/表格行/标签最常见）",
+      "pairs": [
+        {
+          "bad": "自定义 .my-btn 手写按钮样式",
+          "good": "复用 components.json 契约类（按钮/卡片/表格/chip 等），组件词汇与代码库同源"
+        }
+      ]
+    },
+    {
+      "id": "D-5",
+      "title": "间距与栅格",
+      "check": "所有 spacing 值是否落 4px 网格（grid.4px 门禁同步清零）；区块间距节奏（同类 8-16 / 关联 16-24 / 独立大区块 32-48；移动端 16/20/30 克制间距）；Web 24 列栅格 / .grid12 > .col-N 使用",
+      "map_to": "tokens.json spacing（--spacing-* / spacing.pagePaddingX / spacing.base）；移动端 .screen+.page-view gap 双容器体系",
+      "ref": "tokens.json spacing + Web RULES §6 布局黄金法则 + 移动 RULES §10.4 克制间距体系",
+      "trap": "间距任意值（3px、7px、13px、18px），不走 4/8 栅格",
+      "pairs": [
+        {
+          "bad": "padding:7px 13px（栅格外任意值）",
+          "good": "间距按 4/8 栅格档位（4/8/12/16/24/32）"
+        }
+      ]
+    },
+    {
+      "id": "D-6",
+      "title": "圆角/投影/密度",
+      "check": "圆角值是否落 --radius-* 档位；投影是否用 --shadow-* token（裸 box-shadow 标记）；密度切换（data-density）是否可用",
+      "map_to": "tokens.json radius/shadow/density 对应 token；禁止自造第四档圆角、裸阴影值",
+      "ref": "tokens.json radius/shadow/density sections",
+      "trap": "圆角任取（6px、10px、14px 层级混乱）+ 自造阴影层数",
+      "pairs": [
+        {
+          "bad": "border-radius:10px + box-shadow 自造三层",
+          "good": "圆角/投影走规范 token 档位（sm/md/lg），阴影按 elevation 双层复合"
+        }
+      ]
+    },
+    {
+      "id": "D-7",
+      "title": "动效",
+      "check": "transition/animation 时长是否裸数字秒（checkMotion 门禁同步清零，0s/0ms 合法）；缓动是否裸 cubic-bezier；入场/交互动效是否缺失（弘讯默认即带动效类）",
+      "map_to": "var(--motion-duration-*)（M1-M5 档位）+ var(--motion-ease-*)；图表挂 .chart-bar/.chart-line/.chart-ring-anim 等动效类",
+      "ref": "tokens.json motion + RULES §8 动效交互 / 移动 §10.6",
+      "trap": "装饰性动效泛滥（AI 生成页典型：全元素 fade-in-up 入场、悬浮发光、一页多个 heavy 动效）",
+      "pairs": [
+        {
+          "bad": "所有卡片加 fade-in-up + hover 缩放入场特效",
+          "good": "只用 M1–M5 规范动效；装饰性动效默认不加，一页最多一个 heavy 动效"
+        }
+      ]
+    },
+    {
+      "id": "D-8",
+      "title": "图标",
+      "check": "页面图标是否从 icons/ 库取（path 内联进 .ico/.tree-ico/.kpi-ico 尺寸类）；自绘/外源图标规格是否为 24×24 / stroke 1.8 / fill none / currentColor / round；库缺图标是否上报",
+      "map_to": "各端 icons/（Web 185 / 移动 184，icons/icons.md 索引）；库缺才手写且须符合统一规格并上报（RULES §7.9③）",
+      "ref": "icons/icons.md + Web RULES §7.9 + 图标规格契约",
+      "trap": "图标来源失控（iconfont/组件库图标/emoji/自绘 SVG）",
+      "pairs": [
+        {
+          "bad": "emoji 📊 当图标 或 <i class='el-icon-xxx'>",
+          "good": "从 icons/ 目录取规范线性图标（描边风格 1.8），缺则上报不 substitute"
+        }
+      ]
+    },
+    {
+      "id": "D-9",
+      "title": "图表",
+      "check": "图表是否挂容器原语 .chart-box（.chart-canvas）；SVG 是否裸 hex（M-04 同步清零）/ none 拉伸 / 拉伸区放文字；系列色是否通用语义色替代 --chart-*；x 轴标签是否压柱体/折线点是否落线；环形图是否变形",
+      "map_to": "CHART-SPEC 三段式结构（绘图区/标签保护区/标签区）+ .chart-* 色板（同页 ≤5 系列，多则合并灰 --n9）；x 标签用 renderChartXLabels() SSoT",
+      "ref": "CHART-SPEC.md + GENERATION-SOP 附录 A + Web RULES §9 / 移动 §9.7",
+      "trap": "图表用库默认配色/默认网格（ECharts 默认蓝绿橙红最常见）",
+      "pairs": [
+        {
+          "bad": "ECharts 默认 color 数组 + 默认灰色网格线",
+          "good": "series 色全部映射 --chart-* token，网格/坐标按 CHART-SPEC 约束"
+        }
+      ]
+    },
+    {
+      "id": "D-10",
+      "title": "状态与语义色",
+      "check": "状态点是否用语义白名单（M-03 同步清零）；是否存在「运行状态用成功色」混淆（运行≠成功）；语义色是否只点状态不铺底；Tag 用色是否超 5 色体系",
+      "map_to": "状态点白名单类（run/idle/off/offline/err/ok/warn）；Tag 5 色体系（浅底 --*-soft / filled 白字 --*-fg）",
+      "ref": "Web RULES §11.11 / 移动 RULES §11 + CROSS-PLATFORM-COLORS.md",
+      "trap": "语义色自造或跨端混用（Web 页用移动端成功绿 #10B981 最典型）",
+      "pairs": [
+        {
+          "bad": "Web 页 success 用 #10B981",
+          "good": "Web 功能色对齐 Ant Design：成功 #389E0D / 警告 #FA8C16 / 错误 #F5222D（token 引用）"
+        }
+      ]
+    },
+    {
+      "id": "D-11",
+      "title": "暗色模式",
+      "check": "页面是否有完整 [data-theme=dark] 块（亮暗双模式）；暗色骨架 --brand-surface 是否定义；顶栏暗色切换按钮是否可用；暗色下是否漏 token（切到暗色后出现白底/裸色块）",
+      "map_to": "暗色固定一套色、不随品牌（darkBrandMode:fixed，2026-11-06）：brand-surface #1E293B + 内容 #121826；亮色才走品牌推导",
+      "ref": "GENERATION-SOP 附录 B 步骤 2b + DARK-MODE.md + RULES §0.1",
+      "trap": "暗色模式写死亮色值、漏双模式 :root 映射",
+      "pairs": [
+        {
+          "bad": "[data-theme=dark] 下 background:#fff 写死亮色",
+          "good": "背景/文字走暗色 token 变量，双 :root 亮暗映射齐全"
+        }
+      ]
+    },
+    {
+      "id": "D-12",
+      "title": "审美方向（语义层兜底）",
+      "check": "品牌蓝面积 ≤30%；信息层级不跳级、每屏唯一视觉焦点（H-01）；留白呼吸感无贴一起（H-04）；冷白科技风基调不被花哨渐变/重阴影破坏；文案与工控语境一致（H-05）",
+      "map_to": "按 RULES §10 审美章节重构；此维度不可静态判定，agent 按 H 层逐条核对并落台账",
+      "ref": "Web RULES §10 / 移动 RULES §10 + VISUAL-SPEC.md + human_checks H-01~05",
+      "trap": "审美两极：过度装饰（渐变横幅/多彩标签/大投影堆「设计感」）或过度留白弱对比（白字浅灰底）",
+      "pairs": [
+        {
+          "bad": "卡片彩色渐变 + 多色阴影 + 彩虹标签突出精致",
+          "good": "克制扁平：白底 + N 系灰阶分层，品牌色只做强调，有活力但不花哨"
+        }
+      ]
+    },
+    {
+      "id": "D-13",
+      "title": "作业树折叠态浮层",
+      "check": "侧栏折叠态是否只显一级；一级是否 data-group/data-page 分型（data-page 有子级须浮层含 data-self 自身入口）；点分组是否弹 .tree-popover；branch-active 是否只作当前分支（非选中）",
+      "map_to": "RULES §0.2-10 + components.json#tree.popover + template.css .tree-popover/.branch-active",
+      "ref": "Web RULES §0.2-10 + components.md §3 + DARK-MODE §七",
+      "trap": "折叠态仍平铺二级 / 一级无分型 / branch-active 当 .on / 浮层被 .sidebar overflow 裁剪",
+      "pairs": [
+        {
+          "bad": "折叠后一二级图标平铺，点一级无反应",
+          "good": "折叠只显一级；点分组弹浮层；data-page 无子级直接选中，有子级弹浮层首项「进入本页」"
+        }
+      ]
+    }
+  ],
+  "exemptions": [
+    {
+      "file": "弘讯移动端design-system/template.css",
+      "scope": "L147 body 预览壳背景 #1b1f26（行内已加 data-audit-exempt 标记）",
+      "reason": "手机壳预览/导出专用舞台色，非页面语义（页面本身不依赖 body 底色）；该色不在 mobile tokens 色板，M-06 上线首次反抓即登记（2026-09-10）",
+      "registered": "2026-09-10",
+      "registered_by": "漏检回灌（11242 报告）维护会话 M-06 上线自检",
+      "count": 1,
+      "validUntil": "2026-12-31",
+      "note": "过期自动失效回违规；预览壳重做时重新登记"
+    },
+    {
+      "file": "packages/web-ui/dist-static/sample-default-light.html（含同目录 sample-* 系列与 mobile-ui 同名产物）",
+      "scope": "layout.inline.dimension（12 处：demo 定宽 320/360/160、height:200、margin-top:4）+ class.self-defined（7 个演示布局类 .idx/.note/.sec 等）+ aesthetic.web.sections",
+      "reason": "W1 预览包展示区：组件样例页的演示容器定宽与自造演示布局类是刻意的展示语义（每个组件样例独立成块），非交付页面，不适用页面级布局约束",
+      "registered": "2026-09-10",
+      "registered_by": "存量改造审计 P2 批次 3（用户拍板『执行』）",
+      "count": 14,
+      "validUntil": "2026-12-31",
+      "note": "过期自动失效回违规；若展示页结构重做须重新登记"
+    },
+    {
+      "file": "Designer/11242-designer-preview/content/pages/page_dashboard.html",
+      "scope": "css.hex.literal L11 一处：#0a0e17（`<style data-audit-exempt>html,body{background:#0a0e17}</style>` FOUC 防闪启动色）",
+      "reason": "bundle CSS 加载前的防白闪预置底色，FOUC 窗口内 var() 未定义必须用字面量；色值与 11242 平台 dist 暗色 token --bg-deep 精确同值（已核对 dist/project-dark.bundle.css），非自造色",
+      "registered": "2026-09-10",
+      "registered_by": "11242-preview 存量审计 P2 批次 1（用户拍板『豁免登记』）→ 应用侧克隆内先行登记，维护侧 2026-09-10 回灌确认为真源条目（代应用侧越权写入，已令其回滚本地改动后从 GitHub 拉取）",
+      "count": 1,
+      "validUntil": "2026-12-31",
+      "note": "过期自动失效回违规；若平台 --bg-deep 换值须同步刷新此处字面量并重新核对同源性"
+    }
+  ],
+  "issue_reporting": {
+    "title": "设计系统问题报告制度（单向报告流 · 2026-09-10 全量泛化 + v1.3.0 闭环补齐）",
+    "scope": "应用侧在从零生成（SOP §①）/ 存量改造（§②）/ 日常使用中发现的任何设计系统问题；审计漏检为其 machine 层特例（漏检报告_*.md 沿用同一模板与通道）",
+    "exclusion": "执行问题（规范已写、执行跑偏）不进报告——应用侧直接改页面；无法归因的记『待归因』攒批与维护者讨论",
+    "report_file": "应用项目 output/设计系统问题_*.md（漏检特例沿用 漏检报告_*.md；报告 ID 命名 DS-YYYYMMDD-NN）",
+    "template_file": "templates/设计系统问题报告模板.md（可复制骨架 + 填写示例）",
+    "report_schema": {
+      "header": [
+        "报告 ID DS-YYYYMMDD-NN",
+        "日期",
+        "来源项目（项目名 + 仓库路径）",
+        "端 web|mobile",
+        "严重级 P0|P1|P2",
+        "状态 待消费|已消费|已修复|已驳回(理由)|部分修复"
+      ],
+      "required": [
+        "现象 + 复现步骤（步骤化，他人可照做）",
+        "根因定位（真源文件:行 / 规则 id / token 名 / 脚本行，三者至少其一）+ 所测规则版本 + 复测结论",
+        "归因（设计系统问题 or 执行问题，二分法；外部项目迁移场景见 scope_note）",
+        "建议归层（machine 规则 | runtime | human | 规范 RULES/SPEC | token | 组件 | 图标 | 文档 | 门禁脚本）",
+        "建议方案（建议规则文本 / 建议 token 值 / 建议组件契约）",
+        "严重级 P0|P1|P2"
+      ],
+      "execution_critical": [
+        "最小复现片段（可粘贴的 HTML/CSS 片段；无则写『无，见现象步骤』）",
+        "环境（端 + 主题亮/暗 + 浏览器/视口）",
+        "证据原文（门禁报错原文 / 截图路径）",
+        "应用侧临时处置（合规层覆盖 / ci-audit skip / 临时类等；无则写『无』——维护侧据此判断紧急度并在修复后通知回滚）",
+        "建议回归样例（维护侧据此做夹具验证；无则写『无』）"
+      ]
+    },
+    "report_quality_bar": "报告合格线三判据（2026-09-10 拍板）：① **读懂** = 根因定位到真源文件:行 / 规则 id / token 名，且须复测并注明 audit-rules 版本（DS-20260910-01：凭推断误报已修问题 → 维护侧勘误浪费一轮）；② **能修** = 最小复现片段 + 建议规则文本（或 token 值 / 组件契约）；③ **能验** = 建议回归样例。缺任一降级『线索』，维护侧回问补齐，禁凭猜修复。维护侧回执后，同一问题再定性须按回执版本复测，实测优先并注明。",
+    "channel": "反馈通道（2026-09-10 用户拍板：无直连维护者通道，可接受）：① 产出报告落盘自己项目 output/；② **在对话内显式声明**（模板话术：『这是设计系统 P0 问题，报告已落盘 <绝对路径>，请转交维护者』）由用户转交；③ **不尝试**直连维护者（无权限，禁发明通道/禁自动提交真源仓库）",
+    "severity_policy": {
+      "P0": "真源错误 / 门禁漏洞 / 阻断生成 → 当次会话即时产出报告 + 对话内声明转交",
+      "P1": "规范歧义 / token / 组件 / 图标缺口 → 攒批（每 2 周或攒满 5 条）后在对话内一次性声明转交",
+      "P2": "文档措辞 / 改进建议 → 攒批可选，随下次转交一并提交"
+    },
+    "consumption_model": "**被动消费（2026-09-10 拍板：应用者反馈，不打扰）**——不建项目注册表、不做主动巡检/定期扫描；维护侧只在两时机消费：① 用户转交报告（或被 @）；② 维护会话开场检查是否携带报告。应用侧勿主动打扰维护者。**分发口径**：下游唯一真源 = GitHub `youyituomaoxian/TM-UI-Design`；维护侧不做跨项目巡检，更新推送后群内通知拉取。",
+    "maintainer_duty": "收到报告后：走维护者六步（登记 → 改真源 → 双端同步 → 门禁全绿 ci-local → 刷指纹 → CHANGELOG）回灌对应层，feedback_log 带 report_source（同题用 related_reports）；**回执三件套**：① 报告文件状态栏回写一行（维护者只写状态栏，正文属应用侧）；② feedback_log 条目；③ 双端 CHANGELOG。**仲裁**：可改归属但须写明理由，理由进回执。**临时处置回收**：修真源时若发现应用侧同类临时覆盖，回执列明『请回滚清单』。",
+    "feedback_log_contract": "每条条目：date / source / report_source（来源报告路径）/ related_reports（可选数组，跨项目同题去重，G8）/ findings / attribution；回执结论一并写入 findings 或 attribution。",
+    "scattered_clause_collation": "本制度统一收口各端散落的『上报维护者』条款：图标库缺（RULES §7.9③）/ 自造组件成熟形态补库（§7.9/§10.10）/ token 缺新值（§10.10）/ 门禁误报与真源 bug 上报（GENERATION-SOP 附录）——均按本制度记录与反馈，报告格式与通道不再各说各话"
+  },
+  "feedback_log": [
+    {
+      "date": "2026-11-12",
+      "source": "机器群览弘讯化重设计（用户项目）",
+      "report_source": "H:/global-workspace/设计系统/output/设计系统问题_20261112_04.md",
+      "findings": "分层页头紧凑间距拍板（面包屑→标题 8/标题行→tab 行 12，RULES §1.1b）未回灌真源：.breadcrumb margin-bottom=--space-base(16)、.page-head margin-bottom=16px，页面照规范覆写即触发 css.override HIGH，照规范与 0 HIGH 门禁互斥。",
+      "attribution": "设计系统问题（拍板未回灌真源）。修法=方案 b 真源紧凑变体：.breadcrumb--compact(--space-sm 8)+.page-head--compact(--space-md 12)，基础形态默认 16 不变；已按维护者六步回灌，ci-local 全绿。"
+    }
+  ]
+}

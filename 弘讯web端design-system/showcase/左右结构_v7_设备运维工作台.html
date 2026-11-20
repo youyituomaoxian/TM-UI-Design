@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<!--
+  弘讯设计系统 · 左右结构 v7（2026-11-19）：设备运维工作台 · 一屏复杂页面（主从表 + 工单流程 + 图表）/ 真实假数据 / 交互与动效
+  ─ 非真源：本页只演示新框架视觉与交互，样式全部内联，不改 template.css / tokens.json / RULES。
+  ─ v2 修订：白色顶栏（标题 + 图标工具）+ 白色页签带；logo 居中；KPI 改用 stat-card--icon / stat-card--ring；
+            表格 .table--fixed + .table--sticky 纵向撑满；版权信息入左栏底部；换肤换新调色板图标。
+  ─ 结构：左侧品牌色作业树（logo 区 56 / 树行 40 / 折叠 64 圆标）+ 右侧内容区（页头工具行 + 页签 + 内容）。
+  ─ 依赖：template.css（唯一样式真源） + assets/logo（真源 logo） + 本页预览样式（候选真源，待拍板后落库）。
+-->
+<html lang="zh-CN">
+<head>
+<meta name="x-template-clone" content="弘讯web端design-system/page-template.html">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>设备运维工作台 · 左右结构 v7</title>
+<script>
+/* 主题 / 语言先于首屏应用，避免刷新闪烁（沿用旧 hx-theme / hx-skin / hx-lang 键） */
+(function(){
+  try{
+    var t=localStorage.getItem('hx-theme'), s=localStorage.getItem('hx-skin'), l=localStorage.getItem('hx-lang');
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark');
+    if(s && s!=='default') document.documentElement.setAttribute('data-skin',s);
+    if(l==='en') document.documentElement.setAttribute('lang','en');
+  }catch(e){}
+})();
+</script>
+<link rel="stylesheet" href="../template.css">
+<!-- 工作台视觉已提升到 template.css（workbench.css），页面不再保留本地样式 -->
+</head>
+<body data-pane="monitor" data-species="workbench">
+<div class="shell">
+
+  <!-- ================= 左侧：品牌色作业树 ================= -->
+  <aside class="rail" id="rail" aria-label="系统导航">
+    <div class="rail-head">
+      <a class="rail-logo" href="#" aria-label="弘设汇管理平台">
+        <img class="logo-full" src="../assets/logo/弘设汇logo-white.svg" alt="弘设汇">
+        <span class="logo-round"><img src="../assets/左右结构/弘设汇-mark-white.svg" alt="弘设汇"></span>
+      </a>
+    </div>
+
+    <div class="tree" id="tree" role="tree">
+      <div class="tree-node" data-group data-key="monitor" role="treeitem" aria-expanded="true">
+        <span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 12 8 V 6"/><path d="M 21 15 C 21 10 17 6 12 6 C 7 6 3 10 3 15"/><path d="M 12 15 L 16 12"/></svg></span>
+        <span class="tree-text">智能监控中心</span>
+        <span class="tree-sw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 6 9 L 12 15 L 18 9"/></svg></span>
+      </div>
+      <div class="tree-group">
+        <div class="tree-node tree-node--child" data-leaf data-key="monitor-overview" role="treeitem">
+          <span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="4" height="8" rx="1"/><rect x="10" y="6" width="4" height="8" rx="1"/><rect x="17" y="6" width="4" height="8" rx="1"/><path d="M 3 18 H 21"/></svg></span>
+          <span class="tree-text">机器总览</span>
+        </div>
+        <div class="tree-node tree-node--child" data-leaf data-key="monitor-production" role="treeitem">
+          <span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 19 4 H 5 C 4 4 3 5 3 6 V 15 C 3 16 4 17 5 17 H 19 C 20 17 21 16 21 15 V 6 C 21 5 20 4 19 4 Z"/><path d="M 8 20 H 16"/><path d="M 12 12.5 C 13.5 12.5 14.5 11.5 14.5 10 C 14.5 9 13.5 8 12 8 C 11 8 10 9 10 10 C 10 11.5 11 12.5 12 12.5 Z"/></svg></span>
+          <span class="tree-text">生产监控</span>
+        </div>
+        <div class="tree-node tree-node--child" data-leaf data-key="monitor-alarm" role="treeitem">
+          <span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 12 3 C 13.5 3 14.5 3.5 15.5 4.5 C 16.5 5.5 17 6.5 17 8 C 17 11 17.5 13.5 18.5 15.5 C 19 16 19 16 19 16 H 5 C 5 16 5 16 5.5 15.5 C 6.5 13.5 7 11 7 8 C 7 6.5 7.5 5.5 8.5 4.5 C 9.5 3.5 10.5 3 12 3 Z"/><path d="M 15 20 C 14.5 20.5 13 21 12 21 C 11 21 9.5 20.5 9 20"/></svg></span>
+          <span class="tree-text">报警监控</span>
+        </div>
+      </div>
+
+      <div class="tree-node" data-group data-key="machine" role="treeitem" aria-expanded="true">
+        <span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 12 6 H 4 C 3.5 6 3 6.5 3 7 V 17 C 3 17.5 3.5 18 4 18 H 12 C 12.5 18 13 17.5 13 17 V 7 C 13 6.5 12.5 6 12 6 Z"/><path d="M 19 10 H 13 V 14 H 19 V 10 Z"/><path d="M 7 13.5 C 8 13.5 8.5 13 8.5 12 C 8.5 11 8 10.5 7 10.5 C 6 10.5 5.5 11 5.5 12 C 5.5 13 6 13.5 7 13.5 Z"/><path d="M 19 12 H 21"/></svg></span>
+        <span class="tree-text">机器管理</span>
+        <span class="tree-sw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 6 9 L 12 15 L 18 9"/></svg></span>
+      </div>
+      <div class="tree-group">
+        <div class="tree-node tree-node--child on" id="opsNav" data-leaf data-key="machine-monitor" role="treeitem" aria-current="page">
+          <span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 4 5 V 15 C 4 15.5 4.5 16 5 16 H 19 C 19.5 16 20 15.5 20 15 V 5 C 20 4.5 19.5 4 19 4 H 5 C 4.5 4 4 4.5 4 5 Z"/><path d="M 17 8 C 17.5 8 18 7.5 18 7 C 18 6.5 17.5 6 17 6 C 16.5 6 16 6.5 16 7 C 16 7.5 16.5 8 17 8 Z"/><path d="M 6.5 13.5 L 8 11 C 8.5 10.5 9.5 10.5 10 11 L 10 11.5 C 10.5 12 11.5 12 12 11.5 L 13 10 C 13.5 9.5 14.5 9.5 15 10 L 17.5 13.5"/><path d="M 8 20 H 16"/></svg></span>
+          <span class="tree-text">机器监控</span>
+        </div>
+        <div class="tree-node tree-node--child" data-leaf data-key="machine-detail" role="treeitem">
+          <span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 13.5 4 C 14 4 14 4 14 4 C 14.5 6 16 7 18 6.5 C 18 6.5 18 6.5 18 6.5 C 19 8 19 8 20 9.5 C 20 9.5 20 9.5 20 9.5 C 18.5 11 18.5 13 20 14.5 C 20 14.5 20 14.5 20 14.5 L 18 17.5 C 18 17.5 18 17.5 18 17.5 C 16 17 14.5 18 14 20 C 14 20 14 20 13.5 20 H 10.5 C 10 20 10 20 10 20 C 9.5 18 8 17 6 17.5 C 6 17.5 6 17.5 6 17.5 L 4 14.5 C 4 14.5 4 14.5 4 14.5 C 5.5 13 5.5 11 4 9.5 C 4 9.5 4 9.5 4 9.5 C 5 8 5 8 6 6.5 C 6 6.5 6 6.5 6 6.5 C 8 7 9.5 6 10 4 C 10 4 10 4 10.5 4 H 13.5 Z" stroke-miterlimit="10"/><path d="M 10 12 H 14"/></svg></span>
+          <span class="tree-text">机器详情</span>
+        </div>
+        <div class="tree-node tree-node--child" data-leaf data-key="machine-archive" role="treeitem">
+          <span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 20 4 H 4 C 3.5 4 3 4.5 3 5 V 8 C 3 8.5 3.5 9 4 9 H 20 C 20.5 9 21 8.5 21 8 V 5 C 21 4.5 20.5 4 20 4 Z"/><path d="M 5 9 V 18 C 5 19 6 20 7 20 H 17 C 18 20 19 19 19 18 V 9"/><path d="M 10 13 H 14"/></svg></span>
+          <span class="tree-text">机器档案</span>
+        </div>
+      </div>
+
+      <div class="tree-node" data-group data-key="process" role="treeitem" aria-expanded="true">
+        <span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 18.5 20 C 20 20 21 19 21 17.5 C 21 16 20 15 18.5 15 C 17 15 16 16 16 17.5 C 16 19 17 20 18.5 20 Z"/><path d="M 5.5 20 C 7 20 8 19 8 17.5 C 8 16 7 15 5.5 15 C 4 15 3 16 3 17.5 C 3 19 4 20 5.5 20 Z"/><path d="M 12 10 C 13.5 10 15 8.5 15 7 C 15 5.5 13.5 4 12 4 C 10.5 4 9 5.5 9 7 C 9 8.5 10.5 10 12 10 Z"/><path d="M 10 10 L 7 15 M 14 10 L 17 15 M 15.5 17.5 H 8.5"/></svg></span>
+        <span class="tree-text">工艺管理</span>
+        <span class="tree-sw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 6 9 L 12 15 L 18 9"/></svg></span>
+      </div>
+      <div class="tree-group">
+        <div class="tree-node tree-node--child" data-leaf data-key="process-overview" role="treeitem">
+          <span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 19 4 H 5 C 4 4 3 5 3 6 V 15 C 3 16 4 17 5 17 H 19 C 20 17 21 16 21 15 V 6 C 21 5 20 4 19 4 Z"/><path d="M 8 20 H 16"/><path d="M 12 12.5 C 13.5 12.5 14.5 11.5 14.5 10 C 14.5 9 13.5 8 12 8 C 11 8 10 9 10 10 C 10 11.5 11 12.5 12 12.5 Z"/></svg></span>
+          <span class="tree-text">工艺总览</span>
+        </div>
+        <div class="tree-node tree-node--child" data-leaf data-key="process-param" role="treeitem">
+          <span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 19 5 H 5 C 4.5 5 4 5.5 4 6 V 18 C 4 18.5 4.5 19 5 19 H 19 C 19.5 19 20 18.5 20 18 V 6 C 20 5.5 19.5 5 19 5 Z"/><path d="M 7 15.5 L 9 14.5 C 9.5 14 9.5 14 10 14.5 L 11.5 15.5 C 11.5 16 12.5 16 12.5 15.5 L 14 14.5 C 14 14 15 14 15 14.5 L 17 16"/><path d="M 7 11 H 17 M 7 8 H 17"/></svg></span>
+          <span class="tree-text">调参记录</span>
+        </div>
+        <div class="tree-node tree-node--child" data-leaf data-key="process-product" role="treeitem">
+          <span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 3 7 L 12 3 L 21 7 V 17 L 12 21 L 3 17 V 7 Z"/><path d="M 21 7 L 12 12 L 3 7"/><path d="M 12 12 V 21"/></svg></span>
+          <span class="tree-text">产品档案</span>
+        </div>
+      </div>
+
+      <div class="tree-node" data-group data-key="workshop" role="treeitem" aria-expanded="true">
+        <span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 19 4.5 H 5 C 4 4.5 3 5.5 3 6.5 V 14.5 C 3 15.5 4 16.5 5 16.5 H 19 C 20 16.5 21 15.5 21 14.5 V 6.5 C 21 5.5 20 4.5 19 4.5 Z"/><path d="M 6 13 H 18"/><path d="M 16 13 V 7"/><path d="M 12 13 V 10"/><path d="M 8 13 V 10"/><path d="M 8 20 H 16"/></svg></span>
+        <span class="tree-text">厂区管理</span>
+        <span class="tree-sw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 6 9 L 12 15 L 18 9"/></svg></span>
+      </div>
+      <div class="tree-group">
+        <div class="tree-node tree-node--child" data-leaf data-key="workshop-model" role="treeitem">
+          <span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 8 6 H 4 C 3.5 6 3 6.5 3 7 V 17 C 3 17.5 3.5 18 4 18 H 8 C 8.5 18 9 17.5 9 17 V 7 C 9 6.5 8.5 6 8 6 Z"/><path d="M 20 6 H 16 C 15.5 6 15 6.5 15 7 V 17 C 15 17.5 15.5 18 16 18 H 20 C 20.5 18 21 17.5 21 17 V 7 C 21 6.5 20.5 6 20 6 Z"/><path d="M 11 9 L 12.5 11.5 C 13 12 13 12 12.5 12.5 L 11 15.5"/></svg></span>
+          <span class="tree-text">厂区建模</span>
+        </div>
+      </div>
+      <div class="tree-sep"></div>
+      <div class="tree-node tree-node--spec" id="specNav" role="treeitem" tabindex="0">
+        <span class="tree-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 3 13 L 5.5 12 C 6 12 6 12 6.5 12 L 13.5 6.5 C 14 6 14 6 14.5 6 L 19 5"/><path d="M 3 20 H 21"/><path d="M 18 20 V 9"/><path d="M 14 20 V 9"/><path d="M 10 20 V 12"/><path d="M 6 20 V 15"/></svg></span>
+        <span class="tree-text">信息化示例</span>
+        <span class="tree-tag">规范</span>
+      </div>
+    </div>
+
+    <div class="rail-foot">
+      <div class="rail-meta" title="© 2013-2026 弘讯科技">
+        <div>© 2013-2026 弘讯科技</div>
+        <div>v2.8.47.2</div>
+      </div>
+      <div class="rail-toggle-row">
+        <button class="rail-toggle" id="railToggle" type="button" title="收起侧栏" aria-label="收起侧栏" aria-expanded="true" aria-controls="rail">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 9 6 L 15 12 L 9 18"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= 右侧：内容区 ================= -->
+  <div class="workspace">
+  <div class="ws-global">
+    <div class="ws-pagebar">
+      <h1 class="page-title" id="barTitle">设备运维工作台</h1>
+      <span class="live-badge"><i></i>LIVE</span>
+      <span class="bar-sep"></span>
+      <button class="bar-refresh" id="pageRefresh" type="button" data-i18n-title="page.refresh" title="刷新（自动 30 秒）" aria-label="刷新数据">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+        <span>刷新</span><span class="bar-refresh-sec" id="refreshSec">30s</span>
+      </button>
+    </div>
+    <div class="ws-tools">        <a class="tool-ico" href="#" title="首页" data-i18n-title="tool.home" aria-label="首页">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 1.5 10.8 L 12 2.2 L 22.5 10.8"/><path d="M 3.5 9.8 V 19.6 A 1.4 1.4 0 0 0 4.9 21 H 19.1 A 1.4 1.4 0 0 0 20.5 19.6 V 9.8"/><path d="M 9.2 21 V 15.4 A 1 1 0 0 1 10.2 14.4 H 13.8 A 1 1 0 0 1 14.8 15.4 V 21"/></svg>
+        </a>
+        <span class="ws-sep"></span>
+        <!-- 全屏：默认不绑定交互，业务按需实现（保留 #fsBtn 挂载点） -->
+        <button class="tool-ico" id="fsBtn" type="button" title="全屏" data-i18n-title="tool.fullscreen" aria-label="全屏">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 8 3 H 5 C 4 3 3 4 3 5 V 8"/><path d="M 16 3 H 19 C 20 3 21 4 21 5 V 8"/><path d="M 21 16 V 19 C 21 20 20 21 19 21 H 16"/><path d="M 3 16 V 19 C 3 20 4 21 5 21 H 8"/></svg>
+        </button>
+        <div class="pop" id="themePop">
+          <button class="tool-ico" type="button" aria-haspopup="menu" aria-expanded="false" title="主题切换" data-i18n-title="tool.theme" aria-label="主题切换">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 12 3.5 C 7.3 3.5 3.5 7.3 3.5 12 C 3.5 16.7 7.3 20.5 12 20.5 C 13.4 20.5 14.3 19.6 14.3 18.4 C 14.3 17.5 13.7 17 13.7 16.1 C 13.7 14.9 14.7 13.9 16 13.9 H 18 C 20.1 13.9 21.7 12.3 21.7 10.2 C 21.7 6.5 17.2 3.5 12 3.5 Z"/><circle cx="8" cy="9.2" r="1.1"/><circle cx="12" cy="7.2" r="1.1"/><circle cx="16" cy="9.2" r="1.1"/><circle cx="7.4" cy="13.4" r="1.1"/></svg>
+          </button>
+          <div class="pop-panel theme-panel" role="menu">
+            <div class="pop-item theme-opt on" role="menuitem" data-skin="default">
+              <span class="theme-dot" style="background:#005EAE"></span><span data-i18n="theme.default">默认蓝</span>
+              <span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></span>
+            </div>
+            <div class="pop-item theme-opt" role="menuitem" data-skin="cyan">
+              <span class="theme-dot" style="background:#0E7490"></span><span data-i18n="theme.cyan">科技青</span>
+              <span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></span>
+            </div>
+            <div class="pop-item theme-opt" role="menuitem" data-skin="green">
+              <span class="theme-dot" style="background:#0F766E"></span><span data-i18n="theme.green">工业绿</span>
+              <span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></span>
+            </div>
+            <div class="pop-item theme-opt" role="menuitem" data-skin="amber">
+              <span class="theme-dot" style="background:#B45309"></span><span data-i18n="theme.amber">琥珀橙</span>
+              <span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></span>
+            </div>
+            <div class="pop-item theme-opt" role="menuitem" data-skin="violet">
+              <span class="theme-dot" style="background:#7C3AED"></span><span data-i18n="theme.violet">深空紫</span>
+              <span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></span>
+            </div>
+            <div class="pop-sep"></div>
+            <div class="pop-item theme-opt" role="menuitem" data-theme="dark">
+              <span class="theme-dot" style="background:#1E293B"></span><span data-i18n="theme.dark">暗色</span>
+              <span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></span>
+            </div>
+          </div>
+        </div>
+                
+        <div class="pop" id="appPop">
+          <button class="tool-ico" type="button" aria-haspopup="dialog" aria-expanded="false" title="APP 下载" data-i18n-title="tool.app" aria-label="APP 下载">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="3" width="13" height="18" rx="2.5"/><path d="M 12 8 V 14.5"/><path d="M 9.5 12 L 12 14.5 L 14.5 12"/></svg>
+          </button>
+          <div class="pop-panel app-panel" role="dialog" aria-label="APP 下载">
+            <div class="app-title">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="3" width="13" height="18" rx="2.5"/><path d="M 12 8 V 14.5"/><path d="M 9.5 12 L 12 14.5 L 14.5 12"/></svg>
+              <span data-i18n="app.title">APP 下载</span>
+            </div>
+            <div class="app-sub" data-i18n="app.sub">扫码安装弘设汇移动端</div>
+            <div class="qr-row">
+              <div class="qr-card">
+                <img src="../assets/左右结构/qr-android.svg" alt="安卓版下载二维码">
+                <div class="qr-name" data-i18n="app.android">安卓版</div>
+                <div class="qr-desc">Android 5.0 及以上</div>
+              </div>
+              <div class="qr-card">
+                <img src="../assets/左右结构/qr-ios.svg" alt="iOS 版下载二维码">
+                <div class="qr-name" data-i18n="app.ios">iOS 版</div>
+                <div class="qr-desc">iOS 12.0 及以上</div>
+              </div>
+            </div>
+            <div class="app-note" data-i18n="app.note">也可在应用商店搜索「弘设汇」下载</div>
+          </div>
+        </div>
+        <span class="ws-sep"></span>
+        <div class="pop" id="langPop">
+          <button class="tool-ico" type="button" aria-haspopup="menu" aria-expanded="false" title="语言：简体中文" aria-label="语言切换">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M 3.5 12 H 20.5"/><ellipse cx="12" cy="12" rx="4" ry="8.5"/></svg>
+          </button>
+          <div class="pop-panel" role="menu">
+            <div class="lang-opt on" data-lang="zh" role="menuitem">简体中文</div>
+            <div class="lang-opt" data-lang="en" role="menuitem">English</div>
+            <div class="lang-opt is-disabled" role="menuitem">日本語</div>
+            <div class="lang-opt is-disabled" role="menuitem">한국어</div>
+            <div class="lang-opt is-disabled" role="menuitem">Deutsch</div>
+            <div class="lang-opt is-disabled" role="menuitem">Français</div>
+          </div>
+        </div>
+        <span class="ws-sep"></span>
+        <div class="pop" id="userPop">
+          <button class="user-chip" type="button" aria-haspopup="menu" aria-expanded="false" title="账号">
+            <span class="avatar avatar--default" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.5"/><path d="M 5 20 C 5 16.4 8.1 13.5 12 13.5 C 15.9 13.5 19 16.4 19 20"/></svg></span>
+            <span class="uname">弘设汇运维2</span>
+            <span class="caret"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 6 9 L 12 15 L 18 9"/></svg></span>
+          </button>
+          <div class="pop-panel" role="menu">
+            <div class="pop-item" role="menuitem" tabindex="0">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 17.5 10 H 6.5 C 5.5 10 5 10.5 5 11.5 V 18.5 C 5 19.5 5.5 20 6.5 20 H 17.5 C 18.5 20 19 19.5 19 18.5 V 11.5 C 19 10.5 18.5 10 17.5 10 Z"/><path d="M 12 14 V 17"/><path d="M 16 10 V 6 C 16 5 15 4 14 4 H 10 C 9 4 8 5 8 6 V 10"/></svg>
+              <span data-i18n="tool.changepwd">修改密码</span>
+            </div>
+            <div class="pop-sep"></div>
+            <div class="pop-item danger" role="menuitem" tabindex="0">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 15 3 H 19 C 20 3 21 4 21 5 V 19 C 21 20 20 21 19 21 H 15"/><path d="M 15 12 H 3"/><path d="M 8 7 L 3 12 L 8 17"/></svg>
+              <span data-i18n="tool.logout">退出登录</span>
+            </div>
+          </div>
+        </div>
+</div>
+  </div>
+  <main class="ws-body" id="opsView">
+
+  <div class="tab-row">
+    <div class="tabs" role="tablist" aria-label="工作区">
+      <div class="tab active" role="tab" data-pane="monitor" aria-selected="true">设备监控</div>
+      <div class="tab" role="tab" data-pane="status" aria-selected="false">运行状态</div>
+      <div class="tab" role="tab" data-pane="work" aria-selected="false">工单处理</div>
+    </div>
+    <div class="page-actions" aria-label="页面操作">
+      <span class="sel-count" id="selCount" hidden>已选 0 项</span>
+      <button class="btn btn-secondary" id="batchBtn" type="button" disabled title="请先勾选机器">批量操作</button>
+      <button class="btn btn-secondary" type="button">导出</button>
+      <button class="btn btn-primary" type="button" id="addBtn">
+        <svg class="btn-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 12 5 V 19"/><path d="M 5 12 H 19"/></svg>
+        <span class="btn-label">新增机器</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="seg-row">
+    <div class="seg" id="viewSeg" role="tablist" aria-label="视图切换">
+      <div class="item active" data-view="list">列表视图</div>
+      <div class="item" data-view="cards">卡片视图</div>
+    </div>
+    <span class="t-caption">数据更新于 <span id="updateTime">10:24</span> · 共 128 台设备</span>
+  </div>
+
+  <!-- ================= 设备监控 ================= -->
+  <section class="page-sec" id="sec-monitor">
+    <section class="stat-grid stat-grid--5" aria-label="概览指标">
+      <div class="card"><div class="card-body stat-card--icon">
+        <span class="kpi-ico kpi-ico--lg kpi-ico--primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="4" height="8" rx="1"/><rect x="10" y="6" width="4" height="8" rx="1"/><rect x="17" y="6" width="4" height="8" rx="1"/><path d="M 3 18 H 21"/></svg></span>
+        <div class="stat-body"><div class="stat-num">128</div><div class="stat-foot"><div class="stat-sub">设备总数</div><span class="stat-delta stat-delta--up">+4 台</span></div></div>
+      </div></div>
+      <div class="card"><div class="card-body stat-card--icon">
+        <span class="kpi-ico kpi-ico--lg kpi-ico--run"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 19 19 V 6 L 15 4 L 11 6 V 10 L 7 8 L 3 10 V 21 H 21"/><path d="M 11 21 V 15 H 15 V 21"/></svg></span>
+        <div class="stat-body"><div class="stat-num">72</div><div class="stat-foot"><div class="stat-sub">在产设备</div><span class="stat-delta stat-delta--up">+4.2%</span></div></div>
+      </div></div>
+      <div class="card"><div class="card-body stat-card--icon">
+        <span class="kpi-ico kpi-ico--lg kpi-ico--warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 12 3 C 13.5 3 14.5 3.5 15.5 4.5 C 16.5 5.5 17 6.5 17 8 C 17 11 17.5 13.5 18.5 15.5 C 19 16 19 16 19 16 H 5 C 5 16 5 16 5.5 15.5 C 6.5 13.5 7 11 7 8 C 7 6.5 7.5 5.5 8.5 4.5 C 9.5 3.5 10.5 3 12 3 Z"/><path d="M 15 20 C 14.5 20.5 13 21 12 21 C 11 21 9.5 20.5 9 20"/></svg></span>
+        <div class="stat-body"><div class="stat-num">3</div><div class="stat-foot"><div class="stat-sub">待处理告警</div><span class="stat-delta stat-delta--down">+1 条</span></div></div>
+      </div></div>
+      <div class="card"><div class="card-body stat-card--icon">
+        <span class="kpi-ico kpi-ico--lg kpi-ico--err"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 12.5 3 L 19.5 6 L 20 6 V 12 C 20 16 17 19 12.5 21 L 12 21 L 11.5 21 C 7 19 4 16 4 12 V 6 L 4.5 6 L 12 3 L 12.5 3 Z"/><path d="M 14 7 L 9.5 10.5 L 14 13 L 10.5 16.5"/></svg></span>
+        <div class="stat-body"><div class="stat-num">0</div><div class="stat-foot"><div class="stat-sub">不良品数</div><span class="stat-delta">0%</span></div></div>
+      </div></div>
+      <div class="card"><div class="card-body stat-card--ring">
+        <div class="ring"><svg viewBox="0 0 64 64"><circle class="ring-bg" cx="32" cy="32" r="26"/><circle class="ring-fg ring-fg--primary" cx="32" cy="32" r="26" stroke-dasharray="163.4" stroke-dashoffset="11.6"/></svg><span class="ring-val">93%</span></div>
+        <div class="ring-info"><span class="stat-label">综合 OEE</span><div class="stat-num">92.9<small>%</small></div><span class="ring-trend">目标 85%</span></div>
+      </div></div>
+    </section>
+
+    <div class="monitor-split">
+      <section class="card table-card" id="view-list">
+        <div class="card-head">
+          <h3 class="card-title">设备台账</h3>
+          <div class="table-tools">
+            <input class="input" type="search" id="tableSearch" placeholder="搜索机器名称…" aria-label="搜索机器名称">
+            <span class="filter-chip on" role="button" tabindex="0" data-filter="all">全部</span>
+            <span class="filter-chip" role="button" tabindex="0" data-filter="run">生产</span>
+            <span class="filter-chip" role="button" tabindex="0" data-filter="idle">空闲</span>
+            <span class="filter-chip" role="button" tabindex="0" data-filter="off">关机</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-scroll">
+            <table class="table table--fixed table--sticky" aria-label="设备台账">
+              <colgroup>
+                <col style="width:5%"><col style="width:9%"><col style="width:15%"><col style="width:10%">
+                <col style="width:18%"><col style="width:16%"><col style="width:10%"><col style="width:9%"><col style="width:8%">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th class="ck"><button class="cbx" id="cbxAll" type="button" role="checkbox" aria-checked="false" aria-label="全选"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></button></th>
+                  <th>场地</th><th>机器名称</th><th>生产状态</th><th>工艺编号</th><th>生产进度</th>
+                  <th class="num">良品数</th><th class="num">不良品数</th><th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+              <tr data-name="20号机" data-code="#20" data-site="1#厂区" data-status="idle" data-product="—" data-process="XA26-0313-26" data-good="1,455,188" data-bad="10" data-pph="2,129" data-owner="李工">
+                <td class="ck"><button class="cbx" type="button" role="checkbox" aria-checked="false" aria-label="选择当前行"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></button></td>
+                <td>1#厂区</td>
+                <td><div class="m-name">20号机</div><div class="m-code">#20</div></td>
+                <td><span class="status-dot"><i class="dot-idle"></i>空闲</span></td>
+                <td>XA26-0313-26</td>
+                <td><div class="pbar"><span class="track"><span class="fill" style="width:2%"></span></span><span class="val">2.18%</span></div></td>
+                <td class="num">1,455,188</td>
+                <td class="num">10</td>
+                <td><span class="link">详情</span></td>
+              </tr>
+              <tr data-name="25号机" data-code="#25" data-site="1#厂区" data-status="run" data-product="乐高积木" data-process="IMCS_XA25-013-zyz" data-good="132,150" data-bad="106" data-pph="203" data-owner="王工">
+                <td class="ck"><button class="cbx" type="button" role="checkbox" aria-checked="false" aria-label="选择当前行"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></button></td>
+                <td>1#厂区</td>
+                <td><div class="m-name">25号机</div><div class="m-code">#25</div></td>
+                <td><span class="status-dot"><i class="dot-run"></i>生产</span></td>
+                <td>IMCS_XA25-013-zyz</td>
+                <td><div class="pbar"><span class="track"><span class="fill" style="width:2%"></span></span><span class="val">1.98%</span></div></td>
+                <td class="num">132,150</td>
+                <td class="num">106</td>
+                <td><span class="link">详情</span></td>
+              </tr>
+              <tr data-name="#LG-10" data-code="#LG-10" data-site="1#厂区" data-status="run" data-product="—" data-process="IMCS20260124_2" data-good="5,110,696" data-bad="0" data-pph="50,914" data-owner="张工">
+                <td class="ck"><button class="cbx" type="button" role="checkbox" aria-checked="false" aria-label="选择当前行"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></button></td>
+                <td>1#厂区</td>
+                <td><div class="m-name">#LG-10</div><div class="m-code">#LG-10</div></td>
+                <td><span class="status-dot"><i class="dot-run"></i>生产</span></td>
+                <td>IMCS20260124_2</td>
+                <td><div class="pbar"><span class="track"><span class="fill" style="width:5.1%"></span></span><span class="val">5.11%</span></div></td>
+                <td class="num">5,110,696</td>
+                <td class="num">0</td>
+                <td><span class="link">详情</span></td>
+              </tr>
+              <tr data-name="#LG-11" data-code="#LG-11" data-site="1#厂区" data-status="run" data-product="—" data-process="IMCS20260124_2" data-good="5,110,696" data-bad="0" data-pph="50,914" data-owner="张工">
+                <td class="ck"><button class="cbx" type="button" role="checkbox" aria-checked="false" aria-label="选择当前行"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></button></td>
+                <td>1#厂区</td>
+                <td><div class="m-name">#LG-11</div><div class="m-code">#LG-11</div></td>
+                <td><span class="status-dot"><i class="dot-run"></i>生产</span></td>
+                <td>IMCS20260124_2</td>
+                <td><div class="pbar"><span class="track"><span class="fill" style="width:5.1%"></span></span><span class="val">5.11%</span></div></td>
+                <td class="num">5,110,696</td>
+                <td class="num">0</td>
+                <td><span class="link">详情</span></td>
+              </tr>
+              <tr data-name="22号机" data-code="#22" data-site="1#厂区" data-status="idle" data-product="—" data-process="IM_00022-A01" data-good="153,770" data-bad="0" data-pph="258" data-owner="赵工">
+                <td class="ck"><button class="cbx" type="button" role="checkbox" aria-checked="false" aria-label="选择当前行"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></button></td>
+                <td>1#厂区</td>
+                <td><div class="m-name">22号机</div><div class="m-code">#22</div></td>
+                <td><span class="status-dot"><i class="dot-idle"></i>空闲</span></td>
+                <td>IM_00022-A01</td>
+                <td><div class="pbar"><span class="track"><span class="fill" style="width:3.2%"></span></span><span class="val">3.20%</span></div></td>
+                <td class="num">153,770</td>
+                <td class="num">0</td>
+                <td><span class="link">详情</span></td>
+              </tr>
+              <tr data-name="#LG-01" data-code="#LG-01" data-site="1#厂区" data-status="off" data-product="—" data-process="—" data-good="0" data-bad="0" data-pph="—" data-owner="—">
+                <td class="ck"><button class="cbx" type="button" role="checkbox" aria-checked="false" aria-label="选择当前行"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></button></td>
+                <td>1#厂区</td>
+                <td><div class="m-name">#LG-01</div><div class="m-code">#LG-01</div></td>
+                <td><span class="status-dot"><i class="dot-off"></i>关机</span></td>
+                <td>—</td>
+                <td><div class="pbar"><span class="track"><span class="fill" style="width:0%"></span></span><span class="val">0.00%</span></div></td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td><span class="link">详情</span></td>
+              </tr>
+              <tr data-name="#LG-02" data-code="#LG-02" data-site="1#厂区" data-status="off" data-product="—" data-process="—" data-good="0" data-bad="0" data-pph="—" data-owner="—">
+                <td class="ck"><button class="cbx" type="button" role="checkbox" aria-checked="false" aria-label="选择当前行"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></button></td>
+                <td>1#厂区</td>
+                <td><div class="m-name">#LG-02</div><div class="m-code">#LG-02</div></td>
+                <td><span class="status-dot"><i class="dot-off"></i>关机</span></td>
+                <td>—</td>
+                <td><div class="pbar"><span class="track"><span class="fill" style="width:0%"></span></span><span class="val">0.00%</span></div></td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td><span class="link">详情</span></td>
+              </tr>
+              <tr data-name="#LG-03" data-code="#LG-03" data-site="1#厂区" data-status="off" data-product="—" data-process="—" data-good="0" data-bad="0" data-pph="—" data-owner="—">
+                <td class="ck"><button class="cbx" type="button" role="checkbox" aria-checked="false" aria-label="选择当前行"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></button></td>
+                <td>1#厂区</td>
+                <td><div class="m-name">#LG-03</div><div class="m-code">#LG-03</div></td>
+                <td><span class="status-dot"><i class="dot-off"></i>关机</span></td>
+                <td>—</td>
+                <td><div class="pbar"><span class="track"><span class="fill" style="width:0%"></span></span><span class="val">0.00%</span></div></td>
+                <td class="num">0</td>
+                <td class="num">0</td>
+                <td><span class="link">详情</span></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pager">
+            <span class="pg-tot">共 128 条 · 16 页</span>
+            <span class="pg-nav"><span class="pg">‹</span><span class="pg active">1</span><span class="pg">2</span><span class="pg">3</span><span class="pg">›</span></span>
+          </div>
+        </div>
+      </section>
+
+      <aside class="card detail-card" id="detailCard">
+        <div class="card-head">
+          <h3 class="card-title" id="d-name">20号机</h3>
+          <span class="badge badge-muted" id="d-badge">空闲</span>
+          <button class="detail-close" id="detailClose" type="button" aria-label="关闭详情">✕</button>
+        </div>
+        <div class="card-body">
+          <div class="descriptions">
+            <div class="desc-item"><span class="desc-label">设备编号</span><span class="desc-value" id="d-code">#20</span></div>
+            <div class="desc-item"><span class="desc-label">当前产品</span><span class="desc-value" id="d-product">—</span></div>
+            <div class="desc-item"><span class="desc-label">工艺编号</span><span class="desc-value" id="d-process">XA26-0313-26</span></div>
+            <div class="desc-item"><span class="desc-label">负责人</span><span class="desc-value" id="d-owner">李工</span></div>
+            <div class="desc-item"><span class="desc-label">良品 / 不良</span><span class="desc-value"><span id="d-good">1,455,188</span> / <span id="d-bad">10</span></span></div>
+            <div class="desc-item"><span class="desc-label">PPH</span><span class="desc-value" id="d-pph">2,129</span></div>
+          </div>
+          <div class="detail-title">最近事件</div>
+          <div class="timeline">
+            <div class="tl-item is-active"><span class="tl-dot"></span><div><div class="tl-time">10:24</div><div class="tl-text">设备状态同步：空闲</div></div></div>
+            <div class="tl-item"><span class="tl-dot"></span><div><div class="tl-time">09:40</div><div class="tl-text">完成上一工单 A-01 收尾</div></div></div>
+            <div class="tl-item"><span class="tl-dot"></span><div><div class="tl-time">08:55</div><div class="tl-text">班前点检通过</div></div></div>
+          </div>
+        </div>
+        <div class="detail-foot">
+          <button class="btn btn-secondary" type="button">编辑</button>
+          <button class="btn btn-primary" type="button">报修</button>
+        </div>
+      </aside>
+      <div class="detail-mask" id="detailMask" aria-hidden="true"></div>
+    </div>
+
+    <section class="card-grid machine-grid" id="view-cards" hidden>
+      <div class="card"><div class="card-body">
+        <div class="machine-card-title">20号机 <span class="badge badge-muted">空闲</span></div>
+        <div class="machine-card-meta">1#厂区 · XA26-0313-26</div>
+        <div class="progress"><span class="progress-bar" style="width:2%"></span></div>
+        <div class="machine-card-foot"><span class="t-caption">负载 72% · 产量 1,860</span><button class="btn btn-secondary btn-sm">详情</button></div>
+      </div></div>
+      <div class="card"><div class="card-body">
+        <div class="machine-card-title">25号机 <span class="badge badge-run">生产</span></div>
+        <div class="machine-card-meta">1#厂区 · IMCS_XA25-013-zyz</div>
+        <div class="progress"><span class="progress-bar" style="width:2%"></span></div>
+        <div class="machine-card-foot"><span class="t-caption">负载 41% · 产量 625</span><button class="btn btn-secondary btn-sm">详情</button></div>
+      </div></div>
+      <div class="card"><div class="card-body">
+        <div class="machine-card-title">#LG-10 <span class="badge badge-run">生产</span></div>
+        <div class="machine-card-meta">1#厂区 · IMCS20260124_2</div>
+        <div class="progress"><span class="progress-bar" style="width:5.1%"></span></div>
+        <div class="machine-card-foot"><span class="t-caption">负载 66% · 产量 1,120</span><button class="btn btn-secondary btn-sm">详情</button></div>
+      </div></div>
+      <div class="card"><div class="card-body">
+        <div class="machine-card-title">#LG-02 <span class="badge badge-outline">关机</span></div>
+        <div class="machine-card-meta">1#厂区 · #LG-02</div>
+        <div class="progress"><span class="progress-bar" style="width:0%"></span></div>
+        <div class="machine-card-foot"><span class="t-caption">负载 — · 产量 0</span><button class="btn btn-secondary btn-sm">详情</button></div>
+      </div></div>
+    </section>
+  </section>
+
+
+<section class="page-sec" id="sec-status">
+    <div class="pane-note">近 7 日 · 数据来自设备采集网关</div>
+    <div class="grid12">
+      <div class="col-7 card chart-card">
+        <div class="card-head"><h3 class="card-title">良品率趋势</h3><span class="badge badge-run">达标</span></div>
+        <div class="card-body">
+          <div class="chart-box">
+            <svg class="chart-svg" viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="良品率折线图">
+              <g class="chart-grid"><line x1="6" y1="10" x2="94" y2="10"/><line x1="6" y1="30" x2="94" y2="30"/><line x1="6" y1="50" x2="94" y2="50"/><line x1="6" y1="70" x2="94" y2="70"/><line x1="6" y1="90" x2="94" y2="90"/></g>
+              <polyline class="chart-line" fill="none" style="stroke:var(--chart-data-cyan)" stroke-width="2" points="6,86 21,64 36,72 50,40 65,52 79,14 94,28"/>
+            </svg>
+            <div class="chart-dots" aria-hidden="true">
+              <span style="left:6%;top:86%"></span><span style="left:21%;top:64%"></span><span style="left:36%;top:72%"></span><span style="left:50%;top:40%"></span><span style="left:65%;top:52%"></span><span style="left:79%;top:14%"></span><span style="left:94%;top:28%"></span>
+            </div>
+          </div>
+          <div class="chart-x-labels"><span>周一</span><span>周二</span><span>周三</span><span>周四</span><span>周五</span><span>周六</span><span>周日</span></div>
+          <div class="chart-legend"><span class="legend-item"><span class="legend-line" style="border-color:var(--chart-data-cyan)"></span>良品率</span></div>
+        </div>
+      </div>
+      <div class="col-5 card chart-card">
+        <div class="card-head"><h3 class="card-title">近 7 日产能</h3><span class="t-caption">单位：件</span></div>
+        <div class="card-body">
+          <div class="chart-box">
+            <svg class="chart-svg" viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="近7日产能柱状图">
+              <g class="chart-grid"><line x1="6" y1="10" x2="94" y2="10"/><line x1="6" y1="30" x2="94" y2="30"/><line x1="6" y1="50" x2="94" y2="50"/><line x1="6" y1="70" x2="94" y2="70"/><line x1="6" y1="90" x2="94" y2="90"/></g>
+              <g style="fill:var(--chart-smart-cyan)"><rect class="chart-bar" x="6" y="45" width="8" height="45" rx="1"/><rect class="chart-bar" x="19" y="30" width="8" height="60" rx="1"/><rect class="chart-bar" x="32" y="15" width="8" height="75" rx="1"/><rect class="chart-bar" x="45" y="52" width="8" height="38" rx="1"/><rect class="chart-bar" x="58" y="5" width="8" height="85" rx="1"/><rect class="chart-bar" x="71" y="38" width="8" height="52" rx="1"/><rect class="chart-bar" x="84" y="22" width="8" height="68" rx="1"/></g>
+            </svg>
+            <span class="chart-v" style="left:10%;top:52%;transform:translate(-50%,-100%)">620</span>
+            <span class="chart-v" style="left:23%;top:37%;transform:translate(-50%,-100%)">800</span>
+            <span class="chart-v" style="left:36%;top:22%;transform:translate(-50%,-100%)">1,000</span>
+            <span class="chart-v" style="left:49%;top:59%;transform:translate(-50%,-100%)">520</span>
+            <span class="chart-v" style="left:62%;top:12%;transform:translate(-50%,-100%)">1,100</span>
+            <span class="chart-v" style="left:75%;top:45%;transform:translate(-50%,-100%)">700</span>
+            <span class="chart-v" style="left:88%;top:29%;transform:translate(-50%,-100%)">900</span>
+          </div>
+          <div class="chart-x-labels"><span>周一</span><span>周二</span><span>周三</span><span>周四</span><span>周五</span><span>周六</span><span>周日</span></div>
+          <div class="chart-legend"><span class="legend-item"><span class="legend-dot" style="background:var(--chart-smart-cyan)"></span>产能</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="grid12">
+      <div class="col-5 card">
+        <div class="card-head"><h3 class="card-title">设备详情</h3><button class="btn btn-text">编辑</button></div>
+        <div class="card-body">
+          <div class="descriptions">
+            <div class="desc-item"><span class="desc-label">设备编号</span><span class="desc-value">A-01</span></div>
+            <div class="desc-item"><span class="desc-label">设备型号</span><span class="desc-value">海天 MA1600</span></div>
+            <div class="desc-item"><span class="desc-label">所属厂区</span><span class="desc-value">1#厂区</span></div>
+            <div class="desc-item"><span class="desc-label">投产日期</span><span class="desc-value">2023-06-18</span></div>
+            <div class="desc-item"><span class="desc-label">负责人</span><span class="desc-value">李工</span></div>
+            <div class="desc-item"><span class="desc-label">保修状态</span><span class="desc-value"><span class="badge badge-suc">保修中</span></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-7 card">
+        <div class="card-head"><h3 class="card-title">运行参数</h3><span class="t-caption">最近更新 10:24</span></div>
+        <div class="card-body table-wrap">
+          <table class="table">
+            <thead><tr><th>参数</th><th class="num">当前值</th><th class="num">标准值</th><th>状态</th></tr></thead>
+            <tbody>
+              <tr><td>料筒温度</td><td class="num">218 °C</td><td class="num">220 °C</td><td><span class="status-dot"><i class="dot-run"></i>正常</span></td></tr>
+              <tr><td>注射压力</td><td class="num">86 MPa</td><td class="num">90 MPa</td><td><span class="status-dot"><i class="dot-run"></i>正常</span></td></tr>
+              <tr><td>锁模力</td><td class="num">1,420 kN</td><td class="num">1,500 kN</td><td><span class="status-dot"><i class="dot-warn"></i>偏低</span></td></tr>
+              <tr><td>循环周期</td><td class="num">35.4 s</td><td class="num">36 s</td><td><span class="status-dot"><i class="dot-run"></i>正常</span></td></tr>
+            </tbody>
+          </table>
+          <div class="pager"><span class="pg-tot">共 4 条</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 工单处理 ================= -->
+
+<section class="page-sec" id="sec-work">
+    <div class="grid12">
+      <div class="col-7 card">
+        <div class="card-head"><h3 class="card-title">维修工单 · WO-20261119-03</h3><span class="badge badge-warn">处理中</span></div>
+        <div class="card-body">
+          <div class="steps">
+            <div class="step is-done"><span class="step-dot">✓</span><span class="step-text">报修</span></div>
+            <div class="step-line"></div>
+            <div class="step is-done"><span class="step-dot">✓</span><span class="step-text">派工</span></div>
+            <div class="step-line"></div>
+            <div class="step is-active"><span class="step-dot">3</span><span class="step-text">维修中</span></div>
+            <div class="step-line"></div>
+            <div class="step"><span class="step-dot">4</span><span class="step-text">验收</span></div>
+          </div>
+          <div class="form-row form-row--gap"><label class="label">设备</label><input class="input" value="注塑机 A-01" readonly></div>
+          <div class="form-row"><label class="label">故障类型</label>
+            <div class="sel" id="selFault" style="width:100%;">
+              <div class="sel-trigger" onclick="document.getElementById('selFault').classList.toggle('open')"><span>机械故障</span><span style="color:var(--n9)">▾</span></div>
+              <div class="sel-panel"><div class="sel-opt on">机械故障</div><div class="sel-opt">电气故障</div><div class="sel-opt">保养需求</div></div>
+            </div>
+          </div>
+          <div class="form-row"><label class="label">优先级</label>
+            <div class="radio-group"><label class="checkbox-wrap"><input class="radio" type="radio" name="prio">一般</label><label class="checkbox-wrap"><input class="radio" type="radio" name="prio" checked>紧急</label><label class="checkbox-wrap"><input class="radio" type="radio" name="prio">停机</label></div>
+          </div>
+          <div class="form-row"><label class="label">描述</label><textarea class="textarea" rows="2">机械手 C-07 温度过高，已停机 15 分钟。</textarea></div>
+          <div class="form-actions"><button class="btn btn-secondary">取消</button><button class="btn btn-primary">提交工单</button></div>
+        </div>
+      </div>
+      <div class="col-5 card">
+        <div class="card-head"><h3 class="card-title">最近动态</h3><span class="t-caption">工单时间线</span></div>
+        <div class="card-body">
+          <div class="timeline">
+            <div class="tl-item is-active"><span class="tl-dot"></span><div><div class="tl-time">10:24</div><div class="tl-text">李工接单，开始维修</div></div></div>
+            <div class="tl-item"><span class="tl-dot"></span><div><div class="tl-time">10:12</div><div class="tl-text">系统派工至设备组</div></div></div>
+            <div class="tl-item"><span class="tl-dot"></span><div><div class="tl-time">10:05</div><div class="tl-text">触发告警：机械手 C-07 温度过高</div></div></div>
+            <div class="tl-item"><span class="tl-dot"></span><div><div class="tl-time">09:58</div><div class="tl-text">巡检员提交报修单</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 组件示例 ================= -->
+
+</main>
+
+  <main class="ws-body ws-body--spec" id="specView" hidden>
+<div class="chart-page">
+  <div class="chart-index"><a href="#trend">趋势</a><a href="#compare">对比</a><a href="#composition">构成</a><a href="#cards">卡片</a><a href="#table">表格</a><a href="#states">状态</a><a href="#modal">弹窗</a><span class="t-caption">演示数据 · 悬停查看数值 · 点击固定</span></div>
+
+  <section class="chart-section" id="trend">
+    <div class="sec-head"><h2>趋势</h2><span class="t-caption">折线 / 多系列 / 面积 / 迷你</span></div>
+    <div class="chart-grid">
+      <section class="card chart-card ">
+      <div class="card-head"><h3 class="card-title">良品率趋势</h3><span class="chart-kind">范式一</span></div>
+      <div class="card-body"><div class="chart-box">
+      <svg class="chart-svg" viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="折线图">
+        <g class="chart-grid"><line x1="6" y1="10" x2="94" y2="10"/><line x1="6" y1="30" x2="94" y2="30"/><line x1="6" y1="50" x2="94" y2="50"/><line x1="6" y1="70" x2="94" y2="70"/><line x1="6" y1="90" x2="94" y2="90"/></g>
+        <polyline class="chart-line" fill="none" style="stroke:var(--chart-data-cyan)" stroke-width="2" points="6,88 20,70 34,76 48,44 62,54 78,16 94,30"/>
+      </svg>
+      <div class="chart-dots" aria-hidden="true"><span data-tip="周一 · 96.2%" style="left:6%;top:88%"></span><span data-tip="周二 · 95.4%" style="left:20%;top:70%"></span><span data-tip="周三 · 95.8%" style="left:34%;top:76%"></span><span data-tip="周四 · 97.1%" style="left:48%;top:44%"></span><span data-tip="周五 · 96.6%" style="left:62%;top:54%"></span><span data-tip="周六 · 98.2%" style="left:78%;top:16%"></span><span data-tip="周日 · 97.4%" style="left:94%;top:30%"></span></div>
+    </div>
+    <div class="chart-x-labels"><span>周一</span><span>周二</span><span>周三</span><span>周四</span><span>周五</span><span>周六</span><span>周日</span></div><div class="chart-legend"><span class="legend-item"><span class="legend-line" style="border-color:var(--chart-data-cyan)"></span>良品率</span></div><div class="chart-note">HTML 点严格落线；网格 5 条，x 标签独立行。</div></div>
+    </section>
+      <section class="card chart-card ">
+      <div class="card-head"><h3 class="card-title">计划 vs 实际</h3><span class="chart-kind">范式一变体</span></div>
+      <div class="card-body"><div class="chart-box">
+  <svg class="chart-svg" viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="计划与实际折线">
+    <g class="chart-grid"><line x1="6" y1="10" x2="94" y2="10"/><line x1="6" y1="30" x2="94" y2="30"/><line x1="6" y1="50" x2="94" y2="50"/><line x1="6" y1="70" x2="94" y2="70"/><line x1="6" y1="90" x2="94" y2="90"/></g>
+    <polyline class="chart-line" fill="none" style="stroke:var(--chart-tech-blue)" stroke-width="2" points="6,84 20,66 34,72 48,46 62,54 78,30 94,42"/>
+    <polyline class="chart-line" fill="none" style="stroke:var(--chart-data-cyan)" stroke-width="2" points="6,88 20,72 34,78 48,40 62,50 78,16 94,30"/>
+  </svg>
+  <div class="chart-dots" aria-hidden="true"><span class="blue" data-tip="计划 · 周一 · 720" style="left:6%;top:84%"></span><span class="blue" data-tip="计划 · 周二 · 640" style="left:20%;top:66%"></span><span class="blue" data-tip="计划 · 周三 · 700" style="left:34%;top:72%"></span><span class="blue" data-tip="计划 · 周四 · 580" style="left:48%;top:46%"></span><span class="blue" data-tip="计划 · 周五 · 620" style="left:62%;top:54%"></span><span class="blue" data-tip="计划 · 周六 · 430" style="left:78%;top:30%"></span><span class="blue" data-tip="计划 · 周日 · 520" style="left:94%;top:42%"></span><span data-tip="实际 · 周一 · 760" style="left:6%;top:88%"></span><span data-tip="实际 · 周二 · 700" style="left:20%;top:72%"></span><span data-tip="实际 · 周三 · 740" style="left:34%;top:78%"></span><span data-tip="实际 · 周四 · 520" style="left:48%;top:40%"></span><span data-tip="实际 · 周五 · 580" style="left:62%;top:50%"></span><span data-tip="实际 · 周六 · 360" style="left:78%;top:16%"></span><span data-tip="实际 · 周日 · 460" style="left:94%;top:30%"></span></div>
+</div>
+<div class="chart-x-labels"><span>周一</span><span>周二</span><span>周三</span><span>周四</span><span>周五</span><span>周六</span><span>周日</span></div>
+<div class="chart-legend"><span class="legend-item"><span class="legend-line" style="border-color:var(--chart-tech-blue)"></span>计划</span><span class="legend-item"><span class="legend-line" style="border-color:var(--chart-data-cyan)"></span>实际</span></div><div class="chart-note">多系列必配图例；两线共用同一百分比坐标系。</div></div>
+    </section>
+      <section class="card chart-card ">
+      <div class="card-head"><h3 class="card-title">能耗面积</h3><span class="chart-kind">扩展</span></div>
+      <div class="card-body"><div class="chart-box">
+  <svg class="chart-svg" viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="能耗面积图">
+    <g class="chart-grid"><line x1="6" y1="10" x2="94" y2="10"/><line x1="6" y1="30" x2="94" y2="30"/><line x1="6" y1="50" x2="94" y2="50"/><line x1="6" y1="70" x2="94" y2="70"/><line x1="6" y1="90" x2="94" y2="90"/></g>
+    <path d="M6 88 L20 70 L34 76 L48 42 L62 52 L78 16 L94 28 L94 96 L6 96 Z" style="fill:var(--chart-tech-blue);fill-opacity:.12;stroke:none"/>
+    <polyline class="chart-line" fill="none" style="stroke:var(--chart-tech-blue)" stroke-width="2" points="6,88 20,70 34,76 48,42 62,52 78,16 94,28"/>
+  </svg>
+  <div class="chart-dots" aria-hidden="true"><span class="blue" data-tip="周一 · 820" style="left:6%;top:88%"></span><span class="blue" data-tip="周二 · 760" style="left:20%;top:70%"></span><span class="blue" data-tip="周三 · 780" style="left:34%;top:76%"></span><span class="blue" data-tip="周四 · 680" style="left:48%;top:42%"></span><span class="blue" data-tip="周五 · 720" style="left:62%;top:52%"></span><span class="blue" data-tip="周六 · 610" style="left:78%;top:16%"></span><span class="blue" data-tip="周日 · 650" style="left:94%;top:28%"></span></div>
+</div>
+<div class="chart-x-labels"><span>周一</span><span>周二</span><span>周三</span><span>周四</span><span>周五</span><span>周六</span><span>周日</span></div>
+<div class="chart-legend"><span class="legend-item"><span class="legend-dot" style="background:var(--chart-tech-blue)"></span>能耗</span></div><div class="chart-note">面积 = 折线 + 闭合 fill，透明度 ≤15%。</div></div>
+    </section>
+      <section class="card chart-card ">
+      <div class="card-head"><h3 class="card-title">OEE 迷你趋势</h3><span class="chart-kind">扩展</span></div>
+      <div class="card-body"><div class="spark-head"><strong>92.9%</strong><span>较上周 +1.2%</span></div>
+<div class="chart-box spark-box">
+  <svg class="chart-svg" viewBox="0 0 100 28" preserveAspectRatio="none" role="img" aria-label="OEE 迷你趋势">
+    <polyline class="chart-line" fill="none" style="stroke:var(--chart-data-cyan)" stroke-width="2" points="4,20 20,14 36,17 52,8 68,11 84,5 96,9"/>
+  </svg>
+  <div class="chart-dots" aria-hidden="true"><span data-tip="OEE · 周一 · 91.2%" style="left:4%;top:20%"></span><span data-tip="OEE · 周二 · 91.6%" style="left:20%;top:14%"></span><span data-tip="OEE · 周三 · 91.4%" style="left:36%;top:17%"></span><span data-tip="OEE · 周四 · 92.1%" style="left:52%;top:8%"></span><span data-tip="OEE · 周五 · 91.8%" style="left:68%;top:11%"></span><span data-tip="OEE · 周六 · 92.6%" style="left:84%;top:5%"></span><span data-tip="OEE · 周日 · 92.9%" style="left:96%;top:9%"></span></div>
+</div><div class="chart-note">无轴无网格，只保留趋势与单值；适合 KPI 卡内嵌。</div></div>
+    </section>
+    </div>
+  </section>
+
+  <section class="chart-section" id="compare">
+    <div class="sec-head"><h2>对比</h2><span class="t-caption">柱状 / 分组 / 横向排名</span></div>
+    <div class="chart-grid">
+      <section class="card chart-card ">
+      <div class="card-head"><h3 class="card-title">月度产量</h3><span class="chart-kind">范式二</span></div>
+      <div class="card-body"><div class="chart-box">
+  <svg class="chart-svg" viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="月度产量柱状图">
+    <g class="chart-grid"><line x1="4" y1="10" x2="96" y2="10"/><line x1="4" y1="30" x2="96" y2="30"/><line x1="4" y1="50" x2="96" y2="50"/><line x1="4" y1="70" x2="96" y2="70"/><line x1="4" y1="90" x2="96" y2="90"/></g>
+    <rect class="chart-bar" data-tip="1月 · 620 件" x="3.14" y="40" width="8" height="50" rx="1" style="fill:var(--chart-smart-cyan)"/><rect class="chart-bar" data-tip="2月 · 740 件" x="17.43" y="31" width="8" height="59" rx="1" style="fill:var(--chart-smart-cyan)"/><rect class="chart-bar" data-tip="3月 · 550 件" x="31.71" y="46" width="8" height="44" rx="1" style="fill:var(--chart-smart-cyan)"/><rect class="chart-bar" data-tip="4月 · 880 件" x="46.00" y="20" width="8" height="70" rx="1" style="fill:var(--chart-smart-cyan)"/><rect class="chart-bar" data-tip="5月 · 700 件" x="60.29" y="34" width="8" height="56" rx="1" style="fill:var(--chart-smart-cyan)"/><rect class="chart-bar" data-tip="6月 · 460 件" x="74.57" y="53" width="8" height="37" rx="1" style="fill:var(--chart-smart-cyan)"/><rect class="chart-bar" data-tip="7月 · 800 件" x="88.86" y="26" width="8" height="64" rx="1" style="fill:var(--chart-smart-cyan)"/>
+  </svg><span class="chart-v" style="left:7.14%;top:37%;transform:translate(-50%,-100%)">620</span><span class="chart-v" style="left:21.43%;top:28%;transform:translate(-50%,-100%)">740</span><span class="chart-v" style="left:35.71%;top:43%;transform:translate(-50%,-100%)">550</span><span class="chart-v" style="left:50.00%;top:17%;transform:translate(-50%,-100%)">880</span><span class="chart-v" style="left:64.29%;top:31%;transform:translate(-50%,-100%)">700</span><span class="chart-v" style="left:78.57%;top:50%;transform:translate(-50%,-100%)">460</span><span class="chart-v" style="left:92.86%;top:23%;transform:translate(-50%,-100%)">800</span>
+</div>
+<div class="chart-x-labels"><span>1月</span><span>2月</span><span>3月</span><span>4月</span><span>5月</span><span>6月</span><span>7月</span></div>
+<div class="chart-legend"><span class="legend-item"><span class="legend-dot" style="background:var(--chart-smart-cyan)"></span>产量（件）</span></div><div class="chart-note">柱顶数值必标；x 标签独立行、不叠柱。</div></div>
+    </section>
+      <section class="card chart-card ">
+      <div class="card-head"><h3 class="card-title">计划 vs 实际（分组）</h3><span class="chart-kind">范式五</span></div>
+      <div class="card-body"><div class="chart-box">
+  <svg class="chart-svg" viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="计划与实际分组柱状图">
+    <g class="chart-grid"><line x1="4" y1="10" x2="96" y2="10"/><line x1="4" y1="30" x2="96" y2="30"/><line x1="4" y1="50" x2="96" y2="50"/><line x1="4" y1="70" x2="96" y2="70"/><line x1="4" y1="90" x2="96" y2="90"/></g>
+    <rect class="chart-bar" data-tip="1#车间 · 计划 580" x="4.50" y="44" width="7" height="46" rx="1" style="fill:var(--chart-tech-blue)"/><rect class="chart-bar" data-tip="1#车间 · 实际 640" x="13.50" y="39" width="7" height="51" rx="1" style="fill:var(--chart-smart-cyan)"/><rect class="chart-bar" data-tip="2#车间 · 计划 720" x="29.50" y="32" width="7" height="58" rx="1" style="fill:var(--chart-tech-blue)"/><rect class="chart-bar" data-tip="2#车间 · 实际 800" x="38.50" y="26" width="7" height="64" rx="1" style="fill:var(--chart-smart-cyan)"/><rect class="chart-bar" data-tip="3#车间 · 计划 500" x="54.50" y="50" width="7" height="40" rx="1" style="fill:var(--chart-tech-blue)"/><rect class="chart-bar" data-tip="3#车间 · 实际 580" x="63.50" y="44" width="7" height="46" rx="1" style="fill:var(--chart-smart-cyan)"/><rect class="chart-bar" data-tip="4#车间 · 计划 800" x="79.50" y="26" width="7" height="64" rx="1" style="fill:var(--chart-tech-blue)"/><rect class="chart-bar" data-tip="4#车间 · 实际 880" x="88.50" y="20" width="7" height="70" rx="1" style="fill:var(--chart-smart-cyan)"/>
+  </svg><span class="chart-v" style="left:8.00%;top:41%;transform:translate(-50%,-100%)">580</span><span class="chart-v" style="left:17.00%;top:36%;transform:translate(-50%,-100%)">640</span><span class="chart-v" style="left:33.00%;top:29%;transform:translate(-50%,-100%)">720</span><span class="chart-v" style="left:42.00%;top:23%;transform:translate(-50%,-100%)">800</span><span class="chart-v" style="left:58.00%;top:47%;transform:translate(-50%,-100%)">500</span><span class="chart-v" style="left:67.00%;top:41%;transform:translate(-50%,-100%)">580</span><span class="chart-v" style="left:83.00%;top:23%;transform:translate(-50%,-100%)">800</span><span class="chart-v" style="left:92.00%;top:17%;transform:translate(-50%,-100%)">880</span>
+</div>
+<div class="chart-x-labels"><span>1#车间</span><span>2#车间</span><span>3#车间</span><span>4#车间</span></div>
+<div class="chart-legend"><span class="legend-item"><span class="legend-dot" style="background:var(--chart-tech-blue)"></span>计划</span><span class="legend-item"><span class="legend-dot" style="background:var(--chart-smart-cyan)"></span>实际</span></div><div class="chart-note">组内 gap 2%，组间 ≥14%；双系列图例。</div></div>
+    </section>
+      <section class="card chart-card chart-card--wide">
+      <div class="card-head"><h3 class="card-title">车间产能排名</h3><span class="chart-kind">范式三</span></div>
+      <div class="card-body"><div class="hbar-list"><div class="hbar-row" data-tip="1#注塑 · 产能 92%"><span class="hbar-label">1#注塑</span><div class="hbar-track"><span style="width:92%"></span></div><span class="hbar-val">92%</span></div><div class="hbar-row" data-tip="2#注塑 · 产能 86%"><span class="hbar-label">2#注塑</span><div class="hbar-track"><span style="width:86%"></span></div><span class="hbar-val">86%</span></div><div class="hbar-row" data-tip="3#注塑 · 产能 78%"><span class="hbar-label">3#注塑</span><div class="hbar-track"><span style="width:78%"></span></div><span class="hbar-val">78%</span></div><div class="hbar-row" data-tip="4#注塑 · 产能 64%"><span class="hbar-label">4#注塑</span><div class="hbar-track"><span style="width:64%"></span></div><span class="hbar-val">64%</span></div><div class="hbar-row" data-tip="5#注塑 · 产能 52%"><span class="hbar-label">5#注塑</span><div class="hbar-track"><span style="width:52%"></span></div><span class="hbar-val">52%</span></div></div><div class="chart-note">条高 12px；数值贴条端，标签贴条左。</div></div>
+    </section>
+    </div>
+  </section>
+
+  <section class="chart-section" id="composition">
+    <div class="sec-head"><h2>构成</h2><span class="t-caption">环形 / 堆叠 / 仪表盘</span></div>
+    <div class="chart-grid">
+      <section class="card chart-card ">
+      <div class="card-head"><h3 class="card-title">机器状态分布</h3><span class="chart-kind">范式四</span></div>
+      <div class="card-body"><div class="ring-wrap">
+  <div class="chart-box ring-box">
+    <svg class="ring-svg" viewBox="0 0 120 120" width="180" height="180" role="img" aria-label="机器状态分布环形图">
+      <g transform="rotate(-90 60 60)">
+        <circle class="ring-seg" data-tip="生产 4 台 · 33%" cx="60" cy="60" r="48" fill="none" stroke-width="14" style="stroke:var(--run)" stroke-dasharray="98.5 301.6"/>
+        <circle class="ring-seg" data-tip="空闲 2 台 · 17%" cx="60" cy="60" r="48" fill="none" stroke-width="14" style="stroke:var(--state-idle)" stroke-dasharray="48.3 301.6" stroke-dashoffset="-100.5"/>
+        <circle class="ring-seg" data-tip="关机 6 台 · 50%" cx="60" cy="60" r="48" fill="none" stroke-width="14" style="stroke:var(--state-stop)" stroke-dasharray="148.8 301.6" stroke-dashoffset="-150.8"/>
+      </g>
+    </svg>
+    <div class="chart-ring-center ring-center"><strong>50%</strong><span>开机率</span></div>
+  </div>
+  <div class="ring-legend">
+    <div class="ring-row"><span class="ring-dot" style="background:var(--run)"></span><span>生产</span><span class="ring-count">4 台</span><span class="ring-pct">33%</span></div>
+    <div class="ring-row"><span class="ring-dot" style="background:var(--state-idle)"></span><span>空闲</span><span class="ring-count">2 台</span><span class="ring-pct">17%</span></div>
+    <div class="ring-row"><span class="ring-dot" style="background:var(--state-stop)"></span><span>关机</span><span class="ring-count">6 台</span><span class="ring-pct">50%</span></div>
+  </div>
+</div><div class="chart-note">定尺寸正方形；中心文字 HTML；图例带台数与占比。</div></div>
+    </section>
+      <section class="card chart-card ">
+      <div class="card-head"><h3 class="card-title">综合 OEE（仪表盘）</h3><span class="chart-kind">扩展</span></div>
+      <div class="card-body"><div class="gauge-wrap">
+  <div class="chart-box gauge-box">
+    <svg class="gauge-svg" data-tip="综合 OEE 92.9% · 目标 85%" viewBox="0 0 120 120" width="180" height="180" role="img" aria-label="综合 OEE 仪表盘">
+      <g transform="rotate(135 60 60)">
+        <circle cx="60" cy="60" r="48" fill="none" stroke-width="8" stroke-linecap="butt" style="stroke:var(--n5)" stroke-dasharray="226.2 301.6"/>
+        <circle cx="60" cy="60" r="48" fill="none" stroke-width="14" stroke-linecap="butt" style="stroke:var(--chart-data-cyan)" stroke-dasharray="210.1 301.6"/>
+      </g>
+    </svg>
+    <div class="chart-ring-center gauge-center"><strong>92.9%</strong><span>综合 OEE</span></div>
+  </div>
+  <div class="gauge-legend"><div class="gauge-row"><span>目标</span><strong>85%</strong></div><div class="gauge-row"><span>较目标</span><strong style="color:var(--suc)">+7.9%</strong></div></div>
+</div><div class="chart-note">270° 弧；轨道 + 值弧；中心常显主值。</div></div>
+    </section>
+      <section class="card chart-card chart-card--wide">
+      <div class="card-head"><h3 class="card-title">工时构成（堆叠）</h3><span class="chart-kind">扩展</span></div>
+      <div class="card-body"><div class="chart-box">
+  <svg class="chart-svg" viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="工时构成堆叠柱状图">
+    <g class="chart-grid"><line x1="4" y1="10" x2="96" y2="10"/><line x1="4" y1="30" x2="96" y2="30"/><line x1="4" y1="50" x2="96" y2="50"/><line x1="4" y1="70" x2="96" y2="70"/><line x1="4" y1="90" x2="96" y2="90"/></g>
+    <rect class="chart-bar chart-stack" data-tip="第1周 · 生产 30" x="6.50" y="60" width="12" height="30" rx="1" style="fill:var(--state-run)"/><rect class="chart-bar chart-stack" data-tip="第1周 · 待机 8" x="6.50" y="52" width="12" height="8" rx="1" style="fill:var(--state-idle)"/><rect class="chart-bar chart-stack" data-tip="第1周 · 停机 6" x="6.50" y="46" width="12" height="6" rx="1" style="fill:var(--state-stop)"/><rect class="chart-bar chart-stack" data-tip="第2周 · 生产 32" x="31.50" y="58" width="12" height="32" rx="1" style="fill:var(--state-run)"/><rect class="chart-bar chart-stack" data-tip="第2周 · 待机 5" x="31.50" y="53" width="12" height="5" rx="1" style="fill:var(--state-idle)"/><rect class="chart-bar chart-stack" data-tip="第2周 · 停机 3" x="31.50" y="50" width="12" height="3" rx="1" style="fill:var(--state-stop)"/><rect class="chart-bar chart-stack" data-tip="第3周 · 生产 28" x="56.50" y="62" width="12" height="28" rx="1" style="fill:var(--state-run)"/><rect class="chart-bar chart-stack" data-tip="第3周 · 待机 9" x="56.50" y="53" width="12" height="9" rx="1" style="fill:var(--state-idle)"/><rect class="chart-bar chart-stack" data-tip="第3周 · 停机 9" x="56.50" y="44" width="12" height="9" rx="1" style="fill:var(--state-stop)"/><rect class="chart-bar chart-stack" data-tip="第4周 · 生产 34" x="81.50" y="56" width="12" height="34" rx="1" style="fill:var(--state-run)"/><rect class="chart-bar chart-stack" data-tip="第4周 · 待机 5" x="81.50" y="51" width="12" height="5" rx="1" style="fill:var(--state-idle)"/><rect class="chart-bar chart-stack" data-tip="第4周 · 停机 3" x="81.50" y="48" width="12" height="3" rx="1" style="fill:var(--state-stop)"/>
+  </svg><span class="chart-v" style="left:12.50%;top:43%;transform:translate(-50%,-100%)">44</span><span class="chart-v" style="left:37.50%;top:47%;transform:translate(-50%,-100%)">40</span><span class="chart-v" style="left:62.50%;top:41%;transform:translate(-50%,-100%)">46</span><span class="chart-v" style="left:87.50%;top:45%;transform:translate(-50%,-100%)">42</span>
+</div>
+<div class="chart-x-labels"><span>第1周</span><span>第2周</span><span>第3周</span><span>第4周</span></div>
+<div class="chart-legend"><span class="legend-item"><span class="legend-dot" style="background:var(--state-run)"></span>生产</span><span class="legend-item"><span class="legend-dot" style="background:var(--state-idle)"></span>待机</span><span class="legend-item"><span class="legend-dot" style="background:var(--state-stop)"></span>停机</span></div><div class="chart-note">每根柱拆段；柱顶标合计；图例注明三段。</div></div>
+    </section>
+    </div>
+  </section>
+<section class="chart-section" id="cards">
+  <div class="sec-head"><h2>机器卡片</h2><span class="t-caption">状态条 / 周期 / 指标条 / 进度</span></div>
+  <div class="machine-list"><article class="machine-card">
+  <div class="mc-head"><div class="mc-title">#LG-10</div><div class="mc-code">#LG-10</div><span class="badge badge-muted mc-badge">时间自动</span></div>
+  <div class="mc-row"><div><span class="mc-label">当前产品</span><span class="mc-val">—</span></div><div><span class="mc-label">工艺编号</span><span class="mc-val">IMCS20260124_2</span></div></div>
+  <div class="mc-cycle"><div><span class="mc-label">当前周期</span><strong>7.00<small>s</small></strong></div><div><span class="mc-label" style="text-align:right">标准周期</span><span class="mc-val" style="text-align:right">—</span></div></div>
+  <div class="mc-metrics"><div><span>储料</span><strong>0.17<small>s</small></strong></div><div><span>射出</span><strong>0.89<small>s</small></strong></div><div><span>保压</span><strong>0.00<small>s</small></strong></div><div><span>PPH</span><strong>50,914<small></small></strong></div></div>
+  <div><div class="mc-prog-head"><span>生产进度</span><strong>5.1%</strong></div><div class="mc-bar"><span style="width:5.1%"></span></div></div>
+  <div class="mc-foot"><span>不良品数 0</span><span class="mono">51,039,352 / 999,999,999</span></div>
+</article><article class="machine-card">
+  <div class="mc-head"><div class="mc-title">#LG-11</div><div class="mc-code">#LG-11</div><span class="badge badge-muted mc-badge">时间自动</span></div>
+  <div class="mc-row"><div><span class="mc-label">当前产品</span><span class="mc-val">乐高积木</span></div><div><span class="mc-label">工艺编号</span><span class="mc-val">IMCS20260124_2</span></div></div>
+  <div class="mc-cycle"><div><span class="mc-label">当前周期</span><strong>6.82<small>s</small></strong></div><div><span class="mc-label" style="text-align:right">标准周期</span><span class="mc-val" style="text-align:right">7.00</span></div></div>
+  <div class="mc-metrics"><div><span>储料</span><strong>0.16<small>s</small></strong></div><div><span>射出</span><strong>0.86<small>s</small></strong></div><div><span>保压</span><strong>0.01<small>s</small></strong></div><div><span>PPH</span><strong>49,820<small></small></strong></div></div>
+  <div><div class="mc-prog-head"><span>生产进度</span><strong>8.4%</strong></div><div class="mc-bar"><span style="width:8.4%"></span></div></div>
+  <div class="mc-foot"><span>不良品数 2</span><span class="mono">48,220,110 / 999,999,999</span></div>
+</article><article class="machine-card machine-card--off">
+  <div class="mc-head"><div class="mc-title">#LG-01</div><div class="mc-code">#LG-01</div><span class="badge badge-muted mc-badge">手动</span></div>
+  <div class="mc-row"><div><span class="mc-label">当前产品</span><span class="mc-val">—</span></div><div><span class="mc-label">工艺编号</span><span class="mc-val">—</span></div></div>
+  <div class="mc-cycle"><div><span class="mc-label">当前周期</span><strong>—<small></small></strong></div><div><span class="mc-label" style="text-align:right">标准周期</span><span class="mc-val" style="text-align:right">—</span></div></div>
+  <div class="mc-metrics"><div><span>储料</span><strong>0.00<small>s</small></strong></div><div><span>射出</span><strong>0.00<small>s</small></strong></div><div><span>保压</span><strong>0.00<small>s</small></strong></div><div><span>PPH</span><strong>—<small></small></strong></div></div>
+  <div><div class="mc-prog-head"><span>生产进度</span><strong>0%</strong></div><div class="mc-bar"><span style="width:0%"></span></div></div>
+  <div class="mc-foot"><span>不良品数 0</span><span class="mono">0 / 999,999,999</span></div>
+</article></div>
+<div class="chart-note">状态条 3px；周期 24 mono；指标条 4 列；进度条 6px。</div>
+</section>
+<section class="chart-section" id="table">
+  <div class="sec-head"><h2>表格</h2><span class="t-caption">图标列 / 状态标签 / 文字操作 / 分页 / 空状态</span></div>
+  <section class="card table-card table-card--spec">
+    <div class="card-head"><h3 class="card-title">设备列表 · 有数据（5 条）</h3><div class="table-tools"><input class="input" type="search" placeholder="搜索设备…" aria-label="搜索设备"><span class="filter-chip on">全部</span><span class="filter-chip">生产</span><span class="filter-chip">空闲</span><span class="filter-chip">关机</span></div></div>
+    <div class="card-body"><div class="table-scroll"><table class="table table--fixed table--sticky">
+      <colgroup><col style="width:4%"><col style="width:22%"><col style="width:12%"><col style="width:20%"><col style="width:16%"><col style="width:10%"><col style="width:16%"></colgroup>
+      <thead><tr><th class="ck"><button class="cbx" type="button" role="checkbox" aria-checked="false" aria-label="全选"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></button></th><th>设备</th><th>状态</th><th>工艺编号</th><th>生产进度</th><th>负责人</th><th>操作</th></tr></thead>
+      <tbody><tr>
+      <td class="ck"><button class="cbx" type="button" role="checkbox" aria-checked="false" aria-label="选择"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></button></td>
+      <td><div class="cell-dev"><span class="cell-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="6" width="16" height="12" rx="2"/><path d="M8 4v2M16 4v2M8 18v2M16 18v2"/><circle cx="12" cy="12" r="2.5"/></svg></span><div><div class="dev-name">#LG-10</div><div class="dev-code">#LG-10</div></div></div></td>
+      <td><span class="badge badge-run">生产</span></td>
+      <td>IMCS20260124_2</td>
+      <td><div class="pbar"><span class="track"><span class="fill" style="width:5.1%"></span></span><span class="val">5.1%</span></div></td>
+      <td>李工</td>
+      <td><div class="op-cell"><button class="btn btn-text" type="button">详情</button><button class="btn btn-text" type="button">编辑</button><button class="btn btn-text btn-text--danger" type="button">删除</button></div></td>
+    </tr><tr>
+      <td class="ck"><button class="cbx" type="button" role="checkbox" aria-checked="false" aria-label="选择"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></button></td>
+      <td><div class="cell-dev"><span class="cell-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="6" width="16" height="12" rx="2"/><path d="M8 4v2M16 4v2M8 18v2M16 18v2"/><circle cx="12" cy="12" r="2.5"/></svg></span><div><div class="dev-name">#LG-11</div><div class="dev-code">#LG-11</div></div></div></td>
+      <td><span class="badge badge-run">生产</span></td>
+      <td>IMCS20260124_2</td>
+      <td><div class="pbar"><span class="track"><span class="fill" style="width:8.4%"></span></span><span class="val">8.4%</span></div></td>
+      <td>王工</td>
+      <td><div class="op-cell"><button class="btn btn-text" type="button">详情</button><button class="btn btn-text" type="button">编辑</button><button class="btn btn-text btn-text--danger" type="button">删除</button></div></td>
+    </tr><tr>
+      <td class="ck"><button class="cbx" type="button" role="checkbox" aria-checked="false" aria-label="选择"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></button></td>
+      <td><div class="cell-dev"><span class="cell-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="6" width="16" height="12" rx="2"/><path d="M8 4v2M16 4v2M8 18v2M16 18v2"/><circle cx="12" cy="12" r="2.5"/></svg></span><div><div class="dev-name">20号机</div><div class="dev-code">#20</div></div></div></td>
+      <td><span class="badge badge-muted">空闲</span></td>
+      <td>XA26-0313-26</td>
+      <td><div class="pbar"><span class="track"><span class="fill" style="width:2.18%"></span></span><span class="val">2.18%</span></div></td>
+      <td>李工</td>
+      <td><div class="op-cell"><button class="btn btn-text" type="button">详情</button><button class="btn btn-text" type="button">编辑</button><button class="btn btn-text btn-text--danger" type="button">删除</button></div></td>
+    </tr><tr>
+      <td class="ck"><button class="cbx" type="button" role="checkbox" aria-checked="false" aria-label="选择"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></button></td>
+      <td><div class="cell-dev"><span class="cell-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="6" width="16" height="12" rx="2"/><path d="M8 4v2M16 4v2M8 18v2M16 18v2"/><circle cx="12" cy="12" r="2.5"/></svg></span><div><div class="dev-name">22号机</div><div class="dev-code">#22</div></div></div></td>
+      <td><span class="badge badge-muted">空闲</span></td>
+      <td>IM_00022-A01</td>
+      <td><div class="pbar"><span class="track"><span class="fill" style="width:3.20%"></span></span><span class="val">3.20%</span></div></td>
+      <td>赵工</td>
+      <td><div class="op-cell"><button class="btn btn-text" type="button">详情</button><button class="btn btn-text" type="button">编辑</button><button class="btn btn-text btn-text--danger" type="button">删除</button></div></td>
+    </tr><tr>
+      <td class="ck"><button class="cbx" type="button" role="checkbox" aria-checked="false" aria-label="选择"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></button></td>
+      <td><div class="cell-dev"><span class="cell-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="6" width="16" height="12" rx="2"/><path d="M8 4v2M16 4v2M8 18v2M16 18v2"/><circle cx="12" cy="12" r="2.5"/></svg></span><div><div class="dev-name">#LG-01</div><div class="dev-code">#LG-01</div></div></div></td>
+      <td><span class="badge badge-outline">关机</span></td>
+      <td>—</td>
+      <td><div class="pbar"><span class="track"><span class="fill" style="width:0%"></span></span><span class="val">0%</span></div></td>
+      <td>—</td>
+      <td><div class="op-cell"><button class="btn btn-text" type="button">详情</button><button class="btn btn-text" type="button">编辑</button><button class="btn btn-text btn-text--danger" type="button">删除</button></div></td>
+    </tr><tr class="row-empty"><td colspan="7"></td></tr><tr class="row-empty"><td colspan="7"></td></tr><tr class="row-empty"><td colspan="7"></td></tr></tbody>
+    </table></div><div class="pager"><span class="pg-tot">共 5 条 · 1 页</span><span class="pg-nav"><span class="pg">‹</span><span class="pg active">1</span><span class="pg">›</span></span></div></div>
+  </section>
+  <div class="chart-note">8 行位：有数据时补分割线；0 条时空状态；两态同高，行高 44。</div>
+<section class="card table-card table-card--spec">
+      <div class="card-head"><h3 class="card-title">设备列表 · 空状态（0 条）</h3><div class="table-tools"><input class="input" type="search" placeholder="搜索设备…" aria-label="搜索设备"><span class="filter-chip on">全部</span><span class="filter-chip">生产</span><span class="filter-chip">空闲</span><span class="filter-chip">关机</span></div></div>
+      <div class="card-body"><div class="table-scroll"><table class="table table--fixed table--sticky">
+        <colgroup><col style="width:4%"><col style="width:22%"><col style="width:12%"><col style="width:20%"><col style="width:16%"><col style="width:10%"><col style="width:16%"></colgroup>
+        <thead><tr><th class="ck"><button class="cbx" type="button" role="checkbox" aria-checked="false" aria-label="全选"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 5 12 L 10 17 L 19 8"/></svg></button></th><th>设备</th><th>状态</th><th>工艺编号</th><th>生产进度</th><th>负责人</th><th>操作</th></tr></thead>
+        <tbody><tr class="row-empty-state"><td colspan="7"><div class="table-empty"><div class="table-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18v12H3z"/><path d="M3 13h5l2 3h4l2-3h5"/></svg></div><strong>暂无设备数据</strong><p>调整筛选条件，或新增一台设备</p><button class="btn btn-secondary" type="button">新增机器</button></div></td></tr></tbody>
+      </table></div><div class="pager"><span class="pg-tot">共 0 条 · 0 页</span><span class="pg-nav"><span class="pg disabled">‹</span><span class="pg active">1</span><span class="pg disabled">›</span></span></div></div>
+    </section>
+</section>
+<section class="chart-section" id="states">
+  <div class="sec-head"><h2>机器状态模型</h2><span class="t-caption">5 个主状态固定色 + 第二层：模式 / 生产子状态 / 原因</span></div>
+  <div class="ms-grid">
+    <div class="ms-state-card" style="--ms:var(--state-run)"><div class="ms-state-head"><span class="ms-state-dot"></span><strong>生产</strong><code>RUN</code></div><p>自动/半自动，正在出件</p><div class="ms-state-meta"><span>--state-run</span><span>#16A34A</span><span>OEE 运行</span></div></div>
+    <div class="ms-state-card" style="--ms:var(--state-idle)"><div class="ms-state-head"><span class="ms-state-dot"></span><strong>空闲</strong><code>IDLE</code></div><p>已开机、就绪但未生产</p><div class="ms-state-meta"><span>--state-idle</span><span>#0891B2</span><span>空闲损失</span></div></div>
+    <div class="ms-state-card" style="--ms:var(--state-stop)"><div class="ms-state-head"><span class="ms-state-dot"></span><strong>停机</strong><code>STOP</code></div><p>不生产，原因在第二层</p><div class="ms-state-meta"><span>--state-stop</span><span>#64748B</span><span>计划/非计划</span></div></div>
+    <div class="ms-state-card ms-state-card--fault" style="--ms:var(--state-fault)"><div class="ms-state-head"><span class="ms-state-dot"></span><strong>故障</strong><code>FAULT</code></div><p>故障、急停、报警停机</p><div class="ms-state-meta"><span>--state-fault</span><span>#F5222D</span><span>非计划停机</span></div></div>
+    <div class="ms-state-card ms-state-card--offline" style="--ms:var(--state-offline)"><div class="ms-state-head"><span class="ms-state-dot"></span><strong>离线</strong><code>OFFLINE</code></div><p>通讯中断，不等于关机</p><div class="ms-state-meta"><span>--state-offline</span><span>环 #8290A3</span><span>数据缺失</span></div></div>
+  </div>
+  <div class="ms-layer">
+    <div class="ms-layer-card"><h4>模式 <span>MODE</span></h4><div class="ms-chips"><span class="ms-chip">自动 <em>AUTO</em></span><span class="ms-chip">半自动 <em>SEMI</em></span><span class="ms-chip">手动 <em>MANUAL</em></span><span class="ms-chip">调机 <em>SETUP</em></span><span class="ms-chip">休眠 <em>SLEEP</em></span></div><p>设备当前操作模式，不占主状态颜色。</p></div>
+    <div class="ms-layer-card"><h4>生产子状态 <span>PRODUCTION</span></h4><div class="ms-chips"><span class="ms-chip">无生产</span><span class="ms-chip">启动</span><span class="ms-chip">待放行</span><span class="ms-chip">生产</span><span class="ms-chip">干跑</span></div><p>自动/半自动下才有意义，用于试产、放行、干跑。</p></div>
+    <div class="ms-layer-card"><h4>原因 <span>REASON</span></h4><div class="ms-chips"><span class="ms-chip">换模</span><span class="ms-chip">缺料</span><span class="ms-chip">质量待判</span><span class="ms-chip">保养</span><span class="ms-chip">计划停机</span><span class="ms-chip">非计划停机</span><span class="ms-chip">关机</span><span class="ms-chip">故障</span></div><p>原因码用于 OEE 与停机分析，不做第二套颜色。</p></div>
+  </div>
+  <div class="ms-combo">
+    <div class="ms-combo-head"><span>主状态</span><span>模式</span><span>生产子状态</span><span>原因</span><span>OEE</span></div>
+    <div class="ms-combo-row"><span class="ms-inline" style="--ms:var(--state-run)"><i class="ms-dot"></i>生产</span><span>自动</span><span>量产</span><span>—</span><em>运行时间</em></div>
+    <div class="ms-combo-row"><span class="ms-inline" style="--ms:var(--state-idle)"><i class="ms-dot"></i>空闲</span><span>自动</span><span>无生产</span><span>缺料</span><em>空闲损失</em></div>
+    <div class="ms-combo-row"><span class="ms-inline" style="--ms:var(--state-stop)"><i class="ms-dot"></i>停机</span><span>调机</span><span>无生产</span><span>换模</span><em>计划停机</em></div>
+    <div class="ms-combo-row"><span class="ms-inline ms-inline--fault" style="--ms:var(--state-fault)"><i class="ms-dot"></i>故障</span><span>自动</span><span>—</span><span>模具报警</span><em>非计划停机</em></div>
+    <div class="ms-combo-row"><span class="ms-inline" style="--ms:var(--state-stop)"><i class="ms-dot"></i>停机</span><span>—</span><span>无生产</span><span>关机</span><em>计划停机</em></div>
+    <div class="ms-combo-row"><span class="ms-inline ms-inline--offline" style="--ms:var(--state-offline)"><i class="ms-dot"></i>离线</span><span>—</span><span>未知</span><span>通讯中断</span><em>数据缺失</em></div>
+  </div>
+  <div class="chart-note">5 个主状态固定色；模式 / 生产子状态 / 原因只用文字与中性 chip；“换模/调机/关机”归入停机原因，不新增颜色；故障用三角、离线用空心环。</div>
+</section>
+
+<section class="chart-section" id="modal">
+  <div class="sec-head"><h2>弹窗表单</h2><span class="t-caption">382 / 520 / 640 / 720 四档宽度</span></div>
+  <div class="modal-demo-list"><div class="modal-demo"><div class="modal-demo-label"><strong>382</strong><span>标准 · 4 字段 · 单列</span></div>
+    <div class="spec-modal">
+      <div class="spec-modal-head"><strong>新增机器</strong><button class="modal-close" type="button" aria-label="关闭">✕</button></div>
+      <div class="spec-modal-body"><div class="form-row"><label class="label">机器名称</label><input class="input" placeholder="如：26号机"></div><div class="form-row"><label class="label">所属厂区</label><select class="input"><option>1#厂区</option><option>2#厂区</option></select></div><div class="form-row"><label class="label">工艺编号</label><input class="input" placeholder="如：IMCS20260124_2"></div><div class="form-row"><label class="label">负责人</label><input class="input" placeholder="如：李工"></div></div>
+      <div class="spec-modal-foot"><button class="btn btn-secondary" type="button">取消</button><button class="btn btn-primary" type="button">保存</button></div>
+    </div></div><div class="modal-demo"><div class="modal-demo-label"><strong>520</strong><span>宽表单 · 4 字段 · 双列</span></div>
+    <div class="spec-modal spec-modal--520">
+      <div class="spec-modal-head"><strong>编辑工艺</strong><button class="modal-close" type="button" aria-label="关闭">✕</button></div>
+      <div class="spec-modal-body"><div class="modal-form-grid"><div class="form-row"><label class="label">产品名称</label><input class="input" value="乐高积木"></div><div class="form-row"><label class="label">工艺编号</label><input class="input" value="IMCS20260124_2"></div><div class="form-row"><label class="label">负责人</label><input class="input" value="王工"></div><div class="form-row"><label class="label">版本号</label><input class="input" value="v3.2"></div></div></div>
+      <div class="spec-modal-foot"><button class="btn btn-secondary" type="button">取消</button><button class="btn btn-primary" type="button">保存</button></div>
+    </div></div><div class="modal-demo"><div class="modal-demo-label"><strong>640</strong><span>宽表单 · 6 字段 · 双列</span></div>
+    <div class="spec-modal spec-modal--640">
+      <div class="spec-modal-head"><strong>新增工单</strong><button class="modal-close" type="button" aria-label="关闭">✕</button></div>
+      <div class="spec-modal-body"><div class="modal-form-grid"><div class="form-row"><label class="label">设备</label><select class="input"><option>注塑机 A-01</option></select></div><div class="form-row"><label class="label">故障类型</label><select class="input"><option>机械故障</option></select></div><div class="form-row"><label class="label">优先级</label><select class="input"><option>紧急</option></select></div><div class="form-row"><label class="label">负责人</label><input class="input" value="李工"></div><div class="form-row"><label class="label">计划开始</label><input class="input" type="date" value="2026-11-19"></div><div class="form-row"><label class="label">预计完成</label><input class="input" type="date" value="2026-11-21"></div></div></div>
+      <div class="spec-modal-foot"><button class="btn btn-secondary" type="button">取消</button><button class="btn btn-primary" type="button">保存</button></div>
+    </div></div><div class="modal-demo"><div class="modal-demo-label"><strong>720</strong><span>宽表单上限 · 6 字段 + 备注</span></div>
+    <div class="spec-modal spec-modal--720">
+      <div class="spec-modal-head"><strong>设备档案</strong><button class="modal-close" type="button" aria-label="关闭">✕</button></div>
+      <div class="spec-modal-body"><div class="modal-form-grid"><div class="form-row"><label class="label">设备名称</label><input class="input" value="#LG-10"></div><div class="form-row"><label class="label">设备编号</label><input class="input" value="#LG-10"></div><div class="form-row"><label class="label">所属厂区</label><select class="input"><option>1#厂区</option></select></div><div class="form-row"><label class="label">设备类型</label><select class="input"><option>注塑机</option></select></div><div class="form-row"><label class="label">工艺编号</label><input class="input" value="IMCS20260124_2"></div><div class="form-row"><label class="label">负责人</label><input class="input" value="李工"></div><div class="form-row form-row--full"><label class="label">备注</label><textarea class="input" rows="2" placeholder="选填，最多 200 字"></textarea></div></div></div>
+      <div class="spec-modal-foot"><button class="btn btn-secondary" type="button">取消</button><button class="btn btn-primary" type="button">保存</button></div>
+    </div></div></div>
+  <div class="chart-note">382 标准；520–720 宽表单（仅宽表/双列）；字段继续增加改整页。</div>
+</section>
+</div>
+  </main>
+  </div>
+</div>
+
+<div class="modal-mask" id="addModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="addTitle">
+    <div class="modal-head"><span id="addTitle">新增机器</span><button class="modal-close" id="modalClose" type="button" aria-label="关闭">✕</button></div>
+    <div class="modal-body">
+      <div class="form-row"><label class="label" for="m-name">机器名称</label><input class="input" id="m-name" style="width:100%" placeholder="如：26号机"></div>
+      <div class="form-row"><label class="label" for="m-site">所属厂区</label><select class="input" id="m-site" style="width:100%"><option>1#厂区</option><option>2#厂区</option></select></div>
+      <div class="form-row"><label class="label" for="m-process">工艺编号</label><input class="input" id="m-process" style="width:100%" placeholder="如：IMCS20260124_2"></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-secondary" id="modalCancel" type="button">取消</button><button class="btn btn-primary" type="button" id="modalSave">保存</button></div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+<div class="rail-fly" id="railFly" role="menu" hidden></div>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ---------------- 语言字典 ---------------- */
+  var DICT = {
+    'page.title': {zh:'设备运维工作台', en:'Machine Operations'},
+    'global.search': {zh:'搜索机器 / 工单 / 文档…', en:'Search machines / orders / docs…'},
+    'page.sub': {zh:'Machine Operations', en:'Machine Operations'},
+    'tool.home': {zh:'首页', en:'Home'},
+    'tool.changepwd': {zh:'修改密码', en:'Change Password'},
+    'tool.logout': {zh:'退出登录', en:'Sign Out'},
+    'tool.fullscreen': {zh:'全屏', en:'Fullscreen'},
+    'page.refresh': {zh:'刷新数据（当前页）', en:'Refresh this page'},
+    'tool.app': {zh:'APP 下载', en:'Get App'},
+    'tool.theme': {zh:'主题', en:'Theme'},
+    'tool.lang': {zh:'语言', en:'Language'},
+    'app.title': {zh:'APP 下载', en:'Get the App'},
+    'app.sub': {zh:'扫码安装弘设汇移动端', en:'Scan to install Hongshehui mobile'},
+    'app.android': {zh:'安卓版', en:'Android'},
+    'app.ios': {zh:'iOS 版', en:'iOS'},
+    'app.note': {zh:'也可在应用商店搜索「弘设汇」下载', en:'Or search "Hongshehui" in your app store'},
+    'theme.default': {zh:'默认蓝', en:'Default blue'},
+    'theme.cyan': {zh:'科技青', en:'Tech cyan'},
+    'theme.green': {zh:'工业绿', en:'Industrial green'},
+    'theme.amber': {zh:'琥珀橙', en:'Amber'},
+    'theme.violet': {zh:'深空紫', en:'Deep violet'},
+    'theme.dark': {zh:'暗色', en:'Dark'},
+    'tab.production': {zh:'生产监控', en:'Production'},
+    'tab.status': {zh:'运行状态', en:'Running Status'},
+    'kpi.machines': {zh:'机器总数', en:'Machines'},
+    'kpi.running': {zh:'生产', en:'Running'},
+    'kpi.idle': {zh:'空闲', en:'Idle'},
+    'kpi.off': {zh:'关机', en:'Off'},
+    'kpi.alarm': {zh:'警报机器总数', en:'Alarms'},
+    'kpi.activeAlarm': {zh:'活动警报 1 条', en:'1 active alarm'},
+    'kpi.output': {zh:'今日产量', en:'Today Output'},
+    'kpi.yesterday': {zh:'昨日', en:'yesterday'},
+    'kpi.defect': {zh:'不良品数', en:'Defects'},
+    'kpi.yesterday2': {zh:'昨日', en:'yesterday'},
+    'kpi.oee': {zh:'综合 OEE', en:'Overall OEE'},
+    'table.title': {zh:'生产机器明细', en:'Machine Details'},
+    'table.search': {zh:'搜索机器名称…', en:'Search machines…'},
+    'filter.all': {zh:'全部', en:'All'},
+    'filter.run': {zh:'生产', en:'Running'},
+    'filter.idle': {zh:'空闲', en:'Idle'},
+    'filter.off': {zh:'关机', en:'Off'},
+    'th.plant': {zh:'场地', en:'Site'},
+    'th.machine': {zh:'机器名称', en:'Machine'},
+    'th.status': {zh:'生产状态', en:'Status'},
+    'th.product': {zh:'当前产品', en:'Product'},
+    'th.process': {zh:'工艺编号', en:'Process No.'},
+    'th.progress': {zh:'生产进度', en:'Progress'},
+    'th.pph': {zh:'PPH', en:'PPH'},
+    'th.good': {zh:'良品数', en:'Good'},
+    'th.defect': {zh:'不良品数', en:'Defects'},
+    'th.op': {zh:'操作', en:'Action'},
+    'st.run': {zh:'生产', en:'Running'},
+    'st.idle': {zh:'空闲', en:'Idle'},
+    'st.off': {zh:'关机', en:'Off'},
+    'op.detail': {zh:'详情', en:'Detail'},
+    'pager.total': {zh:'共 11 条 · 1/1 页', en:'11 items · 1/1'}
+  };
+
+  var rail = document.getElementById('rail');
+  var tree = document.getElementById('tree');
+  var fly = document.getElementById('railFly');
+
+  /* ---------------- 主题 ---------------- */
+  function applyTheme(skin, dark){
+    var h = document.documentElement;
+    if (skin && skin !== 'default') h.setAttribute('data-skin', skin);
+    else h.removeAttribute('data-skin');
+    if (dark) h.setAttribute('data-theme', 'dark');
+    else h.removeAttribute('data-theme');
+    try{
+      localStorage.setItem('hx-skin', skin || 'default');
+      localStorage.setItem('hx-theme', dark ? 'dark' : 'light');
+    }catch(e){}
+    document.querySelectorAll('.theme-opt').forEach(function(el){
+      var isDark = el.getAttribute('data-theme') === 'dark';
+      var k = el.getAttribute('data-skin') || 'default';
+      el.classList.toggle('on', isDark ? (dark && (skin || 'default') === 'default') : (!dark && k === (skin || 'default')));
+    });
+  }
+  document.querySelectorAll('.theme-opt').forEach(function(el){
+    el.addEventListener('click', function(){
+      var dark = el.getAttribute('data-theme') === 'dark';
+      var skin = el.getAttribute('data-skin') || 'default';
+      applyTheme(skin, dark);
+      closePop(el.closest('.pop'));
+    });
+  });
+  (function(){
+    try{
+      var t = localStorage.getItem('hx-theme');
+      var s = localStorage.getItem('hx-skin') || 'default';
+      applyTheme(s, t === 'dark');
+    }catch(e){ applyTheme('default', false); }
+  })();
+
+  /* ---------------- 语言 ---------------- */
+  function applyLang(lang){
+    document.documentElement.setAttribute('lang', lang);
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      var key = el.getAttribute('data-i18n');
+      var entry = DICT[key];
+      if (entry && entry[lang]) el.textContent = entry[lang];
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(function(el){
+      var key = el.getAttribute('data-i18n-ph');
+      var entry = DICT[key];
+      if (entry && entry[lang]) el.setAttribute('placeholder', entry[lang]);
+    });
+    document.querySelectorAll('.lang-opt[data-lang]').forEach(function(el){
+      el.classList.toggle('on', el.getAttribute('data-lang') === lang);
+    });
+    var langBtn = document.querySelector('#langPop > button');
+    if (langBtn) langBtn.setAttribute('title', lang === 'en' ? 'Language: English' : '语言：简体中文');
+    document.querySelectorAll('[data-i18n-title]').forEach(function(el){
+      var key = el.getAttribute('data-i18n-title');
+      var entry = DICT[key];
+      if (entry && entry[lang]) el.setAttribute('title', entry[lang]);
+    });
+    var fs = document.getElementById('fsBtn');
+    fs.setAttribute('title', lang === 'en' ? 'Fullscreen' : '全屏');
+    try{ localStorage.setItem('hx-lang', lang); }catch(e){}
+  }
+  document.querySelectorAll('.lang-opt[data-lang]').forEach(function(el){
+    el.addEventListener('click', function(){
+      applyLang(el.getAttribute('data-lang'));
+      closePop(el.closest('.pop'));
+    });
+  });
+  applyLang((function(){ try{ return localStorage.getItem('hx-lang') === 'en' ? 'en' : 'zh'; }catch(e){ return 'zh'; } })());
+
+  /* ---------------- 下拉浮层 ---------------- */
+  var pops = Array.prototype.slice.call(document.querySelectorAll('.pop'));
+  function closePop(pop){
+    if (!pop) return;
+    pop.classList.remove('open');
+    var trigger = pop.querySelector('[aria-expanded]');
+    if (trigger) trigger.setAttribute('aria-expanded', 'false');
+  }
+  function closeAllPops(except){
+    pops.forEach(function(p){ if (p !== except) closePop(p); });
+  }
+  pops.forEach(function(pop){
+    var trigger = pop.querySelector('button');
+    if (!trigger) return;
+    trigger.addEventListener('click', function(e){
+      e.stopPropagation();
+      var willOpen = !pop.classList.contains('open');
+      closeAllPops(pop);
+      pop.classList.toggle('open', willOpen);
+      trigger.setAttribute('aria-expanded', String(willOpen));
+    });
+  });
+  document.addEventListener('click', function(e){
+    if (!e.target.closest('.pop')) closeAllPops();
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape'){ closeAllPops(); }
+  });
+
+  /* ---------------- 侧栏折叠 ---------------- */
+  /* 全屏：默认不绑定交互。
+     产品按需自行实现（浏览器 Fullscreen API / 大屏容器 / iframe 约束各不相同）。
+     保留 #fsBtn 作为挂载点，图标与 tooltip 不变。 */
+
+  /* ---------------- 页签 / 筛选 chips ---------------- */
+  document.querySelectorAll('.ws-tabs .tab').forEach(function(tab){
+    tab.addEventListener('click', function(){
+      document.querySelectorAll('.ws-tabs .tab').forEach(function(t){ t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected','true');
+    });
+  });
+  document.querySelectorAll('.filter-chip').forEach(function(chip){
+    chip.addEventListener('click', function(){
+      document.querySelectorAll('.filter-chip').forEach(function(c){ c.classList.remove('on'); });
+      chip.classList.add('on');
+    });
+  });
+})();
+</script>
+<script>
+(function(){
+  var table = document.querySelector('.table-card .table');
+  if (!table) return;
+  var all = document.getElementById('cbxAll');
+  var rows = Array.prototype.slice.call(table.querySelectorAll('tbody tr'));
+  var boxes = rows.map(function(r){ return r.querySelector('.cbx'); });
+  var batch = document.getElementById('batchBtn');
+  var count = document.getElementById('selCount');
+  function refresh(){
+    var n = 0;
+    rows.forEach(function(r, i){
+      var on = boxes[i].getAttribute('aria-checked') === 'true';
+      if (on) n++;
+      r.classList.toggle('is-selected', on);
+    });
+    if (!all) return;
+    all.classList.remove('is-indeterminate');
+    all.setAttribute('aria-checked', n === boxes.length ? 'true' : 'false');
+    if (n > 0 && n < boxes.length) { all.classList.add('is-indeterminate'); all.setAttribute('aria-checked', 'false'); }
+    if (batch) batch.disabled = n === 0;
+    if (count){ count.hidden = n === 0; count.textContent = '已选 ' + n + ' 项'; }
+  }
+  boxes.forEach(function(b){
+    b.addEventListener('click', function(e){
+      e.stopPropagation();
+      b.setAttribute('aria-checked', b.getAttribute('aria-checked') === 'true' ? 'false' : 'true');
+      refresh();
+    });
+  });
+  if (all){
+    all.addEventListener('click', function(e){
+      e.stopPropagation();
+      var on = all.getAttribute('aria-checked') === 'true';
+      if (all.classList.contains('is-indeterminate')) on = false;
+      all.classList.remove('is-indeterminate');
+      boxes.forEach(function(b){ b.setAttribute('aria-checked', on ? 'false' : 'true'); });
+      refresh();
+    });
+  }
+  refresh();
+})();
+</script>
+<script>
+(function(){
+  // 一级 tab：切换内容面板（导航语义）
+  var tabMap = { monitor:'新增机器', status:'刷新数据', work:'新建工单', components:'查看规范' };
+  function setPane(name){
+    document.body.setAttribute('data-pane', name);
+    var batch = document.getElementById('batchBtn');
+    if (batch) batch.style.display = (name === 'monitor') ? '' : 'none';
+    var label = document.querySelector('#addBtn .btn-label');
+    if (label && tabMap[name]) label.textContent = tabMap[name];
+  }
+  document.querySelectorAll('.tab-row .tab').forEach(function(tab){
+    tab.addEventListener('click', function(){
+      document.querySelectorAll('.tab-row .tab').forEach(function(t){ t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
+      tab.classList.add('active'); tab.setAttribute('aria-selected','true');
+      setPane(tab.getAttribute('data-pane'));
+    });
+  });
+
+  // 二级 seg：列表 / 卡片
+  var seg = document.getElementById('viewSeg');
+  if (seg) seg.querySelectorAll('.item').forEach(function(it){
+    it.addEventListener('click', function(){
+      seg.querySelectorAll('.item').forEach(function(x){ x.classList.remove('active'); });
+      it.classList.add('active');
+      var v = it.getAttribute('data-view');
+      var list = document.getElementById('view-list'), cards = document.getElementById('view-cards');
+      if (list) list.hidden = v !== 'list';
+      if (cards) cards.hidden = v !== 'cards';
+      var split = document.querySelector('.monitor-split'); if (split) split.hidden = v === 'cards';
+      var show = v === 'list' ? list : cards;
+      if (show){
+        show.classList.remove('anim-fade-in','anim-float-up');
+        void show.offsetWidth;
+        show.classList.add('view-in');
+      }
+    });
+  });
+
+  // 弹窗
+  var mask = document.getElementById('addModal');
+  function openModal(){ if (mask){ mask.classList.add('show'); mask.setAttribute('aria-hidden','false'); } }
+  function closeModal(){ if (mask){ mask.classList.remove('show'); mask.setAttribute('aria-hidden','true'); } }
+  var toastEl = document.getElementById('toast');
+  var toastTimer = null;
+  function showToast(msg){
+    if (!toastEl) return;
+    toastEl.textContent = msg; toastEl.hidden = false;
+    toastEl.classList.remove('anim-fade-out','anim-float-up');
+    void toastEl.offsetWidth;
+    toastEl.classList.add('anim-float-up');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){
+      toastEl.classList.add('anim-fade-out');
+      setTimeout(function(){ toastEl.hidden = true; }, 240);
+    }, 1800);
+  }
+  // 页面级刷新：LIVE + 30s 倒计时；手动点击/自动到点都回写更新时间
+  var pageRefresh = document.getElementById('pageRefresh');
+  var refreshSecEl = document.getElementById('refreshSec');
+  var refreshLeft = 30;
+  function renderRefreshSec(){ if (refreshSecEl) refreshSecEl.textContent = refreshLeft + 's'; }
+  function stampUpdate(){
+    var d = new Date(), pad = function(n){ return n < 10 ? '0' + n : '' + n; };
+    var t = pad(d.getHours()) + ':' + pad(d.getMinutes());
+    var ut = document.getElementById('updateTime'); if (ut) ut.textContent = t;
+  }
+  if (pageRefresh) pageRefresh.addEventListener('click', function(){
+    if (pageRefresh.classList.contains('is-spinning')) return;
+    pageRefresh.classList.add('is-spinning');
+    setTimeout(function(){ pageRefresh.classList.remove('is-spinning'); }, 700);
+    refreshLeft = 30; renderRefreshSec(); stampUpdate();
+    showToast('数据已刷新（演示）');
+  });
+  renderRefreshSec();
+  setInterval(function(){
+    refreshLeft--;
+    if (refreshLeft <= 0){ refreshLeft = 30; stampUpdate(); }
+    renderRefreshSec();
+  }, 1000);
+  var add = document.getElementById('addBtn');
+  if (add) add.addEventListener('click', function(){
+    var pane = document.body.getAttribute('data-pane');
+    if (pane === 'monitor') openModal();
+    else showToast('演示：' + (tabMap[pane] || '操作'));
+  });
+  var saveBtn = document.getElementById('modalSave');
+  if (saveBtn) saveBtn.addEventListener('click', function(){ closeModal(); showToast('已保存（演示）'); });
+  var c1 = document.getElementById('modalClose'), c2 = document.getElementById('modalCancel');
+  if (c1) c1.addEventListener('click', closeModal);
+  if (c2) c2.addEventListener('click', closeModal);
+  if (mask) mask.addEventListener('click', function(e){ if (e.target === mask) closeModal(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeModal(); });
+
+  // 开关（演示）
+  document.querySelectorAll('.switch').forEach(function(sw){
+    sw.addEventListener('click', function(){
+      sw.setAttribute('data-on', sw.getAttribute('data-on') === 'true' ? 'false' : 'true');
+    });
+  });
+})();
+</script>
+<script>
+(function(){
+  var rows = Array.prototype.slice.call(document.querySelectorAll('#view-list tbody tr'));
+  var search = document.getElementById('tableSearch');
+  var chips = Array.prototype.slice.call(document.querySelectorAll('.filter-chip[data-filter]'));
+  var card = document.getElementById('detailCard');
+  var filter = 'all';
+
+  function applyFilter(){
+    var q = (search && search.value || '').trim().toLowerCase();
+    rows.forEach(function(r){
+      var okState = filter === 'all' || r.getAttribute('data-status') === filter;
+      var text = (r.getAttribute('data-name') + ' ' + r.getAttribute('data-code')).toLowerCase();
+      var okText = !q || text.indexOf(q) > -1;
+      r.hidden = !(okState && okText);
+    });
+  }
+  chips.forEach(function(chip){
+    chip.addEventListener('click', function(){
+      chips.forEach(function(c){ c.classList.remove('on'); });
+      chip.classList.add('on');
+      filter = chip.getAttribute('data-filter');
+      applyFilter();
+    });
+  });
+  if (search) search.addEventListener('input', applyFilter);
+
+  var mqDetail = window.matchMedia('(max-width: 1475px)');
+  function closeDetail(){ document.body.classList.remove('detail-open'); }
+  function selectRow(r, openDrawer){
+    rows.forEach(function(x){ x.classList.remove('is-current'); });
+    r.classList.add('is-current');
+    var m = {
+      'd-name': r.getAttribute('data-name'), 'd-code': r.getAttribute('data-code'),
+      'd-site': r.getAttribute('data-site'), 'd-product': r.getAttribute('data-product'),
+      'd-process': r.getAttribute('data-process'), 'd-owner': r.getAttribute('data-owner'),
+      'd-good': r.getAttribute('data-good'), 'd-bad': r.getAttribute('data-bad'),
+      'd-pph': r.getAttribute('data-pph')
+    };
+    Object.keys(m).forEach(function(id){ var el = document.getElementById(id); if (el) el.textContent = m[id]; });
+    var badge = document.getElementById('d-badge');
+    var st = r.getAttribute('data-status');
+    if (badge){
+      badge.className = 'badge ' + (st === 'run' ? 'badge-run' : st === 'idle' ? 'badge-muted' : 'badge-outline');
+      badge.textContent = st === 'run' ? '生产' : st === 'idle' ? '空闲' : '关机';
+    }
+    if (card){
+      card.classList.remove('detail-in'); void card.offsetWidth; card.classList.add('detail-in');
+    }
+    if (openDrawer && mqDetail.matches) document.body.classList.add('detail-open');
+  }
+  rows.forEach(function(r){
+    r.addEventListener('click', function(e){
+      if (e.target.closest('.cbx') || e.target.closest('button')) return;
+      selectRow(r, true);
+    });
+  });
+  if (rows[0]) selectRow(rows[0]);
+  var dClose = document.getElementById('detailClose');
+  if (dClose) dClose.addEventListener('click', closeDetail);
+  var dMask = document.getElementById('detailMask');
+  if (dMask) dMask.addEventListener('click', closeDetail);
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeDetail(); });
+  if (mqDetail.addEventListener) mqDetail.addEventListener('change', function(e){ if (!e.matches) closeDetail(); });
+
+  // 列表/卡片视图切到非“设备监控”时隐藏二级 seg
+  var segRow = document.querySelector('.seg-row');
+  document.querySelectorAll('.tab-row .tab').forEach(function(tab){
+    tab.addEventListener('click', function(){
+      var p = tab.getAttribute('data-pane');
+      if (segRow) segRow.style.display = p === 'monitor' ? '' : 'none';
+    });
+  });
+})();
+</script>
+
+<script>
+(function(){
+  var specView=document.getElementById('specView'), opsView=document.getElementById('opsView');
+  var specNav=document.getElementById('specNav'), opsNav=document.getElementById('opsNav');
+  var barTitle=document.getElementById('barTitle');
+  function show(view){
+    var spec = view==='spec';
+    document.body.setAttribute('data-view', spec?'spec':'ops');
+    specView.hidden=!spec; opsView.hidden=spec;
+    if(barTitle) barTitle.textContent=spec?'信息化图表示例':'设备运维工作台';
+    if(specNav) specNav.classList.toggle('on',spec);
+    if(opsNav) opsNav.classList.toggle('on',!spec);
+    if(spec) specView.scrollTop=0;
+    document.title=spec?'信息化图表示例 · 弘设汇':'设备运维工作台 · 左右结构 v7';
+  }
+  if(specNav) specNav.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();show('spec');},true);
+  if(opsNav) opsNav.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();show('ops');},true);
+  if(specNav) specNav.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();show('spec');}});
+  document.body.setAttribute('data-view','ops');
+})();
+</script>
+<div class="chart-tip" id="chartTip" hidden></div>
+<script>
+(function(){
+  var tip=document.getElementById('chartTip');
+  if(!tip) return;
+  var active=null;
+  function move(e){
+    var x=e.clientX+12, y=e.clientY+12, w=tip.offsetWidth;
+    if(x+w > window.innerWidth-8) x=e.clientX-w-12;
+    if(y+tip.offsetHeight > window.innerHeight-8) y=e.clientY-tip.offsetHeight-12;
+    tip.style.left=x+'px'; tip.style.top=y+'px';
+  }
+  document.querySelectorAll('#specView [data-tip]').forEach(function(el){
+    el.addEventListener('mouseenter',function(e){ if(active) return; tip.textContent=el.getAttribute('data-tip'); tip.hidden=false; move(e); });
+    el.addEventListener('mousemove',move);
+    el.addEventListener('mouseleave',function(){ if(active!==el) tip.hidden=true; });
+    el.addEventListener('click',function(e){
+      e.stopPropagation();
+      var on=el.classList.toggle('is-active');
+      if(active && active!==el) active.classList.remove('is-active');
+      active=on?el:null;
+      tip.textContent=el.getAttribute('data-tip');
+      tip.hidden=!on; if(on) move(e);
+    });
+  });
+  document.addEventListener('click',function(){ if(active){active.classList.remove('is-active');active=null;} tip.hidden=true; });
+})();
+</script>
+<script>
+(function(){
+  function fitTableRows(){
+    var card=document.getElementById('view-list');
+    if(!card || card.hidden) return;
+    var scroll=card.querySelector('.table-scroll');
+    var table=card.querySelector('table');
+    var tbody=table && table.querySelector('tbody');
+    if(!scroll || !tbody) return;
+    var avail=scroll.clientHeight;
+    if(avail < 80) return;
+    tbody.querySelectorAll('tr.row-empty').forEach(function(r){r.remove();});
+    var header=table.querySelector('thead').getBoundingClientRect().height || 44;
+    var dataH=tbody.getBoundingClientRect().height;
+    var MIN_ROW=8; var rowH=44;
+    var need=Math.floor((avail - header - dataH) / rowH);
+    for(var i=0;i<need;i++){
+      var tr=document.createElement('tr');
+      tr.className='row-empty';
+      var td=document.createElement('td');
+      td.colSpan=9;
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+    }
+  }
+  window.addEventListener('resize', fitTableRows);
+  document.querySelectorAll('.tab,[data-view]').forEach(function(el){
+    el.addEventListener('click', function(){ setTimeout(fitTableRows, 60); });
+  });
+  setTimeout(fitTableRows, 0);
+})();
+</script>
+<script src="../js/tree-nav.js"></script>
+</body>
+</html>

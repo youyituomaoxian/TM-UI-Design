@@ -1,0 +1,69 @@
+name: design-system-spec-gate
+
+# 团队 PR 门禁（2026-11-20 扩容）
+# 目标：新克隆即可跑通，不依赖本机路径、浏览器或 output/。
+# 不在此跑：
+#   - scripts/audit-tree-runtime.js —— 需本机 Edge headless（Windows 才有），本地收尾自行跑；
+#   - ci-local.js —— 全量自检含旧 V2.1 派生项，仅维护者本地收尾用。
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+env:
+  WEB: 弘讯web端design-system
+  MOBILE: 弘讯移动端design-system
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: 单页门禁 · 两端克隆源
+        run: |
+          node "$WEB/validate-spec.js" "$WEB/page-template.html"
+          node "$MOBILE/validate-spec.js" "$MOBILE/page-template.html"
+
+      - name: 单页门禁 · 规范展示 / 示例 / USAGE
+        run: |
+          node "$WEB/validate-spec.js" "$WEB/web规范展示_左右结构.html"
+          node "$WEB/validate-spec.js" "$WEB/showcase/左右结构_v7_设备运维工作台.html"
+          node "$WEB/validate-spec.js" "$WEB/showcase/弘讯亮色注塑机看板.html"
+          node "$WEB/validate-spec.js" "$WEB/showcase/登录页示例.html"
+          node "$WEB/validate-spec.js" USAGE.html
+
+      - name: 组件复用 M-12 · 六页
+        run: |
+          for f in \
+            "$WEB/page-template.html" \
+            "$WEB/web规范展示_左右结构.html" \
+            "$WEB/showcase/左右结构_v7_设备运维工作台.html" \
+            "$WEB/showcase/弘讯亮色注塑机看板.html" \
+            "$WEB/showcase/登录页示例.html" \
+            "USAGE.html"; do
+            node scripts/audit-component-reuse.js "$f"
+          done
+
+      - name: 文档体积 / 规范可达性 / 双端一致性
+        run: |
+          node check-size.js
+          node check-reach.js
+          node check-sync.js
+
+      - name: 外壳 chrome / 图标库 / 规范展示页自检
+        run: |
+          node scripts/check-shell-chrome.js
+          node scripts/check-icon-gallery.js
+          node scripts/check-spec-page.js

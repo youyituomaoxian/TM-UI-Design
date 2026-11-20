@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>弘讯设计系统 · 使用指南</title>
+<!--
+  ============================================================
+  弘讯设计系统 · 使用指南（USAGE.html，2026-11-20 对齐左右结构）
+  形态：非 B 端文档页（不套后台框架）——本页是「说明文档」，按自由设计路径组织。
+  风格：link template.css 真源（token + 组件类），页面只定义文档布局类（doc-*/hero-*）。
+  信息：需求路径（含搜索+一键复制）× 快速上手 5 步 × 环境路径（按 Agent 类型）× 角色路径 × 资产地图 × FAQ（折叠）。
+  合规：不覆写 template.css 组件类、无裸 hex、字号走 t-*、间距 %4、动效走 motion token。
+  ============================================================
+-->
+<link rel="stylesheet" href="弘讯web端design-system/template.css">
+<style>
+  /* ===== 文档页布局类（非 B 端，值全走 token）===== */
+  /* 滚动修复：B 端 .app 的内容区内部滚动由真源管理；文档页直接 body 滚动 */
+  html{height:auto;overflow:visible;}
+  body{height:auto;overflow:visible;background:var(--n2);}
+  .doc-wrap{max-width:1120px;margin:0 auto;padding:0 16px 56px;}
+
+  /* ---- Hero ---- */
+  .doc-hero{position:relative;overflow:hidden;border-radius:0 0 var(--radius-lg) var(--radius-lg);
+    background:linear-gradient(135deg,var(--primary) 0%,var(--primary-active) 100%);
+    padding:56px 32px 48px;margin:0 -16px 0;color:var(--text-on-brand);}
+  .doc-hero::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:radial-gradient(rgba(255,255,255,.18) 1px,transparent 1px);
+    background-size:22px 22px;opacity:.55;}
+  .hero-ring{position:absolute;border-radius:50%;border:2px solid rgba(255,255,255,.28);pointer-events:none;}
+  .hero-ring.r1{width:280px;height:280px;right:-70px;top:-90px;}
+  .hero-ring.r2{width:170px;height:170px;right:120px;bottom:-80px;border-width:1px;opacity:.7;}
+  .hero-inner{position:relative;z-index:1;max-width:880px;}
+  .hero-kicker{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.16);
+    border:1px solid rgba(255,255,255,.3);border-radius:var(--radius-round);padding:4px 14px;
+    font-size:13px;letter-spacing:.4px;margin-bottom:20px;}
+  .hero-kicker .live-dot{width:8px;height:8px;border-radius:50%;background:var(--run-active);box-shadow:0 0 0 3px rgba(74,222,128,.35);}
+  .doc-hero h1{margin:0 0 10px;font-size:40px;line-height:1.2;letter-spacing:.5px;}
+  .doc-hero h1 .hl{background:rgba(255,255,255,.22);border-radius:var(--radius-base);padding:0 8px;}
+  .hero-sub{margin:0 0 24px;font-size:16px;line-height:1.7;opacity:.95;max-width:680px;}
+  .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px;}
+  .hero-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:var(--radius-md);
+    font-size:14px;font-weight:500;text-decoration:none;transition:transform var(--motion-duration-fast) var(--motion-ease-out),box-shadow var(--motion-duration-fast) var(--motion-ease-out);}
+  .hero-btn--solid{background:var(--n1);color:var(--primary-active);box-shadow:var(--shadow-float);}
+  .hero-btn--ghost{background:rgba(255,255,255,.12);color:var(--text-on-brand);border:1px solid rgba(255,255,255,.4);}
+  .hero-btn:hover{transform:translateY(-2px);box-shadow:var(--shadow-modal);}
+  .hero-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;max-width:760px;}
+  .hero-stat{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:var(--radius-md);padding:12px 16px;}
+  .hero-stat b{display:block;font-size:26px;line-height:1.2;}
+  .hero-stat span{font-size:12px;opacity:.9;}
+
+  /* ---- Sticky 锚点导航 ---- */
+  .doc-nav{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);
+    border:1px solid var(--n6);border-radius:var(--radius-round);margin:20px 0 32px;padding:6px;
+    display:flex;flex-wrap:wrap;gap:4px;box-shadow:var(--shadow-row-hover);}
+  .doc-nav a{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius-round);
+    font-size:13px;color:var(--n10);text-decoration:none;transition:background var(--motion-duration-fast) var(--motion-ease-out),color var(--motion-duration-fast) var(--motion-ease-out);}
+  .doc-nav a:hover{background:var(--n2);}
+  .doc-nav a.on{background:var(--primary);color:var(--text-on-brand);font-weight:500;}
+
+  /* ---- 区块 ---- */
+  .doc-section{margin-bottom:40px;}
+  .doc-section-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+  .doc-section-head .sec-no{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;flex:none;
+    border-radius:var(--radius-md);font-size:16px;font-weight:600;}
+  .doc-section-head h2{margin:0;font-size:22px;line-height:1.3;}
+  .doc-section-head .t-caption{margin-left:auto;}
+
+  /* ---- 需求路径：搜索 + 卡片 ---- */
+  .req-search{position:relative;margin-bottom:16px;}
+  .req-search input{width:100%;height:44px;padding:0 44px 0 16px;border:1px solid var(--n6);border-radius:var(--radius-md);
+    background:var(--n1);font-size:14px;color:var(--n10);transition:border-color var(--motion-duration-fast) var(--motion-ease-out),box-shadow var(--motion-duration-fast) var(--motion-ease-out);}
+  .req-search input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-dis-bg);}
+  .req-search .s-ico{position:absolute;right:14px;top:12px;color:var(--n8);pointer-events:none;}
+  .req-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;}
+  .req-card{position:relative;overflow:hidden;background:var(--n1);border:1px solid var(--n6);border-radius:var(--radius-lg);
+    padding:18px 18px 14px;transition:transform var(--motion-duration-fast) var(--motion-ease-out),box-shadow var(--motion-duration-fast) var(--motion-ease-out);}
+  .req-card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;}
+  .req-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-float);}
+  .req-card--primary::before{background:var(--primary);}
+  .req-card--run::before{background:var(--run-active);}
+  .req-card--warn::before{background:var(--warn-active);}
+  .req-card--err::before{background:var(--err-active);}
+  .req-card--chart::before{background:var(--chart-smart-cyan);}
+  .req-card--neutral::before{background:var(--n7);}
+  .req-card--purple::before{background:var(--chart-wisdom-purple);}
+  .req-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .req-emoji{font-size:24px;line-height:1;}
+  .req-title{font-size:15px;font-weight:600;margin:0;}
+  .req-code{background:var(--n2);border:1px solid var(--n6);border-radius:var(--radius-base);padding:10px 12px;
+    font-family:var(--font-mono);font-size:12px;line-height:20px;color:var(--n10);overflow-x:auto;white-space:pre-wrap;overflow-wrap:anywhere;cursor:pointer;position:relative;padding-right:34px;transition:border-color var(--motion-duration-fast) var(--motion-ease-out);}
+  .req-code:hover{border-color:var(--primary);}
+  .copy-hint{position:absolute;right:6px;top:6px;width:22px;height:22px;border-radius:var(--radius-base);
+    background:var(--n1);border:1px solid var(--n6);display:flex;align-items:center;justify-content:center;color:var(--n8);}
+  .copy-hint svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .copy-hint .ico-ok{display:none;}
+  .copy-toast{position:absolute;top:-6px;right:8px;transform:translateY(-100%);background:var(--run-soft);color:var(--run-active);
+    font-size:11px;line-height:1;padding:5px 10px;border-radius:var(--radius-round);opacity:0;pointer-events:none;
+    transition:opacity var(--motion-duration-fast) var(--motion-ease-out),transform var(--motion-duration-fast) var(--motion-ease-out);white-space:nowrap;}
+  .copy-toast::after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);border:4px solid transparent;border-top-color:var(--run-soft);}
+  .req-code.copied{border-color:var(--run-active);}
+  .req-code.copied .copy-hint{color:var(--run-active);border-color:var(--run-active);}
+  .req-code.copied .copy-hint .ico-copy{display:none;}
+  .req-code.copied .copy-hint .ico-ok{display:block;}
+  .req-code.copied .copy-toast{opacity:1;transform:translateY(-100%) translateY(-2px);}
+  .req-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px;}
+  .req-meta .t-caption{color:var(--n8);}
+  .req-empty{display:none;text-align:center;padding:32px;color:var(--n8);}
+
+  /* ---- 快速上手 5 步 ---- */
+  .step-track{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+  .step-card{position:relative;background:var(--n1);border:1px solid var(--n6);border-radius:var(--radius-lg);padding:18px 14px 14px;transition:transform var(--motion-duration-fast) var(--motion-ease-out),box-shadow var(--motion-duration-fast) var(--motion-ease-out);}
+  .step-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-float);}
+  .step-num{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:var(--radius-round);
+    font-size:15px;font-weight:600;color:var(--text-on-brand);margin-bottom:10px;}
+  .sn-1{background:var(--primary);}.sn-2{background:var(--run-active);}.sn-3{background:var(--warn-active);}.sn-4{background:var(--err-active);}.sn-5{background:var(--n9);}
+  .step-card b{display:block;font-size:14px;margin-bottom:6px;}
+  .step-card .t-body2{font-size:12px;color:var(--n8);line-height:1.6;}
+
+  /* ---- 角色路径 ---- */
+  .path-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;}
+  .path-card{background:var(--n1);border:1px solid var(--n6);border-radius:var(--radius-lg);padding:20px 18px;
+    transition:transform var(--motion-duration-fast) var(--motion-ease-out),box-shadow var(--motion-duration-fast) var(--motion-ease-out);}
+  .path-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-float);}
+  .path-ico{width:44px;height:44px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
+  .path-ico svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;}
+  .path-ico--primary{background:var(--primary-dis-bg);color:var(--primary-active);}
+  .path-ico--run{background:var(--run-soft);color:var(--run-active);}
+  .path-ico--warn{background:var(--warn-soft);color:var(--n11);}
+  .path-ico--neutral{background:var(--n3);color:var(--n9);}
+  .path-card .path-tag{display:inline-flex;align-items:center;font-size:12px;padding:2px 10px;border-radius:var(--radius-round);margin-bottom:10px;}
+  .pt-run{background:var(--run-soft);color:var(--run-active);}
+  .pt-def{background:var(--n3);color:var(--n8);}
+  .path-card b{display:block;font-size:15px;margin-bottom:6px;}
+  .path-card .t-body2{font-size:13px;color:var(--n9);line-height:1.7;margin-bottom:8px;}
+  .path-card .t-body2:last-child{margin-bottom:0;}
+
+  /* ---- 资产地图 ---- */
+  .asset-card{background:var(--n1);border:1px solid var(--n6);border-radius:var(--radius-lg);overflow:hidden;}
+  .asset-table tr:hover td{background:var(--n2);}
+  .asset-table td:first-child{white-space:nowrap;}
+  .a-type{display:inline-flex;align-items:center;font-size:11px;padding:1px 8px;border-radius:var(--radius-round);margin-right:6px;vertical-align:1px;}
+  .at-entry{background:var(--primary-dis-bg);color:var(--primary-active);}
+  .at-gate{background:var(--run-soft);color:var(--run-active);}
+  .at-src{background:var(--warn-soft);color:var(--n11);}
+  .at-script{background:var(--n3);color:var(--n9);}
+
+  /* ---- FAQ 折叠 ---- */
+  .faq-list{display:flex;flex-direction:column;gap:10px;}
+  .faq-item{background:var(--n1);border:1px solid var(--n6);border-radius:var(--radius-md);overflow:hidden;}
+  .faq-item summary{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;font-size:14px;font-weight:500;
+    list-style:none;transition:background var(--motion-duration-fast) var(--motion-ease-out);}
+  .faq-item summary::-webkit-details-marker{display:none;}
+  .faq-item summary:hover{background:var(--n2);}
+  .faq-item summary .q-arrow{width:22px;height:22px;flex:none;border-radius:var(--radius-round);background:var(--n3);color:var(--n9);
+    display:flex;align-items:center;justify-content:center;font-size:12px;transition:transform var(--motion-duration-fast) var(--motion-ease-out);}
+  .faq-item[open] summary .q-arrow{transform:rotate(180deg);background:var(--primary);color:var(--text-on-brand);}
+  .faq-ans{padding:2px 16px 14px 48px;font-size:13px;line-height:1.8;color:var(--n9);}
+
+  /* ---- Footer ---- */
+  .doc-foot{margin-top:8px;padding-top:16px;border-top:1px solid var(--n6);color:var(--n8);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+  .kbd{display:inline-block;padding:0 6px;height:20px;line-height:18px;border:1px solid var(--n6);border-radius:var(--radius-base);background:var(--n1);color:var(--n10);font-family:var(--font-mono);font-size:12px;}
+
+  @media (max-width:900px){
+    .step-track{grid-template-columns:repeat(2,1fr);}
+    .doc-nav{position:static;border-radius:var(--radius-md);}
+  }
+  @media (max-width:560px){
+    .step-track{grid-template-columns:1fr;}
+    .doc-hero h1{font-size:30px;}
+    .hero-btn{flex:1;justify-content:center;}
+  }
+</style>
+<script>
+(function(){try{var t=localStorage.getItem('hx-theme'),s=localStorage.getItem('hx-skin');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');if(s&&s!=='default')document.documentElement.setAttribute('data-skin',s);}catch(e){}})();
+</script>
+</head>
+<body data-species="document">
+<div class="doc-wrap">
+
+  <!-- ===== Hero ===== -->
+  <div class="doc-hero">
+    <span class="hero-ring r1"></span>
+    <span class="hero-ring r2"></span>
+    <div class="hero-inner">
+      <span class="hero-kicker"><span class="live-dot"></span>弘讯设计系统 · 机器可执行规范资产</span>
+      <h1>一句话需求 <span class="hl">→ 合规页面</span></h1>
+      <p class="hero-sub">选需求 → 复制模板给 AI → 门禁 0 HIGH → 分享。规则细节交给 Agent 读规范，你只需要给「任务 + 入口」。现行版式 = 左右结构工作台（`.rail` + `.ws-global`），风格统一、不漂移，主题换肤 / 暗色 / 看板全支持。</p>
+      <div class="hero-actions">
+        <a class="hero-btn hero-btn--solid" href="#reqs">🎯 按需求选模板</a>
+        <a class="hero-btn hero-btn--ghost" href="#quickstart">🚀 第一次用 · 5 步</a>
+        <a class="hero-btn hero-btn--ghost" href="#assets">🗺️ 资产地图</a>
+      <span class="lang-sel" id="themeSel">
+        <button class="lang-trigger" id="themeTrigger" type="button" title="切换主题">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M 12 3.5 C 7.3 3.5 3.5 7.3 3.5 12 C 3.5 16.7 7.3 20.5 12 20.5 C 13.4 20.5 14.3 19.6 14.3 18.4 C 14.3 17.5 13.7 17 13.7 16.1 C 13.7 14.9 14.7 13.9 16 13.9 H 18 C 20.1 13.9 21.7 12.3 21.7 10.2 C 21.7 6.5 17.2 3.5 12 3.5 Z"/><circle cx="8" cy="9.2" r="1.1"/><circle cx="12" cy="7.2" r="1.1"/><circle cx="16" cy="9.2" r="1.1"/><circle cx="7.4" cy="13.4" r="1.1"/></svg>
+          <span>主题</span>
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M 6 9 L 12 15 L 18 9"/></svg>
+        </button>
+        <div class="lang-panel">
+          <div class="lang-opt on" data-skin="default"><span class="theme-dot"></span>默认蓝</div>
+          <div class="lang-opt" data-theme-choice="dark"><span class="theme-dot"></span>暗色</div>
+          <div class="lang-opt" data-skin="cyan"><span class="theme-dot"></span>科技青</div>
+          <div class="lang-opt" data-skin="green"><span class="theme-dot"></span>工业绿</div>
+          <div class="lang-opt" data-skin="amber"><span class="theme-dot"></span>琥珀橙</div>
+          <div class="lang-opt" data-skin="violet"><span class="theme-dot"></span>深空紫</div>
+        </div>
+      </span>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><b>3 分钟</b><span>从一句话到首版页面</span></div>
+        <div class="hero-stat"><b>0 HIGH</b><span>门禁硬指标，不达标不交付</span></div>
+        <div class="hero-stat"><b>零外链</b><span>分享版由脚本内联 CSS/js/资源</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Sticky 锚点导航 ===== -->
+  <nav class="doc-nav" id="docNav">
+    <a href="#reqs" class="on">🎯 按需求选模板</a>
+    <a href="#quickstart">🚀 快速上手</a>
+    <a href="#setup">🧭 环境路径</a>
+    <a href="#paths">🧑‍💻 角色路径</a>
+    <a href="#assets">🗺️ 资产地图</a>
+    <a href="#faq">❓ 常见问题</a>
+  </nav>
+
+  <!-- ===== 需求路径（搜索 + 卡片）===== -->
+  <section class="doc-section" id="reqs">
+    <div class="doc-section-head">
+      <span class="sec-no" style="background:var(--primary-dis-bg);color:var(--primary-active);">1</span>
+      <h2>按需求选模板</h2>
+      <span class="t-caption">搜索或点卡片，复制模板 → 替换占位符 → 发给 AI（日常复制「日常版」，外部 Agent 复制「完整版」）</span>
+    </div>
+    <p class="t-caption" style="margin:-6px 0 14px;color:var(--n8);">提示词只给「任务 + 入口」：日常版发给认 AGENTS.md 的 Agent；完整版已含 SOP §0 加载纪律（规范文本 ≤40k、只读命中章节）与问题上报口径——发现设计系统自身问题（token/组件/图标缺口、规范歧义、门禁漏洞）按 <span class="t-mono">templates/设计系统问题报告模板.md</span> 记录上报，不擅改设计系统文件。</p>
+    <div class="req-search">
+      <input id="reqSearch" type="text" placeholder="搜索：看板 / 移动 / 换肤 / 迁移 / 审计…">
+      <span class="s-ico">🔍</span>
+    </div>
+    <div class="req-grid" id="reqGrid">
+
+      <div class="req-card req-card--warn" data-k="登录 登录页 signin 找回密码">
+        <div class="req-head"><span class="req-emoji">🔐</span><b class="req-title">登录页（独立页）</b></div>
+        <div class="req-code" data-copy="用弘讯设计系统按 RULES §1.1b 登录页规格生成「<系统名>」登录页：卡外 logo（高 40）+ 卡内标题组 + 账号/密码（label + 显隐）+ 找回密码 3 步 + 法务行，门禁 0 HIGH。示例见弘讯web端design-system/showcase/登录页示例.html。">用弘讯设计系统按 RULES §1.1b 登录页规格生成「&lt;系统名&gt;」登录页：卡外 logo（高 40）+ 卡内标题组 + 账号/密码（label + 显隐）+ 找回密码 3 步 + 法务行，门禁 0 HIGH。示例见弘讯web端design-system/showcase/登录页示例.html。<span class="copy-hint"><svg class="ico-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ico-ok" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="copy-toast">已复制</span></div>
+        <div class="req-meta"><span class="t-caption">规格</span><span class="t-caption">RULES §1.1b 登录页；示例 0 违反</span></div>
+      </div>
+
+      <div class="req-card req-card--primary" data-k="web B端 后台 页面 脚手架">
+        <div class="req-head"><span class="req-emoji">🖥️</span><b class="req-title">Web B 端后台页面</b></div>
+        <div class="req-code" data-copy="用弘讯设计系统生成「<页面描述>」页面。">用弘讯设计系统生成「&lt;页面描述&gt;」页面。<span class="copy-hint"><svg class="ico-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ico-ok" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="copy-toast">已复制</span></div><div class="req-meta"><span class="t-caption">日常版 · 认 AGENTS.md 的 Agent（codex / Claude Code / Reasonix / Cursor）</span></div><div class="req-code" data-copy="按弘讯设计系统生成 <页面描述>：用脚手架起步 node <仓库根>/scripts/new-page-web.js <语义名>，遵循 <仓库根>/GENERATION-SOP.md（§0 加载纪律：≤40k 只读命中章节）与 弘讯web端design-system/RULES.md，门禁 0 HIGH 才交付；发现设计系统自身问题按 templates/设计系统问题报告模板.md 上报，不擅改设计系统文件。">按弘讯设计系统生成 &lt;页面描述&gt;：用脚手架起步 node &lt;仓库根&gt;/scripts/new-page-web.js &lt;语义名&gt;，遵循 &lt;仓库根&gt;/GENERATION-SOP.md（§0 加载纪律：≤40k 只读命中章节）与 弘讯web端design-system/RULES.md，门禁 0 HIGH 才交付；发现设计系统自身问题按 templates/设计系统问题报告模板.md 上报，不擅改设计系统文件。<span class="copy-hint"><svg class="ico-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ico-ok" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="copy-toast">已复制</span></div><div class="req-meta"><span class="t-caption">完整版 · 外部 Agent / 批量派发 / 网页版 AI</span></div>
+        <div class="req-meta"><span class="t-caption">框架</span><span class="t-caption">page-template.html（rail 216/64 + ws-global 60 + ws-pagebar 56）</span></div>
+      </div>
+
+      <div class="req-card req-card--run" data-k="移动 手机 h5 页面">
+        <div class="req-head"><span class="req-emoji">📱</span><b class="req-title">移动端页面</b></div>
+        <div class="req-code" data-copy="用弘讯设计系统生成「<移动端页面描述>」页面。（底部导航 3-5 项随需求增减；登录/详情等无 BottomNav 合法。）">用弘讯设计系统生成「&lt;移动端页面描述&gt;」页面。（底部导航 3-5 项随需求增减；登录/详情等无 BottomNav 合法。）<span class="copy-hint"><svg class="ico-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ico-ok" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="copy-toast">已复制</span></div><div class="req-meta"><span class="t-caption">日常版 · 认 AGENTS.md 的 Agent（codex / Claude Code / Reasonix / Cursor）</span></div><div class="req-code" data-copy="按弘讯设计系统生成 <移动端页面描述>：用脚手架起步 node <仓库根>/scripts/new-page-mobile.js <语义名>，遵循 <仓库根>/GENERATION-SOP.md（§0 加载纪律：≤40k 只读命中章节）与 弘讯移动端design-system/RULES.md，门禁 0 HIGH 才交付。（底部导航 3-5 项随需求增减；登录/详情等无 BottomNav 合法。发现设计系统自身问题按 templates/设计系统问题报告模板.md 上报，不擅改设计系统文件。）">按弘讯设计系统生成 &lt;移动端页面描述&gt;：用脚手架起步 node &lt;仓库根&gt;/scripts/new-page-mobile.js &lt;语义名&gt;，遵循 &lt;仓库根&gt;/GENERATION-SOP.md（§0 加载纪律：≤40k 只读命中章节）与 弘讯移动端design-system/RULES.md，门禁 0 HIGH 才交付。（底部导航 3-5 项随需求增减；登录/详情等无 BottomNav 合法。发现设计系统自身问题按 templates/设计系统问题报告模板.md 上报，不擅改设计系统文件。）<span class="copy-hint"><svg class="ico-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ico-ok" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="copy-toast">已复制</span></div><div class="req-meta"><span class="t-caption">完整版 · 外部 Agent / 批量派发 / 网页版 AI</span></div>
+        <div class="req-meta"><span class="t-caption">框架</span><span class="t-caption">375×812 手机壳（状态栏 / 导航 / 底部导航 3-5 项）</span></div>
+      </div>
+
+      <div class="req-card req-card--chart" data-k="看板 大屏 实时 图表 数据">
+        <div class="req-head"><span class="req-emoji">📊</span><b class="req-title">看板 / 数据大屏（实时图表）</b></div>
+        <div class="req-code" data-copy="用弘讯设计系统生成「<看板描述>」页面（实时数据 2 秒刷新 + 暂停开关）。">用弘讯设计系统生成「&lt;看板描述&gt;」页面（实时数据 2 秒刷新 + 暂停开关）。<span class="copy-hint"><svg class="ico-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ico-ok" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="copy-toast">已复制</span></div><div class="req-meta"><span class="t-caption">日常版 · 认 AGENTS.md 的 Agent（codex / Claude Code / Reasonix / Cursor）</span></div><div class="req-code" data-copy="按弘讯设计系统生成 <看板描述>（实时数据 2 秒刷新 + 暂停开关）：脚手架起步 node <仓库根>/scripts/new-page-web.js <语义名>，遵循 GENERATION-SOP.md（§0 加载纪律）+ RULES.md + CHART-SPEC.md；报警/日志列表定高滚动（.scroll-fixed），门禁 0 HIGH。">按弘讯设计系统生成 &lt;看板描述&gt;（实时数据 2 秒刷新 + 暂停开关）：脚手架起步 node &lt;仓库根&gt;/scripts/new-page-web.js &lt;语义名&gt;，遵循 GENERATION-SOP.md（§0 加载纪律）+ RULES.md + CHART-SPEC.md；报警/日志列表定高滚动（.scroll-fixed），门禁 0 HIGH。<span class="copy-hint"><svg class="ico-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ico-ok" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="copy-toast">已复制</span></div><div class="req-meta"><span class="t-caption">完整版 · 外部 Agent / 批量派发 / 网页版 AI</span></div>
+        <div class="req-meta"><span class="t-caption">图表</span><span class="t-caption">CHART-SPEC.md（系列色只用 --chart-*）</span></div>
+      </div>
+
+      <div class="req-card req-card--warn" data-k="换肤 品牌 暗色 主题">
+        <div class="req-head"><span class="req-emoji">🎨</span><b class="req-title">品牌换肤 / 暗色</b></div>
+        <div class="req-code" data-copy="用弘讯设计系统把 <页面/项目> 的品牌色换成 <hex>。">用弘讯设计系统把 &lt;页面/项目&gt; 的品牌色换成 &lt;hex&gt;。<span class="copy-hint"><svg class="ico-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ico-ok" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="copy-toast">已复制</span></div><div class="req-meta"><span class="t-caption">日常版 · 认 AGENTS.md 的 Agent（codex / Claude Code / Reasonix / Cursor）</span></div><div class="req-code" data-copy="把 <页面/项目> 的品牌色换成 <hex>：node <仓库根>/brand-color-engine/generate.js <hex> light <web|mobile> 与 dark 各跑一次，生成亮/暗双模式 :root 覆盖块追加，组件 CSS 保持 var(--*) 不动，门禁 0 HIGH。">把 &lt;页面/项目&gt; 的品牌色换成 &lt;hex&gt;：node &lt;仓库根&gt;/brand-color-engine/generate.js &lt;hex&gt; light &lt;web|mobile&gt; 与 dark 各跑一次，生成亮/暗双模式 :root 覆盖块追加，组件 CSS 保持 var(--*) 不动，门禁 0 HIGH。<span class="copy-hint"><svg class="ico-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ico-ok" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="copy-toast">已复制</span></div><div class="req-meta"><span class="t-caption">完整版 · 外部 Agent / 批量派发 / 网页版 AI</span></div>
+        <div class="req-meta"><span class="t-caption">引擎</span><span class="t-caption">任意品牌色 + 暗色；换肤不动组件结构 / 图表色 / 功能色</span></div>
+      </div>
+
+      <div class="req-card req-card--err" data-k="迁移 存量 弘讯化 旧系统">
+        <div class="req-head"><span class="req-emoji">🔄</span><b class="req-title">存量系统弘讯化迁移</b></div>
+        <div class="req-code" data-copy="用弘讯设计系统把 <现有项目> 迁移到弘讯体系（品牌 #005EAE，亮暗双模式）。">用弘讯设计系统把 &lt;现有项目&gt; 迁移到弘讯体系（品牌 #005EAE，亮暗双模式）。<span class="copy-hint"><svg class="ico-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ico-ok" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="copy-toast">已复制</span></div><div class="req-meta"><span class="t-caption">日常版 · 认 AGENTS.md 的 Agent（codex / Claude Code / Reasonix / Cursor）</span></div><div class="req-code" data-copy="把 <现有项目> 的视觉迁移到弘讯体系（品牌 #005EAE，亮暗双模式），走 GENERATION-SOP.md §② 存量改造五阶段：P0 盘点（audit-spec.js 逐页扫描出问题台账）→ P1 映射决策（每个差异按 D 层 map_to 定「改成什么」）→ P2 修复（注入弘讯 :root tokens（含暗色），逐页对齐：颜色→var(--*) 优先、结构→弘讯组件类，每页门禁 0 HIGH，每批复跑 audit-spec + validate-spec）→ P3 表现层截图审查 → P4 收口（台账闭环 + CHANGELOG 留痕）→ 防回漂（禁新裸 hex）。">把 &lt;现有项目&gt; 的视觉迁移到弘讯体系（品牌 #005EAE，亮暗双模式），走 GENERATION-SOP.md §② 存量改造五阶段：P0 盘点（audit-spec.js 逐页扫描出问题台账）→ P1 映射决策（每个差异按 D 层 map_to 定「改成什么」）→ P2 修复（注入弘讯 :root tokens（含暗色），逐页对齐：颜色→var(--*) 优先、结构→弘讯组件类，每页门禁 0 HIGH，每批复跑 audit-spec + validate-spec）→ P3 表现层截图审查 → P4 收口（台账闭环 + CHANGELOG 留痕）→ 防回漂（禁新裸 hex）。<span class="copy-hint"><svg class="ico-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ico-ok" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="copy-toast">已复制</span></div><div class="req-meta"><span class="t-caption">完整版 · 外部 Agent / 批量派发 / 网页版 AI</span></div>
+        <div class="req-meta"><span class="t-caption">流程</span><span class="t-caption">P0 台账 → P1 映射决策 → P2 修复 → P3/P4 收口 → 防回漂</span></div>
+      </div>
+
+      <div class="req-card req-card--neutral" data-k="审计 修复 门禁 检查">
+        <div class="req-head"><span class="req-emoji">🔍</span><b class="req-title">既有页面审计 / 修复</b></div>
+        <div class="req-code" data-copy="用弘讯设计系统对 <页面路径> 做规范审计并修复。">用弘讯设计系统对 &lt;页面路径&gt; 做规范审计并修复。<span class="copy-hint"><svg class="ico-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ico-ok" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="copy-toast">已复制</span></div><div class="req-meta"><span class="t-caption">日常版 · 认 AGENTS.md 的 Agent（codex / Claude Code / Reasonix / Cursor）</span></div><div class="req-code" data-copy="对 <页面路径> 做规范审计并修复：先跑 node <仓库根>/audit-spec.js <页面路径> --end <web|mobile> 全量盘点出台账（硬违规清零 + audit-rules.json migration_dimensions D-1~D-13 逐维对照；先台账后修复，禁止逐条手改）→ 逐项映射决策（每个差异定「改成什么」）→ 分批修复，每批跑 node <仓库根>/ci-local.js 回归 → node <对应端>/validate-spec.js <页面> 双跑收口 0 HIGH。规范/门禁自身缺陷上报维护者（记录到两端 CHANGELOG.md），不擅改 validate-spec.js / audit-spec.js。">对 &lt;页面路径&gt; 做规范审计并修复：先跑 node &lt;仓库根&gt;/audit-spec.js &lt;页面路径&gt; --end &lt;web|mobile&gt; 全量盘点出台账（硬违规清零 + audit-rules.json migration_dimensions D-1~D-13 逐维对照；先台账后修复，禁止逐条手改）→ 逐项映射决策（每个差异定「改成什么」）→ 分批修复，每批跑 node &lt;仓库根&gt;/ci-local.js 回归 → node &lt;对应端&gt;/validate-spec.js &lt;页面&gt; 双跑收口 0 HIGH。规范/门禁自身缺陷上报维护者（记录到两端 CHANGELOG.md），不擅改 validate-spec.js / audit-spec.js。<span class="copy-hint"><svg class="ico-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ico-ok" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="copy-toast">已复制</span></div><div class="req-meta"><span class="t-caption">完整版 · 外部 Agent / 批量派发 / 网页版 AI</span></div>
+        <div class="req-meta"><span class="t-caption">门禁</span><span class="t-caption">HIGH 必修 / MED 建议清零</span></div>
+      </div>
+
+      <div class="req-card req-card--run" data-k="分享 分享版 评审 交付 零外链 单文件">
+        <div class="req-head"><span class="req-emoji">📤</span><b class="req-title">分享版 · 评审包</b></div>
+        <div class="req-code" data-copy="用弘讯设计系统生成 <页面描述> 的分享版：node scripts/build-share-web.js <页面.html> --out <输出.html>。">用弘讯设计系统生成 &lt;页面描述&gt; 的分享版：node scripts/build-share-web.js &lt;页面.html&gt; --out &lt;输出.html&gt;。<span class="copy-hint"><svg class="ico-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ico-ok" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="copy-toast">已复制</span></div><div class="req-meta"><span class="t-caption">交付版 · 内联 CSS + 4 个 js + 本地资源，零外链</span></div>
+        <div class="req-meta"><span class="t-caption">脚本</span><span class="t-caption">build-share-web.js（禁手工内联，会漏 js / 资源）</span></div>
+      </div>
+
+      <div class="req-card req-card--purple" data-k="批量 多页面 派发 多个 agent">
+        <div class="req-head"><span class="req-emoji">🗂️</span><b class="req-title">批量派发（多页面分给多个 Agent）</b></div>
+        <div class="req-code" data-copy="用弘讯设计系统批量生成 <N> 个页面。">用弘讯设计系统批量生成 &lt;N&gt; 个页面。<span class="copy-hint"><svg class="ico-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ico-ok" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="copy-toast">已复制</span></div><div class="req-meta"><span class="t-caption">日常版 · 认 AGENTS.md 的 Agent（codex / Claude Code / Reasonix / Cursor）</span></div><div class="req-code" data-copy="按弘讯设计系统批量生成 <N> 个页面：每页任务书 = 对应单页模板 + 该页内容清单（仓库根/端/门禁命令每份都带）；页面间禁互相参照 DOM；全部 0 HIGH 后统一 node scripts/verify.js page 逐页验收。">按弘讯设计系统批量生成 &lt;N&gt; 个页面：每页任务书 = 对应单页模板 + 该页内容清单（仓库根/端/门禁命令每份都带）；页面间禁互相参照 DOM；全部 0 HIGH 后统一 node scripts/verify.js page 逐页验收。<span class="copy-hint"><svg class="ico-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ico-ok" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="copy-toast">已复制</span></div><div class="req-meta"><span class="t-caption">完整版 · 外部 Agent / 批量派发 / 网页版 AI</span></div>
+        <div class="req-meta"><span class="t-caption">批量</span><span class="t-caption">每页一份任务书；页面间禁互参照 DOM</span></div>
+      </div>
+
+    </div>
+    <div class="req-empty" id="reqEmpty">😅 没有匹配的需求模板，试试「看板 / 移动 / 换肤」</div>
+  </section>
+
+  <!-- ===== 快速上手 5 步 ===== -->
+  <section class="doc-section" id="quickstart">
+    <div class="doc-section-head">
+      <span class="sec-no" style="background:var(--run-soft);color:var(--run-active);">2</span>
+      <h2>快速上手 · 5 步</h2>
+      <span class="t-caption">第一次生成页面的最小路径</span>
+    </div>
+    <div class="step-track">
+      <div class="step-card">
+        <span class="step-num sn-1">1</span>
+        <b>定位仓库</b>
+        <span class="t-body2">在项目目录内对话（<span class="kbd">AGENTS.md</span> / <span class="kbd">CLAUDE.md</span> 自动加载）；本目录即仓库根（<span class="kbd">main</span>），<span class="kbd">git pull</span> 取更新。<span class="kbd">TM_DESIGN_REPO</span> 仅兼容旧入口。</span>
+      </div>
+      <div class="step-card">
+        <span class="step-num sn-2">2</span>
+        <b>脚手架起手</b>
+        <span class="t-body2"><span class="kbd">new-page-web.js</span>（Web）或 <span class="kbd">new-page-mobile.js</span>（移动）——自动克隆框架 + 注入克隆凭证 + 修 CSS link，落 <span class="kbd">./output/</span>。</span>
+      </div>
+      <div class="step-card">
+        <span class="step-num sn-3">3</span>
+        <b>填内容</b>
+        <span class="t-body2">按 <span class="kbd">RULES.md §1.1b</span> 页面类型规格从零自建；组件用规范 class，颜色/尺寸/字重全走 <span class="kbd">var(--*)</span>；图表按 <span class="kbd">CHART-SPEC.md</span>。</span>
+      </div>
+      <div class="step-card">
+        <span class="step-num sn-4">4</span>
+        <b>过门禁</b>
+        <span class="t-body2"><span class="kbd">scripts/verify.js page &lt;页面&gt;</span> → <b>0 HIGH</b>（validate + 组件复用 + 树运行时）；全链路 <span class="kbd">ci-local</span> → <b>105 pass / 0 fail</b>；新规范范围 <span class="kbd">verify.js all --scope=new</span>。</span>
+      </div>
+      <div class="step-card">
+        <span class="step-num sn-5">5</span>
+        <b>分享</b>
+        <span class="t-body2">运行 <span class="kbd">scripts/build-share-web.js &lt;页面&gt;</span> 生成同名 <span class="kbd">_分享版.html</span>——内联 CSS + 4 个 js + 本地资源并校验零外链；<b>禁手工内联</b>。重出后复跑单页门禁。</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 环境路径：从克隆到使用 ===== -->
+  <section class="doc-section" id="setup">
+    <div class="doc-section-head">
+      <span class="sec-no" style="background:var(--chart-smart-cyan);color:var(--n1);">3</span>
+      <h2>环境路径 · 从目录到使用</h2>
+      <span class="t-caption">按你的 Agent 类型选一条上手套路</span>
+    </div>
+    <div class="path-grid">
+      <div class="path-card">
+        <span class="path-ico path-ico--run"><svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>
+        <span class="path-tag pt-run">最常用</span>
+        <b>CLI Agent · codex / Claude Code / Cursor / Reasonix</b>
+        <span class="t-body2">① <span class="kbd">git clone</span> 仓库（或拿到项目目录）→ ② 在目录根启动 CLI 对话 → ③ <span class="kbd">AGENTS.md</span> / <span class="kbd">CLAUDE.md</span> 自动加载，Agent 自知脚手架、规范、门禁。</span>
+        <span class="t-body2">提示词用一级极简版：「用弘讯设计系统生成『&lt;一句话需求&gt;』页面。」门禁由 Agent 自跑，0 HIGH 交付。</span>
+      </div>
+      <div class="path-card">
+        <span class="path-ico path-ico--primary"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span>
+        <span class="path-tag pt-run">最常用</span>
+        <b>WorkBuddy / DSH</b>
+        <span class="t-body2">① 打开项目目录（含 <span class="kbd">AGENTS.md</span>）→ ② 会话内按 <span class="kbd">AGENTS.md</span> + <span class="kbd">START-HERE.md</span> 执行（本项目 skill 入口已停用）→ ③ 说需求即生成。</span>
+        <span class="t-body2">产出落用户项目 <span class="kbd">output/</span>，双击即看；门禁命令由 Agent 自跑。</span>
+      </div>
+      <div class="path-card">
+        <span class="path-ico path-ico--neutral"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
+        <span class="path-tag pt-def">无本地环境</span>
+        <b>网页版 AI / 外部云 Agent</b>
+        <span class="t-body2">① 人先拿到项目目录（拷贝）→ ② AI 用完整版提示词（带 <span class="kbd">&lt;仓库根&gt;</span> / <span class="kbd">&lt;端&gt;</span> / 门禁命令）产出页面文件 → ③ 门禁由人在本地代跑。</span>
+        <span class="t-body2">云 Agent 自带 VM 时，任务书里给仓库根，让它自己跑 <span class="kbd">validate-spec.js</span> 交 0 HIGH 结果。</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 角色路径 ===== -->
+  <section class="doc-section" id="paths">
+    <div class="doc-section-head">
+      <span class="sec-no" style="background:var(--warn-soft);color:var(--n11);">4</span>
+      <h2>角色路径 · 谁在用</h2>
+      <span class="t-caption">按你的身份选一条主路径</span>
+    </div>
+    <div class="path-grid">
+      <div class="path-card">
+        <span class="path-ico path-ico--primary"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>
+        <span class="path-tag pt-run">最常用</span>
+        <b>路径 A · AI 生成视觉页</b>
+        <span class="t-body2">设计师/产品：用 AI 生成 HTML 视觉页（评审/对接/演示/标注）。浏览器打开即看，分享版零外链。</span>
+        <span class="t-body2">入口：<span class="kbd">AGENTS.md</span> + <span class="kbd">标准提示词模板.md</span></span>
+      </div>
+      <div class="path-card">
+        <span class="path-ico path-ico--warn"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span>
+        <span class="path-tag pt-def">可选</span>
+        <b>路径 B · AI 生成设计稿</b>
+        <span class="t-body2">需要原生设计稿（组件实例/变量绑定）给设计师在 Ardot 精修。依赖 Ardot + MCP 连接。</span>
+        <span class="t-body2">前提：已装 Ardot 并连上 MCP（GENERATION-SOP 附录 D）。</span>
+      </div>
+      <div class="path-card">
+        <span class="path-ico path-ico--run"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>
+        <span class="path-tag pt-def">可选</span>
+        <b>路径 C · 参考实现</b>
+        <span class="t-body2">恰好用 React/Taro 的团队直接复用现成组件（packages/web-ui、packages/mobile-ui）。异栈团队完全不用管。</span>
+        <span class="t-body2">入口：<span class="kbd">packages/web-ui</span> / <span class="kbd">packages/mobile-ui</span></span>
+      </div>
+      <div class="path-card">
+        <span class="path-ico path-ico--neutral"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+        <span class="path-tag pt-def">维护者</span>
+        <b>路径 D · 团队 / 维护</b>
+        <span class="t-body2">人读说明 <span class="kbd">团队使用指南.md</span>；Agent 流程 <span class="kbd">GENERATION-SOP.md</span>；改视觉改真源（见下方资产地图）。</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 规范资产地图 ===== -->
+  <section class="doc-section" id="assets">
+    <div class="doc-section-head">
+      <span class="sec-no" style="background:var(--n3);color:var(--n9);">5</span>
+      <h2>规范资产地图</h2>
+      <span class="t-caption">这套系统由什么组成（点击行可滚动浏览）</span>
+    </div>
+    <div class="asset-card">
+      <div class="table-wrap">
+      <table class="table asset-table">
+        <thead>
+          <tr>
+            <th>文件 / 目录</th>
+            <th>作用</th>
+            <th>谁读</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="a-type at-entry">入口</span><span class="t-mono">GENERATION-SOP.md</span></td><td>生成流程总纲（选端→框架→选型→克隆→落盘→门禁）</td><td>Agent</td></tr>
+          <tr><td><span class="a-type at-entry">入口</span><span class="t-mono">标准提示词模板.md</span></td><td>两级通用模板 + 4 个专用模板（审计/换肤/迁移/批量）+ 脚手架命令速查</td><td>人 / Agent</td></tr>
+          <tr><td><span class="a-type at-entry">入口</span><span class="t-mono">AGENTS.md</span></td><td>Agent 行为约束（自造守则 / 产出分离 / 图标从库取）</td><td>Agent</td></tr>
+          <tr><td><span class="a-type at-src">真源</span><span class="t-mono">RULES.md（两端）</span></td><td>组件决策树 / 布局黄金法则 / 页面规格 / 自造守则</td><td>Agent</td></tr>
+          <tr><td><span class="a-type at-src">真源</span><span class="t-mono">template.css（两端）</span></td><td>Web 为 build 产物（源 = packages/web-ui/src/styles/ 五件 CSS）；移动为手写真源</td><td>Agent / 维护者</td></tr>
+          <tr><td><span class="a-type at-src">真源</span><span class="t-mono">js/（Web）</span></td><td>运行真源：shell-ui / tree-nav / i18n / page-ui；克隆页 4 个 script 禁删</td><td>Agent</td></tr>
+          <tr><td><span class="a-type at-src">真源</span><span class="t-mono">tokens.json（两端）</span></td><td>token 值真源（与 template.css :root 同步）</td><td>Agent / 门禁</td></tr>
+          <tr><td><span class="a-type at-src">真源</span><span class="t-mono">audit-rules.json</span></td><td>审计规则真源（M/R/H + D-1~D-13 迁移维度 + 豁免 + 问题上报制度）</td><td>Agent / 审计</td></tr>
+          <tr><td><span class="a-type at-gate">门禁</span><span class="t-mono">audit-spec.js</span></td><td>存量页面增量审计（--json 出台账；先台账后修复）</td><td>Agent / 维护者</td></tr>
+          <tr><td><span class="a-type at-src">真源</span><span class="t-mono">icons/（两端）</span></td><td>图标库（Web 190 / 移动 185，双端同源；页面图标一律从这里取）</td><td>Agent</td></tr>
+          <tr><td><span class="a-type at-src">真源</span><span class="t-mono">components.json</span></td><td>组件规格机器契约（尺寸/色值/门禁）</td><td>Agent / 门禁</td></tr>
+          <tr><td><span class="a-type at-src">真源</span><span class="t-mono">CHART-SPEC.md</span></td><td>图表结果约束 8 条 + 自建范式</td><td>Agent（含图表时）</td></tr>
+          <tr><td><span class="a-type at-script">引擎</span><span class="t-mono">brand-color-engine/</span></td><td>任意品牌色 / 暗色一键生成 :root 覆盖</td><td>Agent / 维护者</td></tr>
+          <tr><td><span class="a-type at-script">脚本</span><span class="t-mono">scripts/new-page-web|mobile.js</span></td><td>脚手架：克隆框架 + 注入克隆凭证 meta + 修 link</td><td>Agent</td></tr>
+          <tr><td><span class="a-type at-script">脚本</span><span class="t-mono">scripts/verify.js · build-share-web.js</span></td><td>统一门禁入口（page/all/tree/themes/docs/sync/reach/reuse/showcase）· 分享版内联构建</td><td>Agent / 维护者</td></tr>
+          <tr><td><span class="a-type at-gate">门禁</span><span class="t-mono">validate-spec.js（两端）</span></td><td>页面门禁（0 HIGH 才交付）</td><td>门禁 / Agent</td></tr>
+          <tr><td><span class="a-type at-gate">门禁</span><span class="t-mono">ci-local.js</span></td><td>全量旧链路自检（含旧 V2.1 派生检查，当前有历史红灯；新页用 verify.js）</td><td>维护者 / CI</td></tr>
+          <tr><td><span class="a-type at-gate">门禁</span><span class="t-mono">check-reach.js</span></td><td>规范可达性（索引 0 漂移 / 引用 0 断链 / 加载集 ≤ 预算；已入 ci-local）</td><td>维护者 / 门禁</td></tr>
+          <tr><td><span class="a-type at-script">脚本</span><span class="t-mono">sync-index.js / rule-index.json</span></td><td>双端章节索引生成 + 规则路由表（改 RULES 标题后必跑；生成物勿手改）</td><td>维护者</td></tr>
+          <tr><td><span class="a-type at-entry">入口</span><span class="t-mono">团队使用指南.md</span></td><td>人读版使用说明 + 文件作用清单</td><td>人</td></tr>
+                  <tr><td><span class="a-type at-entry">示例</span><span class="t-mono">showcase/</span></td><td>工作台 v7 分享版 / 亮色看板（+分享版）/ 登录页示例（+分享版）/ 规范展示（+分享版）；不参与门禁</td><td>人</td></tr>
+</tbody>
+      </table>
+      </div>
+      <div class="pager"><span class="pg-tot">共 21 条</span></div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section class="doc-section" id="faq">
+    <div class="doc-section-head">
+      <span class="sec-no" style="background:var(--err-soft);color:var(--err-active);">6</span>
+      <h2>常见问题</h2>
+      <span class="t-caption">踩过的坑，直接规避</span>
+    </div>
+    <div class="faq-list">
+      <details class="faq-item" open>
+        <summary><span class="q-arrow">▼</span>为什么必须用脚手架 / 克隆 page-template？</summary>
+        <div class="faq-ans">page-template.html 是唯一框架来源。自搭框架或跳过克隆会被门禁拦截（template.clone.missing / framework.fingerprint，HIGH）——左右结构外壳（shell/rail/ws-global/ws-body + 作业树 + rail-foot）只有从真源克隆才不会漂移。</div>
+      </details>
+      <details class="faq-item">
+        <summary><span class="q-arrow">▼</span>为什么「0 HIGH 才交付」？</summary>
+        <div class="faq-ans">HIGH = 会破坏视觉一致性或规范契约的硬伤（裸 hex、自造组件、KPI 错误排列、框架不完整等）。MEDIUM 可接受但建议清零。</div>
+      </details>
+      <details class="faq-item">
+        <summary><span class="q-arrow">▼</span>换肤换什么、不换什么？</summary>
+        <div class="faq-ans">换：品牌色 primary 系（默认亮色；暗色固定不随品牌）——主题/语言入口在 `.ws-global` 工具区（调色盘 + 地球图标，模板自带；暗色 + 5 品牌主题）。不换：组件结构/尺寸/字阶/圆角、图表色 --chart-*、功能色（成功/警告/错误/运行）。引擎派生色只能出现在 :root 定义里。</div>
+      </details>
+      <details class="faq-item">
+        <summary><span class="q-arrow">▼</span>data-species 是什么？需要我手动指定吗？</summary>
+        <div class="faq-ans">species 是与页面类型正交的维度，只有两种合法值：workbench（B 端工具页，含 .stat-grid 骨架）和 document（文档/说明页，如本页）。生成时 Agent 按 RULES §1.1c 自动判定并写入 body[data-species]——缺失记 MEDIUM、非法值拦 HIGH，你无需手动指定。</div>
+      </details>
+      <details class="faq-item">
+        <summary><span class="q-arrow">▼</span>分享版为什么必须用脚本生成？</summary>
+        <div class="faq-ans">分享版 = `template.css` + 4 个运行 js（shell-ui / tree-nav / i18n / page-ui）+ 本地图片/logo 全部内联，零外链。手工只内联 CSS 会丢交互与图标，打开即坏——统一用 `node scripts/build-share-web.js <页面.html>`，脚本会校验零外链（残留外链 exit 1）。</div>
+      </details>
+    </div>
+  </section>
+
+  <div class="doc-foot">
+    <span class="t-caption">弘讯设计系统 · 使用指南 · 本页为说明文档（非 B 端页面）</span>
+    <span class="t-caption">视觉特征取自 template.css / tokens.json 真源</span>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  'use strict';
+  /* 1) 一键复制（file:// 下 clipboard API 受限 → 兜底 execCommand） */
+  document.querySelectorAll('.req-code').forEach(function(el){
+    el.title = '点击复制模板';
+    el.addEventListener('click', function(){
+      var txt = el.getAttribute('data-copy');
+      if (!txt) {
+        var clone = el.cloneNode(true);
+        ['copy-hint','copy-toast'].forEach(function(c){ var n = clone.querySelector('.' + c); if (n) n.remove(); });
+        txt = clone.textContent.trim();
+      }
+      function done(){ el.classList.add('copied'); setTimeout(function(){ el.classList.remove('copied'); }, 1400); }
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(txt).then(done).catch(function(){ legacy(); });
+      } else { legacy(); }
+      function legacy(){
+        var ta = document.createElement('textarea');
+        ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); done(); } catch(e) {}
+        document.body.removeChild(ta);
+      }
+    });
+  });
+
+  /* 2) 需求卡搜索过滤 */
+  var grid = document.getElementById('reqGrid');
+  var empty = document.getElementById('reqEmpty');
+  document.getElementById('reqSearch').addEventListener('input', function(){
+    var q = this.value.trim().toLowerCase();
+    var shown = 0;
+    grid.querySelectorAll('.req-card').forEach(function(card){
+      var hit = !q || card.getAttribute('data-k').toLowerCase().indexOf(q) >= 0 ||
+                card.textContent.toLowerCase().indexOf(q) >= 0;
+      card.style.display = hit ? '' : 'none';
+      if (hit) shown++;
+    });
+    empty.style.display = shown ? 'none' : 'block';
+  });
+
+  /* 3) 锚点滚动高亮（IntersectionObserver） */
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll('.doc-nav a'));
+  var sections = navLinks.map(function(a){ return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if (en.isIntersecting) {
+        navLinks.forEach(function(a){ a.classList.toggle('on', a.getAttribute('href') === '#' + en.target.id); });
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(function(s){ io.observe(s); });
+})();
+</script>
+<script>
+(function(){
+  var s=document.getElementById('themeSel'),t=document.getElementById('themeTrigger');
+  if(!s||!t)return;
+  var o=s.querySelectorAll('.lang-opt');
+  function st(){return{d:document.documentElement.getAttribute('data-theme')==='dark',k:document.documentElement.getAttribute('data-skin')||'default'};}
+  function mk(){var x=st();o.forEach(function(e){var d=e.getAttribute('data-theme-choice')==='dark',k=e.getAttribute('data-skin')||'default';e.classList.toggle('on',x.d?d:(!d&&k===x.k));});}
+  function ap(k,d){var h=document.documentElement;if(k&&k!=='default')h.setAttribute('data-skin',k);else h.removeAttribute('data-skin');if(d)h.setAttribute('data-theme','dark');else h.removeAttribute('data-theme');try{localStorage.setItem('hx-skin',k||'default');localStorage.setItem('hx-theme',d?'dark':'light');}catch(e){}mk();}
+  t.addEventListener('click',function(e){e.stopPropagation();s.classList.toggle('open');});
+  o.forEach(function(e){e.addEventListener('click',function(){var d=e.getAttribute('data-theme-choice')==='dark';ap(d?st().k:e.getAttribute('data-skin')||'default',d);s.classList.remove('open');});});
+  document.addEventListener('click',function(){s.classList.remove('open');});mk();
+})();
+</script>
+</body>
+</html>

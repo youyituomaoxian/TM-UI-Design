@@ -1,0 +1,196 @@
+/* framework.css — 框架层（.app/.topbar/.sidebar/.content/.footer 固定外壳；2026-08-06 以 template.css 为真源重建）。 */
+.app{display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+.body{display:flex;flex:1;min-height:0;overflow:hidden;height:calc(100vh - var(--topbar-height));}
+
+
+:root{--text-on-brand:var(--n1);}
+
+
+.topbar{height:var(--topbar-height);background:var(--primary);color:var(--text-on-brand);flex-shrink:0;
+  display:flex;align-items:center;gap:24px;padding:0 24px;}
+
+.topbar .brand{font-size:18px;font-weight:500;}
+.topbar .nav{display:flex;gap:24px;}
+.topbar .nav a{color:var(--text-on-brand);text-decoration:none;opacity:.85;}
+.topbar .nav a:hover{opacity:1;}
+.topbar .btn-text{color:var(--text-on-brand);}
+.topbar .spacer{flex:1;}
+.topbar .user{display:flex;align-items:center;gap:8px;}
+
+.topbar-brand{display:flex;align-items:center;gap:12px;}
+.topbar-logo{display:inline-flex;align-items:center;height:32px;color:var(--text-on-brand);}
+/* logo 高度固定 32、宽度自适应（2026-08-12：占位符，后期替换项目 logo）；与标题间距由 .topbar-brand gap:12 固定 */
+.topbar-logo .ico{width:auto;height:32px;}
+.topbar-titles{display:flex;flex-direction:column;gap:2px;}
+.topbar-title{font-size:18px;font-weight:500;color:var(--text-on-brand);line-height:1.2;white-space:nowrap;}
+.topbar-subtitle{font-size:12px;color:var(--topbar-subtitle-fg);line-height:1.2;white-space:nowrap;}
+
+
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:12px;}
+.topbar-item{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--text-on-brand);
+  cursor:pointer;white-space:nowrap;background:transparent;border:none;padding:0;}
+.topbar-item:hover{opacity:.85;}
+.topbar-item .ico{color:currentColor;}
+/* 顶栏多语言下拉（2026-08-12：框架级双语，半透明胶囊同 theme-btn 视觉） */
+.lang-sel{position:relative;display:inline-block;}
+.lang-trigger{height:30px;padding:0 var(--space-md);display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.16);border:none;border-radius:var(--radius-round);color:var(--text-on-brand);cursor:pointer;font-size:13px;font-family:var(--font-cn);white-space:nowrap;}
+.lang-trigger:hover{background:rgba(255,255,255,.30);}
+.lang-trigger .ico{width:16px;height:16px;}
+.lang-panel{position:absolute;top:calc(100% + 6px);right:0;min-width:150px;background:var(--elev-overlay-surface);border:1px solid var(--n6);border-radius:var(--radius-md);box-shadow:var(--elev-overlay-shadow);padding:4px;display:none;z-index:50;}
+.lang-sel.open .lang-panel{display:block;}
+.lang-opt{height:32px;display:flex;align-items:center;gap:8px;padding:0 12px;font-size:14px;color:var(--n10);cursor:pointer;border-radius:var(--radius-base);font-family:var(--font-cn);}
+.lang-opt:hover{background:var(--n3);}
+.lang-opt.on{background:var(--select-item-bg);color:var(--select-item-fg);font-weight:500;}
+.lang-opt.is-disabled{opacity:.45;cursor:not-allowed;color:var(--n8);}
+.lang-opt.is-disabled:hover{background:transparent;}
+/* 2026-11-17 主题换肤：顶栏主题选择器复用 .lang-* 下拉；色点按 data-skin 静态着色 */
+.theme-dot{width:14px;height:14px;border-radius:50%;flex:none;display:inline-block;border:1px solid var(--n6);}
+.lang-panel [data-skin="default"] .theme-dot{background:#005EAE;}
+.lang-panel [data-skin="cyan"] .theme-dot{background:#0E7490;}
+.lang-panel [data-skin="green"] .theme-dot{background:#0F766E;}
+.lang-panel [data-skin="amber"] .theme-dot{background:#B45309;}
+.lang-panel [data-skin="violet"] .theme-dot{background:#7C3AED;}
+.lang-panel [data-theme-choice="dark"] .theme-dot{background:#1E293B;}
+.topbar-sep{width:1px;height:16px;background:var(--topbar-sep-bg);}
+
+
+.sidebar{width:var(--sidebar-width);height:100%;background:var(--primary);color:var(--text-on-brand);padding:var(--space-base) var(--space-sm);flex-shrink:0;
+  display:flex;flex-direction:column;overflow:hidden;
+  transition:width var(--motion-duration-normal) var(--motion-ease-out);}
+.sidebar .tree{flex:1 1 auto;min-height:0;overflow-y:auto;
+  scrollbar-width:none;-ms-overflow-style:none;}
+.sidebar .tree::-webkit-scrollbar{width:0;height:0;display:none;}
+
+.sidebar-foot{flex-shrink:0;position:relative;z-index:2;height:44px;display:flex;align-items:center;justify-content:flex-end;
+  background:inherit;}
+.collapse-btn{width:20px;height:20px;border:none;background:transparent;color:var(--text-on-brand);
+  border-radius:0;cursor:pointer;font-size:14px;
+  display:inline-flex;align-items:center;justify-content:center;
+  transition:opacity var(--motion-duration-fast) var(--motion-ease-out);}
+.collapse-btn:hover{opacity:.7;}
+
+
+.tree-ico{width:20px;height:20px;margin-right:8px;color:inherit;flex-shrink:0;
+  display:inline-flex;align-items:center;justify-content:center;}
+.tree-ico svg{width:16px;height:16px;display:block;}
+.ico{width:16px;height:16px;display:block;flex:none;}
+.tree-text{white-space:nowrap;}
+
+
+.tree-group{overflow:hidden;max-height:600px;
+  transition:max-height var(--motion-duration-normal) var(--motion-ease-out);}
+.tree-group.is-collapsed{max-height:0;}
+
+.tree-node--child{padding-left:24px;}
+
+
+.sidebar .tree-node,
+.demo-sidebar .tree-node,
+.tree--brand .tree-node{color:var(--text-on-brand);}
+.sidebar .tree-node:hover,
+.demo-sidebar .tree-node:hover,
+.tree--brand .tree-node:hover{background:rgba(255,255,255,.12);}
+.sidebar .tree-node.on,
+.demo-sidebar .tree-node.on,
+.tree--brand .tree-node.on{background:var(--primary-active);color:var(--text-on-brand);font-weight:500;}
+.sidebar .tree-node.on .tree-sw,
+.demo-sidebar .tree-node.on .tree-sw,
+.tree--brand .tree-node.on .tree-sw{color:var(--text-on-brand);}
+.sidebar .tree-node.on .tree-ico,
+.demo-sidebar .tree-node.on .tree-ico,
+.tree--brand .tree-node.on .tree-ico{color:var(--text-on-brand);}
+
+:root[data-theme="dark"] .sidebar .tree-node.on,
+:root[data-theme="dark"] .demo-sidebar .tree-node.on,
+:root[data-theme="dark"] .tree--brand .tree-node.on{color:var(--n11);}
+:root[data-theme="dark"] .sidebar .tree-node.on .tree-sw,
+:root[data-theme="dark"] .demo-sidebar .tree-node.on .tree-sw,
+:root[data-theme="dark"] .tree--brand .tree-node.on .tree-sw{color:var(--n11);}
+:root[data-theme="dark"] .sidebar .tree-node.on .tree-ico,
+:root[data-theme="dark"] .demo-sidebar .tree-node.on .tree-ico,
+:root[data-theme="dark"] .tree--brand .tree-node.on .tree-ico{color:var(--n11);}
+
+
+/* 折叠态：只保留一级（2026-11-06；开关类 .tree-collapsed 保护旧页行为） */
+.sidebar.collapsed.tree-collapsed .tree > .tree-group{display:none;}
+/* 一级「当前分支」态（非选中；.on 仍单选铁律） */
+.sidebar .tree > .tree-node.branch-active{background:rgba(255,255,255,.08);border-radius:var(--radius-base);}
+.sidebar .tree > .tree-node.branch-active:hover{background:rgba(255,255,255,.16);}
+.sidebar.collapsed.tree-collapsed .tree > .tree-node.branch-active:not(.on){background:rgba(255,255,255,.18);}
+.sidebar .tree > .tree-node.on{background:var(--primary-active);color:var(--n1);}
+
+.sidebar.collapsed{width:var(--sidebar-collapsed-width);}
+.sidebar.collapsed .tree-label{display:none;} /* 折叠态隐藏菜单文字（原 display:contents 会把文字内容提升渲染、折叠后文字仍可见——2026-08-06 修复） */
+.sidebar.collapsed .tree-text,
+.sidebar.collapsed .tree-sw{display:none;}
+.sidebar.collapsed .tree-node{justify-content:center;padding:0 !important;height:44px;}
+.sidebar.collapsed .tree-ico{margin-right:0;width:16px;height:16px;}
+.sidebar.collapsed .collapse-btn{width:44px;height:44px;justify-content:center;}
+
+.sidebar.collapsed .sidebar-foot{justify-content:center;}
+
+
+.main{flex:1;display:flex;flex-direction:column;min-width:0;height:100%;overflow:hidden;}
+
+
+/* V10（2026-08-27 用户拍板）：content 纵向滚动条统一细样式/悬停加深——与侧栏树「滚动条视觉隐藏」条款同族，长列表页滚动条不破坏视觉统一 */
+.content{flex:1;min-width:0;background:var(--n4);padding:var(--space-md) var(--density-content-padding) var(--density-content-padding);overflow:auto;
+  scrollbar-width:thin;scrollbar-color:var(--n5) transparent;}
+.content::-webkit-scrollbar{width:8px;height:8px;}
+.content::-webkit-scrollbar-track{background:transparent;}
+.content::-webkit-scrollbar-thumb{background:var(--n5);border-radius:4px;}
+.content::-webkit-scrollbar-thumb:hover{background:var(--n6);}
+/* 滚动条统一（2026-11-13 拍板）：滚动容器统一浅色滚动条（thumb n5，hover n6）；.table-wrap/.card-body--scroll/.scroll-fixed 原无自定义样式吃浏览器默认深灰 */
+.table-wrap,.card-body--scroll,.scroll-fixed{scrollbar-width:thin;scrollbar-color:var(--n5) transparent;}
+.table-wrap::-webkit-scrollbar,.card-body--scroll::-webkit-scrollbar,.scroll-fixed::-webkit-scrollbar{width:8px;height:8px;}
+.table-wrap::-webkit-scrollbar-track,.card-body--scroll::-webkit-scrollbar-track,.scroll-fixed::-webkit-scrollbar-track{background:transparent;}
+.table-wrap::-webkit-scrollbar-thumb,.card-body--scroll::-webkit-scrollbar-thumb,.scroll-fixed::-webkit-scrollbar-thumb{background:var(--n5);border-radius:4px;}
+.table-wrap::-webkit-scrollbar-thumb:hover,.card-body--scroll::-webkit-scrollbar-thumb:hover,.scroll-fixed::-webkit-scrollbar-thumb:hover{background:var(--n6);}
+
+
+.footer{height:var(--footer-height);background:var(--primary);color:var(--text-on-brand);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;padding:0 var(--space-lg);font-size:12px;width:100%;}
+.footer--between{justify-content:space-between;}
+
+
+/* 分层页头紧凑变体（DS-20261112-04 回灌；2026-11-13 拍板：基础形态页头行→内容 12，紧跟 .tab-row 的分层形态标题→tab 行 4） */
+
+.page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-base);gap:12px;}
+.page-head.page-head--compact{margin-bottom:var(--space-md);}/*2026-11-13 拍板:基础形态页头行→内容 = md12,与框架→标题( content padding-top md)相等*/
+.page-head.page-head--compact:has(+ .tab-row){margin-bottom:var(--space-xs);}/*分层形态:标题→一级 tab 行 xs4(拍板保留)*/
+.page-actions{display:inline-flex;gap:8px;flex-wrap:wrap;}/*D4 2026-11-13:原margin-top 16为纵向堆叠遗留,横排页头撑行48px,移除*/
+
+
+:root[data-theme="dark"]{--text-on-brand:var(--n11);}
+:root[data-theme="dark"] .topbar,
+:root[data-theme="dark"] .sidebar,
+:root[data-theme="dark"] .footer{background:var(--brand-surface);}
+
+.row{display:flex;align-items:center;gap:var(--space-md);flex-wrap:wrap;}
+.row-tight{gap:var(--space-sm);}
+.row-between{justify-content:space-between;}
+.col{display:flex;flex-direction:column;gap:var(--space-md);}
+.mt{margin-top:16px;}
+.mt-sm{margin-top:8px;}
+.mt-lg{margin-top:24px;}
+.mb{margin-bottom:16px;}
+
+
+.page-title{margin:0;font-size:18px;font-weight:500;color:var(--text-1);}
+.section-title{font-size:16px;font-weight:500;color:var(--n11);margin:0 0 12px;}
+
+/* 暗色：框架=卡片色 #1E293B，与内容 #121826 差一档，靠 1px 细线分区（2026-11-06 方案 A） */
+:root[data-theme="dark"] .topbar{ border-bottom:1px solid rgba(255,255,255,.07); }
+:root[data-theme="dark"] .sidebar{ border-right:1px solid rgba(255,255,255,.07); }
+:root[data-theme="dark"] .footer{ border-top:1px solid rgba(255,255,255,.07); }
+
+/* ===== 2026-11-12 布局类规则归位：一屏撑满 / 分页器贴底 / 页头间距（原误放 components.css） ===== */
+.content--fill{display:flex;flex-direction:column}
+.content--fill>.page-head{flex:none}
+.content--fill .card--fill{flex:1;min-height:0;margin-bottom:0}
+.card--fill .card-body{display:flex;flex-direction:column}
+.content--fill .card--fill .pager{margin-top:auto}
+.card-body:has(.pager){padding-bottom:var(--space-sm)}
+.card-body:has(.pager) .pager{margin-bottom:0}
+.page-head .t-h1{position:relative;padding-left:12px}
+.page-head .t-h1::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:4px;height:20px;border-radius:2px;background:var(--primary)}
