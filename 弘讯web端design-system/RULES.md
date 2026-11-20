@@ -55,7 +55,7 @@
 | 章 | 字符 | 何时读 |
 |---|---|---|
 | [硬] 0. B 端后台固定框架 | 7.8k | 判定是否套框架（判定必读） |
-| [软] 1. 组件选择决策树 | 14.5k | 选组件时 · 必读 |
+| [软] 1. 组件选择决策树 | 14.6k | 选组件时 · 必读 |
 | [硬] 2. 禁止清单 | 1.0k | 生成前自查 · 简读 |
 | [硬] 3. 组件状态机 | 10.5k | 写/改按钮·输入态时 |
 | [硬] 4. 间距与布局速查 | 7.8k | 布局时 |
@@ -287,7 +287,7 @@ START: 我要做什么类型的页面？
 
 > **唯一外壳**：左右结构新页使用 `.shell/.rail`（216/64）；`.app/.sidebar`（240/80）为历史实现，不再作为新页起手。
 >
-> **外壳 chrome 视觉基准 = V7 工作台**（`showcase/左右结构_v7_设备运维工作台.html`）：调顶部工具区/图标先改 V7 → 回灌 `page-template.html`、规范展示与看板 → 跑 `node scripts/verify.js chrome`（工具区逐字一致 + 4 个运行 js 可加载）；showcase 副本由 `sync-showcase` 重出，分享版由 `build-share-web` 重出。
+> **外壳工具区真源 = `partials/shell-tools.html`**（2026-11-20 方向纠正）：改工具区只改真源 → `node scripts/sync-shell-tools.js` 注入 `page-template.html`、规范展示与看板、V7 → 跑 `node scripts/verify.js chrome`（9 页与真源一致 + 4 个运行 js 可加载）；showcase 副本由 `sync-showcase` 重出，分享版由 `build-share-web` 重出。
 
 ### [软] 1.2 组件粒度选型
 

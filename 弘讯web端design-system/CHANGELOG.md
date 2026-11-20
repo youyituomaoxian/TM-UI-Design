@@ -5,6 +5,12 @@
 
 ---
 
+## [外壳工具区收为单点真源：基准方向纠正 + 9 页门禁] — 2026-11-20
+- **问题**：`check-shell-chrome` 以 V7 示例页为「视觉基准」，缺页 `continue`、基准缺失静默退回 page-template——示例页成了标准，红绿都不可信；V7 又躺在 `.gitignore` 的 `output/`，新克隆必红。
+- **真源**：新增 `partials/shell-tools.html`（`.ws-tools` 片段，路径按 Web 根相对写）；新增 `scripts/sync-shell-tools.js`（含 `--check`）注入 page-template / 规范展示 / 看板 / V7，showcase 目标自动改写 `../assets/`。
+- **门禁**：`check-shell-chrome` 改为以真源比对、缺页即 FAIL、覆盖 9 页（补上规范展示与看板的分享版）；RULES §7 基准口径、START-HERE 门禁表同步；`check-size` 登记 `partials/` 并给本文件留条目余量。
+- **实测**：`verify.js chrome` 9/9 一致；`verify all --scope=new` 通过；`ci-local` 105/0。
+
 ## [GitHub 上传前整理：v7 迁 showcase / 死引用纠正] — 2026-11-20
 - **结构**：`output/左右结构_v7_设备运维工作台.html` 迁 `showcase/`（改相对路径），仓库自包含；门禁脚本同步。
 - **死引用**：`showcase/左右结构工作台_v7_分享版.html`（不存在）→ `showcase/左右结构_v7_设备运维工作台_分享版.html`；README / START-HERE / USAGE-GUIDE / 团队指南 / RULES §7 / 规范展示正文已改。

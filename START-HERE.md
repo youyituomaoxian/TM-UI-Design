@@ -74,7 +74,7 @@ node packages/web-ui/scripts/build-template-css.js
 | `check-size.js` | 文档体积 + 清单封闭 | ✅ 0 FAIL / 19 WARN |
 | `check-reach.js` | 索引 / 引用 / 加载预算 | ✅ 0 FAIL / 2 WARN（加载余量 3.7%） |
 | `check-sync.js` | 双端同名类 + vendor 同构 | ✅ 3 pass / 0 fail（4 类平台差异入白名单；141 类已扩容登记 gaps） |
-| `verify.js chrome` | 顶部工具区与 V7 视觉源一致 + 4 个运行 js 可加载（含生成副本/分享版） | ✅ 通过 |
+| `verify.js chrome` | 工具区与真源 `partials/shell-tools.html` 一致 + 4 个运行 js 可加载（9 页含分享版） | ✅ 通过 |
 | `verify.js icons` | 图标库每个图标都在规范展示「图标集」出现 + 计数一致 | ✅ 190 / 190 |
 | `verify.js spec` | 规范展示页自检：图表坐标/柱值标签/计数声明/锚点/旧分页器/未定义变量 | ✅ 通过 |
 

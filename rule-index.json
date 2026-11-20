@@ -83,7 +83,7 @@
       "hard": "软",
       "title": "组件选择决策树",
       "line": 165,
-      "chars": 14527,
+      "chars": 14558,
       "read": "on-demand",
       "gate": null
     },
@@ -119,7 +119,7 @@
       "hard": "硬",
       "title": "左右结构工作台页面模式（2026-11-19 从 v7 示例页提升）",
       "line": 273,
-      "chars": 1360,
+      "chars": 1391,
       "read": "on-demand",
       "gate": null
     },

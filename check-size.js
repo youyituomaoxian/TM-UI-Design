@@ -69,8 +69,8 @@ const LIMITS = [
   ['弘讯web端design-system/validate-spec.js', 132000],  // 2026-11-17：+页头标题语义/HTML骨架两门禁（白屏+按钮标题事故兜底），实测 123231 + 5% 重测；2026-11-12：M-08 实测 114806 + 5%；2026-11-07：tree.node.split / dark.brand.override
   ['弘讯web端design-system/agent-starter.html', 4400],
   ['弘讯web端design-system/README.md', 4600],
-  // 2026-11-06：暗色固定主题条目，11000 → 11500。
-  ['弘讯web端design-system/CHANGELOG.md', 12500],
+  // 2026-11-20：外壳真源拆分条目，12500 → 13200。
+  ['弘讯web端design-system/CHANGELOG.md', 13200],
   ['弘讯web端design-system/CHANGELOG-archive.md', 60000], // 滚动归档容器：只增不减，超 60k 按年拆分
   // 移动端
   ['弘讯移动端design-system/RULES.md', 54200],
@@ -138,6 +138,7 @@ const DIR_EXEMPT = new Set([
   'packages', 'scripts', 'templates', '弘讯web端design-system', '弘讯移动端design-system',
   // 双端下既有目录
   'icons', 'pages', 'showcase', '.workbuddy-web', '.workbuddy-mob',
+  'partials', // 外壳工具区单点真源片段（2026-11-20）
   // 2026-10-30 登录页 v2：品牌概念图资产库（提示词模板 + 行业预设 + webp），非源码，按目录整体豁免
   'assets',
 ]);
