@@ -37,7 +37,7 @@
 |----|------|
 | 真源 | 两端目录下 `tokens.json`（值）+ `components.json`（契约）+ `RULES.md §1.1b`（页面类型规格） |
 | 铁律 | 不硬编码色值；不自造规范；页面内容按 `RULES.md §1.1b` 从零自建（**禁参照既有页面 DOM**）；组件词汇与代码库同源 |
-| 质量闸 | HTML 预览产物 → `scripts/verify.js page <页面>` **0 HIGH**（validate + 组件复用 + 作业树运行时）；交付口径 `scripts/verify.js all`（= ci-local 105 项 + 新规范范围）**全绿** |
+| 质量闸 | HTML 预览产物 → `scripts/verify.js page <页面>` **0 HIGH**（validate + 组件复用 + 作业树运行时）；交付口径 `scripts/verify.js all`（= 存量全链路 + 新规范范围）**全绿**（项数以命令输出为准） |
 | 禁区 | 真源/门禁/引擎**使用者只读**（改真源走维护者六步流程，真源治理契约）；Web 端任何文件禁 `#10B981`（移动端成功绿） |
 | 边界 | 交付「视觉规格 + HTML 预览」，上线实现由使用者决定；参考实现仅供同栈复用 |
 | 落盘 | 生成页一律落「**用户项目**」的 `output/`；设计系统仓库根 `output/` 仅历史归档，不随仓库分发 |
@@ -80,7 +80,7 @@ Web 文件 `709697838782860`（83 变量 + 33 组件 + 12 级字阶）；移动 
 
 ## 角色二：产品经理 → HTML 视觉预览
 
-**详细 SOP**：`GENERATION-SOP.md`（含品牌色 / 暗色引擎映射段）。成品示例：`弘讯web端design-system/showcase/`（工作台 v7 / 亮色看板 / 规范展示；不参与门禁）。
+**详细 SOP**：`GENERATION-SOP.md`（含品牌色 / 暗色引擎映射段）。成品示例：`弘讯web端design-system/showcase/`（工作台 v7 / 亮色看板 / 规范展示；参与 validate / 树运行时 / 工具区门禁）。
 
 ### 对 Agent 说
 
@@ -155,12 +155,12 @@ npx taro build --type weapp   # 产物 dist/ 导入微信开发者工具
 
 ## 改规范的唯一正确姿势
 
-> 🏛️ **真源治理契约（2026-09-10 起）**：真源区文件使用者只读；要改 = 维护者六步流程（缺口登记 → 改真源 → 双端同步 → 门禁全绿 → 刷指纹 → CHANGELOG 留痕），详见双端 `RULES.md` 页首。双端同步由 `check-sync.js` 机器门禁兜底。
+> 🏛️ **真源治理契约（2026-09-10 起）**：真源区文件使用者只读；要改 = 维护者六步流程（缺口登记 → 改真源 → 双端同步 → 门禁全绿 → 刷指纹 → CHANGELOG 留痕），详见双端 `RULES.md` 页首。双端同步由 `check-sync.js` 机器门禁兜底；无对端的真源（如 Web 外壳工具区片段）以注入门禁兜底。
 
 1. **改视觉（Web）**：改 `packages/web-ui/src/styles/` **五件** CSS（含 workbench）→ `node packages/web-ui/scripts/build-template-css.js` 重新生成 `template.css`（N=1 构建链，勿手改 template.css）。移动端规范已解冻（2026-08-06 用户拍板）；结构性/视觉性改动仍建议先与用户确认方向。
 2. **改 token**：改 `tokens.json` → 重跑 `scripts/generate-design-tokens-md.js` 生成 `DESIGN-TOKENS.md`。
 3. **改品牌色**：`node brand-color-engine/generate.js <brand> light <web|mobile>` 与 dark 各一次（非默认品牌默认双模式，功能色不随品牌变）。
-4. **总门禁**：`node ci-local.js` → 期望全绿 `0 fail`（2026-09-10 起；项数以输出为准）。
+4. **总门禁**：`node scripts/verify.js all` → 交付口径全绿（存量全链路 + 新规范范围；项数以输出为准）。只验新规范用 `--scope=new`。
 
 三条链路各自重新生成，**禁止从任何产物（设计稿 / HTML / 代码）倒推 spec**。
 
@@ -172,7 +172,7 @@ npx taro build --type weapp   # 产物 dist/ 导入微信开发者工具
 
 1. **P0 盘点**：先出**页面清单**（`node scripts/audit-batch.js <项目目录> --list`），再逐页双门禁（`audit-spec` 清零硬违规 + `validate-spec` 0 HIGH）并落台账（`--json` 含覆盖率；<100% 即未完成）+ 按 `audit-rules.json` D-1~D-13 **逐维对照**，差异全部落台账（禁止逐条手改式找问题）。
 2. **P1 映射决策**：每个差异按 D 层 map_to 定「改成什么」——这个色映射到哪个 token、这个元素映射到哪个组件类、这个字号映射到哪级字阶。
-3. **P2 修复**：分批修复，每批 `node ci-local.js` 回归全绿。
+3. **P2 修复**：分批修复，每批 `node scripts/verify.js all` 回归全绿（存量全链路 + 新规范范围）。
 4. **P3 表现层**：截图审查运行时问题（截断/溢出/交互态/图表渲染）；**证据落 `output/audit-shots/`，逐 tab × 亮暗 × 滚动态，缺图即未审**。
 5. **P4 收口**：**0 HIGH + 台账全绿**（覆盖率 100% / D 维无空白 / 截图齐全）+ CHANGELOG 留痕；「0 HIGH」单独不算交付。
 
@@ -234,10 +234,10 @@ A: `node brand-color-engine/generate.js <brand> light <web|mobile>` 生成亮色
 A: token 需求写 `tokens.json` → `packages/web-ui/src/components/ui/` 加 `.tsx` → 五件中对应 CSS 加样式（组件层 `components.css`，页面模式 `workbench.css`）→ `build-template-css.js` 重建 → 设计端同步（`components.json` / `components.md`）→ `validate-spec` / `validate-static` 全绿。
 
 **Q: 怎么确认没改坏？**
-A: 单页 `node scripts/verify.js page <页面>` → 0 HIGH；新规范范围 `node scripts/verify.js all --scope=new` → 通过。`ci-local` 含旧 V2.1 派生检查，当前有历史红灯（`START-HERE §6`），不要用它冒充新页验收。
+A: 单页 `node scripts/verify.js page <页面>` → 0 HIGH；交付口径 `node scripts/verify.js all`（存量全链路 + 新规范范围）全绿；只验新规范用 `--scope=new`。`ci-local` 单独跑只代表存量全链路，不要用它冒充交付口径。
 
 **Q: 规范更新怎么同步？**
-A: 维护者改完跑 `sync-index` + `verify`，更新双端 `CHANGELOG`；成员拿到新目录后重跑门禁。仓库建立后改为 `git pull`。
+A: 维护者改完跑 `sync-index` + `verify all`，更新双端 `CHANGELOG`；成员 `git pull` 后重跑门禁。
 
 ---
 

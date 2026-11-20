@@ -22,7 +22,7 @@
 1. **缺口登记**——`audit-rules.json` feedback_log 或台账文档先记「为什么要改」
 2. **修改真源**
 3. **双端同步**——web 与 mobile 同名类/同源值一致；W1 层 components.css 与 template.css 同构同步（外壳片段无对端，走注入门禁）
-4. **门禁全绿**——`verify all` 全绿（旧线 105 + 新规范）+ 双包 validate-static 0 HIGH
+4. **门禁全绿**——`verify all` 全绿（存量全链路 + 新规范）+ 双包 validate-static 0 HIGH
 5. **刷指纹**——涉及冻结文件时跑 `freeze-baseline` 并说明
 6. **CHANGELOG 留痕**——改了什么 / 为什么 / 关联台账
 
@@ -208,7 +208,7 @@ START: 我要做什么类型的页面？
 
 > **`.content--fill` 用法**：见「默认不滚动 + 一屏撑满」——content--fill → card--fill → is-placeholder 三步，禁 `calc(100vh - N)`，嵌层补 flex 链。
 
-> **表格规范（2026-11-12 汇总，活体展示 `表格规范展示_20261112.html`）**
+> **表格规范（2026-11-12 汇总；活体展示见 `web规范展示_左右结构.html`）**
 > ① 尺寸：表头 44 / 行高 44（不随密度档）；分割线 `--n6`。
 > ② 单元格：数值列 `th.num`+`td.num` 成对（否则 `table.align`）；状态 `.status-dot`；级别 `.badge-err/warn/info`；操作列 `.btn.btn-text` + `.dropdown`（`.dropdown-item`、危险 `.danger`、Esc/点外收起）。
 > ③ 行状态：`:hover`、`tr.is-selected`、`.cbx` 全选 / `.is-indeterminate` 半选、补位行 `tr.is-placeholder` 保留分割线。
@@ -287,7 +287,7 @@ START: 我要做什么类型的页面？
 
 > **唯一外壳**：左右结构新页使用 `.shell/.rail`（216/64）；`.app/.sidebar`（240/80）为历史实现，不再作为新页起手。
 >
-> **外壳工具区真源 = `partials/shell-tools.html`**（2026-11-20 方向纠正）：改工具区只改真源 → `node scripts/sync-shell-tools.js` 注入 `page-template.html`、规范展示与看板、V7 → 跑 `node scripts/verify.js chrome`（9 页与真源一致 + 4 个运行 js 可加载）；showcase 副本由 `sync-showcase` 重出，分享版由 `build-share-web` 重出。
+> **外壳工具区真源 = `partials/shell-tools.html`**（2026-11-20 方向纠正）：改工具区只改真源 → `node scripts/sync-shell-tools.js` 注入 `page-template.html`、规范展示与看板、V7 → 跑 `node scripts/verify.js chrome`（全页与真源一致 + 4 个运行 js 可加载）；showcase 副本由 `sync-showcase` 重出，分享版由 `build-share-web` 重出。
 
 ### [软] 1.2 组件粒度选型
 

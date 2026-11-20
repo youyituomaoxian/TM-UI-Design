@@ -56,7 +56,7 @@
 |---|---|---|
 | `components.json` | 双端各 1 份 | validate-spec 与构建 |
 | `template.css` | Web = build 产物 / 移动 = 手写真源 | 构建与页面引用 |
-| 门禁/构建脚本（`validate-spec.js` / `ci-local.js` / `check-sync.js` / `check-size.js` / `check-reach.js` / `audit-spec.js` 等） | 体量见 `check-size.js` LIMITS | 由脚本自跑，读输出即可 |
+| 门禁/构建脚本（`validate-spec.js` / `ci-local.js` / `verify.js` / `verify-new.js` / `sync-shell-tools.js` / `check-shell-chrome.js` / `check-gate-manifest.js` / `check-sync.js` / `check-size.js` / `check-reach.js` / `audit-spec.js` 等） | 体量见 `check-size.js` LIMITS | 由脚本自跑，读输出即可 |
 | `MASTER.md` / `DESIGN-TOKENS.md` | 按章取用 | 人读参考；Agent 按章取（勿整份加载） |
 
 **三、章节索引（读之前先看这张表）**
@@ -73,10 +73,11 @@
 | 组件契约（尺寸 / 状态 / 色值） | `components.json` + `components.md` | 只写类名 |
 | 审计规则（M/R/H/D 四层） | `audit-rules.json` | 「见 audit-rules M-0X / D-0X」 |
 | 框架骨架与 DOM 契约 | `page-template.html` | 只写「克隆模板」 |
+| 外壳工具区（`.ws-tools`） | `弘讯web端design-system/partials/shell-tools.html` | 只写「工具区由真源注入」，禁改各页副本 |
 | 图标规格与清单 | `icons/icons.md` + RULES §7.9 | 「从 icons/ 取」（缺则上报） |
 | 图表结果约束 | `CHART-SPEC.md`（SOP 附录 A = 执行摘要） | 「见 CHART-SPEC §2」 |
 | 治理契约 / 维护者六步 | 双端 `RULES.md` 页首 | 「见治理契约」 |
-| 交付线（0 HIGH / ci-local 全绿） | `ci-local.js` 实际输出 | 不复述数字（数字会漂移） |
+| 交付线（0 HIGH / `verify all` 全绿） | `verify.js all` 实际输出（= `ci-local` + `verify-new`） | 不复述数字（数字会漂移） |
 | 设计系统问题报告制度 | `audit-rules.json` `issue_reporting` | 「见 issue_reporting」 |
 
 
@@ -167,6 +168,7 @@ cp 弘讯移动端design-system/page-template.html "<用户项目>/output/设备
 6. **head 展示样式 `<style>` 块（2026-11-17 起 page-template 已移除）**：旧克隆若仍含展示页专用 `<style>`（`.sec/.swatch/.motion-*/.type-*/.callout/.kv/.comp-*` 等约 52 行，以 `/* 仅布局/容器助手` 注释开头）——业务页克隆后**删除该 `<style>` 块**（保留其后的内联 `:root` 同步副本，同步规则不变）。残留它会带来每页 27-34 条 MED 噪音（裸 font-size / grid.4px / token.undefined 隐患）。**⚠️ 只删 `<style>` 块本身——框架 `<script>` 段（多语言 i18n / 主题切换 / 折叠）一个都不许删**（订单总览实战：删 style 时连带删掉多语言 IIFE → 语言切换全页失效，门禁 `template.i18n.missing` HIGH 已拦截）。
 7. **框架 `<script>` 段禁删（V10 新增 2026-08-27）**：`</style>` 之后的全部 `<script>` 段（框架级多语言 IIFE / 主题切换 / 折叠交互）是**框架外壳的一部分**，与顶栏/侧栏同级，**禁止以"演示代码"为由删除**。门禁 `template.i18n.missing`（HIGH）核对 hx-lang 指纹，缺失即拦。
 8. **内容装配定位纪律（2026-11-17 白屏事故沉淀）**：脚本/程序化注入页面内容时，定位 `<main class="content">` 一律用**行首缩进锚点或 `lastIndexOf`**，**禁裸 `indexOf`**——首个命中可能落进注释内字面量（本次事故：模板头说明注释含同形伪标签 → 注入截断 head/CSS/body，整页白屏，当时双门禁 0 HIGH 放行）。模板伪标签已转义 + 门禁已补 `page.title.missing` / `html.skeleton.*` 兜底，但装配纪律不豁免。
+9. **外壳零改动（含顶部工具区，2026-11-20）**：`.ws-global` 顶部工具区（`.ws-tools`）= 真源 `弘讯web端design-system/partials/shell-tools.html` 注入产物；克隆页只保留、不手改（改真源后由 `sync-shell-tools.js` 注入各页，`verify.js chrome` 校验全页与真源一致）。**克隆页不跟随真源后续变更**：真源更新后需重新克隆或手工同步工具区。
 
 **⚠️ 禁参照既有页面 DOM（2026-08-06 用户拍板）**：克隆后页面结构一律按 `RULES.md §1.1b` + `components.json` + `CHART-SPEC.md` **从零填充**。**禁止**参照 output/、packages/ 或任何既有页面的 DOM 拼新页（既有页面可能含历史漂移，参照它会把漂移复制进新页）。**唯一可复制的结构 = 克隆源 page-template 的框架外壳本身**。
 
@@ -178,7 +180,7 @@ cp 弘讯移动端design-system/page-template.html "<用户项目>/output/设备
 | 文件名     | 自动拼 `<页面语义名>_<YYYYMMDD>_<HHmm>.html`；同日同语义名重复 → 追加 `_2`/`_3`，**绝不覆盖**                                                                                                                                   |
 | CSS 引用  | `<link rel="stylesheet" href="…/弘讯web端design-system/template.css">`（相对路径按实际位置写）                                                                                                                         |
 | 门禁      | `node scripts/verify.js page <用户项目路径>/output/<产出文件>.html`，期望 0 HIGH（validate + 组件复用 + 树运行时） |
-| **分享版** | `node scripts/build-share-web.js <页面> [--out <输出>]`：内联 `template.css` + 4 个 js（shell-ui/tree-nav/i18n/page-ui）+ 本地资源，零外链；**禁手工内联**。重出后复跑 `verify.js page`，0 HIGH 才分发 |
+| **分享版** | `node scripts/build-share-web.js <页面> [--out <输出>]`：内联 `template.css` + 4 个 js（shell-ui/tree-nav/i18n/page-ui）+ 本地资源，零外链；**禁手工内联**。重出后复跑 `verify.js page`，0 HIGH 才分发；**改外壳工具区真源后必须重出分享版**（副本读的是页面里的工具区快照） |
 
 > **CSS 由 `template.css` 统一提供（不要复制 CSS）**：`:root` 变量（品牌/中性/功能/字阶/圆角/投影/motion/密度）、组件 class、布局骨架（`.shell > .rail + .workspace(>.ws-global + .ws-body)`）、`[data-skin]` / `[data-theme="dark"]` / `[data-density]`。色 / 尺寸 / 字重 / 圆角一律走 `:root` 变量，禁止硬编码；动效用 `var(--motion-duration-*)+var(--motion-ease-*)`，禁裸数字秒。
 
@@ -195,11 +197,11 @@ cp 弘讯移动端design-system/page-template.html "<用户项目>/output/设备
 ### 步骤 5：门禁自检 → 软规则自查表 → 交付
 
 ```bash
-NODE="C:/Users/mask/.workbuddy/binaries/node/versions/22.22.2/node.exe"
-cd <端目录> && "$NODE" validate-spec.js <用户项目路径>/output/<产出文件>.html
+node <仓库根>/scripts/verify.js page <用户项目路径>/output/<产出文件>.html   # validate + 组件复用 + 树运行时
 ```
 
 - 期望：**0 HIGH（exit 0）**。任何 HIGH 禁止交付。仅 MEDIUM 不阻断（exit 0），但建议清零。
+- 仓库级自检（维护者 / 改真源后）：`node scripts/verify.js all` = **交付口径**（`ci-local` 存量全链路 + `verify-new` 新规范范围）；只验新规范用 `--scope=new`。
 - 门禁检查：组件尺寸 / 字重 / 半径 / 色值（`components.json` contract）；非 token 硬编码色（MEDIUM）；`checkMotion`（transition 裸值 HIGH / animation 裸值 MEDIUM，`0s/0ms` 合法）。
 - **自造优先级（2026-08-06 拍板 v2）**：组合 → 变体 → 页面级自造（值必须落现有 token）→（禁）产生新裸值。自造底线：颜色 `var(--*)` / 文字 `.m-text-*`（Web `.t-*`）/ 动效 `var(--motion-duration-*)` / **字体 `var(--font-cn)` / `var(--font-mono)`（禁具体字体名，门禁 font.family MED）** / 4px 网格 / 禁覆写真源组件类。详见移动端 RULES §10.10 [软] / Web RULES §7.9 [软]。
 
@@ -429,7 +431,7 @@ cd brand-color-engine
 
 ### 步骤 2：亮色主题映射进克隆模板（暗色固定，2026-11-17）
 
-**通用规则**：`cp agent-starter.html <用户项目>/output/<页面语义名>_<YYYYMMDD>_<HHmm>.html` 后（**落盘「用户项目」output/，自动命名，见 §① 步骤4 产出落盘规则**），按下表 A/B/C/D 映射（变量名不动，只改值）。引擎只改色值，布局 / 字号 / 字重 / 圆角 / 投影 / 字体仍服从设计系统 spec。
+**通用规则**：`node scripts/new-page-web.js <语义名>` 从 `page-template.html` 克隆落盘（**落「用户项目」output/，自动命名，见 §① 步骤4 产出落盘规则**），按下表 A/B/C/D 映射（变量名不动，只改值）。引擎只改色值，布局 / 字号 / 字重 / 圆角 / 投影 / 字体仍服从设计系统 spec。
 
 - **步骤 2a（亮色）**：把 **palLight** 值替换内联 `:root{}` 的对应变量（原单模式流程不变）。
 - **步骤 2b（暗色）**：**不写品牌暗色块**；暗色由 `template.css` 的 `:root[data-theme="dark"]` 固定块提供。旧克隆若仍含品牌暗色段（`:root[data-theme="dark"]` 内 `--primary`/`--brand-surface` 品牌值），删除该段（DARK-MODE §七）。
@@ -703,7 +705,7 @@ cd packages/mobile-ui && npm run build:weapp   # 验证编译 exit 0
   │    └─ 是 → 可选附录 C 参考实现（new-page-react.js / new-page-mobile.js + build 门禁）；否则照 HTML 预览 + tokens.json 自实现
   │
   ├─ 品牌色 == #005EAE 且 亮色？
-  │    └─ 是 → cp agent-starter.html → 增删 → 门禁 → 交付（§① 主流程）
+  │    └─ 是 → node scripts/new-page-web.js <语义名>（克隆 page-template）→ 填 .page-sec → 门禁 → 交付（§① 主流程）
   │
   ├─ 品牌色 ≠ #005EAE 或 暗色？
   │    └─ 是 → 附录 B 调 generatePalette → 映射进短名 :root（附映射表）
@@ -718,6 +720,7 @@ cd packages/mobile-ui && npm run build:weapp   # 验证编译 exit 0
 #### 禁区（违反即不合格）
 
 - 禁改 `validate-spec.js` / `components.json` contract / `tokens.json` / `base-spec.json` / `generate.js`（真源与引擎不动；发现 bug 上报维护者，记录到两端 CHANGELOG.md）
+- 禁手改 `.ws-tools` 副本（真源 = `partials/shell-tools.html`；改完跑 `sync-shell-tools.js` 注入，分享版与 showcase 副本随之重出）
 - 禁在样例页用内联 `style` 或 `!important` 绕过组件规则
 - 禁注入 `--color-*` 旧长名变量（引擎 `css` 字段是旧长名，必须映射进短名）
 - 禁硬编码非 token 色（引擎派生色只能出现在 `:root` 变量定义里）

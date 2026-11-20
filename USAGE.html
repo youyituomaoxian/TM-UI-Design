@@ -323,7 +323,7 @@
       <div class="step-card">
         <span class="step-num sn-4">4</span>
         <b>过门禁</b>
-        <span class="t-body2"><span class="kbd">scripts/verify.js page &lt;页面&gt;</span> → <b>0 HIGH</b>（validate + 组件复用 + 树运行时）；全链路 <span class="kbd">ci-local</span> → <b>105 pass / 0 fail</b>；新规范范围 <span class="kbd">verify.js all --scope=new</span>。</span>
+        <span class="t-body2"><span class="kbd">scripts/verify.js page &lt;页面&gt;</span> → <b>0 HIGH</b>（validate + 组件复用 + 树运行时）；<b>交付口径</b> <span class="kbd">scripts/verify.js all</span>（存量全链路 + 新规范范围）全绿；只验新规范用 <span class="kbd">--scope=new</span>。</span>
       </div>
       <div class="step-card">
         <span class="step-num sn-5">5</span>
@@ -435,17 +435,20 @@
           <tr><td><span class="a-type at-src">真源</span><span class="t-mono">CHART-SPEC.md</span></td><td>图表结果约束 8 条 + 自建范式</td><td>Agent（含图表时）</td></tr>
           <tr><td><span class="a-type at-script">引擎</span><span class="t-mono">brand-color-engine/</span></td><td>任意品牌色 / 暗色一键生成 :root 覆盖</td><td>Agent / 维护者</td></tr>
           <tr><td><span class="a-type at-script">脚本</span><span class="t-mono">scripts/new-page-web|mobile.js</span></td><td>脚手架：克隆框架 + 注入克隆凭证 meta + 修 link</td><td>Agent</td></tr>
-          <tr><td><span class="a-type at-script">脚本</span><span class="t-mono">scripts/verify.js · build-share-web.js</span></td><td>统一门禁入口（page/all/tree/themes/docs/sync/reach/reuse/showcase）· 分享版内联构建</td><td>Agent / 维护者</td></tr>
+          <tr><td><span class="a-type at-script">脚本</span><span class="t-mono">scripts/verify.js · build-share-web.js</span></td><td>统一门禁入口（page/all/shell/manifest/chrome/icons/spec/themes/docs/sync/reach/reuse/showcase）· 分享版内联构建</td><td>Agent / 维护者</td></tr>
+          <tr><td><span class="a-type at-src">真源</span><span class="t-mono">partials/shell-tools.html</span></td><td>外壳工具区单点真源（sync-shell-tools 注入各页；禁改副本；克隆页不跟随）</td><td>维护者</td></tr>
+          <tr><td><span class="a-type at-gate">配置</span><span class="t-mono">scripts/gate-manifest.json</span></td><td>门禁输入唯一清单（工具区真源/注入/派生 + 新规范页面/分享版）</td><td>维护者 / 门禁</td></tr>
+          <tr><td><span class="a-type at-gate">门禁</span><span class="t-mono">sync-shell-tools.js · check-shell-chrome.js · check-gate-manifest.js</span></td><td>工具区注入漂移 / 与真源一致 / 清单自检（删条目即红）</td><td>门禁 / CI</td></tr>
           <tr><td><span class="a-type at-gate">门禁</span><span class="t-mono">validate-spec.js（两端）</span></td><td>页面门禁（0 HIGH 才交付）</td><td>门禁 / Agent</td></tr>
-          <tr><td><span class="a-type at-gate">门禁</span><span class="t-mono">ci-local.js</span></td><td>全量旧链路自检（含旧 V2.1 派生检查，当前有历史红灯；新页用 verify.js）</td><td>维护者 / CI</td></tr>
+          <tr><td><span class="a-type at-gate">门禁</span><span class="t-mono">ci-local.js</span></td><td>存量全链路自检（交付口径 = verify.js all，含新规范范围；项数以输出为准）</td><td>维护者 / CI</td></tr>
           <tr><td><span class="a-type at-gate">门禁</span><span class="t-mono">check-reach.js</span></td><td>规范可达性（索引 0 漂移 / 引用 0 断链 / 加载集 ≤ 预算；已入 ci-local）</td><td>维护者 / 门禁</td></tr>
           <tr><td><span class="a-type at-script">脚本</span><span class="t-mono">sync-index.js / rule-index.json</span></td><td>双端章节索引生成 + 规则路由表（改 RULES 标题后必跑；生成物勿手改）</td><td>维护者</td></tr>
           <tr><td><span class="a-type at-entry">入口</span><span class="t-mono">团队使用指南.md</span></td><td>人读版使用说明 + 文件作用清单</td><td>人</td></tr>
-                  <tr><td><span class="a-type at-entry">示例</span><span class="t-mono">showcase/</span></td><td>工作台 v7 分享版 / 亮色看板（+分享版）/ 登录页示例（+分享版）/ 规范展示（+分享版）；不参与门禁</td><td>人</td></tr>
+                  <tr><td><span class="a-type at-entry">示例</span><span class="t-mono">showcase/</span></td><td>工作台 v7（+分享版）/ 亮色看板（+分享版）/ 登录页示例（+分享版）/ 规范展示（+分享版）；参与门禁（validate / 树运行时 / 外壳工具区）</td><td>人</td></tr>
 </tbody>
       </table>
       </div>
-      <div class="pager"><span class="pg-tot">共 21 条</span></div>
+      <div class="pager"><span class="pg-tot">共 24 条</span></div>
     </div>
   </section>
 

@@ -5,6 +5,12 @@
 
 ---
 
+## [机制对齐：文档口径随门禁链收口] — 2026-11-20
+- **交付口径**：六份入口文档与双端 RULES 六步的「ci-local 全绿」统一为 `verify all`（存量全链路 + 新规范范围）；按 SOP §0 删写死项数。
+- **流程**：SOP 补外壳工具区真源（SSOT / 克隆第 9 件 / 分享版重出 / 禁区），修退役命令（`cp agent-starter`、本机 node 路径），附录 F 改脚手架。
+- **示例页**：showcase 去掉「不参与门禁」；USAGE 资产地图 +3 行（partials / gate-manifest / 工具区门禁）21→24；移动 RULES 六步同口径。
+- **实测**：`verify all` 全绿；reach 0/2、sync 3/0、size 0 FAIL；分享版与 showcase 副本重出。
+
 ## [门禁清单化 + 工具区 DOM 契约：堵掉「删条目 = 绕过门禁」] — 2026-11-20
 - **清单**：新增 `scripts/gate-manifest.json`（工具区真源/注入/派生 + newScope + pageScan + `schemaVersion`）；`verify-new`、`check-shell-chrome`、`sync-shell-tools` 改读清单，脚本不再写死页面；新增 `lib/shell-tools.js` 统一提取/归一/改写。
 - **清单防篡改**：新增 `check-gate-manifest.js`（`verify.js manifest`）——存在性 / 组内去重 / inject⊥derived / `.html` 覆盖性（删条目即红）/ 含 `.ws-tools` 必登 inject|derived / ignore 带理由。

@@ -56,6 +56,10 @@
       {
         "path": "弘讯web端design-system/agent-starter.html",
         "reason": "极简说明页（不是克隆源，无 .shell/.ws-tools），不参与外壳门禁"
+      },
+      {
+        "path": "弘讯web端design-system/showcase/表格规范展示_20261112.html",
+        "reason": "V2.1 冻结仓同名副本（2026-11-20 出现在 showcase、未入库）：非本仓资产，待维护者确认删除；RULES 表格规范已改指 web规范展示_左右结构.html"
       }
     ]
   }

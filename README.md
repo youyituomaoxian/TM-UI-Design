@@ -53,7 +53,7 @@ node <仓库根>/scripts/verify.js all --scope=new
 node <仓库根>/scripts/build-share-web.js <你的项目目录>/output/设备总览_*.html
 ```
 
-> **交付口径 = `node scripts/verify.js all`**：先跑 `ci-local.js`（105 项存量全链路），再跑 `verify-new`（新规范范围）；两者全绿才算可交付。只验新规范用 `--scope=new`。旧 `output/` 为历史归档，不阻塞新规范。
+> **交付口径 = `node scripts/verify.js all`**：先跑 `ci-local.js`（存量全链路），再跑 `verify-new`（新规范范围）；两者全绿才算可交付，项数以命令输出为准。只验新规范用 `--scope=new`。旧 `output/` 为历史归档，不阻塞新规范。
 
 ## 快速开始（Git 仓库）
 

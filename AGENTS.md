@@ -23,7 +23,7 @@
    - 图表 `CHART-SPEC.md`（原子 SVG，色走 `--chart-*`）；跨端色 `CROSS-PLATFORM-COLORS.md`
    - 非默认品牌：`brand-color-engine/`（暗色固定不随品牌）
 4. 产出落「**用户项目**」`output/`（CSS link 指向本仓库 `template.css`）。
-5. 门禁：单页 `node scripts/verify.js page <页面>` → **0 HIGH**；**交付口径** `verify.js all` = `ci-local`（105 项）+ 新规范范围（verify-new），两者全绿；只验新规范用 `verify.js all --scope=new`。
+5. 门禁：单页 `node scripts/verify.js page <页面>` → **0 HIGH**；**交付口径** `verify.js all` = 存量全链路（`ci-local`）+ 新规范范围（`verify-new`），两者全绿；只验新规范用 `verify.js all --scope=new`。
 6. 分享：`node scripts/build-share-web.js <页面> [--out]`（内联 CSS + js + 资源，零外链），禁手工内联。
 
 ## 存量项目改造（路径二）
@@ -47,7 +47,7 @@
 ## 视觉速览
 
 - Web：`web规范展示_左右结构.html`（+ `_分享版.html` 零外链）
-- 示例：`showcase/`（工作台 v7 / 亮色看板 / 登录页示例 / 规范展示；不参与门禁）
+- 示例：`showcase/`（工作台 v7 / 亮色看板 / 登录页示例 / 规范展示；参与 validate / 树运行时 / 工具区门禁）
 - 移动：`移动端规范展示_*.html`
 
 ## 改视觉样式（维护者）
