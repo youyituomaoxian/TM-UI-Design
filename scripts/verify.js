@@ -102,7 +102,15 @@ switch (cmd) {
     break;
 
   case 'chrome':
-    run('外壳 chrome 一致性', path.join(ROOT, 'scripts', 'check-shell-chrome.js'), []);
+    run('外壳工具区一致性', path.join(ROOT, 'scripts', 'check-shell-chrome.js'), []);
+    break;
+
+  case 'shell':
+    run('外壳工具区未漂移', path.join(ROOT, 'scripts', 'sync-shell-tools.js'), ['--check']);
+    break;
+
+  case 'manifest':
+    run('门禁清单自检', path.join(ROOT, 'scripts', 'check-gate-manifest.js'), []);
     break;
 
   case 'icons':
@@ -124,7 +132,9 @@ switch (cmd) {
     console.log('  node scripts/verify.js reach               # 可达性');
     console.log('  node scripts/verify.js reuse <文件>          # 组件复用门禁');
     console.log('  node scripts/verify.js tree <文件...>        # 作业树运行时门禁');
-    console.log('  node scripts/verify.js chrome              # 外壳 chrome 一致（工具区/图标 + 脚本可加载）');
+    console.log('  node scripts/verify.js chrome              # 工具区与真源一致 + 脚本可加载');
+    console.log('  node scripts/verify.js shell               # 工具区真源是否已注入各页（漂移检查）');
+    console.log('  node scripts/verify.js manifest            # 门禁清单（gate-manifest.json）自检');
     console.log('  node scripts/verify.js icons               # 图标库 ↔ 规范展示图标模块');
     console.log('  node scripts/verify.js spec                # 规范展示页自检（坐标/计数/锚点/分页/变量）');
     console.log('  node scripts/verify.js showcase            # 示例副本是否漂移');

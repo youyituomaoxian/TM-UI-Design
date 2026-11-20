@@ -1,7 +1,7 @@
 # 暗色模式（Dark Mode）设计令牌对照 · 弘讯双端
 
 > 2026-07-30 · C 包产物；真源 = `tokens.json` 顶层 `dark` 节（brand-color-engine 快照，勿手改）。
-> 切换：`:root[data-theme="dark"]`；主题入口 = `page-template.html` 的 `.ws-global` 工具区（palette + 下拉：默认蓝/暗色/科技青/工业绿/琥珀橙/深空紫；`data-skin` + `data-theme`；localStorage `hx-skin`/`hx-theme`；克隆即带）。
+> 切换：`:root[data-theme="dark"]`；主题入口 = 外壳工具区真源 `partials/shell-tools.html`（注入各页 `.ws-global`；palette + 下拉：默认蓝/暗色/科技青/工业绿/琥珀橙/深空紫；`data-skin` + `data-theme`；localStorage `hx-skin`/`hx-theme`；克隆即带）。
 > **外壳换代（2026-11-19）**：现行左栏 `.rail` + 全局条 `.ws-global`；本文 `.topbar/.sidebar/.footer` 段落为旧 `.app` 历史口径，仅用于读存量页。
 > 国际对标：Material / AntD / Apple HIG / Atlassian / Polaris（要点见 §六）。适用：Web + 移动端。
 

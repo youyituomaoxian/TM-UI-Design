@@ -62,8 +62,10 @@ jobs:
           node check-reach.js
           node check-sync.js
 
-      - name: 外壳工具区 · 真源未漂移
-        run: node scripts/sync-shell-tools.js --check
+      - name: 门禁清单自检 · 外壳工具区 · 真源未漂移
+        run: |
+          node scripts/check-gate-manifest.js
+          node scripts/sync-shell-tools.js --check
 
       - name: 外壳 chrome / 图标库 / 规范展示页自检
         run: |

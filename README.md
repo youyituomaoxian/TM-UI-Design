@@ -19,6 +19,7 @@
 │   ├── tokens.json / components.json  # 值真源 / 组件机器契约
 │   ├── template.css                   # build 产物（源 = packages/web-ui/src/styles/ 五件 CSS）
 │   ├── page-template.html             # 唯一克隆源（脚手架自动克隆）
+│   ├── partials/shell-tools.html      # 外壳工具区单点真源（sync-shell-tools 注入各页）
 │   ├── js/                            # 运行真源：shell-ui / tree-nav / i18n / page-ui
 │   ├── validate-spec.js               # 单页门禁（0 HIGH 才交付）
 │   ├── RULES.md / MASTER.md / components.md / DESIGN-TOKENS.md
@@ -26,7 +27,7 @@
 │   └── showcase/                      # 示例页（工作台 v7 / 亮色看板 / 规范展示副本）
 ├── 弘讯移动端design-system/            # 移动端规范（同构；模板手写）
 ├── packages/web-ui/src/styles/        # Web CSS 真源：globals/components/framework/utilities/workbench 五件
-├── scripts/                           # verify / new-page / build-share / audit-tree-runtime / audit-component-reuse
+├── scripts/                           # verify / new-page / build-share / shell-tools / gate-manifest / audit-*
 ├── GENERATION-SOP.md                  # 生成流程总纲（§① 生成 / §② 存量改造）
 ├── USAGE-GUIDE.md / 团队使用指南.md / USAGE.html   # 使用说明（人读）
 ├── CHART-SPEC.md / DARK-MODE.md / VISUAL-SPEC.md  # 图表 / 暗色 / 视觉规格

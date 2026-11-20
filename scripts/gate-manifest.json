@@ -1,0 +1,61 @@
+{
+  "$comment": "门禁输入唯一清单（2026-11-20）。门禁只读本文件，禁在脚本里再写死页面路径；页面新增/改名先登记再落地。路径相对仓库根。",
+  "shell": {
+    "truth": "弘讯web端design-system/partials/shell-tools.html",
+    "truthMaxChars": 12000,
+    "inject": [
+      "弘讯web端design-system/page-template.html",
+      "弘讯web端design-system/web规范展示_左右结构.html",
+      "弘讯web端design-system/showcase/弘讯亮色注塑机看板.html",
+      "弘讯web端design-system/showcase/左右结构_v7_设备运维工作台.html"
+    ],
+    "derived": [
+      "弘讯web端design-system/web规范展示_左右结构_分享版.html",
+      "弘讯web端design-system/showcase/web规范展示_左右结构.html",
+      "弘讯web端design-system/showcase/web规范展示_左右结构_分享版.html",
+      "弘讯web端design-system/showcase/弘讯亮色注塑机看板_分享版.html",
+      "弘讯web端design-system/showcase/左右结构_v7_设备运维工作台_分享版.html"
+    ],
+    "contract": {
+      "requiredIds": ["fsBtn", "themePop", "appPop", "langPop", "userPop"],
+      "minCount": { "aria-haspopup": 4, "theme-opt": 6, "ws-sep": 1, "data-i18n": 10 },
+      "required": ["data-theme=\"dark\"", "data-skin="]
+    }
+  },
+  "newScope": {
+    "pages": [
+      "弘讯web端design-system/page-template.html",
+      "弘讯web端design-system/web规范展示_左右结构.html",
+      "弘讯web端design-system/showcase/弘讯亮色注塑机看板.html",
+      "弘讯web端design-system/showcase/登录页示例.html",
+      "弘讯web端design-system/showcase/左右结构_v7_设备运维工作台.html",
+      "USAGE.html"
+    ],
+    "treePages": [
+      "弘讯web端design-system/page-template.html",
+      "弘讯web端design-system/web规范展示_左右结构.html",
+      "弘讯web端design-system/showcase/web规范展示_左右结构.html",
+      "弘讯web端design-system/web规范展示_左右结构_分享版.html",
+      "弘讯web端design-system/showcase/web规范展示_左右结构_分享版.html",
+      "弘讯web端design-system/showcase/弘讯亮色注塑机看板.html",
+      "弘讯web端design-system/showcase/左右结构_v7_设备运维工作台.html",
+      "弘讯web端design-system/showcase/左右结构_v7_设备运维工作台_分享版.html"
+    ],
+    "shares": [
+      "弘讯web端design-system/showcase/左右结构_v7_设备运维工作台_分享版.html",
+      "弘讯web端design-system/web规范展示_左右结构_分享版.html",
+      "弘讯web端design-system/showcase/弘讯亮色注塑机看板_分享版.html",
+      "弘讯web端design-system/showcase/登录页示例_分享版.html",
+      "USAGE_分享版.html"
+    ]
+  },
+  "pageScan": {
+    "dirs": ["弘讯web端design-system", "弘讯web端design-system/showcase"],
+    "ignore": [
+      {
+        "path": "弘讯web端design-system/agent-starter.html",
+        "reason": "极简说明页（不是克隆源，无 .shell/.ws-tools），不参与外壳门禁"
+      }
+    ]
+  }
+}

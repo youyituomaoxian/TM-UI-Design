@@ -4,6 +4,7 @@
   ─ 改法：只改本文件 → node scripts/sync-shell-tools.js → 再跑 sync-showcase / build-share-web 重出副本与分享版。
   ─ 路径约定：按 Web 端根相对写（assets/…）；注入 showcase/ 下的页面时脚本自动改写为 ../assets/…。
   ─ 禁改：page-template.html / 规范展示 / 看板 / V7 里的副本（会被覆盖）。
+  ─ 克隆页不跟随：用户项目 output/ 里克隆出去的页面不会自动同步，改真源后需重新克隆或手工同步。
 -->
 <div class="ws-tools">        <a class="tool-ico" href="#" title="首页" data-i18n-title="tool.home" aria-label="首页">
           <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 1.5 10.8 L 12 2.2 L 22.5 10.8"/><path d="M 3.5 9.8 V 19.6 A 1.4 1.4 0 0 0 4.9 21 H 19.1 A 1.4 1.4 0 0 0 20.5 19.6 V 9.8"/><path d="M 9.2 21 V 15.4 A 1 1 0 0 1 10.2 14.4 H 13.8 A 1 1 0 0 1 14.8 15.4 V 21"/></svg>

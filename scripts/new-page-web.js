@@ -6,10 +6,11 @@
  *
  * 行为：
  *   1. cp 弘讯web端design-system/page-template.html → <目标>/output/<语义名>_<YYYYMMDD>_<HHmm>.html
- *   2. 修正 CSS link 与 assets 路径（template.css / assets → 相对仓库端目录）
+ *   2. 修正 CSS link 与 assets / js 路径（通用改写，不逐文件枚举）
  *   3. 注入 <meta name="x-template-clone" content="弘讯web端design-system/page-template.html">
  *      —— P1 门禁 template.clone.missing 的克隆凭证（缺 meta 的 B 端页面报 HIGH）
  *   4. 同目录同名自动追加 _2/_3（绝不覆盖）
+ *   5. 预检：模板工具区与真源 partials/shell-tools.html 不同步时告警（克隆页不会自动跟随真源）
  *
  * 铁律：page-template.html 是唯一框架来源；禁止从空白 HTML 或自搭框架起步。
  * 铁律二：本脚手架整文件拷贝（含框架 <script> 段——主题切换/多语言 i18n/折叠等）。填内容时【禁止删除任何框架 <script>】；门禁 template.i18n.missing（HIGH）会拦截缺 i18n JS 的产出。
@@ -55,13 +56,20 @@ function main() {
     html = html.replace('<link rel="stylesheet" href="template.css">', `<link rel="stylesheet" href="${rel}/template.css">`);
   }
 
-  // 2) 资产路径：模板在仓库端根，克隆到用户 output 后需指向仓库端 assets
-  html = html.split('src="assets/logo/').join(`src="${rel}/assets/logo/`);
-  html = html.split('src="assets/左右结构/').join(`src="${rel}/assets/左右结构/`);
-  html = html.split('src="js/tree-nav.js"').join(`src="${rel}/js/tree-nav.js"`);
-  html = html.split('src="js/i18n.js"').join(`src="${rel}/js/i18n.js"`);
-  html = html.split('src="js/page-ui.js"').join(`src="${rel}/js/page-ui.js"`);
-  html = html.split('src="js/shell-ui.js"').join(`src="${rel}/js/shell-ui.js"`);
+  // 2) 资产路径：模板在仓库端根，克隆到用户 output 后需指向仓库端 assets / js
+  //    通用改写（不再逐文件枚举）：工具区/页面新增任何 assets/、js/ 引用都自动跟随
+  html = html.replace(/src="assets\//g, `src="${rel}/assets/`);
+  html = html.replace(/src="js\//g, `src="${rel}/js/`);
+
+  // 2b) 预检：模板工具区是否已与真源同步（不同步就克隆 = 把旧外壳带进用户项目）
+  try {
+    const { extract, norm } = require('./lib/shell-tools');
+    const truth = extract(fs.readFileSync(path.join(REPO_ROOT, END, 'partials', 'shell-tools.html'), 'utf8'));
+    const cur = extract(html);
+    if (truth && cur && norm(cur) !== norm(truth)) {
+      console.warn('⚠️ page-template 的工具区与真源 partials/shell-tools.html 不同步——本次克隆带的是旧外壳；先跑 node scripts/sync-shell-tools.js');
+    }
+  } catch (e) { /* 老版本仓库无真源时忽略 */ }
 
   // 3) meta 注入（<title> 前，P1 克隆凭证）
   html = html.replace(/<title>/, META + '\n<title>');

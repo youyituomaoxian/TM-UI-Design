@@ -5,6 +5,13 @@
 
 ---
 
+## [门禁清单化 + 工具区 DOM 契约：堵掉「删条目 = 绕过门禁」] — 2026-11-20
+- **清单**：新增 `scripts/gate-manifest.json`（工具区真源/注入/派生 + newScope + pageScan）；`verify-new`、`check-shell-chrome`、`sync-shell-tools` 改读清单，脚本不再写死页面；新增 `scripts/lib/shell-tools.js`，让「注入」与「比对」共用同一份提取/归一/路径改写实现。
+- **清单防篡改**：新增 `check-gate-manifest.js`（`verify.js manifest`）——存在性、组内去重、inject 与 derived 不交叉、`.html` 覆盖性（删条目即红）、ignore 必带理由。
+- **工具区契约**：真源须保住 shell-ui/i18n 的 DOM 钩子（4 个 pop id、`fsBtn`、aria-haspopup≥4、theme-opt≥6、ws-sep≥1、data-i18n≥10、`data-theme="dark"`、`data-skin=`）与体积上限（manifest `truthMaxChars`）；失败信息按文件类别给对应修复命令。
+- **清理**：check-size 删死条目 `表格规范展示_20261112.html`；`verify.js` 增 `shell` / `manifest` 子命令。
+- **实测**：manifest 29/1 通过；chrome 9/9；`verify all --scope=new` 与 `ci-local` 105/0 全绿。
+
 ## [外壳工具区收为单点真源：基准方向纠正 + 9 页门禁] — 2026-11-20
 - **问题**：`check-shell-chrome` 以 V7 示例页为「视觉基准」，缺页 `continue`、基准缺失静默退回 page-template——示例页成了标准，红绿都不可信；V7 又躺在 `.gitignore` 的 `output/`，新克隆必红。
 - **真源**：新增 `partials/shell-tools.html`（`.ws-tools` 片段，路径按 Web 根相对写）；新增 `scripts/sync-shell-tools.js`（含 `--check`）注入 page-template / 规范展示 / 看板 / V7，showcase 目标自动改写 `../assets/`。

@@ -56,5 +56,7 @@
 
 > 双端不对称：Web `template.css` = build 产物（源 `packages/web-ui/src/styles/` **五件** + `map-tokens.js`；改源后 `build-template-css.js`，手改会被覆盖）；移动 `template.css` = 手写真源。`check-sync.js` 校验双端一致。
 
+> 顶部工具区（`.ws-tools`）= `弘讯web端design-system/partials/shell-tools.html` 单点真源：改完跑 `node scripts/sync-shell-tools.js` 注入各页；**禁改各页副本**（会被覆盖，且 `verify.js chrome` 会拦）。门禁清单见 `scripts/gate-manifest.json`（`verify.js manifest` 自检）。
+
 - Web：改五件 CSS → `node packages/web-ui/scripts/build-template-css.js`。
 - 移动：直接改 `template.css`；改动须用户拍板。
