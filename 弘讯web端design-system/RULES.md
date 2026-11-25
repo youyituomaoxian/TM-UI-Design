@@ -57,10 +57,10 @@
 | 章 | 字符 | 何时读 |
 |---|---|---|
 | [硬] 0. B 端后台固定框架 | 7.7k | 判定是否套框架（判定必读） |
-| [软] 1. 组件选择决策树 | 14.8k | 选组件时 · 必读 |
+| [软] 1. 组件选择决策树 | 14.9k | 选组件时 · 必读 |
 | [硬] 2. 禁止清单 | 1.0k | 生成前自查 · 简读 |
 | [硬] 3. 组件状态机 | 10.5k | 写/改按钮·输入态时 |
-| [硬] 4. 间距与布局速查 | 8.0k | 布局时 |
+| [硬] 4. 间距与布局速查 | 8.1k | 布局时 |
 | [软] 5. 生成检查清单 | 0.1k | 交付前 |
 | [硬] 6. 布局黄金法则 | 2.0k | 布局时 · 必读 |
 | [软] 7. 布局美学规范 | 6.9k | 排版/留白/层级 · 必读 |
@@ -206,12 +206,12 @@ START: 我要做什么类型的页面？
 
 > **卡片列表分页（2026-11-13）**：卡片网格每页 **12 张（4×3）**；>12 必带真源 `.pager`（`‹ 1 2 3 ›` + `共 N 台`），**禁无限滚动**；筛选/搜索/刷新后页码归 1；末页不足自然留白、**禁补空卡**；分页器**固定贴内容区底部**（`--space-base`），网格 `flex:1` 吃中间高度；**卡片网格容器用真源 `.card-grid`**（gap 供行距 + 直接子 `.card` margin 归零，禁页面 `<style>` 覆写 `.card`——css.override HIGH）。
 
-> **`.content--fill` 用法**：见「默认不滚动 + 一屏撑满」——content--fill → card--fill → is-placeholder 三步，禁 `calc(100vh - N)`，嵌层补 flex 链。
+> **`.content--fill` 用法**：见「默认不滚动 + 一屏撑满」——content--fill → card--fill → .table-placeholder 三步，禁 `calc(100vh - N)`，嵌层补 flex 链。
 
 > **表格规范（2026-11-12 汇总；活体展示见 `web规范展示_左右结构.html`）**
 > ① 尺寸：表头 44 / 行高 44（不随密度档）；分割线 `--n6`。
 > ② 单元格：数值列 `th.num`+`td.num` 成对（否则 `table.align`）；状态 `.status-dot`；级别 `.badge-err/warn/info`；操作列 `.btn.btn-text` + `.dropdown`（`.dropdown-item`、危险 `.danger`、Esc/点外收起）。
-> ③ 行状态：`:hover`、`tr.is-selected`、`.cbx` 全选 / `.is-indeterminate` 半选、补位行 `tr.is-placeholder` 保留分割线。
+> ③ 行状态：`:hover`、`tr.is-selected`、`.cbx` 全选 / `.is-indeterminate` 半选、补位行唯一真源类 `.table-placeholder` 只保持行高、不画分割线、无 hover/选中底色（2026-11-25 拍板并收敛三类名；0 条数据仍走 `.empty` 空态）。
 > ④ 分页：>5 行必带 `.pager`（`table.pager.required`），≤5 免；**与卡片下沿间距 = 与最后一行间距 = `--space-sm`(8)**；同表禁重复分页器；**每页条数按容器可容纳行数自适应（自动档），补位空行只补末页余量——禁「固定小页 + 大量补位」**。
 > ⑤ 承载：全宽表用整宽 `.card`（禁裸表）；卡片表行高仍 44、列宽百分比；空态 `.empty`。
 > ⑥ 「撑满 + 贴底」三步见上一条「默认不滚动 + 一屏撑满」。
@@ -279,7 +279,7 @@ START: 我要做什么类型的页面？
 | 外壳 | `.shell` / `.rail` / `.workspace` / `.ws-global` / `.ws-pagebar` / `.ws-body` | 左栏 216 / 折叠 64；白条 60；pagebar 56；body 内滚 |
 | 作业树 | `.rail .tree` / `.tree-node` / `.tree-group` / `.tree-node--child` / `.rail-foot` | 品牌底；节点 40；折叠 44；版权与折叠同排 |
 | 页面 | `.page-sec` / `.page-sec.is-active`（pane 切换，配 `data-pane`）/ `.pane-note` / `.seg-row` / `.monitor-split` / `.detail-card` | 页签 32；主从表 1476 起侧栏，≤1475 抽屉 |
-| 表格 | `.table-card` / `.table-scroll` / `.table-tools` / `.table-empty` / `.row-empty` | 表头 44 / 行 44 / 空行只分割线 / 0 条空状态 / 同高 |
+| 表格 | `.table-card` / `.table-scroll` / `.table-tools` / `.table-empty` / `.table-placeholder` | 表头 44 / 行 44 / 补位行无分割线与选中态（只撑高度） / 0 条空状态 / 同高 |
 | 弹窗 | `.modal` / `.spec-modal` + `--520/--640/--720` | 382 标准；520–720 宽表单；长表单整页 |
 | 状态 | `.dot-run/idle/stop/fault/offline` / `.machine-card--*` | 5 主状态；第二层 mode/productionStatus/reason |
 
@@ -693,7 +693,7 @@ START: 我要做什么类型的页面？
 1. **`col-*` 是弹性容器**：`.col-3/4/5/6/7/8/9/12` 一律 `display:flex;flex-direction:column;gap:var(--space-base)`（grid item 身份不变，内部转 flex column，col 内多卡片间距 16px 由 col 自身 gap 接管）。
 2. **col 内卡片一律 `flex:1` 平分 col 高度**（模板 `.col-* > .card{flex:1;min-height:0}`）：单卡片 = 撑满 col 高度；多卡片 = 平分。内容超高的卡片由 `min-height:auto` 保底不被压缩（高卡片决定 col 高度，矮卡片 stretch 对齐底部）。
 3. **图表/列表卡片配 `.card--fill`**（`flex column` + `.card-body{flex:1;min-height:0}`）：`card-body` 内的内容容器（`.donut-wrap` / `.chart-box` / `.table-wrap`）须 `flex:1` 吃掉剩余高度，杜绝"卡片撑满但内部内容悬空"。**弹性填充型图表容器 `.chart-box--flex`（）须配合 `.card--fill` + `.col-*` 环境才生效**（`.card:has(.chart-box--flex) .card-body{display:flex}` 组合）——脱离该组合单独使用 `.chart-box--flex` 不产生弹性拉伸；环形/迷你图用 `.chart-box--ring`，**不要**加 `.chart-box--flex`（会被全局 :has 拉高）。**V8（）**：`.chart-box--ring` 已带 `height:auto` 与基类 `.chart-box` 的 320 canvas 锚点**彻底解耦**——与基类连用安全（误挂不再产生 320 定高大空白；辅机总览页实战踩坑：160 环装 320 容器实测上下各空 77/83px）。**V8b 弹性吸收守则（同页二次实战沉淀）**：等高行内**一切图表内容容器必须弹性**（`flex:1 1 auto` + `min-height` 保底），**禁止定高**（定高 = 矮卡底部死白的根源）——SVG 拉伸型折线用 `.chart-box--flex`（+ 页面级 `--chart-height` 覆盖压行高保底）、HTML flex 柱状区用 `flex:1;min-height:Npx`、环形卡用「环上 + 图例纵排下」布局让内容自然填满（环 SVG 必须保留固定等宽高属性保证**正圆不拉伸**，禁 preserveAspectRatio=none）。`.card-body--center` **降级为文字类卡片兜底**，图表卡禁用（居中只是均分死白，不消灭死白——85px 居中空仍违反内边距语义，2026-08-27 用户拍板）。**V9 细则（订单总览实战：metric-row 被拉到 356px 死白）**：弹性**吸收者只能是图表本体**（`.chart-box--flex` 或图表区容器）——图例行 `.chart-legend`、汇总行 `.metric-row` 一律 `flex-shrink:0` 定自然高，**禁 flex:1**（吸收职责错位 = 死白从图表转移到汇总行，性质不变）。
-4. **表格空数据占位（min-row 契约）**：表格数据行数 < 8 行时，渲染到 **8 行**（`minRow=8`，行高 44px）——不足部分用空占位行 `<tr class="table-placeholder"><td colspan="N">&nbsp;</td></tr>`（无内容、保持行高、`pointer-events:none` 禁 hover）。数据为 0 时同样渲染 8 行占位 + 首行提示「无数据」。门禁 `layout.table-minrow`（MEDIUM）核对 JS 渲染模板是否含 minRow 常量。
+4. **表格空数据占位（min-row 契约）**：表格数据行数 < 8 行时，渲染到 **8 行**（`minRow=8`，行高 44px）——不足部分用空占位行 `<tr class="table-placeholder"><td colspan="N">&nbsp;</td></tr>`（无内容、保持行高、不画分割线与选中底色、`pointer-events:none`+`user-select:none` 禁 hover/文本选中；唯一真源类 `.table-placeholder`）。数据为 0 时同样渲染 8 行占位 + 首行提示「无数据」。门禁 `layout.table-minrow`（MEDIUM）核对 JS 渲染模板是否含 minRow 常量。
 5. **适用**：机器列表、告警列表、工单列表、环形图/折线图/柱状图等图表卡片，及一切在 `.grid12 > .col-*` 内的卡片；**不适用**：详情弹窗表单、非 grid12 列的独立卡片。门禁 `card.fill-in-grid`（MEDIUM）核对 col-* 直接子 .card 是否缺 `.card--fill`。
 
 **落地参照**：机器群览页（修订；示范文件已移除，规格以本条为准）——机器列表/环形图/折线图/告警速览/换模计划五张卡片全部 `.card--fill`，`.donut-wrap/.chart-box--sm/.table-wrap--h` 各 `flex:1`，JS `MIN_ROW=8` 表格占位。
@@ -724,7 +724,7 @@ START: 我要做什么类型的页面？
 
 > **原则（用户拍板）**：页面允许向下滚动，但**视口底边只允许落在区块之间的 gap 上**——首屏必须完整呈现核心内容（核心区块禁被底边拦腰截断）。长列表页内容区滚动是框架 G8 预期形态，不受本条限制其「可滚动性」，限制的是**首屏边界切在哪**。
 
-> **默认不滚动 + 一屏撑满（2026-11-12 拍板）**：页面默认一屏完整、无页级滚动；超出按「压缩密度 → 收敛列/合并区块 → 移入 tabs/抽屉」处理。滚动能力保留：仅长日志/明细/地图在**容器内**启用（`.content-scroll`/`.table-wrap`）。列表/报表页要「表格撑满 + 分页贴底 + 空行补位」用：`<main class="content content--fill">` + 末卡 `.card--fill`（分页器由真源 `.content--fill .card--fill .pager{margin-top:auto}` 贴底）+ 补 `<tr class="is-placeholder">`（行高 44、`--n6` 分割线，行数 = `ceil((wrap高-44)/44)`，resize 重算）；嵌层（如 `#viewList`）须补 `display:flex;flex-direction:column;flex:1;min-height:0`；**禁页面自写 `calc(100vh - N)`**。
+> **默认不滚动 + 一屏撑满（2026-11-12 拍板）**：页面默认一屏完整、无页级滚动；超出按「压缩密度 → 收敛列/合并区块 → 移入 tabs/抽屉」处理。滚动能力保留：仅长日志/明细/地图在**容器内**启用（`.content-scroll`/`.table-wrap`）。列表/报表页要「表格撑满 + 分页贴底 + 空行补位」用：`<main class="content content--fill">` + 末卡 `.card--fill`（分页器由真源 `.content--fill .card--fill .pager{margin-top:auto}` 贴底）+ 补 `<tr class="table-placeholder">`（行高 44、无分割线/无选中态，行数 = `ceil((wrap高-44)/44)`，resize 重算）；嵌层（如 `#viewList`）须补 `display:flex;flex-direction:column;flex:1;min-height:0`；**禁页面自写 `calc(100vh - N)`**。
 
 > **完整交互与完整动效（2026-11-12 拍板）**：页面必须交付可用交互（筛选/查询/刷新/排序/分页/切换/空态/加载/错误/禁用）与动效（M1–M5 + 数据元素 hover/active + 图表入场 `--chart-*`），**禁静态截图式页面**；只用真源类（`.anim-*`/`.chart-*`/transition token），禁自造时长与缓动。
 

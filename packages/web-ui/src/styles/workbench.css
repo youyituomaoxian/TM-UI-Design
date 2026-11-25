@@ -513,8 +513,6 @@ html{scroll-behavior:smooth;}
 #specView .gauge-svg{transition:filter var(--motion-duration-instant) ease;}
 #specView .gauge-svg:hover{filter:brightness(1.06);}
 
-#specView .row-empty td{height:44px;padding:0 12px;border-bottom:1px solid var(--n6);background:transparent;}
-#specView .row-empty:hover{background:transparent;}
 #specView .row-empty-state td{height:352px!important;padding:0!important;border-bottom:none!important;}
 .table-empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--text-3);}
 .table-empty-icon{width:40px;height:40px;border-radius:50%;background:var(--n3);display:flex;align-items:center;justify-content:center;color:var(--n8);margin-bottom:4px;}
@@ -524,7 +522,6 @@ html{scroll-behavior:smooth;}
 .table-empty .btn{margin-top:4px;}
 
 #specView .table-empty{height:352px;}
-#specView .row-empty td{border-bottom:1px solid var(--n6)!important;}
 #specView .gauge-svg.is-active{filter:brightness(1.12);}
 
 /* 382 基准宽度已归一到上方 .spec-modal 主声明（此处不再重复声明 width，避免吞掉 --520/--640/--720 档位） */
@@ -549,8 +546,6 @@ html{scroll-behavior:smooth;}
 .modal-form-grid .form-row{min-width:0;}
 .spec-modal .form-row .input{min-width:0;width:auto;}
 
-.shell .table .row-empty td{height:44px;padding:0 12px!important;border-bottom:1px solid var(--n5);background:transparent!important;}
-.shell .table .row-empty:hover td{background:transparent!important;}
 
 .modal .label,.spec-modal .label{color:var(--n10);font-weight:400;}
 .spec-modal-body{color:var(--n10);font-size:14px;}

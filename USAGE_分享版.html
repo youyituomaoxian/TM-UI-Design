@@ -599,7 +599,6 @@ html[lang="en"] .login-legal{justify-content:center;text-align:center;}
 .login-done-title{font-size:14px;font-weight:500;color:var(--n11);}
 .login-done-desc{font-size:12px;line-height:16px;color:var(--n9);}
 .login-view[hidden]{display:none;}
-.table tr.is-placeholder td{height:44px;border-bottom:1px solid var(--n6)}
 .stat-card--compact{padding:10px 14px}
 .stat-card--compact .stat-num{font-size:22px;line-height:1.1}
 .t-h1{margin:0}
@@ -963,8 +962,13 @@ html[lang="en"] .login-legal{justify-content:center;text-align:center;}
 .seg .item{height:26px;padding:0 14px;display:flex;align-items:center;font-size:12px;color:var(--n10);cursor:pointer;border-radius:13px;transition:color var(--motion-duration-fast) var(--motion-ease-out),background var(--motion-duration-fast) var(--motion-ease-out);}
 .seg .item:hover{color:var(--primary);}
 .seg .item.active{background:var(--primary);color:var(--text-on-brand);font-weight:500;}
-.table-placeholder{pointer-events:none;}
-.table-placeholder td{color:var(--n8);}
+.table-placeholder{pointer-events:none;user-select:none;}
+.table tbody tr.table-placeholder td{height:44px;color:var(--n8);border-bottom:none;}
+.table tbody tr.table-placeholder,
+.table tbody tr.table-placeholder:hover,
+.table tbody tr.table-placeholder.is-selected,
+.table tbody tr.table-placeholder.is-selected:hover{background:transparent;}
+.table tbody tr.table-placeholder.is-selected>td:first-child{border-left:none;padding-left:16px;}
 .avatar--default{background:var(--n3);color:var(--n9);}
 .pane-note{margin:0 0 12px;font-size:12px;line-height:18px;color:var(--text-3);}
 .ws-body--spec{overflow:auto;padding:16px 24px 32px;}
@@ -1416,8 +1420,6 @@ html{scroll-behavior:smooth;}
 #specView .hbar-row.is-active{background:var(--primary-dis-bg);}
 #specView .gauge-svg{transition:filter var(--motion-duration-instant) ease;}
 #specView .gauge-svg:hover{filter:brightness(1.06);}
-#specView .row-empty td{height:44px;padding:0 12px;border-bottom:1px solid var(--n6);background:transparent;}
-#specView .row-empty:hover{background:transparent;}
 #specView .row-empty-state td{height:352px!important;padding:0!important;border-bottom:none!important;}
 .table-empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--text-3);}
 .table-empty-icon{width:40px;height:40px;border-radius:50%;background:var(--n3);display:flex;align-items:center;justify-content:center;color:var(--n8);margin-bottom:4px;}
@@ -1426,7 +1428,6 @@ html{scroll-behavior:smooth;}
 .table-empty p{margin:0;font-size:12px;line-height:18px;color:var(--text-3);}
 .table-empty .btn{margin-top:4px;}
 #specView .table-empty{height:352px;}
-#specView .row-empty td{border-bottom:1px solid var(--n6)!important;}
 #specView .gauge-svg.is-active{filter:brightness(1.12);}
 .spec-modal-head{height:40px;padding:0 16px;font-size:16px;}
 .spec-modal-body{padding:16px;}
@@ -1446,8 +1447,6 @@ html{scroll-behavior:smooth;}
 .modal-form-grid textarea.input{height:60px;resize:vertical;}
 .modal-form-grid .form-row{min-width:0;}
 .spec-modal .form-row .input{min-width:0;width:auto;}
-.shell .table .row-empty td{height:44px;padding:0 12px!important;border-bottom:1px solid var(--n5);background:transparent!important;}
-.shell .table .row-empty:hover td{background:transparent!important;}
 .modal .label,.spec-modal .label{color:var(--n10);font-weight:400;}
 .spec-modal-body{color:var(--n10);font-size:14px;}
 .ms-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;}

@@ -7,6 +7,10 @@
 
 ---
 
+## [表格规范变更（Web 端触发，本端无同类契约）] — 2026-11-25
+- Web 端拍板两轮：① 部分数据撑开表格的补位空行不画分割线（0 条数据仍走 `.empty`）；② 补位行三类名收敛为唯一真源类 `.table-placeholder`，去 hover/选中底色。
+- 移动端表格体系独立（无 `.table-placeholder` / 补位行契约），本端零语义变更，仅留痕对齐。详见 web CHANGELOG 同日两条 + HANDOFF §7。
+
 ## [规范沉淀（Web 端触发）：真源边界禁引 output + 禁装饰性单 tab] — 2026-11-25
 - Web RULES 新增两条跨端通用治理规则：**output/ 非真源**（禁作规范判据/设计先例，唯一判据 = 规范文档 + 模板 + token/component 真源 + 门禁）、**禁装饰性单 tab**（无 pane 切换对象的单 tab 一律降级基础形态）。移动端如需适用须先落本端 RULES（本轮未落，仅 Web 生效）。
 - 详见 web CHANGELOG 2026-11-25 条 + HANDOFF §7。

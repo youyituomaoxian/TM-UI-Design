@@ -536,9 +536,8 @@ html[lang="en"] .login-legal{justify-content:center;text-align:center;}
 /* ===== 一屏撑满（2026-11-12 用户拍板「默认不滚动」；原只在页面里自算 100vh，现升为真源契约） =====
    .content--fill：内容区变纵向 flex，页头固定、末张卡片吃掉剩余高度；
    .card--fill  + .pager{margin-top:auto}：分页器恒贴卡片底部；
-   .table tr.is-placeholder：补位空行保留与真实行一致的分割线（禁空白无行）。 */
+   补位空行统一用 .table-placeholder（utilities.css 唯一真源；禁分割线与交互态，2026-11-25 收敛）。 */
 
-.table tr.is-placeholder td{height:44px;border-bottom:1px solid var(--n6)}
 .stat-card--compact{padding:10px 14px}
 .stat-card--compact .stat-num{font-size:22px;line-height:1.1}
 

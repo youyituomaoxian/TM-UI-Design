@@ -83,7 +83,7 @@
       "hard": "软",
       "title": "组件选择决策树",
       "line": 165,
-      "chars": 14829,
+      "chars": 14918,
       "read": "on-demand",
       "gate": null
     },
@@ -107,7 +107,7 @@
       "hard": "软",
       "title": "页面类型规格（pages/ 已删除并入本节 ⚠️ 必读）",
       "line": 191,
-      "chars": 9223,
+      "chars": 9293,
       "read": "must",
       "gate": null
     },
@@ -119,7 +119,7 @@
       "hard": "硬",
       "title": "左右结构工作台页面模式（2026-11-19 从 v7 示例页提升）",
       "line": 273,
-      "chars": 1436,
+      "chars": 1455,
       "read": "on-demand",
       "gate": null
     },
@@ -354,7 +354,7 @@
       "hard": "硬",
       "title": "间距与布局规范速查",
       "line": 628,
-      "chars": 7992,
+      "chars": 8056,
       "read": "on-demand",
       "gate": null
     },
@@ -424,7 +424,7 @@
       "hard": "硬",
       "title": "Grid 列内卡片高度对齐 + 表格空数据占位（补强）⚠️ 必读",
       "line": 689,
-      "chars": 2156,
+      "chars": 2218,
       "read": "on-demand",
       "gate": [
         "grid.4px",
@@ -453,7 +453,7 @@
       "hard": "硬",
       "title": "首屏预算守则（V11 新增 2026-08-27，订单总览实战：核心图表被视口底边拦腰切 53%）⚠️ 必读",
       "line": 723,
-      "chars": 1929,
+      "chars": 1931,
       "read": "on-demand",
       "gate": [
         "grid.4px",

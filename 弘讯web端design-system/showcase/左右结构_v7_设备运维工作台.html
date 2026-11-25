@@ -814,10 +814,10 @@
       <td><div class="pbar"><span class="track"><span class="fill" style="width:0%"></span></span><span class="val">0%</span></div></td>
       <td>—</td>
       <td><div class="op-cell"><button class="btn btn-text" type="button">详情</button><button class="btn btn-text" type="button">编辑</button><button class="btn btn-text btn-text--danger" type="button">删除</button></div></td>
-    </tr><tr class="row-empty"><td colspan="7"></td></tr><tr class="row-empty"><td colspan="7"></td></tr><tr class="row-empty"><td colspan="7"></td></tr></tbody>
+    </tr><tr class="table-placeholder"><td colspan="7"></td></tr><tr class="table-placeholder"><td colspan="7"></td></tr><tr class="table-placeholder"><td colspan="7"></td></tr></tbody>
     </table></div><div class="pager"><span class="pg-tot">共 5 条 · 1 页</span><span class="pg-nav"><span class="pg">‹</span><span class="pg active">1</span><span class="pg">›</span></span></div></div>
   </section>
-  <div class="chart-note">8 行位：有数据时补分割线；0 条时空状态；两态同高，行高 44。</div>
+  <div class="chart-note">8 行位：有数据时用 .table-placeholder 补位（无分割线/无选中态）；0 条时空状态；两态同高，行高 44。</div>
 <section class="card table-card table-card--spec">
       <div class="card-head"><h3 class="card-title">设备列表 · 空状态（0 条）</h3><div class="table-tools"><input class="input" type="search" placeholder="搜索设备…" aria-label="搜索设备"><span class="filter-chip on">全部</span><span class="filter-chip">生产</span><span class="filter-chip">空闲</span><span class="filter-chip">关机</span></div></div>
       <div class="card-body"><div class="table-scroll"><table class="table table--fixed table--sticky">
@@ -1364,14 +1364,14 @@
     if(!scroll || !tbody) return;
     var avail=scroll.clientHeight;
     if(avail < 80) return;
-    tbody.querySelectorAll('tr.row-empty').forEach(function(r){r.remove();});
+    tbody.querySelectorAll('tr.table-placeholder').forEach(function(r){r.remove();});
     var header=table.querySelector('thead').getBoundingClientRect().height || 44;
     var dataH=tbody.getBoundingClientRect().height;
     var MIN_ROW=8; var rowH=44;
     var need=Math.floor((avail - header - dataH) / rowH);
     for(var i=0;i<need;i++){
       var tr=document.createElement('tr');
-      tr.className='row-empty';
+      tr.className='table-placeholder';
       var td=document.createElement('td');
       td.colSpan=9;
       tr.appendChild(td);

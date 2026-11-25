@@ -254,8 +254,15 @@
 .seg .item:hover{color:var(--primary);}
 .seg .item.active{background:var(--primary);color:var(--text-on-brand);font-weight:500;}
 
-/* 表格空数据占位行（RULES §4.4 第 4 条 minRow 契约 · 2026-11-12 沉淀真源，修复 DS-20261112-02）：
-   无内容、保持行高（继承 .table td 的 --density-row-height）、pointer-events:none 禁 hover。
+/* 表格空数据补位行（RULES §4.4 minRow 契约 · 2026-11-25 收敛为唯一真源类 .table-placeholder）：
+   三禁：无分割线、无 hover/选中底色、无文本选中高亮；只保留 44px 行高撑开表格。
+   .table td 基础自带 n6 边框，tbody tr:hover / tr.is-selected 自带底色——删声明会被继承，
+   故必须显式覆盖；pointer-events:none + user-select:none 双保险禁交互（含键盘/拖拽选中）。
    「无数据」等占位提示文案走 N8 次级色。 */
-.table-placeholder{pointer-events:none;}
-.table-placeholder td{color:var(--n8);}
+.table-placeholder{pointer-events:none;user-select:none;}
+.table tbody tr.table-placeholder td{height:44px;color:var(--n8);border-bottom:none;}
+.table tbody tr.table-placeholder,
+.table tbody tr.table-placeholder:hover,
+.table tbody tr.table-placeholder.is-selected,
+.table tbody tr.table-placeholder.is-selected:hover{background:transparent;}
+.table tbody tr.table-placeholder.is-selected>td:first-child{border-left:none;padding-left:16px;}

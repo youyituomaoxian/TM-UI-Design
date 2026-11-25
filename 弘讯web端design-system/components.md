@@ -306,7 +306,7 @@
 - **真源**：`packages/web-ui/src/styles/workbench.css`（build 进 template.css 第五件）。
 - **骨架**：`.shell`（rail 216/64 + workspace）→ `.ws-global` 60 → `.ws-pagebar` 56 → `.ws-body` 内滚；左栏 `.rail/.tree/.rail-foot`。
 - **页面模式**：`.page-sec` / `.pane-note` / `.seg-row` / `.monitor-split`（1476 侧栏，≤1475 抽屉）/ `.detail-card`。
-- **表格卡**：`.table-card` / `.table-scroll` / `.table-tools` / `.table-empty` / `.row-empty`；8 行位、空行只分割线、0 条空状态、两态同高。
+- **表格卡**：`.table-card` / `.table-scroll` / `.table-tools` / `.table-empty` / `.table-placeholder`；8 行位、补位行无分割线与选中态（只撑高度）、0 条空状态、两态同高。
 - **弹窗**：`.modal` 382；`.spec-modal--520/--640/--720` 宽表单；长表单整页。
 - **状态**：5 主状态 `.dot-run/idle/stop/fault/offline` + `.machine-card--idle/stop/fault/offline`；模式/生产子状态/原因只用文字层。
 - **复用门禁**：`scripts/audit-component-reuse.js`；页面不得新造同族组件类。

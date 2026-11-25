@@ -2382,7 +2382,7 @@
             "none"
           ],
           "severity": "HIGH",
-          "note": "minRow 空数据占位行禁 hover（RULES §4.4 第 4 条）。行高由 .table td 继承 --density-row-height，占位提示文案走 N8。2026-11-12 沉淀真源 utilities.css 并 build 进 template.css，修复 DS-20261112-02。"
+          "note": "minRow 补位行唯一真源类 .table-placeholder：pointer-events:none + user-select:none，禁 hover / 选中底色 / 文本选中高亮（RULES §4.4 第 4 条）。行高 44，提示文案走 N8；分割线与 tr 交互态均显式覆盖为 none / transparent（基础 .table td 自带 n6 边框、tr:hover / tr.is-selected 自带底色，删声明无效）。2026-11-25 收敛 is-placeholder / row-empty 两类至此；2026-11-12 首沉 utilities.css（DS-20261112-02）。"
         }
       ]
     },

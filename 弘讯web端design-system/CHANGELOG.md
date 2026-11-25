@@ -5,6 +5,16 @@
 
 ---
 
+## [补位行收敛单一真源类 + 去选中态（用户拍板）] — 2026-11-25
+- **收敛**：补位行三类名 `.table tr.is-placeholder`（components.css）/ `.table-placeholder`（utilities.css）/ `.row-empty`（workbench.css）合并为唯一真源类 `.table-placeholder`（以 `components.json#table.placeholder` 契约选择器为锚点）。删旧两处 CSS 规则；展示页 HTML/JS 同步（表格规范展示 3 处、v7 工作台静态 3 处 + JS 选择器/赋值 2 处）；`.row-empty-state` 属完全空态，保留不动。
+- **去选中态**：根因=`.table tbody tr:hover{background:var(--n3)}` 与 `tr.is-selected` 底色设在 **tr** 上，旧 `.row-empty td{background:transparent}` 只作用于 td 挡不住 tr 底色。修法=utilities.css 显式覆盖 `.table tbody tr.table-placeholder` 及其 `:hover` / `.is-selected` 态 `background:transparent` + 选中首列 `border-left:none;padding-left:16px`，并加 `user-select:none` 禁拖拽文本高亮（`pointer-events:none` 只挡鼠标，挡不住 JS 加选中态与键盘选中）。
+- **口径**：RULES 5 处 + components.md + components.json note 同步；v7 工作台旧文案「有数据时补分割线」改新口径；7 个 Web 分享版重建。
+
+## [表格规范：补位空行不画分割线（用户拍板）] — 2026-11-25
+- **需求变更**：表格两种空态分工明确——0 条数据走 `.empty` 空状态（撑开表格，保持不变）；部分数据的撑开表格，空数据部分（补位空行）**不再画分割线**（原画 `--n6` 线）。
+- **真源三件**：`components.css` 的 `.table tr.is-placeholder td`、`utilities.css` 的 `.table-placeholder td`、`workbench.css` 的 `#specView .row-empty td` / `.shell .table .row-empty td` 一律显式 `border-bottom:none`。第一性原理：`.table td` 基础样式自带 `border-bottom:1px solid var(--n6)`，仅删补位行原声明会被通用边框继承、视觉无变化，必须显式覆盖。注释同步；`build-template-css.js` 重建产物（114,606→114,575，余量 394→425）。
+- **口径同步**：RULES §1.1b 表格规范③ / 组件速查表 / §4.4 min-row 契约 / 一屏撑满段，components.md 表格卡条；`表格规范展示_20261112` ⑦标题改「补位不画分割线」；7 个分享版重建（内联快照零外链）。
+
 ## [门禁修订：pager 判据反转 + stack 降级/夹具 + 契约入 JSON] — 2026-11-25
 - **PAGER-CONTEXT-01 判据反转**：由「必须在 `.card-body` / `.table-card` / `.comp-card` 内」改为「pager 位于 `.card` 内、且到该 card 之间无 `.card-body` / `.table-card`、也不是 `.card--fill` 直接子级（footer）→ HIGH」。内容级卡片网格分页（RULES §1.1b）、`.modal-body`、`.comp-card` 陈列位、`.card--fill` footer 自然放行；删除页面局部类 `.comp-card` 白名单。工单页甘特卡（`.card` 内无 body）仍 HIGH。
 - **card footer pager 合法**（用户拍板）：`.card--fill` 直接子级 `.pager` 放行；源 `components.css` 补 `.card--fill>.pager{flex:none;margin:8px 16px}`，重建产物；fixture +1（共 9 组）。
