@@ -87,7 +87,12 @@ function main() {
     '',
   ].join('\n');
 
-  const out = header + parts.join('\n\n') + '\n';
+  // 2026-11-25 容量治理：产物做空白规范化（去行尾空格 + 去空行）。CSS 空白无语义，
+  // 源文件保持可读；产物字符数下降，给 template.css 留出增长余量。
+  const body = parts.join('\n')
+    .replace(/[ \t]+\n/g, '\n')
+    .replace(/\n\s*\n/g, '\n');
+  const out = header + body + '\n';
   fs.writeFileSync(OUT, out, 'utf8');
 
   const bytes = Buffer.byteLength(out);

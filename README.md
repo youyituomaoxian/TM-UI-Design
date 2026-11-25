@@ -27,7 +27,7 @@
 │   └── showcase/                      # 示例页（v7 / 看板 / 登录页 / 表格 / 规范展示副本，均含 +分享版）
 ├── 弘讯移动端design-system/            # 移动端规范（同构；模板手写）
 ├── packages/web-ui/src/styles/        # Web CSS 真源：globals/components/framework/utilities/workbench 五件
-├── scripts/                           # verify / new-page / build-share / shell-tools / gate-manifest / audit-*
+├── scripts/                           # verify / page-contracts / new-page / build-share / shell-tools / gate-manifest / audit-*
 ├── GENERATION-SOP.md                  # 生成流程总纲（§① 生成 / §② 存量改造）
 ├── USAGE-GUIDE.md / 团队使用指南.md / USAGE.html   # 使用说明（人读）
 ├── CHART-SPEC.md / DARK-MODE.md / VISUAL-SPEC.md  # 图表 / 暗色 / 视觉规格
@@ -43,17 +43,17 @@ node <仓库根>/scripts/new-page-web.js 设备总览 <你的项目目录>
 
 # 2) 只在 .ws-body .page-sec 内填业务（外壳零改动，不写页面级样式）
 
-# 3) 单页门禁：validate + 组件复用 + 作业树运行时，0 HIGH 才交付
+# 3) 单页门禁：validate + 页面契约 + 组件复用 + 作业树运行时，0 HIGH 才交付
 node <仓库根>/scripts/verify.js page <你的项目目录>/output/设备总览_*.html
 
 # 4) 新规范全链路（真源 / 生成页 / 分享版）
 node <仓库根>/scripts/verify.js all --scope=new
 
-# 5) 分享版：由脚本内联 CSS + 4 个 js + 本地资源，禁手工内联
+# 5) 分享版：由脚本内联 CSS + 4 个 js + 本地资源，禁手工内联；改 template.css/page-ui.js 后必须重出
 node <仓库根>/scripts/build-share-web.js <你的项目目录>/output/设备总览_*.html
 ```
 
-> **交付口径 = `node scripts/verify.js all`**：先跑 `ci-local.js`（存量全链路），再跑 `verify-new`（新规范范围）；两者全绿才算可交付，项数以命令输出为准。只验新规范用 `--scope=new`。旧 `output/` 为历史归档，不阻塞新规范。
+> **交付口径 = `node scripts/verify.js all`**：先跑页面契约（`check-page-contracts.js`：fixtures + 清单页 pager/stack + 分享版 CSS 指纹），再跑 `ci-local.js`（存量全链路）与 `verify-new`（新规范范围）；全绿才算可交付，项数以命令输出为准。只验新规范用 `--scope=new`。旧 `output/` 为历史归档，不阻塞新规范。
 
 ## 快速开始（Git 仓库）
 

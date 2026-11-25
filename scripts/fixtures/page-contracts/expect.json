@@ -1,0 +1,11 @@
+{
+  "valid/pager-card-grid.html": { "pager": 0, "stack": 0 },
+  "valid/pager-table-card.html": { "pager": 0, "stack": 0 },
+  "valid/pager-card-fill-footer.html": { "pager": 0, "stack": 0 },
+  "valid/pager-modal.html": { "pager": 0, "stack": 0 },
+  "valid/pager-comment.html": { "pager": 0, "stack": 0 },
+  "valid/spacing-comment.html": { "pager": 0, "stack": 0 },
+  "valid/spacing-spacer.html": { "pager": 0, "stack": 0 },
+  "invalid/pager-card-plain.html": { "pager": 1, "stack": 0 },
+  "invalid/spacing-zero.html": { "pager": 0, "stack": 1 }
+}

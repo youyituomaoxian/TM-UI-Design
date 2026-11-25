@@ -1,5 +1,6 @@
 const fs = require('fs');
-const base = 'H:/global-workspace/设计系统/弘讯设计系统左右结构/';
+const path = require('path');
+const base = path.resolve(__dirname, '../..') + path.sep; // 自定位到脚本所在仓库根，随仓库搬迁
 const webCss = fs.readFileSync(base + '弘讯web端design-system/template.css','utf8');
 const mobCss = fs.readFileSync(base + '弘讯移动端design-system/template.css','utf8');
 const { generatePalette } = require(base + 'brand-color-engine/generate.js');

@@ -24,7 +24,7 @@
 1. **缺口登记**——`audit-rules.json` feedback_log 或台账文档先记「为什么要改」
 2. **修改真源**
 3. **双端同步**——web 与 mobile 同名类/同源值一致；W1 层 components.css 与 template.css 同构同步
-4. **门禁全绿**——`verify all` 全绿（存量全链路 + 新规范）+ 双包 validate-static 0 HIGH
+4. **门禁全绿**——`verify all` 全绿（页面契约 + 存量全链路 + 新规范；页面契约 Web 适用）+ 双包 validate-static 0 HIGH
 5. **刷指纹**——涉及冻结文件时跑 `freeze-baseline` 并说明
 6. **CHANGELOG 留痕**——改了什么 / 为什么 / 关联台账
 

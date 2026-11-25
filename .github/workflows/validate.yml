@@ -44,6 +44,9 @@ jobs:
           node "$WEB/validate-spec.js" "$WEB/showcase/登录页示例.html"
           node "$WEB/validate-spec.js" USAGE.html
 
+      - name: 页面契约（fixtures + 清单页）
+        run: node scripts/check-page-contracts.js
+
       - name: 组件复用 M-12 · 六页
         run: |
           for f in \

@@ -1,6 +1,6 @@
 # 弘讯设计系统 · Agent 使用入口（AGENTS.md）
 
-> Codex / Cursor 等认 AGENTS.md；Claude Code 读 `CLAUDE.md`（`@AGENTS.md` 同源）。先读本文件，按需加载规范；人读说明见 `团队使用指南.md`。
+> Codex/Cursor 认 AGENTS.md；Claude Code 读 `CLAUDE.md`（同源 `@AGENTS.md`）。先读本文件；人读说明见 `团队使用指南.md`。
 
 ## 收尾与项目约定（任何 Agent、任何轮次）
 
@@ -10,7 +10,7 @@
 
 ## 这是什么
 
-弘讯 B 端 Web / 移动端设计系统：把品牌风格做成机器可执行资产，让 AI 页面风格统一、不漂移。入口：Codex/Cursor → 本文件；Claude Code → `CLAUDE.md`；WorkBuddy/DSH → 本文件。
+弘讯 B 端 Web/移动端设计系统：把品牌风格做成机器可执行资产，让 AI 页面风格统一、不漂移。入口：Codex/Cursor → 本文件；Claude Code → `CLAUDE.md`；WorkBuddy/DSH → 本文件。
 
 ## 生成 HTML 页面（视觉预览）
 
@@ -23,16 +23,16 @@
    - 图表 `CHART-SPEC.md`（原子 SVG，色走 `--chart-*`）；跨端**中性色**差异 `CROSS-PLATFORM-NEUTRALS.md`（根目录）；跨端**功能色**契约 `弘讯web端design-system/CROSS-PLATFORM-COLORS.md`（同名两文件，主题不同，勿混读）
    - 非默认品牌：`brand-color-engine/`（暗色固定不随品牌）
 4. 产出落「**用户项目**」`output/`（CSS link 指向本仓库 `template.css`）。
-5. 门禁：单页 `node scripts/verify.js page <页面>` → **0 HIGH**；**交付口径** `verify.js all` = 存量全链路（`ci-local`）+ 新规范范围（`verify-new`），两者全绿；只验新规范用 `verify.js all --scope=new`。
-6. 分享：`node scripts/build-share-web.js <页面> [--out]`（内联 CSS + js + 资源，零外链），禁手工内联。
+5. 门禁：单页 `node scripts/verify.js page <页面>` → **0 HIGH**（含页面契约）；**交付口径** `verify.js all` = 页面契约 + 存量全链路（`ci-local`）+ 新规范范围（`verify-new`），全绿；只验新规范用 `verify.js all --scope=new`。
+6. 分享：`node scripts/build-share-web.js <页面> [--out]`（内联 CSS + js + 资源，零外链），禁手工内联；改真源 CSS/JS 后须重出（指纹门禁）。
 
 ## 存量项目改造（路径二）
 
-读 `GENERATION-SOP §②`：P0 页面清单（`scripts/audit-batch.js <项目> --list`，覆盖率 <100% 未完成）→ 双门禁台账（`audit-spec` 清零硬违规 **且** `validate-spec` 0 HIGH）→ D-1~D-13 逐维对照 → P1 映射决策 → 每批门禁回归。**只改表现层**：禁改文案/字段口径/交互流程（SOP §② 铁律 6）。改真源须台账 + 用户拍板。
+读 `GENERATION-SOP §②`：P0 页面清单（`scripts/audit-batch.js <项目> --list`，覆盖率 <100% 未完成）→ 双门禁台账（`audit-spec` 清零硬违规 **且** `validate-spec` 0 HIGH）→ D-1~D-13 逐维对照 → P1 映射决策 → 每批门禁回归。**只改表现层**：禁改文案/字段口径/交互流程（SOP §② 铁律 6）。改真源须台账+拍板。
 
 ## 发现设计系统问题必须记录（单向报告流）
 
-归因二分：系统问题（token/组件/图标缺口、规范歧义、门禁漏洞、文档缺陷）→ 复制 `templates/设计系统问题报告模板.md` 落盘自己项目 `output/设计系统问题_YYYYMMDD_NN.md`，对话内请用户转交（不直连维护者、不改真源）；执行问题 → 直接改页面。见 `audit-rules.json → issue_reporting`。
+归因二分：系统问题（token/组件/图标缺口、规范歧义、门禁漏洞、文档缺陷）→ 复制 `templates/设计系统问题报告模板.md` 落盘自己项目 `output/设计系统问题_YYYYMMDD_NN.md`，请用户转交（不直连维护者、不改真源）；执行问题 → 直接改页面。见 `audit-rules.json → issue_reporting`。
 
 ## 阅读策略（按需读，禁通读）
 
@@ -56,7 +56,7 @@
 
 > 双端不对称：Web `template.css` = build 产物（源 `packages/web-ui/src/styles/` **五件** + `map-tokens.js`；改源后 `build-template-css.js`，手改会被覆盖）；移动 `template.css` = 手写真源。`check-sync.js` 校验双端一致。
 
-> 顶部工具区（`.ws-tools`）= `弘讯web端design-system/partials/shell-tools.html` 单点真源：改完跑 `node scripts/sync-shell-tools.js` 注入各页；**禁改各页副本**（会被覆盖，且 `verify.js chrome` 会拦）。门禁清单见 `scripts/gate-manifest.json`（`verify.js manifest` 自检）。
+> 顶部工具区（`.ws-tools`）= `弘讯web端design-system/partials/shell-tools.html` 单点真源：改完跑 `node scripts/sync-shell-tools.js` 注入各页；**禁改各页副本**（会被覆盖，且 `verify.js chrome` 会拦）。门禁清单见 `scripts/gate-manifest.json`；页面契约/分享版 CSS 指纹见 `scripts/check-page-contracts.js`（`verify all`/CI 内嵌）。
 
 - Web：改五件 CSS → `node packages/web-ui/scripts/build-template-css.js`。
 - 移动：直接改 `template.css`；改动须用户拍板。

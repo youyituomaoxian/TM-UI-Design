@@ -1657,6 +1657,17 @@
       "note": "2026-11-19 左右结构新增。示例：showcase/左右结构_v7_设备运维工作台.html（机器群览区，入库）。CSS 真源：packages/web-ui/src/styles/components.css；template.css 由 build-template-css.js 生成。"
     }
   ],
+  "pageContracts": {
+    "pager": {
+      "placement": "pager 位于 .card 内时必须处于 .card-body / .table-card / .card--fill 直接子级（footer）内；内容级 pager（.card-grid 之后）不受限",
+      "gate": "pager.context-missing"
+    },
+    "stackSpacing": {
+      "min": "var(--space-md)",
+      "note": "card-body 内相邻业务块须有显式垂直间距（margin/gap/padding 任一）",
+      "gate": "stack-spacing.zero-gap"
+    }
+  },
   "contract": [
     {
       "id": "button.radius",

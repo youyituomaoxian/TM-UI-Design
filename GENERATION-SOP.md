@@ -77,7 +77,7 @@
 | 图标规格与清单 | `icons/icons.md` + RULES §7.9 | 「从 icons/ 取」（缺则上报） |
 | 图表结果约束 | `CHART-SPEC.md`（SOP 附录 A = 执行摘要） | 「见 CHART-SPEC §2」 |
 | 治理契约 / 维护者六步 | 双端 `RULES.md` 页首 | 「见治理契约」 |
-| 交付线（0 HIGH / `verify all` 全绿） | `verify.js all` 实际输出（= `ci-local` + `verify-new`） | 不复述数字（数字会漂移） |
+| 交付线（0 HIGH / `verify all` 全绿） | `verify.js all` 实际输出（= 页面契约 + `ci-local` + `verify-new`） | 不复述数字（数字会漂移） |
 | 设计系统问题报告制度 | `audit-rules.json` `issue_reporting` | 「见 issue_reporting」 |
 
 
@@ -175,8 +175,8 @@ cp 弘讯web端design-system/page-template.html "<用户项目>/output/<语义�
 | 目录 | 「用户项目」的 `output/`；仓库根 `output/` 只放内置示例，不得混入用户页 |
 | 文件名 | `<语义名>_<YYYYMMDD>_<HHmm>.html`；同日同语义名追加 `_2/_3`，绝不覆盖 |
 | CSS 引用 | `<link rel="stylesheet" href="…/弘讯web端design-system/template.css">`（相对层级按落盘位置） |
-| 门禁 | `verify.js page <用户项目>/output/<文件>.html` → 0 HIGH |
-| **分享版** | `build-share-web.js <页面> [--out]`：内联 CSS + 4 js + 本地资源，零外链；重出后复跑 `verify.js page`；**改外壳工具区真源后必须重出** |
+| 门禁 | `verify.js page <用户项目>/output/<文件>.html` → 0 HIGH（含页面契约 pager/stack） |
+| **分享版** | `build-share-web.js <页面> [--out]`：内联 CSS + 4 js + 本地资源，零外链；重出后复跑 `verify.js page`；**改外壳工具区真源或 `template.css`/`page-ui.js` 后必须重出**（页面契约比对 CSS 指纹） |
 
 > **CSS 统一由 `template.css` 提供**（不要复制）：`:root` 变量 + 组件类 + 布局骨架 + `[data-skin]/[data-theme]/[data-density]`；色 / 尺寸 / 字重 / 圆角走 token，动效走 `var(--motion-*)`，禁裸值。
 
@@ -189,11 +189,11 @@ cp 弘讯web端design-system/page-template.html "<用户项目>/output/<语义�
 ### 步骤 5：门禁自检 → 软规则自查表 → 交付
 
 ```bash
-node <仓库根>/scripts/verify.js page <用户项目路径>/output/<产出文件>.html   # validate + 组件复用 + 树运行时
+node <仓库根>/scripts/verify.js page <用户项目路径>/output/<产出文件>.html   # validate + 页面契约 + 组件复用 + 树运行时
 ```
 
 - 期望：**0 HIGH（exit 0）**。任何 HIGH 禁止交付。仅 MEDIUM 不阻断（exit 0），但建议清零。
-- 仓库级自检（维护者 / 改真源后）：`node scripts/verify.js all` = **交付口径**（`ci-local` 存量全链路 + `verify-new` 新规范范围）；只验新规范用 `--scope=new`。
+- 仓库级自检（维护者 / 改真源后）：`node scripts/verify.js all` = **交付口径**（页面契约 + `ci-local` 存量全链路 + `verify-new` 新规范范围）；只验新规范用 `--scope=new`。
 - 门禁检查：组件尺寸 / 字重 / 半径 / 色值（`components.json` contract）；非 token 硬编码色（MEDIUM）；`checkMotion`（transition 裸值 HIGH / animation 裸值 MEDIUM，`0s/0ms` 合法）。
 - **自造优先级（2026-08-06 拍板 v2）**：组合 → 变体 → 页面级自造（值必须落现有 token）→（禁）产生新裸值。自造底线：颜色 `var(--*)` / 文字 `.m-text-*`（Web `.t-*`）/ 动效 `var(--motion-duration-*)` / **字体 `var(--font-cn)` / `var(--font-mono)`（禁具体字体名，门禁 font.family MED）** / 4px 网格 / 禁覆写真源组件类。详见移动端 RULES §10.10 [软] / Web RULES §7.9 [软]。
 
@@ -208,6 +208,22 @@ node <仓库根>/scripts/verify.js page <用户项目路径>/output/<产出文�
 □ 间距全走 token，无裸 px
 □ 空间预判四查：①纵向无卡被行等高拉伸出空洞（滚动卡定高，Web §4.4b / 移动 §8.3）；②横向无内容溢出/贴边（§6.3 三件套）；③行内卡片高度比合理（无高瘦/矮胖失衡）；④焦点信息在首屏视觉中心
 ```
+
+**Must / Should / Nice 检查清单（原 RULES §5，2026-11-25 迁入；门禁口径已按 `verify.js page` 更新）**：
+
+**Must Have（必须满足）**
+- [ ] 起手一律克隆 `page-template.html`（`.shell/.rail` + 全局条 60 + 页签条 56 + 内容区 N4 骨架），禁止裸写空文件
+- [ ] 左栏宽 216px（折叠 64），主色 `#005EAE` 底、白字；内容区 `#F5F7FB`；卡片 `#FFFFFF` + 圆角 8 + Shadow-Card
+- [ ] 主操作按钮 `#005EAE` / 白字 / 高 32；字号 ≥12、正文 ≥14；表格表头/行高 44
+- [ ] 颜色全部走 `tokens.json` / `DESIGN-TOKENS.md`（禁硬编码；禁移动端 `#10B981`）
+- [ ] 选中态过 §3.6：品牌蓝底容器内 = 白色提亮 `rgba(255,255,255,.18)` + 白字（无左白条）；白底容器 = `#DAEAFA` + `#004A8F`；禁混用
+- [ ] 交付前 `node scripts/verify.js page <页面>` → 0 HIGH（含页面契约 pager/stack）
+
+**Should Have（推荐满足）**
+- [ ] 列表项/卡片间距 16；表单标签与值同 14；分页器高 44、激活主色底；状态用 Tag/状态灯；卡阴影 Shadow-Card（0 0 5px）
+
+**Nice to Have（锦上添花）**
+- [ ] 侧栏折叠；表格行 hover N3；响应式断点 576/768/992/1200/1600 栅格重排；空状态插图 + 引导；深色模式按 `DARK-MODE.md` / `data-theme` 落地（已支持，非占位）
 
 **布局决策 6 问（每个区块/整页布局动手前自问，答案能说清才动手）**：
 
@@ -258,7 +274,7 @@ node <仓库根>/scripts/verify.js page <用户项目路径>/output/<产出文�
 
 **示范页**（同框架 4 布局，真实浏览器截图对照）：`output/布局多样化测试/`。
 
-**结构自检清单（门禁项速查；完整版见 RULES 对应节 + 附录 F）**：
+**结构自检清单（门禁项速查；完整版见本步骤 Must/Should/Nice 清单 + 附录 F）**：
 
 - [ ] 顶栏只含品牌区/工具区，无模块菜单/tab；`.btn-ico` 按钮文字用 `.btn-label` 包裹；KPI 卡数 ≠ 4 时 `.stat-grid--N`
 - [ ] 图表按附录 A 结果约束 + 环形禁 none + SVG 禁裸 hex；栅格 `.grid12 > .col-N` 内卡片 `.card--fill`；动态表格声明 `minRow` 占位

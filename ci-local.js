@@ -376,6 +376,7 @@ try {
   console.log(`  ⏭️ 跳过：${e.message.slice(0, 60)}（客观前提不满足，不计失败）`);
 }
 
+ok('页面契约 fixtures', require('./scripts/page-contracts').runFixtures().ok);
 console.log(`\n========== ci-local 总结 ==========`);
 console.log(`📊 ${pass} pass / ${fail} fail | 门禁 ${gW && gM ? '✅' : '❌'}`);
 const allOk = gW && gM && fail === 0;

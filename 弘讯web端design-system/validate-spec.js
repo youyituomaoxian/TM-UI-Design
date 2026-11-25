@@ -1563,11 +1563,8 @@ function checkMobileDomContracts(html) {
 }
 
 // ===== Web 审美信号门禁（2026-08-04，Web RULES §7）=====
-// 背景：Web 端与移动端同源问题（Agent 审美不在线）——组件/门禁保下限，缺"美学层"上限。
-//   移动端 §10 已补（aesthetic.home.*）；Web 端对称补：
-//   ① dashboard/看板语义页缺 KPI 区（stat-grid）或图表区（grid12）→ 三区骨架不完整
-//   ② 页面 inline font-size ≥5 处且无 .t-* 字阶类 → 层次规范被绕过（禁裸 font-size）
-// 触发：仅 Web 页面（含 btn/table/stat-grid/topbar 等 Web 特征类，且无 m 前缀类）→ 避免误伤移动端页。
+// 组件保下限、门禁补「美学层」上限；仅 Web 页触发（含 btn/table/stat-grid 等且无 m 前缀）。
+// ① dashboard 语义页三区骨架 ② inline font-size ≥5 且无 .t-* 字阶类。
 function checkWebAesthetics(html) {
   const violations = [];
   const noScript = stripScriptTags(html);
@@ -1576,7 +1573,9 @@ function checkWebAesthetics(html) {
   if (!isWeb || isMobile) return violations;
 
   // ① dashboard/看板/运营语义页：三区骨架（KPI 区 stat-grid + 图表区 grid12 + 表格区）
-  if (/(?:看板|运营|dashboard|overview|监控)/i.test(noScript)) {
+  // 2026-11-23 收窄：主题词只匹配页面标题（title/h1/h2），避免作业树/导航含「监控」误伤（§4 #108）
+  const themeText = (noScript.match(/<title[^>]*>[\s\S]*?<\/title>|<h[12][^>]*>[\s\S]*?<\/h[12]>/gi) || []).join(' ');
+  if (/(?:看板|运营|dashboard|overview|监控)/i.test(themeText)) {
     const hasKpi = /\bstat-grid\b/.test(noScript);
     const hasChart = /\bgrid12\b/.test(noScript) || /\bchart-box\b/.test(noScript);
     if (!hasKpi || !hasChart) {

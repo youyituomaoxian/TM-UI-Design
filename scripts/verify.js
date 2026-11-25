@@ -3,8 +3,8 @@
 /* ============================================================
  * verify.js — 统一门禁入口（2026-11-17）
  *
- * 原则：只按固定顺序调用现有脚本，不新增检查、不改判定、不吞退出码。
- * 现有脚本仍是权威；本文件是入口包装，避免新人记忆一堆子命令。
+ * 原则：按固定顺序调用现有脚本/页面契约模块，不重复实现判定、不吞退出码。
+ * 现有脚本与 scripts/page-contracts.js 仍是权威；本文件是入口包装。
  *
  * 用法：
  *   node scripts/verify.js all
@@ -20,6 +20,8 @@ const { spawnSync } = require('child_process');
 
 const ROOT = path.resolve(__dirname, '..');
 const NODE = process.execPath;
+
+const pc = require('./page-contracts');
 
 function run(label, script, args, cwd = ROOT) {
   console.log(`\n▶ ${label}`);
@@ -40,6 +42,7 @@ const MOB = path.join(ROOT, '弘讯移动端design-system');
 
 switch (cmd) {
   case 'all':
+    run('页面契约（fixtures + 清单页）', path.join(ROOT, 'scripts', 'check-page-contracts.js'), []);
     if (args.includes('--scope=new')) {
       run('新规范范围 verify-new', path.join(ROOT, 'scripts', 'verify-new.js'), []);
     } else {
@@ -62,6 +65,9 @@ switch (cmd) {
       run('移动端单页 validate', path.join(MOB, 'validate-spec.js'), [abs], MOB);
     } else {
       run('Web 单页 validate', path.join(WEB, 'validate-spec.js'), [abs], WEB);
+      pc.reportStateClass();
+      pc.reportStackSpacing(pageHtml);
+      pc.reportPagerContext(pageHtml);
       run('组件复用门禁', path.join(ROOT, 'scripts', 'audit-component-reuse.js'), [abs]);
       if (pageHtml.includes('class="rail"')) {
         run('作业树运行时门禁', path.join(ROOT, 'scripts', 'audit-tree-runtime.js'), [abs]);

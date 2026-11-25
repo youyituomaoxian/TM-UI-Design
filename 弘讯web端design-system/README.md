@@ -36,7 +36,7 @@
 2. 脚手架起手：`node scripts/new-page-web.js <语义名> <你的项目目录>`（自动克隆模板、修 CSS/assets、注入克隆凭证）；**禁裸写空文件**。
 3. 在 `.ws-body .page-sec` 内按 `§1.1b` 自建内容；组件用 `template.css` 已定义类，色/尺寸/字重走 `var(--*)`。
 4. 图表按 `CHART-SPEC.md`（原子 SVG，色走 `--chart-*`）；图标从 `icons/` 取（`icons.md` 索引）。
-5. 门禁：`node scripts/verify.js page <页面>` → **0 HIGH**（validate + 组件复用 + 树运行时）。
+5. 门禁：`node scripts/verify.js page <页面>` → **0 HIGH**（validate + 页面契约 + 组件复用 + 树运行时）。
 
 ## 三条铁律
 

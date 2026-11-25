@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><title>valid: 注释内旧 card-body 不算（剥注释回归）</title>
+<style>
+  .wo-toolbar{padding:8px 0;}
+  .wo-table{margin-top:var(--space-md);}
+</style>
+</head>
+<body>
+<div class="card"><div class="card-body">
+  <div class="wo-toolbar">工具行</div>
+  <div class="wo-table">内容块（页面类 margin-top）</div>
+</div></div>
+<!-- 已停用的旧布局（仅注释，不应触发）：
+<div class="card-body">
+  <div class="wo-old-a">旧工具行</div>
+  <div class="wo-old-b">旧内容</div>
+</div>
+-->
+</body></html>

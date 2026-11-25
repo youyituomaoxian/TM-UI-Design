@@ -27,31 +27,16 @@
 
 ## 范围（v1.1）
 
-已覆盖**全部 25 个组件**：下拉 / 日期 / 树 / 弹窗（原缺口 4 个）+ 按钮 / 输入 / 表格 / 徽章 / 页签 / 分页 / 状态点（原 MASTER §6.2 + showcase 已规范的 7 个）。
+已覆盖全部组件；原缺口 4 个已补建（清单见 `components.json`）。
 每个组件的完整 `referenceCss / referenceHtml / Ardot 搭建指引` 见 `components.json`（机器/Agent/校验脚本均读 JSON）。
 
-### Ardot 对账（2026-07-28 收口，只读比对 + 缺口补建，已完成）
+> **Pager 层级**：见 `components.json#pageContracts`（`.card--fill` footer 合法；普通 `.card` 裸 pager HIGH）。
 
-用 `ardot-design` MCP `fetch_component_lib` 拉取 Web Ardot 文件 `701545559030003` 本地组件库比对，并由 Agent 按 components.json 的 `ardot` 字段补建缺口组件；**下拉/页签/标签** 三处由设计师于 2026-07-28 在 Ardot 内「合并为变体」收口。
-
-| 组件 | Ardot 对应 | 状态 |
-|---|---|---|
-| 按钮 Button | 主按钮+次按钮+文字按钮+Button/中 | ✅ 已覆盖 |
-| 单行输入 Input | 单行输入+单行输入B | ✅ 已覆盖 |
-| 表格 Table | 单行表格+表格表头 | ✅ 已覆盖（表头高44/N2/字重500） |
-| 复选框 Checkbox | 无 → 新建（16×16 / 边框 #949494=3.03:1） | ✅ 已覆盖（2026-10-20 新建，表格多选用） |
-| 日期 DatePicker | 日期选择框/选择-时分秒+日历 | ✅ 已覆盖 |
-| 树 Tree | 作业树二级菜单 | ✅ 已覆盖 |
-| 弹窗 Modal | 弹窗 | ✅ 已覆盖 |
-| 分页器 Pager | 分页器+分页器A | ✅ 已覆盖 |
-| 状态指示灯 | 状态指示灯 | ✅ 已覆盖 |
-| 标签 Badge | 原 `.tag` 2026-10-20 删除，统一到 `.badge`（5 态） | ✅ 已合并（`.tag` 不再是组件） |
-| 下拉 Select | 仅箭头子件 → 新建 触发器+浮层+选项（默认/带搜索/禁用/多选） | ✅ 已覆盖（新建 + 合并为变体） |
-| 页签 Tabs | 无 → 新建 基础/带徽标/滚动 3 变体 | ✅ 已覆盖（新建 + 合并为变体） |
+> Ardot 对账（2026-07-28）历史见 `CHANGELOG-archive-2026-08_09.md`；契约以 `components.json#ardot` 为准。
 
 > **表格行态（2026-10-20 v2）**：单选/多选选中统一 = `.is-selected` 底色 + 2px 左条；多选由 `.cbx` 复选框触发（`data-select="multi"`，列宽 40，`th.ck/td.ck`），单选由行点击触发（`data-select="single"`，无控件，整行 `cursor:pointer`）；未选中行点击只表现为 hover。文字恒 N10，表格内禁 N9 次级文字（细节见 RULES §3.3）。
 
-> 结论：**22/22 全覆盖**。本层（components.json）现已成为 HTML 生成（referenceCss/Html）与 Ardot 搭建（ardot 字段）的单一真源；Agent 起手请 clone `page-template.html`（见 README 第 5 步 + 第 7 步）。
+> 契约以 `components.json` 为准（referenceCss/Html + ardot 字段）。
 
 ---
 

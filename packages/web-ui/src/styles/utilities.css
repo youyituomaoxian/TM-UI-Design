@@ -194,6 +194,10 @@
 .card-head-actions{margin-left:auto;display:inline-flex;align-items:center;gap:8px;}
 /* 右侧状态标签/元信息区（2026-08-13 治本：与 actions 同右对齐，语义区分——meta=状态标签/计数，actions=操作按钮） */
 .card-head-meta{margin-left:auto;display:inline-flex;align-items:center;gap:8px;}
+/* 并用兜底（2026-11-25）：两类均 margin-left:auto，并用时第二组 auto 无空间可分→组间距恒 0；相邻选择器强制 lg 24，页面免补 */
+.card-head-meta ~ .card-head-actions{margin-left:var(--space-lg);}
+/* 反序兜底（2026-11-25 反方复核）：actions 在前 / meta 在后同样给 24，避免 DOM 顺序决定组间距 */
+.card-head-actions ~ .card-head-meta{margin-left:var(--space-lg);}
 
 
 .c-tech-blue{color:var(--chart-tech-blue);}

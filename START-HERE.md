@@ -10,19 +10,13 @@
 ## 2. 常用命令
 
 ```bash
-# 单页：validate + 组件复用 + 作业树运行时（0 HIGH 才交付）
+# 单页：validate + 页面契约 + 组件复用 + 作业树运行时（0 HIGH 才交付）
 node scripts/verify.js page <页面.html>
 
-# 新规范全链路：6 页 + 5 分享版 + 文档体积
+# 新规范全链路（页面契约 + 清单页 + 分享版 + 文档体积）
 node scripts/verify.js all --scope=new
 
-# 主题契约 / 文档体积 / 示例副本
-node scripts/verify.js themes
-node scripts/verify.js docs
-node scripts/verify.js showcase
-node scripts/verify.js chrome
-node scripts/verify.js icons
-node scripts/verify.js spec
+# 辅助子命令（themes/docs/showcase/chrome/shell/manifest/icons/spec）见 verify.js 用法
 
 # 分享版（内联 CSS + 4 个 js + 本地资源，禁手工内联）
 node scripts/build-share-web.js <页面.html> [--out <输出.html>]
@@ -31,17 +25,17 @@ node scripts/build-share-web.js <页面.html> [--out <输出.html>]
 node packages/web-ui/scripts/build-template-css.js
 ```
 
-`verify.js` 只按固定顺序调用现有脚本，**不新增检查、不改判定**。`verify.js all` = 存量全链路（`ci-local.js`）+ 新规范范围（`verify-new.js`）；`--scope=new` 只跑后者。
+`verify.js` 按固定顺序调用现有脚本/页面契约模块，**不重复实现判定**。`verify.js all` = 页面契约 + 存量全链路（`ci-local.js`）+ 新规范范围（`verify-new.js`）；`--scope=new` 只跑后者。
 
 ## 3. 先认这 6 个入口
 
 | 文件 | 作用 | 读法 |
 |---|---|---|
 | `AGENTS.md` | Agent 行为入口 | 全文（体量以文件为准） |
-| `GENERATION-SOP.md` | 生成流程（选端→框架→选型→克隆→落盘→门禁） | 先读 §①，存量读 §② |
-| `弘讯web端design-system/RULES.md` | Web 规范正文（§1.1d = 左右结构） | 按章节索引定点读，禁止通读 |
+| `GENERATION-SOP.md` | 生成流程（§①/§②） | 先读 §①，存量读 §② |
+| `弘讯web端design-system/RULES.md` | Web 规范正文 | 按章节索引定点读，禁止通读 |
 | `弘讯web端design-system/tokens.json` | token 值真源 | 读 `colors` / `themes`；不要手改生成物 |
-| `弘讯web端design-system/page-template.html` | 唯一克隆源（`.rail` 216/64 + `.ws-global` 60 + `.ws-pagebar` 56） | 通过脚手架克隆，不要手抄 |
+| `弘讯web端design-system/page-template.html` | 唯一克隆源（`.shell/.rail`） | 通过脚手架克隆，不要手抄 |
 | `弘讯web端design-system/js/` | 运行真源：`shell-ui` / `tree-nav` / `i18n` / `page-ui` | 克隆页必须保留 4 个 `<script>` |
 
 ## 4. 真源 vs 生成物
@@ -66,22 +60,13 @@ node packages/web-ui/scripts/build-template-css.js
 4. **不要在页面 `<style>` 里写组件私有类**：门禁 `component.reuse` HIGH；缺组件回真源补。
 5. **不要为了过门禁改阈值、删检查或扩大豁免**：先读失败 contract，再改真源。
 
-## 6. 门禁地图（2026-11-20 实测）
+## 6. 门禁地图
 
-| 命令 | 检查什么 | 当前状态 |
-|---|---|---|
-| `verify.js page` | 单页 0 HIGH：结构/标题/颜色/组件/克隆凭证/作业树运行时 | ✅ 7 页 0 HIGH（USAGE 64 MED 属 doc-* 布局类；登录示例 1 MED） |
-| `verify.js all --scope=new` | 7 页 validate + 8 页 tree runtime + 6 分享版零外链 + 清单/工具区 + check-size | ✅ 通过 |
-| `verify.js all` | **交付口径** = 存量全链路 + 新规范范围 | ✅ 两者全绿 |
-| `ci-local.js`（存量全链路） | 两端克隆源 / token / audit / 双端一致性 / 体积 | ✅ **105 pass / 0 fail** |
-| `check-size.js` | 文档体积 + 清单封闭 | ✅ 0 FAIL（WARN 数随阈值余量变化，以输出为准） |
-| `check-reach.js` | 索引 / 引用 / 3 个加载计划预算 | ✅ 0 FAIL / 1 WARN（图表任务余量 5.2%） |
-| `check-sync.js` | 双端同名类 + vendor 同构 | ✅ 3 pass / 0 fail（4 类平台差异入白名单；141 类已扩容登记 gaps） |
-| `verify.js chrome` | 工具区与真源 `partials/shell-tools.html` 一致 + 4 个运行 js 可加载（9 页含分享版） | ✅ 通过 |
-| `verify.js shell` | 工具区真源是否已注入各页（漂移检查，失败给正确修复命令） | ✅ 4 / 4 |
-| `verify.js manifest` | 清单存在性/组内去重/页面覆盖性/契约声明 | ✅ 31 条登记 / 1 条忽略 |
-| `verify.js icons` | 图标库每个图标都在规范展示「图标集」出现 + 计数一致 | ✅ 190 / 190 |
-| `verify.js spec` | 规范展示页自检：图表坐标/柱值标签/计数声明/锚点/旧分页器/未定义变量 | ✅ 通过 |
+> 命令与检查范围以 `scripts/verify.js` 用法为准；当前状态/页数/WARN 数统一看 `HANDOFF §1` + 命令输出，本文不复述。
+
+- **单页**：`verify.js page`（validate + 页面契约 + 组件复用 + 树运行时）
+- **交付**：`verify.js all`（页面契约 + `ci-local` + `verify-new`）
+- **辅助**：`themes / docs / showcase / chrome / shell / manifest / icons / spec`（各自检查范围见 `verify.js` 用法）
 
 失败时先看输出里的 `contract` 名，回对应端 RULES 命中章节；不要盲目修补。
 
@@ -100,7 +85,7 @@ node packages/web-ui/scripts/build-template-css.js
 
 - 可直接打开：`showcase/左右结构_v7_设备运维工作台.html`（+ `_分享版.html`）、`showcase/弘讯亮色注塑机看板.html`、`showcase/登录页示例.html`、`showcase/表格规范展示_20261112.html`、`web规范展示_左右结构.html`。
 - 示例保留演示树 / 假数据，`validate` 对 `showcase/` 豁免 `template.residue`；业务页必须替换品牌与作业树。
-- `showcase/` 的规范展示副本是**生成物**：改根目录源后运行 `node scripts/sync-showcase.js`；`verify.js showcase` 查漂移。分享版由 `build-share-web.js` 生成。
+- `showcase/` 的规范展示副本是**生成物**：改根目录源后运行 `node scripts/sync-showcase.js`；`verify.js showcase` 查漂移。分享版由 `build-share-web.js` 生成；改 `template.css`/`page-ui.js` 后必须重出（页面契约比对 CSS 指纹）。
 
 ## 9. 当前状态以运行结果为准
 
